@@ -1,128 +1,217 @@
-let currentTopic = "";
-let quizQuestions = [];
-let index = 0;
-let correctCount = 0;
-let answered = false;
-let mixedMode = false;
-let answerHistory = [];
-const $ = (id) => document.getElementById(id);
-const letters = ["أ", "ب", "ج", "د"];
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let timer = null;
+let timeLeft = 600;
+let isSpeedMode = false;
 
-function shuffle(items) {
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
+function initTopics() {
+    const topicsSection = document.getElementById('topics-section');
+    topicsSection.innerHTML = '';
+
+    mathTopics.forEach((topic, index) => {
+        const stats = JSON.parse(localStorage.getItem(`stats_topic_${topic.id}`)) || { totalTests: 0, correctAnswers: 0 };
+        let percentage = stats.totalTests > 0 ? Math.round((stats.correctAnswers / stats.totalTests) * 100) + '%' : 'لم يُختبر';
+
+        topicsSection.innerHTML += `
+            <div class="col-md-6 col-lg-4">
+                <div class="card topic-card shadow-sm h-100 p-3" onclick="startQuiz(${topic.id})">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">البحث ${index + 1}</span>
+                        <h5 class="card-title fw-bold">${topic.title}</h5>
+                        <p class="card-text text-muted small">أسئلة مؤتمتة (مباشر، متوسط، تميز).</p>
+                        <span class="badge bg-secondary">نسبة النجاح: ${percentage}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
 }
-function renderTopics(filter = "") {
-  const filtered = topics.filter(topic => topic.toLocaleLowerCase("ar").includes(filter.trim().toLocaleLowerCase("ar")));
-  $("total-count").textContent = `${questions.length} سؤالاً تدريبياً · ${topics.length} محوراً`;
-  $("topic-grid").innerHTML = filtered.map(topic => {
-    const i = topics.indexOf(topic);
-    const count = questions.filter(q => q.topic === topic).length;
-    return `<button class="topic-card" data-topic="${escapeAttribute(topic)}">
-      <span class="topic-card-top"><span class="topic-number">${String(i + 1).padStart(2, "0")}</span><span class="topic-arrow" aria-hidden="true">←</span></span>
-      <span><span class="topic-title">${escapeHTML(topic)}</span><br><span class="topic-meta">${count} أسئلة · ابدأ التدريب</span></span>
-    </button>`;
-  }).join("");
-  $("no-topics").classList.toggle("hidden", filtered.length > 0);
-  document.querySelectorAll("[data-topic]").forEach(btn => btn.addEventListener("click", () => startQuiz(btn.dataset.topic)));
+
+function startQuiz(topicId) {
+    isSpeedMode = false;
+    const topic = mathTopics.find(t => t.id === topicId);
+    currentQuestions = topic.questions;
+    document.getElementById('quiz-title').innerText = topic.title;
+    beginQuizCommon(600);
 }
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[char]));
+
+function startComprehensiveExam() {
+    isSpeedMode = false;
+    let allQs = [];
+    mathTopics.forEach(t => allQs.push(...t.questions));
+    currentQuestions = allQs.sort(() => 0.5 - Math.random()).slice(0, 10);
+    document.getElementById('quiz-title').innerText = "الامتحان الشامل (10 أسئلة عشوائية)";
+    beginQuizCommon(900);
 }
-function escapeAttribute(value) { return escapeHTML(value); }
-function startQuiz(topic, isMixed = false) {
-  currentTopic = topic;
-  mixedMode = isMixed;
-  quizQuestions = shuffle(isMixed ? questions : questions.filter(q => q.topic === topic));
-  index = 0; correctCount = 0; answered = false; answerHistory = [];
-  $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
-  $("quiz-title").textContent = isMixed ? "اختبار شامل من كل الأبحاث" : topic;
-  showQuestion();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+
+function startSpeedChallenge() {
+    isSpeedMode = true;
+    let allQs = [];
+    mathTopics.forEach(t => allQs.push(...t.questions));
+    currentQuestions = allQs.sort(() => 0.5 - Math.random()).slice(0, 5);
+    document.getElementById('quiz-title').innerText = "تحدي السرعة (دقيقة لكل سؤال)";
+    beginQuizCommon(60); // 60 ثانية للمجموع أو لكل سؤال
 }
+
+function beginQuizCommon(timeLimit) {
+    currentQuestionIndex = 0;
+    score = 0;
+    timeLeft = timeLimit;
+
+    document.getElementById('topics-section').classList.add('d-none');
+    document.getElementById('special-modes-section').classList.add('d-none');
+    document.getElementById('quiz-section').classList.remove('d-none');
+    document.getElementById('result-section').classList.add('d-none');
+
+    showQuestion();
+    startTimer();
+}
+
+function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById('timer-display').innerHTML = `<i class="fa-solid fa-clock"></i> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            showResult();
+        }
+    }, 1000);
+}
+
 function showQuestion() {
-  answered = false;
-  const q = quizQuestions[index];
-  $("question-number").textContent = `${index + 1} من ${quizQuestions.length}`;
-  $("progress").textContent = `السؤال ${index + 1} / ${quizQuestions.length}`;
-  const percent = index / quizQuestions.length * 100;
-  $("progress-bar").style.width = `${percent}%`;
-  $("progress-track").setAttribute("aria-valuenow", String(Math.round(percent)));
-  $("question-text").innerHTML = (mixedMode ? `<div class="topic-meta">${escapeHTML(q.topic)}</div>` : "") + q.q;
-  $("options").innerHTML = q.options.map((option, i) => `<button class="option" data-option="${i}"><span class="letter">${letters[i]}</span><span>${option}</span></button>`).join("");
-  document.querySelectorAll("[data-option]").forEach(btn => btn.addEventListener("click", () => chooseAnswer(Number(btn.dataset.option))));
-  $("feedback").className = "feedback hidden"; $("feedback").innerHTML = "";
-  $("next").disabled = true;
-  $("next").textContent = index === quizQuestions.length - 1 ? "عرض النتيجة ←" : "السؤال التالي ←";
-  $("answer-hint").textContent = "اختر إجابة واحدة لعرض التصحيح.";
-  typeset();
+    const qData = currentQuestions[currentQuestionIndex];
+    const container = document.getElementById('question-container');
+    
+    document.getElementById('feedback-container').classList.add('d-none');
+    document.getElementById('next-btn').classList.add('d-none');
+    document.getElementById('question-counter').innerText = `السؤال ${currentQuestionIndex + 1} من ${currentQuestions.length}`;
+    
+    const diffBadge = document.getElementById('difficulty-badge');
+    diffBadge.innerText = `المستوى: ${qData.level || 'عام'}`;
+
+    let optionsHtml = '';
+    qData.options.forEach((opt, idx) => {
+        optionsHtml += `<button class="option-btn" onclick="checkAnswer(${idx})">${opt}</button>`;
+    });
+
+    container.innerHTML = `
+        <h5 class="fw-bold mb-3">${qData.q}</h5>
+        <div class="options-list">${optionsHtml}</div>
+    `;
+
+    if (window.MathJax) {
+        MathJax.typeset();
+    }
 }
-function chooseAnswer(choice) {
-  if (answered) return;
-  answered = true;
-  const q = quizQuestions[index];
-  const isCorrect = choice === q.answer;
-  if (isCorrect) correctCount++;
-  answerHistory.push({ question: q, choice, isCorrect });
-  document.querySelectorAll("[data-option]").forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === q.answer) btn.classList.add("correct");
-    if (i === choice && !isCorrect) btn.classList.add("wrong");
-  });
-  const fb = $("feedback");
-  fb.className = `feedback ${isCorrect ? "good" : "bad"}`;
-  fb.innerHTML = `<strong>${isCorrect ? "✓ إجابة صحيحة، أحسنت!" : "✗ إجابة غير صحيحة"}</strong>
-    <div>${isCorrect ? "اختيارك صحيح." : `الإجابة الصحيحة هي: ${letters[q.answer]} — ${q.options[q.answer]}`}</div>
-    <div class="solution"><strong>الحل المشروح:</strong><div>${q.solution}</div></div>`;
-  $("next").disabled = false;
-  $("answer-hint").textContent = isCorrect ? "تابع إلى السؤال التالي." : "اقرأ الحل ثم انتقل للسؤال التالي.";
-  const percent = (index + 1) / quizQuestions.length * 100;
-  $("progress-bar").style.width = `${percent}%`;
-  $("progress-track").setAttribute("aria-valuenow", String(Math.round(percent)));
-  typeset();
+
+function checkAnswer(selectedIdx) {
+    const qData = currentQuestions[currentQuestionIndex];
+    const optionButtons = document.querySelectorAll('.option-btn');
+    
+    optionButtons.forEach(btn => btn.disabled = true);
+    const feedbackContainer = document.getElementById('feedback-container');
+    feedbackContainer.classList.remove('d-none');
+
+    if (selectedIdx === qData.correct) {
+        optionButtons[selectedIdx].classList.add('correct');
+        feedbackContainer.innerHTML = `<div class="alert alert-success"><strong>إجابة صحيحة!</strong><br>${qData.explanation}</div>`;
+        score++;
+    } else {
+        optionButtons[selectedIdx].classList.add('wrong');
+        optionButtons[qData.correct].classList.add('correct');
+        feedbackContainer.innerHTML = `<div class="alert alert-danger"><strong>إجابة خاطئة!</strong><br><strong>الإجابة الصحيحة:</strong> ${qData.options[qData.correct]}<br><strong>الشرح:</strong> ${qData.explanation}</div>`;
+    }
+
+    if (window.MathJax) {
+        MathJax.typeset();
+    }
+
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.classList.remove('d-none');
+    if (currentQuestionIndex === currentQuestions.length - 1) {
+        nextBtn.innerText = "عرض النتيجة النهائية";
+    } else {
+        nextBtn.innerText = "السؤال التالي";
+    }
 }
-function showResults() {
-  $("quiz").classList.add("hidden"); $("results").classList.remove("hidden");
-  const total = quizQuestions.length;
-  const percent = Math.round(correctCount / total * 100);
-  $("score").textContent = `${correctCount} / ${total} (${percent}٪)`;
-  $("score-bar").style.width = `${percent}%`;
-  $("score-detail").textContent = `إجابات صحيحة: ${correctCount} · إجابات تحتاج إلى مراجعة: ${total - correctCount} · ${mixedMode ? "اختبار شامل" : currentTopic}`;
-  $("result-message").textContent = percent >= 85 ? "ممتاز! واصل التدريب للمحافظة على مستواك." : percent >= 60 ? "أداء جيد. راجع الحلول ثم جرّب الاختبار مرة أخرى." : "لا بأس، التدرّب خطوة بخطوة يساعدك على التحسن.";
-  const mistakes = answerHistory.filter(item => !item.isCorrect);
-  $("mistakes").classList.toggle("hidden", mistakes.length === 0);
-  $("mistake-list").innerHTML = mistakes.map((item, i) => `<div class="mistake-item">
-    <div class="mistake-question">${i + 1}. ${item.question.q}</div>
-    <div class="mistake-answer">إجابتك: ${letters[item.choice]} — ${item.question.options[item.choice]}</div>
-    <div class="mistake-correct">الصحيح: ${letters[item.question.answer]} — ${item.question.options[item.question.answer]}</div>
-    <div class="mistake-solution"><strong>الحل:</strong> ${item.question.solution}</div>
-  </div>`).join("");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  typeset();
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < currentQuestions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
 }
-function typeset() {
-  if (window.MathJax && window.MathJax.typesetPromise) {
-    window.MathJax.typesetPromise().catch(() => {});
-  }
+
+function showResult() {
+    clearInterval(timer);
+    document.getElementById('quiz-section').classList.add('d-none');
+    document.getElementById('result-section').classList.remove('d-none');
+    
+    const total = currentQuestions.length;
+    document.getElementById('final-score').innerText = `لقد أجبت بشكل صحيح على ${score} من أصل ${total} أسئلة.`;
+    
+    // حفظ التقارير محلياً
+    let totalGlobal = parseInt(localStorage.getItem('global_total') || '0') + total;
+    let correctGlobal = parseInt(localStorage.getItem('global_correct') || '0') + score;
+    localStorage.setItem('global_total', totalGlobal);
+    localStorage.setItem('global_correct', correctGlobal);
 }
-$("next").addEventListener("click", () => {
-  if (!answered) return;
-  if (index < quizQuestions.length - 1) { index++; showQuestion(); }
-  else showResults();
-});
-$("back").addEventListener("click", () => { $("quiz").classList.add("hidden"); $("home").classList.remove("hidden"); window.scrollTo({ top: 0, behavior: "smooth" }); });
-$("retry").addEventListener("click", () => startQuiz(currentTopic, mixedMode));
-$("to-home").addEventListener("click", () => { $("results").classList.add("hidden"); $("home").classList.remove("hidden"); window.scrollTo({ top: 0, behavior: "smooth" }); });
-$("mixed-quiz").addEventListener("click", () => startQuiz("اختبار شامل", true));
-$("topic-search").addEventListener("input", event => {
-  renderTopics(event.target.value);
-  $("clear-search").classList.toggle("visible", event.target.value.length > 0);
-});
-$("clear-search").addEventListener("click", () => { $("topic-search").value = ""; $("clear-search").classList.remove("visible"); renderTopics(); $("topic-search").focus(); });
-$("brand-home").addEventListener("click", event => { event.preventDefault(); $("quiz").classList.add("hidden"); $("results").classList.add("hidden"); $("home").classList.remove("hidden"); window.scrollTo({ top: 0, behavior: "smooth" }); });
-$("hero-question-count").textContent = new Intl.NumberFormat("ar").format(questions.length);
-renderTopics();
+
+function returnToTopics() {
+    clearInterval(timer);
+    document.getElementById('quiz-section').classList.add('d-none');
+    document.getElementById('result-section').classList.add('d-none');
+    document.getElementById('topics-section').classList.remove('d-none');
+    document.getElementById('special-modes-section').classList.remove('d-none');
+    initTopics();
+}
+
+function showStatsModal() {
+    const total = parseInt(localStorage.getItem('global_total') || '0');
+    const correct = parseInt(localStorage.getItem('global_correct') || '0');
+    const wrong = total - correct;
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+    const statsBody = document.getElementById('stats-body');
+    statsBody.innerHTML = `
+        <p><strong>إجمالي الأسئلة المحلولة:</strong> ${total}</p>
+        <p><strong>الإجابات الصحيحة:</strong> <span class="text-success">${correct}</span></p>
+        <p><strong>الإجابات الخاطئة:</strong> <span class="text-danger">${wrong}</span></p>
+        <p><strong>نسبة الأداء العامة:</strong> ${percentage}%</p>
+        <div class="progress mt-3">
+            <div class="progress-bar bg-success" role="progressbar" style="width: ${percentage}%">${percentage}%</div>
+        </div>
+    `;
+
+    const myModal = new bootstrap.Modal(document.getElementById('statsModal'));
+    myModal.show();
+}
+
+function resetStats() {
+    localStorage.clear();
+    alert("تم تصفير جميع السجلات والإحصائيات بنجاح.");
+    location.reload();
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+    const btn = document.getElementById('dark-mode-toggle');
+    btn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i> الوضع الفاتح' : '<i class="fa-solid fa-moon"></i> الوضع الليلي';
+}
+
+window.onload = function() {
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-mode-toggle').innerHTML = '<i class="fa-solid fa-sun"></i> الوضع الفاتح';
+    }
+    initTopics();
+};
