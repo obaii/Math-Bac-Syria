@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142746">
+  <meta name="description" content="منصة تدريب تفاعلية لطلاب البكالوريا العلمي في الرياضيات وفق محاور المنهاج السوري">
+  <title>رياضيات البكالوريا السورية | منصة التدريب</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="questions.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#" id="brand-home" aria-label="العودة للرئيسية"><span class="brand-symbol">∑</span><span>رياضيات البكالوريا</span></a>
+  <span class="tag">المنهاج السوري · العلمي</span>
+</header>
+<main class="container">
+  <section class="hero">
+    <div class="hero-mark">∑</div>
+    <p class="eyebrow">تعلّم · تدرّب · تقدّم</p>
+    <h1>أتقن الرياضيات سؤالاً بعد سؤال</h1>
+    <p class="hero-copy">اختر البحث الذي تريد مراجعته، أجب عن الأسئلة الأربعة الخيارات، وتعرّف فوراً إلى صحة إجابتك والحل المشروح.</p>
+    <div class="hero-stats"><span>١٤ محوراً تدريبياً</span><span>تصحيح فوري</span><span>مجانية وبلا تسجيل</span></div>
+    <div class="hero-bottom"><span class="hero-count"><strong id="hero-question-count">٥٦</strong> سؤالاً تدريبياً</span><button id="mixed-quiz" class="hero-button">اختبار شامل من كل الأبحاث <span>←</span></button></div>
+  </section>
+  <section id="home">
+    <div class="section-heading"><div><p class="eyebrow">ابدأ من هنا</p><h2>اختر البحث</h2><p class="subheading">يمكنك البحث عن عنوان المحور أو اختيار بطاقة للبدء.</p></div><span id="total-count" class="muted"></span></div>
+    <label class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي…" autocomplete="off" aria-label="ابحث عن بحث رياضي"><button id="clear-search" type="button" aria-label="مسح البحث">×</button></label>
+    <div id="topic-grid" class="topic-grid"></div>
+    <p id="no-topics" class="empty-state hidden">لا توجد أبحاث مطابقة. جرّب كلمة أخرى.</p>
+    <div class="notice"><strong>تنبيه تعليمي:</strong> هذه منصة تدريبية مستقلة، والأسئلة الحالية نموذجية للتدريب وليست بنكاً رسمياً شاملاً. راجع الحلول ومطابقتها للطبعة المعتمدة من الكتاب المدرسي قبل اعتمادها مرجعاً امتحانياً نهائياً.</div>
+  </section>
+  <section id="quiz" class="hidden">
+    <button id="back" class="back">→ العودة إلى الأبحاث</button>
+    <div class="quiz-head"><div><p class="eyebrow">الاختبار الحالي</p><h2 id="quiz-title"></h2></div><span id="progress" class="progress"></span></div>
+    <div class="progress-track" role="progressbar" aria-label="تقدم الاختبار" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div>
+    <article class="question-card">
+      <div class="question-label"><span class="question-dot"></span> السؤال <span id="question-number"></span></div>
+      <div id="question-text" class="question-text"></div>
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+      <div class="actions"><button id="next" class="primary" disabled>السؤال التالي ←</button><span id="answer-hint" class="answer-hint">اختر إجابة واحدة لعرض التصحيح.</span></div>
+    </article>
+  </section>
+  <section id="results" class="hidden">
+    <div class="result-card">
+      <div class="result-icon">✓</div><p class="eyebrow">انتهى الاختبار</p>
+      <h2 id="result-title">أحسنت، أنهيت التدريب!</h2>
+      <div id="score" class="score"></div>
+      <div class="score-track"><div id="score-bar"></div></div>
+      <p id="score-detail" class="muted"></p>
+      <div class="result-message" id="result-message"></div>
+      <div id="mistakes" class="mistakes hidden"><h3>مراجعة الإجابات التي تحتاج إلى تثبيت</h3><div id="mistake-list"></div></div>
+      <div class="actions center"><button id="retry" class="primary">إعادة الاختبار</button><button id="to-home" class="secondary">اختيار بحث آخر</button></div>
+    </div>
+  </section>
+</main>
+<footer><p>منصة تعليمية مستقلة للمراجعة والتدريب · لا تتطلب حساباً</p><p class="footer-small">تعمل عبر GitHub Pages ولا تحتاج إلى خادم أو قاعدة بيانات.</p></footer>
+</body>
+</html>
