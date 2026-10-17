@@ -1,123 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الرياضيات - البكالوريا العلمي (المنهاج السوري)</title>
-    <!-- Bootstrap 5 CSS RTL -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/rtl.min.css">
-    <!-- FontAwesome للأيقونات -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <!-- MathJax لدعم المعادلات الرياضية -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142746">
+  <meta name="description" content="منصة تدريب تفاعلية لطلاب البكالوريا العلمي في الرياضيات وفق محاور المنهاج السوري">
+  <title>رياضيات البكالوريا السورية | منصة التدريب</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="questions.js"></script>
+  <script defer src="app.js"></script>
 </head>
-<body class="bg-light">
-
-    <div class="container py-4">
-        <!-- شريط علوي للتحكم -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="m-0 text-primary fw-bold"><i class="fa-solid fa-graduation-cap"></i> باكالوريا سوري - رياضيات</h5>
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary btn-sm" onclick="showStatsModal()">
-                    <i class="fa-solid fa-chart-line"></i> تقارير الأداء
-                </button>
-                <button class="btn btn-outline-dark btn-sm" id="dark-mode-toggle" onclick="toggleDarkMode()">
-                    <i class="fa-solid fa-moon"></i> الوضع الليلي
-                </button>
-            </div>
-        </div>
-
-        <!-- رأس الصفحة -->
-        <header class="text-center mb-5">
-            <h1 class="fw-bold">اختبارات الرياضيات المؤتمتة</h1>
-            <p class="text-muted">اختر البحث للتدرب حسب مستوى الصعوبة، أو جرب تحدي السرعة والامتحان الشامل</p>
-        </header>
-
-        <!-- أزرار الأنماط الخاصة (الامتحان الشامل وتحدي السرعة) -->
-        <div class="row mb-4 g-3" id="special-modes-section">
-            <div class="col-md-6">
-                <div class="card bg-primary text-white shadow-sm p-3 text-center topic-card h-100" onclick="startComprehensiveExam()">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h3><i class="fa-solid fa-file-invoice"></i> الامتحان الشامل</h3>
-                        <p class="mb-0">أسئلة عشوائية من كافة الأبحاث الـ 14 لمحاكاة الواقع الوزاري</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card bg-danger text-white shadow-sm p-3 text-center topic-card h-100" onclick="startSpeedChallenge()">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h3><i class="fa-solid fa-bolt"></i> وضع تحدي السرعة</h3>
-                        <p class="mb-0">دقيقة واحدة فقط لكل سؤال لاختبار سرعة البديهة</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- قائمة الأبحاث الـ 14 -->
-        <div id="topics-section" class="row g-4">
-            <!-- يتم تعبئتها ديناميكياً -->
-        </div>
-
-        <!-- قسم الاختبار (مخفي افتراضياً) -->
-        <div id="quiz-section" class="card shadow-sm p-4 d-none">
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <div>
-                    <h3 id="quiz-title" class="text-secondary m-0"></h3>
-                    <span id="difficulty-badge" class="badge bg-secondary mt-1">مستوى</span>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                    <span id="timer-display" class="badge bg-danger fs-6"><i class="fa-solid fa-clock"></i> 10:00</span>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="returnToTopics()">العودة للأبحاث</button>
-                </div>
-            </div>
-            
-            <div id="question-container" class="mb-4">
-                <!-- السؤال والخيارات -->
-            </div>
-
-            <div id="feedback-container" class="mb-3 d-none">
-                <!-- النتيجة وشرح الحل -->
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center">
-                <span id="question-counter" class="text-muted fw-bold"></span>
-                <button id="next-btn" class="btn btn-primary d-none" onclick="nextQuestion()">السؤال التالي</button>
-            </div>
-        </div>
-
-        <!-- نتيجة الاختبار (مخفية افتراضياً) -->
-        <div id="result-section" class="card shadow-sm p-5 text-center d-none">
-            <h2 class="text-success mb-3"><i class="fa-solid fa-trophy"></i> انتهى الاختبار!</h2>
-            <p id="final-score" class="fs-4 mb-4"></p>
-            <div id="result-details" class="mb-4 text-muted"></div>
-            <button class="btn btn-primary px-4" onclick="returnToTopics()">العودة إلى قائمة الأبحاث</button>
-        </div>
+<body>
+<header class="top">
+  <a class="brand" href="#" id="brand-home" aria-label="العودة للرئيسية"><span class="brand-symbol">∑</span><span>رياضيات البكالوريا</span></a>
+  <span class="tag">المنهاج السوري · العلمي</span>
+</header>
+<main class="container">
+  <section class="hero">
+    <div class="hero-mark">∑</div>
+    <p class="eyebrow">تعلّم · تدرّب · تقدّم</p>
+    <h1>أتقن الرياضيات سؤالاً بعد سؤال</h1>
+    <p class="hero-copy">اختر البحث الذي تريد مراجعته، أجب عن الأسئلة الأربعة الخيارات، وتعرّف فوراً إلى صحة إجابتك والحل المشروح.</p>
+    <div class="hero-stats"><span>١٤ محوراً تدريبياً</span><span>تصحيح فوري</span><span>مجانية وبلا تسجيل</span></div>
+    <div class="hero-bottom"><span class="hero-count"><strong id="hero-question-count">٥٦</strong> سؤالاً تدريبياً</span><button id="mixed-quiz" class="hero-button">اختبار شامل من كل الأبحاث <span>←</span></button></div>
+  </section>
+  <section id="home">
+    <div class="section-heading"><div><p class="eyebrow">ابدأ من هنا</p><h2>اختر البحث</h2><p class="subheading">يمكنك البحث عن عنوان المحور أو اختيار بطاقة للبدء.</p></div><span id="total-count" class="muted"></span></div>
+    <label class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي…" autocomplete="off" aria-label="ابحث عن بحث رياضي"><button id="clear-search" type="button" aria-label="مسح البحث">×</button></label>
+    <div id="topic-grid" class="topic-grid"></div>
+    <p id="no-topics" class="empty-state hidden">لا توجد أبحاث مطابقة. جرّب كلمة أخرى.</p>
+    <div class="notice"><strong>تنبيه تعليمي:</strong> هذه منصة تدريبية مستقلة، والأسئلة الحالية نموذجية للتدريب وليست بنكاً رسمياً شاملاً. راجع الحلول ومطابقتها للطبعة المعتمدة من الكتاب المدرسي قبل اعتمادها مرجعاً امتحانياً نهائياً.</div>
+  </section>
+  <section id="quiz" class="hidden">
+    <button id="back" class="back">→ العودة إلى الأبحاث</button>
+    <div class="quiz-head"><div><p class="eyebrow">الاختبار الحالي</p><h2 id="quiz-title"></h2></div><span id="progress" class="progress"></span></div>
+    <div class="progress-track" role="progressbar" aria-label="تقدم الاختبار" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div>
+    <article class="question-card">
+      <div class="question-label"><span class="question-dot"></span> السؤال <span id="question-number"></span></div>
+      <div id="question-text" class="question-text"></div>
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+      <div class="actions"><button id="next" class="primary" disabled>السؤال التالي ←</button><span id="answer-hint" class="answer-hint">اختر إجابة واحدة لعرض التصحيح.</span></div>
+    </article>
+  </section>
+  <section id="results" class="hidden">
+    <div class="result-card">
+      <div class="result-icon">✓</div><p class="eyebrow">انتهى الاختبار</p>
+      <h2 id="result-title">أحسنت، أنهيت التدريب!</h2>
+      <div id="score" class="score"></div>
+      <div class="score-track"><div id="score-bar"></div></div>
+      <p id="score-detail" class="muted"></p>
+      <div class="result-message" id="result-message"></div>
+      <div id="mistakes" class="mistakes hidden"><h3>مراجعة الإجابات التي تحتاج إلى تثبيت</h3><div id="mistake-list"></div></div>
+      <div class="actions center"><button id="retry" class="primary">إعادة الاختبار</button><button id="to-home" class="secondary">اختيار بحث آخر</button></div>
     </div>
-
-    <!-- نافذة تقارير الأداء المنبثقة -->
-    <div class="modal fade" id="statsModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content" id="modal-content-box">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fa-solid fa-chart-line"></i> تقارير الأداء العام</h5>
-                    <button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="stats-body">
-                    <!-- تفاصيل الإحصائيات -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="resetStats()">تصفير السجل</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="questions.js"></script>
-    <script src="app.js"></script>
+  </section>
+</main>
+<footer><p>منصة تعليمية مستقلة للمراجعة والتدريب · لا تتطلب حساباً</p><p class="footer-small"></p></footer>
 </body>
 </html>
