@@ -51,7 +51,10 @@ function showQuestion() {
   $("progress").textContent = `السؤال ${index + 1} / ${quizQuestions.length}`;
   const percent = index / quizQuestions.length * 100;
   $("progress-bar").style.width = `${percent}%`;
-  $("progress-track").setAttribute("aria-valuenow", String(Math.round(percent)));
+  const progressTrack = document.querySelector(".progress-track");
+if (progressTrack) {
+  progressTrack.setAttribute("aria-valuenow", String(Math.round(percent)));
+}
   $("question-text").innerHTML = (mixedMode ? `<div class="topic-meta">${escapeHTML(q.topic)}</div>` : "") + q.q;
   $("options").innerHTML = q.options.map((option, i) => `<button class="option" data-option="${i}"><span class="letter">${letters[i]}</span><span>${option}</span></button>`).join("");
   document.querySelectorAll("[data-option]").forEach(btn => btn.addEventListener("click", () => chooseAnswer(Number(btn.dataset.option))));
@@ -82,7 +85,10 @@ function chooseAnswer(choice) {
   $("answer-hint").textContent = isCorrect ? "تابع إلى السؤال التالي." : "اقرأ الحل ثم انتقل للسؤال التالي.";
   const percent = (index + 1) / quizQuestions.length * 100;
   $("progress-bar").style.width = `${percent}%`;
-  $("progress-track").setAttribute("aria-valuenow", String(Math.round(percent)));
+ const progressTrack = document.querySelector(".progress-track");
+if (progressTrack) {
+  progressTrack.setAttribute("aria-valuenow", String(Math.round(percent)));
+}
   typeset();
 }
 function showResults() {
