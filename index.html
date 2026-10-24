@@ -3,9 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#142746">
-  <meta name="description" content="منصة تدريب تفاعلية لطلاب البكالوريا العلمي في الرياضيات وفق محاور المنهاج السوري">
-  <title>رياضيات البكالوريا السورية | منصة التدريب</title>
+  <meta name="description" content="منصة تدريب تفاعلية لطلاب البكالوريا العلمي في الرياضيات وفق المنهاج السوري">
+  <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script defer src="questions.js"></script>
@@ -13,50 +12,72 @@
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="#" id="brand-home" aria-label="العودة للرئيسية"><span class="brand-symbol">∑</span><span>رياضيات البكالوريا</span></a>
-  <span class="tag">المنهاج السوري · العلمي</span>
+  <a class="brand" href="#" aria-label="الصفحة الرئيسية" id="brand-home"><span class="brand-symbol">∑</span><span>رياضيات البكالوريا</span></a>
+  <div class="top-actions"><span class="tag">المنهاج السوري · العلمي</span><span class="privacy-note"><span class="privacy-dot"></span> تقدمك محفوظ على جهازك</span></div>
 </header>
 <main class="container">
   <section class="hero">
     <div class="hero-mark">∑</div>
     <p class="eyebrow">تعلّم · تدرّب · تقدّم</p>
     <h1>أتقن الرياضيات سؤالاً بعد سؤال</h1>
-    <p class="hero-copy">اختر البحث الذي تريد مراجعته، أجب عن الأسئلة الأربعة الخيارات، وتعرّف فوراً إلى صحة إجابتك والحل المشروح.</p>
-    <div class="hero-stats"><span>١٤ محوراً تدريبياً</span><span>تصحيح فوري</span><span>مجانية وبلا تسجيل</span></div>
-    <div class="hero-bottom"><span class="hero-count"><strong id="hero-question-count">٥٦</strong> سؤالاً تدريبياً</span><button id="mixed-quiz" class="hero-button">اختبار شامل من كل الأبحاث <span>←</span></button></div>
+    <p>اختر البحث، أجب عن الأسئلة، وشاهد التصحيح والحل خطوة بخطوة.</p>
+    <div class="hero-stats"><span>١٤ بحثاً</span><span>تصحيح فوري مع الحل</span><span>مجاني دون تسجيل</span></div>
+    <div class="hero-bottom"><span class="hero-note"><span class="hero-note-icon">✓</span> ابدأ من أي بحث وتدرّب حسب مستواك</span><a class="hero-link" href="#topic-section">استعرض الأبحاث <span>↓</span></a></div>
   </section>
-  <section id="home">
-    <div class="section-heading"><div><p class="eyebrow">ابدأ من هنا</p><h2>اختر البحث</h2><p class="subheading">يمكنك البحث عن عنوان المحور أو اختيار بطاقة للبدء.</p></div><span id="total-count" class="muted"></span></div>
-    <label class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي…" autocomplete="off" aria-label="ابحث عن بحث رياضي"><button id="clear-search" type="button" aria-label="مسح البحث">×</button></label>
+  <section id="home"> 
+    <div class="dashboard" aria-label="ملخص تقدمك">
+      <div class="dashboard-intro"><span class="dashboard-kicker">مساحتك التعليمية</span><h2>أهلاً بك في رحلة التفوق</h2><p>تابع إنجازك، وارجع إلى الأسئلة التي تحتاج إلى مراجعة.</p></div>
+      <div class="stat-grid">
+        <div class="stat-card"><span class="stat-icon blue">✓</span><span class="stat-label">إجابات مجابة</span><strong id="stat-answered">٠</strong></div>
+        <div class="stat-card"><span class="stat-icon green">★</span><span class="stat-label">إجابات صحيحة</span><strong id="stat-correct">٠</strong></div>
+        <div class="stat-card"><span class="stat-icon amber">↻</span><span class="stat-label">تحتاج مراجعة</span><strong id="stat-mistakes">٠</strong></div>
+        <div class="stat-card"><span class="stat-icon purple">٪</span><span class="stat-label">نسبة النجاح</span><strong id="stat-percent">—</strong></div>
+      </div>
+      <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
+    </div>
+    <div id="topic-section" class="section-heading"><div><p class="eyebrow">تدرّب خطوة بخطوة</p><h2>اختر البحث</h2><p class="section-subtitle">اختر أحد أبحاث المنهاج وابدأ حل الأسئلة فوراً.</p></div><span id="total-count" class="count-pill"></span></div>
+    <div class="topic-tools">
+      <label class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي"></label>
+      <div class="filter-panel">
+      <label for="difficulty">مستوى الأسئلة</label>
+      <select id="difficulty">
+        <option value="الكل">جميع المستويات</option>
+        <option value="أساسي">أساسي</option>
+        <option value="متوسط">متوسط</option>
+        <option value="متقدم">متقدم</option>
+      </select>
+      <span class="filter-hint">اختر المستوى المناسب لك.</span>
+      </div>
+    </div>
     <div id="topic-grid" class="topic-grid"></div>
-    <p id="no-topics" class="empty-state hidden">لا توجد أبحاث مطابقة. جرّب كلمة أخرى.</p>
-    <div class="notice"><strong>تنبيه تعليمي:</strong> هذه منصة تدريبية مستقلة، والأسئلة الحالية نموذجية للتدريب وليست بنكاً رسمياً شاملاً. راجع الحلول ومطابقتها للطبعة المعتمدة من الكتاب المدرسي قبل اعتمادها مرجعاً امتحانياً نهائياً.</div>
+    <div id="no-topics" class="empty-state hidden">لا توجد أبحاث تطابق كلمات البحث أو المستوى المحدد.</div>
+    <p class="notice">تضم المنصة أسئلة تدريبية من إعداد تعليمي مع تصحيح فوري وشرح للحل. وهي أداة مساعدة للمراجعة وليست بديلاً عن الكتاب المدرسي أو النماذج الرسمية.</p>
   </section>
   <section id="quiz" class="hidden">
     <button id="back" class="back">→ العودة إلى الأبحاث</button>
-    <div class="quiz-head"><div><p class="eyebrow">الاختبار الحالي</p><h2 id="quiz-title"></h2></div><span id="progress" class="progress"></span></div>
-    <div class="progress-track" role="progressbar" aria-label="تقدم الاختبار" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div>
+    <div class="quiz-head">
+      <div><p class="eyebrow">الاختبار الحالي</p><h2 id="quiz-title"></h2></div>
+      <span id="progress" class="progress"></span>
+    </div>
+    <div class="progress-track"><div id="progress-bar"></div></div>
     <article class="question-card">
-      <div class="question-label"><span class="question-dot"></span> السؤال <span id="question-number"></span></div>
+      <div class="question-label">السؤال <span id="question-number"></span></div>
       <div id="question-text" class="question-text"></div>
       <div id="options" class="options"></div>
       <div id="feedback" class="feedback hidden" aria-live="polite"></div>
-      <div class="actions"><button id="next" class="primary" disabled>السؤال التالي ←</button><span id="answer-hint" class="answer-hint">اختر إجابة واحدة لعرض التصحيح.</span></div>
+      <div class="actions"><button id="next" class="primary" disabled>السؤال التالي ←</button></div>
     </article>
   </section>
   <section id="results" class="hidden">
     <div class="result-card">
       <div class="result-icon">✓</div><p class="eyebrow">انتهى الاختبار</p>
-      <h2 id="result-title">أحسنت، أنهيت التدريب!</h2>
+      <h2>أحسنت، أنهيت التدريب!</h2>
       <div id="score" class="score"></div>
-      <div class="score-track"><div id="score-bar"></div></div>
       <p id="score-detail" class="muted"></p>
-      <div class="result-message" id="result-message"></div>
-      <div id="mistakes" class="mistakes hidden"><h3>مراجعة الإجابات التي تحتاج إلى تثبيت</h3><div id="mistake-list"></div></div>
       <div class="actions center"><button id="retry" class="primary">إعادة الاختبار</button><button id="to-home" class="secondary">اختيار بحث آخر</button></div>
     </div>
   </section>
 </main>
-<footer><p>منصة تعليمية مستقلة للمراجعة والتدريب · لا تتطلب حساباً</p><p class="footer-small"></p></footer>
+<footer><div class="footer-brand"><span>∑</span> رياضيات البكالوريا السورية</div><p>منصة تعليمية مستقلة للمراجعة والتدريب · لا تتطلب حساباً</p><p class="footer-privacy">يُحفظ تقدمك على هذا الجهاز فقط، ولا يُرسل إلى أي خادم.</p></footer>
 </body>
 </html>
