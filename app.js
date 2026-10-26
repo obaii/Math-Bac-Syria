@@ -7,6 +7,10 @@ let reviewMode = false;
 let reviewQuestions = [];
 const STORAGE_KEY = "mathBacSyriaProgressV1";
 const $ = (id) => document.getElementById(id);
+// Include the separately maintained supplementary vector questions without replacing the existing bank.
+if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQuestionsAdditional)) {
+  questions.push(...vectorQuestionsAdditional);
+}
 const letters = ["أ","ب","ج","د"];
 const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [] });
 function loadProgress(){
