@@ -75,3 +75,8 @@ body.dark-mode .topic-mastery { background: #34445d; }
 @media (prefers-reduced-motion: reduce) {
   .topic-mastery > span { transition: none; }
 }
+
+/* Keep elements marked hidden invisible even when component styles set display:grid. */
+[hidden] {
+  display: none !important;
+}
