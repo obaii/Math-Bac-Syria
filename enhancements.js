@@ -380,6 +380,244 @@
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
     window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(err => console.warn("تعذر تسجيل Service Worker", err)));
   }
+
+  // محاكاة امتحان شاملة: اختيار متوازن من الأبحاث مع مؤقت ومراجعة بعد التسليم.
+  const examState = { active:false, remaining:0, timer:null, answers:[], resultVisible:false };
+  const shuffle = list => [...list].sort(() => Math.random() - 0.5);
+  const buildBalancedExam = count => {
+    const bank = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+    const names = typeof topics !== "undefined" && Array.isArray(topics) ? topics : [...new Set(bank.map(q => q.topic))];
+    const pools = names.map(topic => shuffle(bank.filter(q => q.topic === topic)));
+    const picked = [];
+    let cursor = 0;
+    while (picked.length < Math.min(count, bank.length)) {
+      let added = false;
+      for (let i = 0; i < pools.length && picked.length < count; i++) {
+        if (pools[i].length) { picked.push(pools[i].pop()); added = true; }
+      }
+      if (!added) break;
+      cursor++;
+      if (cursor > count + 1) break;
+    }
+    return shuffle(picked);
+  };
+  const ensureExamControls = () => {
+    const panel = document.querySelector(".student-tools");
+    if (panel && !document.getElementById("exam-tools")) {
+      const section = document.createElement("section");
+      section.id = "exam-tools";
+      section.className = "exam-tools";
+      section.innerHTML = `
+        <div class="exam-tools-heading"><div><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div></div>
+        <div class="exam-config">
+          <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
+          <label>المدة<select id="exam-duration"><option value="30">30 دقيقة</option><option value="60" selected>60 دقيقة</option><option value="90">90 دقيقة</option></select></label>
+          <button type="button" id="start-exam" class="primary">ابدأ المحاكاة ←</button>
+        </div>
+        <p class="exam-note">تُختار الأسئلة من الأبحاث المتاحة في بنك المنصة. هذه محاكاة تدريبية وليست نموذجاً رسمياً معتمداً.</p>`;
+      panel.appendChild(section);
+      document.getElementById("start-exam").addEventListener("click", startExam);
+    }
+    const head = document.querySelector(".quiz-head");
+    if (head && !document.getElementById("exam-clock")) {
+      const clock = document.createElement("span");
+      clock.id = "exam-clock"; clock.className = "exam-clock"; clock.hidden = true;
+      clock.setAttribute("role","timer"); clock.setAttribute("aria-live","off");
+      head.appendChild(clock);
+    }
+    const actions = document.querySelector("#quiz .actions");
+    if (actions && !document.getElementById("exam-submit")) {
+      const submit = document.createElement("button");
+      submit.id = "exam-submit"; submit.type = "button"; submit.className = "secondary";
+      submit.textContent = "إنهاء وتسليم الامتحان"; submit.hidden = true;
+      submit.addEventListener("click", () => finishExam(false));
+      actions.insertBefore(submit, actions.firstChild);
+    }
+  };
+  const updateExamChrome = () => {
+    const clock = document.getElementById("exam-clock");
+    const submit = document.getElementById("exam-submit");
+    if (clock) {
+      clock.hidden = !examState.active;
+      clock.classList.toggle("exam-clock-low", examState.active && examState.remaining <= 300);
+      if (examState.active) {
+        const minutes = Math.floor(examState.remaining / 60);
+        const seconds = examState.remaining % 60;
+        clock.textContent = `الوقت المتبقي ${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+      }
+    }
+    if (submit) submit.hidden = !examState.active;
+  };
+  const stopExamTimer = () => {
+    if (examState.timer) clearInterval(examState.timer);
+    examState.timer = null;
+  };
+  const startExam = () => {
+    const bank = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+    if (!bank.length) { alert("لا يوجد بنك أسئلة متاح لبدء المحاكاة."); return; }
+    const wanted = Number(document.getElementById("exam-question-count")?.value || 30);
+    const duration = Number(document.getElementById("exam-duration")?.value || 60);
+    const picked = buildBalancedExam(wanted);
+    if (!picked.length) { alert("تعذر تجهيز أسئلة المحاكاة."); return; }
+    stopExamTimer();
+    examState.active = true;
+    examState.resultVisible = false;
+    examState.remaining = duration * 60;
+    examState.answers = Array(picked.length).fill(null);
+    currentTopic = "محاكاة الامتحان";
+    reviewMode = false;
+    quizQuestions = picked;
+    index = 0; correctCount = 0; answered = false;
+    document.getElementById("results")?.classList.add("hidden");
+    document.getElementById("home")?.classList.add("hidden");
+    document.getElementById("quiz")?.classList.remove("hidden");
+    document.getElementById("quiz-title").textContent = "محاكاة امتحان البكالوريا";
+    document.getElementById("exam-review")?.remove();
+    ensureExamControls();
+    updateExamChrome();
+    showQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
+    examState.timer = setInterval(() => {
+      if (!examState.active) return;
+      examState.remaining = Math.max(0, examState.remaining - 1);
+      updateExamChrome();
+      if (examState.remaining <= 0) finishExam(true);
+    }, 1000);
+  };
+  const renderExamReview = () => {
+    const card = document.querySelector("#results .result-card");
+    if (!card) return;
+    document.getElementById("exam-review")?.remove();
+    const review = document.createElement("section");
+    review.id = "exam-review"; review.className = "exam-review";
+    const rows = quizQuestions.map((q, i) => {
+      const chosen = examState.answers[i];
+      const correct = chosen === q.answer;
+      const chosenText = Number.isInteger(chosen) && chosen >= 0 ? q.options[chosen] : "لم تتم الإجابة";
+      return `<li class="exam-review-item">
+        <div class="exam-review-title"><strong>السؤال ${i+1} — ${escapeHtml(q.topic || "")}</strong><span class="${correct ? "exam-answer-good" : "exam-answer-bad"}">${correct ? "إجابة صحيحة" : "إجابة غير صحيحة"}</span></div>
+        <div class="exam-review-question">${escapeHtml(String(q.q || ""))}</div>
+        <p><strong>إجابتك:</strong> ${escapeHtml(String(chosenText))}</p>
+        <p><strong>الإجابة الصحيحة:</strong> ${escapeHtml(String(q.options?.[q.answer] ?? ""))}</p>
+        <div class="exam-review-solution"><strong>الحل:</strong> ${escapeHtml(String(q.solution || "لا يتوفر شرح لهذا السؤال."))}</div>
+      </li>`;
+    }).join("");
+    review.innerHTML = `<h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
+    const actions = card.querySelector(".actions");
+    card.insertBefore(review, actions || null);
+    if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([review]).catch(() => {});
+  };
+  const finishExam = timedOut => {
+    if (!examState.active) return;
+    if (!timedOut && !confirm("هل تريد تسليم الامتحان الآن؟ ستُحسب الأسئلة غير المجابة إجابات خاطئة.")) return;
+    // تُسجل الأسئلة المتروكة عبر مسار التصحيح نفسه لضمان تحديث التقدم والمراجعة.
+    for (let i = 0; i < quizQuestions.length; i++) {
+      if (examState.answers[i] !== null) continue;
+      index = i;
+      showQuestion();
+      chooseAnswer(-1);
+    }
+    examState.active = false;
+    stopExamTimer();
+    examState.resultVisible = true;
+    updateExamChrome();
+    showResults();
+    const detail = document.getElementById("score-detail");
+    if (detail) detail.textContent += timedOut ? " · انتهى الوقت، وسُلّمت الإجابات تلقائياً." : " · تم تسليم المحاكاة.";
+    renderExamReview();
+    window.scrollTo({top:0,behavior:"smooth"});
+  };
+  const originalExamChooseAnswer = window.chooseAnswer;
+  if (typeof originalExamChooseAnswer === "function") {
+    window.chooseAnswer = function(choice) {
+      if (examState.active && examState.answers[index] === null) {
+        examState.answers[index] = Number.isInteger(choice) && choice >= 0 ? choice : -1;
+      }
+      originalExamChooseAnswer(choice);
+      if (examState.active) {
+        // إخفاء التصحيح الفوري أثناء المحاكاة؛ تظهر الحلول بعد التسليم فقط.
+        const feedback = document.getElementById("feedback");
+        if (feedback) { feedback.className = "feedback hidden"; feedback.innerHTML = ""; }
+        document.querySelectorAll("#options .option").forEach(btn => btn.classList.remove("correct","wrong"));
+      }
+    };
+  }
+  const originalExamShowResults = window.showResults;
+  if (typeof originalExamShowResults === "function") {
+    window.showResults = function() {
+      if (examState.active) {
+        examState.active = false;
+        stopExamTimer();
+        examState.resultVisible = true;
+        updateExamChrome();
+        originalExamShowResults();
+        renderExamReview();
+        return;
+      }
+      originalExamShowResults();
+    };
+  }
+  const originalExamStartQuiz = window.startQuiz;
+  if (typeof originalExamStartQuiz === "function") {
+    window.startQuiz = function(topic) {
+      if (examState.active) { examState.active = false; stopExamTimer(); updateExamChrome(); }
+      examState.resultVisible = false;
+      document.getElementById("exam-review")?.remove();
+      return originalExamStartQuiz(topic);
+    };
+  }
+  document.getElementById("retry")?.addEventListener("click", event => {
+    if (!examState.resultVisible) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    examState.resultVisible = false;
+    startExam();
+  }, true);
+  document.getElementById("to-home")?.addEventListener("click", () => {
+    examState.resultVisible = false;
+    examState.active = false;
+    stopExamTimer();
+    updateExamChrome();
+  }, true);
+  document.getElementById("back")?.addEventListener("click", event => {
+    if (!examState.active) return;
+    if (!confirm("المحاكاة ما زالت جارية. هل تريد الخروج دون تسليم؟")) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      return;
+    }
+    examState.active = false;
+    stopExamTimer();
+    updateExamChrome();
+  }, true);
+  const addExamStyles = () => {
+    if (document.getElementById("exam-simulation-styles")) return;
+    const style = document.createElement("style");
+    style.id = "exam-simulation-styles";
+    style.textContent = `
+      .exam-tools{margin:14px 0 18px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--card-bg,white)}
+      .exam-tools h3{margin:0 0 6px;font-size:20px}.exam-tools .muted,.exam-note{margin:6px 0 0}
+      .exam-config{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-top:14px}
+      .exam-config label{display:grid;gap:6px;min-width:130px;flex:1;font-size:13px;font-weight:600}
+      .exam-config select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg,#f7f9fc);color:var(--ink);min-height:42px}
+      .exam-config button{min-height:42px}.exam-note{font-size:12px;color:var(--muted)}
+      .exam-clock{align-self:center;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--card-bg,white);color:var(--ink)}
+      .exam-clock-low{border-color:#c2410c;color:#c2410c}
+      #exam-submit{margin-inline-end:8px}#exam-submit[hidden],#exam-clock[hidden]{display:none}
+      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin-bottom:6px}
+      .exam-review-list{padding-inline-start:24px;display:grid;gap:12px}.exam-review-item{padding:14px;border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}
+      .exam-review-title{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+      .exam-review-question{margin:8px 0;font-size:16px}.exam-review-item p{margin:6px 0}
+      .exam-review-solution{padding-top:8px;border-top:1px solid var(--line);margin-top:10px}
+      .exam-answer-good{color:var(--success,#2f9e72);font-weight:700}.exam-answer-bad{color:#c2410c;font-weight:700}
+      body.dark-mode .exam-tools,body.dark-mode .exam-clock{background:var(--card-bg);color:var(--ink);border-color:var(--line)}
+      @media(max-width:640px){.exam-tools{padding:14px}.exam-config{align-items:stretch}.exam-config label{min-width:100%;}.exam-config button{width:100%}.exam-clock{font-size:12px;padding:6px 8px}.exam-review-item{padding:10px}}
+    `;
+    document.head.appendChild(style);
+  };
+  addExamStyles();
+  ensureExamControls();
+  // دعم إعادة تهيئة الواجهة إذا كان حقل الأدوات قد أُنشئ بعد تحميل السكربت.
+  window.addEventListener("load", ensureExamControls);
+
   addStyles();
   addHomeTools();
 })();
