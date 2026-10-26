@@ -444,8 +444,25 @@
       panel.appendChild(section);
     }
     const startButton = document.getElementById("start-exam");
-    if (startButton && startButton.dataset.bound !== "true") {
-      startButton.addEventListener("click", startExam);
+    if (startButton) {
+      // Use the button's direct handler so stale/duplicate listeners cannot leave the
+      // page in a blank state if the exam setup throws.
+      startButton.onclick = () => {
+        try {
+          startExam();
+        } catch (error) {
+          console.error("تعذر بدء محاكاة الامتحان:", error);
+          examState.active = false;
+          stopExamTimer();
+          const home = document.getElementById("home");
+          const quiz = document.getElementById("quiz");
+          const results = document.getElementById("results");
+          if (home) home.classList.remove("hidden");
+          if (quiz) quiz.classList.add("hidden");
+          if (results) results.classList.add("hidden");
+          alert("تعذر بدء المحاكاة بسبب خطأ أثناء تجهيز الأسئلة. أعد تحميل الصفحة، وإذا تكرر الخطأ فأبلغنا لنحدد الخطأ بدقة.");
+        }
+      };
       startButton.dataset.bound = "true";
     }
     const head = document.querySelector(".quiz-head");
