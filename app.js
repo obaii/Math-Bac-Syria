@@ -7,6 +7,14 @@ let reviewMode = false;
 let reviewQuestions = [];
 const STORAGE_KEY = "mathBacSyriaProgressV1";
 const $ = (id) => document.getElementById(id);
+// Include supplementary vector questions without replacing or duplicating existing items.
+if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQuestionsAdditional)) {
+  const knownQuestionKeys = new Set(questions.map(q => `${q.topic}::${q.q}`));
+  for (const q of vectorQuestionsAdditional) {
+    const key = `${q.topic}::${q.q}`;
+    if (!knownQuestionKeys.has(key)) { questions.push(q); knownQuestionKeys.add(key); }
+  }
+}
 const letters = ["أ","ب","ج","د"];
 const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [] });
 function loadProgress(){
