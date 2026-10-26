@@ -28,6 +28,14 @@
       .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
       .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
       .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
+      .mistake-log{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .mistake-log h4{margin:0 0 6px;font-size:15px}.mistake-log-list{display:grid;gap:8px;list-style:none;margin:10px 0 0;padding:0}
+      .mistake-log-item{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg,#f7f9fc)}
+      .mistake-log-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:6px}
+      .mistake-log-question{line-height:1.8;overflow-wrap:anywhere;margin-bottom:8px}
+      .mistake-log-item button{font:inherit;font-size:13px;min-height:38px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
+      body.dark-mode .mistake-log-item{background:var(--card-bg);border-color:var(--line)}
+      body.dark-mode .mistake-log-item button{background:var(--bg);color:var(--ink);border-color:var(--line)}
       .key-idea{margin:10px 0;padding:10px 12px;border-right:4px solid #d5a32b;background:#fff8e6;border-radius:8px}
       .solution-steps{padding-right:22px}.offline-status{font-size:12px;margin-top:10px;color:var(--muted)}
       .footer-disclaimer{font-size:12px;color:var(--muted);max-width:800px;margin:8px auto}
@@ -117,6 +125,78 @@
           <div class="progress-report-track" role="progressbar" aria-label="نسبة النجاح في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
         </li>`).join("")}</ul>`;
   };
+  const ensureMistakeLog = () => {
+    const actions = document.querySelector("#student-tools .tools-actions");
+    const report = document.getElementById("progress-report");
+    if (!actions || !report) return;
+    if (!document.getElementById("mistake-log-toggle")) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.id = "mistake-log-toggle";
+      button.textContent = "سجل الأخطاء (0)";
+      button.setAttribute("aria-expanded", "false");
+      button.addEventListener("click", toggleMistakeLog);
+      actions.appendChild(button);
+    }
+    if (!document.getElementById("mistake-log")) {
+      const section = document.createElement("section");
+      section.id = "mistake-log";
+      section.className = "mistake-log";
+      section.setAttribute("aria-live", "polite");
+      section.hidden = true;
+      report.insertAdjacentElement("afterend", section);
+    }
+    renderMistakeLog();
+  };
+  const renderMistakeLog = () => {
+    const section = document.getElementById("mistake-log");
+    const button = document.getElementById("mistake-log-toggle");
+    if (!section || typeof progressData === "undefined") return;
+    const keys = Object.keys(progressData.mistakes || {});
+    if (button) {
+      button.textContent = `سجل الأخطاء (${keys.length.toLocaleString("ar")})`;
+      button.disabled = keys.length === 0;
+      button.setAttribute("aria-expanded", String(!section.hidden));
+    }
+    if (!keys.length) {
+      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة مسجّلة للمراجعة حالياً. ستظهر هنا الأسئلة التي تجيب عنها بشكل خاطئ.</p>';
+      return;
+    }
+    const rows = keys.map(key => {
+      const q = byKey(key) || progressData.mistakes[key];
+      if (!q || !q.q || !Array.isArray(q.options)) return null;
+      return { key, q };
+    }).filter(Boolean).sort((a,b) => String(a.q.topic || "").localeCompare(String(b.q.topic || ""), "ar"));
+    section.innerHTML = `
+      <h4>سجل الأخطاء</h4>
+      <p>هذه الأسئلة أخطأتَ في الإجابة عنها. افتح أي سؤال لتتدرّب عليه منفرداً؛ وتُحذف علامة الخطأ عند الإجابة الصحيحة في المراجعة.</p>
+      <ul class="mistake-log-list">${rows.map(({key,q}) => `
+        <li class="mistake-log-item">
+          <div class="mistake-log-meta"><strong>${escapeHtml(q.topic || "بحث غير محدد")}</strong><span>${escapeHtml(q.level || "مستوى غير محدد")}</span></div>
+          <div class="mistake-log-question">${escapeHtml(String(q.q).replace(/<[^>]*>/g, " "))}</div>
+          <button type="button" data-mistake-key="${escapeHtml(key)}">تدرّب على هذا السؤال ←</button>
+        </li>`).join("")}</ul>`;
+    section.querySelectorAll("[data-mistake-key]").forEach(item => item.addEventListener("click", () => {
+      const q = byKey(item.dataset.mistakeKey) || progressData.mistakes[item.dataset.mistakeKey];
+      if (q) startTargetedQuiz([q], "مراجعة خطأ — " + (q.topic || ""));
+    }));
+    if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([section]).catch(() => {});
+  };
+  const toggleMistakeLog = () => {
+    const section = document.getElementById("mistake-log");
+    const button = document.getElementById("mistake-log-toggle");
+    if (!section || !button) return;
+    section.hidden = !section.hidden;
+    button.setAttribute("aria-expanded", String(!section.hidden));
+    renderMistakeLog();
+  };
+  const originalRefreshDashboard = window.refreshDashboard;
+  if (typeof originalRefreshDashboard === "function") {
+    window.refreshDashboard = function () {
+      originalRefreshDashboard();
+      renderMistakeLog();
+    };
+  }
   const applyDarkMode = () => {
     document.body.classList.toggle("dark-mode", extras.darkMode);
     const btn = document.getElementById("toggle-dark-mode");
@@ -631,6 +711,7 @@
   addExamStyles();
   addStyles();
   addHomeTools();
+  ensureMistakeLog();
   // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
   ensureExamControls();
   window.addEventListener("load", ensureExamControls);
