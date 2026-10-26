@@ -22,6 +22,8 @@
       .tools-actions button:focus-visible,.bookmark-toggle:focus-visible{outline:3px solid var(--focus-ring,#8aa8ff);outline-offset:2px}
       .bookmark-toggle{margin:0 0 12px}.bookmark-toggle.active{background:#fff3cd;border-color:#d8a62c;color:#694f00}
       .bookmark-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}.bookmark-list button{width:100%;text-align:right;white-space:normal}
+      .guided-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .guided-list button{height:100%;font-size:12px;line-height:1.8}
       .key-idea{margin:10px 0;padding:10px 12px;border-right:4px solid #d5a32b;background:#fff8e6;border-radius:8px}
       .solution-steps{padding-right:22px}.offline-status{font-size:12px;margin-top:10px;color:var(--muted)}
       .footer-disclaimer{font-size:12px;color:var(--muted);max-width:800px;margin:8px auto}
@@ -30,7 +32,7 @@
       body.dark-mode .tag,body.dark-mode .filter-panel,body.dark-mode .progress-track{background:#24334a;color:var(--ink)}
       body.dark-mode .notice,body.dark-mode .key-idea{background:#3a321d;color:#f8e7b4;border-color:#75602c}
       body.dark-mode footer{background:#0c1320;color:var(--muted)}
-      @media(max-width:640px){.student-tools{padding:14px}.tools-actions button{flex:1 1 145px}.bookmark-toggle{width:100%}.question-text{overflow-wrap:anywhere}.options .option{min-height:52px}.actions button{min-height:46px}}
+      @media(max-width:640px){.student-tools{padding:14px}.tools-actions button{flex:1 1 145px}.bookmark-toggle{width:100%}.guided-list{grid-template-columns:1fr}.question-text{overflow-wrap:anywhere}.options .option{min-height:52px}.actions button{min-height:46px}}
       @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
     `;
     document.head.appendChild(style);
@@ -47,22 +49,26 @@
       <div class="tools-actions">
         <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
         <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
+        <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
         <button type="button" id="export-progress">تصدير التقدم JSON</button>
         <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
         <button type="button" id="toggle-dark-mode" aria-pressed="false">تفعيل الوضع الليلي</button>
         <input id="import-progress-file" type="file" accept="application/json,.json" hidden>
       </div>
+      <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
       <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
       <ul class="bookmark-list" id="bookmark-list" hidden></ul>
     `;
     home.insertBefore(panel, topicSection);
     document.getElementById("smart-review").addEventListener("click", startSmartReview);
     document.getElementById("bookmark-review").addEventListener("click", startBookmarkReview);
+    document.getElementById("guided-review").addEventListener("click", toggleGuidedQuestionList);
     document.getElementById("export-progress").addEventListener("click", exportProgress);
     document.getElementById("import-progress-button").addEventListener("click", () => document.getElementById("import-progress-file").click());
     document.getElementById("import-progress-file").addEventListener("change", importProgress);
     document.getElementById("toggle-dark-mode").addEventListener("click", toggleDarkMode);
     updateBookmarkUI();
+    updateGuidedQuestionList();
     applyDarkMode();
     updateOnlineStatus();
     window.addEventListener("online", updateOnlineStatus);
@@ -88,6 +94,43 @@
     if (topic.includes("اشتقاق") || topic.includes("التوابع") || topic.includes("التابع")) return "تذكير عام: حدّد مجال التعريف ونوع المطلوب، ثم اختر قاعدة الاشتقاق أو دراسة التغيّر المناسبة وتحقّق من شروط تطبيقها.";
     if (topic.includes("احتمالات")) return "تذكير عام: عرّف الحوادث وحدّد هل المطلوب اتحاد أم تقاطع أم احتمال شرطي، ثم طبّق القانون الموافق.";
     return "تذكير عام: حدّد المعطيات والمطلوب، واكتب القانون المناسب قبل التعويض، ثم تحقّق من الإشارة والوحدات أو شروط المجال إن وجدت.";
+  };
+  const updateGuidedQuestionList = () => {
+    const list = document.getElementById("guided-question-list");
+    const count = document.getElementById("guided-count");
+    const btn = document.getElementById("guided-review");
+    if (!list || typeof questions === "undefined") return;
+    const guided = questions.filter(q => Array.isArray(q.steps) && q.steps.length > 0);
+    if (count) count.textContent = guided.length.toLocaleString("ar");
+    list.innerHTML = guided.map(q => {
+      const key = keyOf(q);
+      return `<li><button type="button" data-guided-key="${escapeHtml(key)}"><strong>${escapeHtml(q.topic)}</strong><br>${escapeHtml(String(q.q || "").replace(/<[^>]*>/g, "").slice(0,180))}</button></li>`;
+    }).join("");
+    list.querySelectorAll("[data-guided-key]").forEach(item => item.addEventListener("click", () => {
+      const q = byKey(item.dataset.guidedKey);
+      if (q) startGuidedQuestion(q);
+    }));
+    if (btn) btn.setAttribute("aria-expanded", String(!list.hidden));
+  };
+  const toggleGuidedQuestionList = () => {
+    const list = document.getElementById("guided-question-list");
+    if (!list) return;
+    list.hidden = !list.hidden;
+    updateGuidedQuestionList();
+  };
+  const startGuidedQuestion = q => {
+    currentTopic = q.topic;
+    reviewMode = false;
+    quizQuestions = [q];
+    index = 0;
+    correctCount = 0;
+    answered = false;
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("results").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+    document.getElementById("quiz-title").textContent = "تدريب بحل تفصيلي — " + q.topic;
+    showQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
   };
   const updateBookmarkUI = () => {
     const count = document.getElementById("bookmark-count");
