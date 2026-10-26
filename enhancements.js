@@ -36,6 +36,7 @@
       body.dark-mode .tag,body.dark-mode .filter-panel,body.dark-mode .progress-track{background:#24334a;color:var(--ink)}
       body.dark-mode .notice,body.dark-mode .key-idea{background:#3a321d;color:#f8e7b4;border-color:#75602c}
       body.dark-mode footer{background:#0c1320;color:var(--muted)}
+      @media(max-width:640px){.student-tools{padding:14px}.tools-actions button{flex:1 1 145px}.bookmark-toggle{width:100%}.question-text{overflow-wrap:anywhere}.options .option{min-height:52px}.actions button{min-height:46px}}
       @media(max-width:640px){.student-tools{padding:14px}.tools-actions button{flex:1 1 145px}.bookmark-toggle{width:100%}.guided-list{grid-template-columns:1fr}.question-text{overflow-wrap:anywhere}.options .option{min-height:52px}.actions button{min-height:46px}}
       @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
     `;
@@ -249,6 +250,27 @@
     try {
       if (file.size > 2_000_000) throw new Error("حجم الملف أكبر من الحد المسموح.");
       const data = JSON.parse(await file.text());
+      if (data.format !== "math-bac-syria-progress" || !data.progress || typeof data.progress !== "object") throw new Error("هذا الملف ليس نسخة احتياطية صالحة للمنصة.");
+      if (!confirm("سيتم استبدال التقدم والعلامات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟")) return;
+      progressData = data.progress;
+      const importedMistakes = progressData.mistakes && typeof progressData.mistakes === "object" ? progressData.mistakes : {};
+      progressData.mistakes = {};
+      for (const key of Object.keys(importedMistakes)) { const q = byKey(key); if (q) progressData.mistakes[key] = { topic:q.topic, q:q.q, options:q.options, answer:q.answer, solution:q.solution, level:q.level }; }
+      progressData.topicStats = progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
+      progressData.attempts = Array.isArray(progressData.attempts) ? progressData.attempts : [];
+      progressData.answered = Number(progressData.answered) || 0; progressData.correct = Number(progressData.correct) || 0;
+      saveProgress();
+      if (data.studentTools && typeof data.studentTools === "object") {
+        extras = { bookmarks:Array.isArray(data.studentTools.bookmarks) ? data.studentTools.bookmarks.filter(k => byKey(k)) : [], schedule:data.studentTools.schedule && typeof data.studentTools.schedule === "object" ? data.studentTools.schedule : {}, reviewQuestions:{}, darkMode:Boolean(data.studentTools.darkMode) };
+        for (const key of Object.keys(extras.schedule)) { const known = byKey(key); if (known) extras.reviewQuestions[key] = known; else delete extras.schedule[key]; }
+        persistExtras();
+      }
+      if (typeof refreshDashboard === "function") refreshDashboard();
+      if (typeof renderTopics === "function") renderTopics();
+      updateBookmarkUI(); applyDarkMode();
+      alert("تم استيراد النسخة الاحتياطية على هذا الجهاز.");
+    } catch (err) { alert("تعذر استيراد الملف: " + err.message); }
+    finally { event.target.value = ""; }
       if (!data || data.format !== "math-bac-syria-progress" || !data.progress || typeof data.progress !== "object" || Array.isArray(data.progress)) {
         throw new Error("هذا الملف ليس نسخة احتياطية صالحة للمنصة.");
       }
