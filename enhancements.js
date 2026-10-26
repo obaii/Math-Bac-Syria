@@ -6,7 +6,7 @@
   const safeParse = (raw, fallback) => { try { return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } };
   const loadExtras = () => {
     const x = safeParse(localStorage.getItem(EXTRA_KEY), {});
-    return { bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks : [], schedule: x.schedule && typeof x.schedule === "object" ? x.schedule : {}, darkMode: Boolean(x.darkMode) };
+    return { bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks : [], schedule: x.schedule && typeof x.schedule === "object" ? x.schedule : {}, reviewQuestions: x.reviewQuestions && typeof x.reviewQuestions === "object" ? x.reviewQuestions : {}, darkMode: Boolean(x.darkMode) };
   };
   let extras = loadExtras();
   const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); } };
@@ -158,7 +158,7 @@
       progressData.answered = Number(progressData.answered) || 0; progressData.correct = Number(progressData.correct) || 0;
       saveProgress();
       if (data.studentTools && typeof data.studentTools === "object") {
-        extras = { bookmarks:Array.isArray(data.studentTools.bookmarks) ? data.studentTools.bookmarks : [], schedule:data.studentTools.schedule && typeof data.studentTools.schedule === "object" ? data.studentTools.schedule : {}, darkMode:Boolean(data.studentTools.darkMode) };
+        extras = { bookmarks:Array.isArray(data.studentTools.bookmarks) ? data.studentTools.bookmarks.filter(k => byKey(k)) : [], schedule:data.studentTools.schedule && typeof data.studentTools.schedule === "object" ? data.studentTools.schedule : {}, reviewQuestions:{}, darkMode:Boolean(data.studentTools.darkMode) };\n        for (const key of Object.keys(extras.schedule)) { const known = byKey(key); if (known) extras.reviewQuestions[key] = known; else delete extras.schedule[key]; }
         persistExtras();
       }
       if (typeof refreshDashboard === "function") refreshDashboard();
