@@ -27,6 +27,13 @@
       .progress-report{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
       .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
       .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
+      .topic-mastery-status{display:inline-flex;align-items:center;width:fit-content;margin-top:8px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line)}
+      .topic-mastery-status.is-new{color:var(--muted)}.topic-mastery-status.is-review{color:#b45309;background:#fff7ed;border-color:#fed7aa}
+      .topic-mastery-status.is-progress{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}.topic-mastery-status.is-mastered{color:#166534;background:#f0fdf4;border-color:#bbf7d0}
+      .topic-review-button{font:inherit;font-size:12px;margin-top:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
+      body.dark-mode .topic-mastery-status.is-review{color:#fed7aa;background:#431407;border-color:#9a3412}
+      body.dark-mode .topic-mastery-status.is-progress{color:#bfdbfe;background:#172554;border-color:#1d4ed8}
+      body.dark-mode .topic-mastery-status.is-mastered{color:#bbf7d0;background:#052e16;border-color:#166534}
       .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
       .recent-activity{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
       .recent-activity h4{margin:0 0 6px;font-size:15px}.recent-attempt-list{display:grid;gap:7px;list-style:none;margin:10px 0 0;padding:0}
@@ -108,13 +115,30 @@
     const topicNames = Array.isArray(topics) ? topics : [...new Set((typeof questions !== "undefined" ? questions : []).map(q => q.topic))];
     const questionBank = typeof questions !== "undefined" ? questions : [];
     const stats = typeof progressData !== "undefined" && progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
+    const mistakeValues = progressData && progressData.mistakes && typeof progressData.mistakes === "object" ? Object.values(progressData.mistakes) : [];
     const rows = topicNames.map(topic => {
       const stat = stats[topic] || { answered: 0, correct: 0 };
       const answered = Number.isFinite(stat.answered) && stat.answered > 0 ? Math.floor(stat.answered) : 0;
       const correct = Number.isFinite(stat.correct) && stat.correct > 0 ? Math.min(Math.floor(stat.correct), answered) : 0;
       const rate = answered ? Math.round(correct / answered * 100) : 0;
       const count = questionBank.filter(q => q.topic === topic).length;
-      return { topic, answered, correct, rate, count };
+      const mistakeCount = mistakeValues.filter(q => q && q.topic === topic).length;
+      let masteryLabel = "لم يبدأ بعد";
+      let masteryClass = "is-new";
+      if (answered > 0 && mistakeCount > 0) {
+        masteryLabel = `لديه ${mistakeCount.toLocaleString("ar")} من الأخطاء للمراجعة`;
+        masteryClass = "is-review";
+      } else if (answered >= 5 && rate >= 85) {
+        masteryLabel = "متقن مبدئياً";
+        masteryClass = "is-mastered";
+      } else if (answered > 0 && rate >= 70) {
+        masteryLabel = "يتقدم جيداً";
+        masteryClass = "is-progress";
+      } else if (answered > 0) {
+        masteryLabel = "يحتاج إلى تدريب";
+        masteryClass = "is-review";
+      }
+      return { topic, answered, correct, rate, count, mistakeCount, masteryLabel, masteryClass };
     });
     const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
     const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
@@ -136,13 +160,22 @@
         <li class="progress-report-item">
           <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
           <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span></div>
-          <div class="progress-report-track" role="progressbar" aria-label="نسبة النجاح في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
+          <span class="topic-mastery-status ${row.masteryClass}">${escapeHtml(row.masteryLabel)}</span>
+          <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
+          ${row.mistakeCount ? `<button type="button" class="topic-review-button" data-review-topic="${escapeHtml(row.topic)}">راجع أخطاء هذا البحث (${row.mistakeCount.toLocaleString("ar")})</button>` : ""}
         </li>`).join("")}</ul>
       <section class="recent-activity">
         <h4>آخر المحاولات</h4>
         <p>آخر ${Math.min(attempts.length, 10).toLocaleString("ar")} محاولات مسجّلة على هذا الجهاز.</p>
         <ul class="recent-attempt-list">${recentActivity}</ul>
       </section>`;
+    report.querySelectorAll("[data-review-topic]").forEach(button => {
+      button.addEventListener("click", () => {
+        const topic = button.dataset.reviewTopic;
+        const qs = mistakeValues.filter(q => q && q.topic === topic && q.q && Array.isArray(q.options));
+        if (qs.length) startTargetedQuiz(qs, "مراجعة أخطاء — " + topic);
+      });
+    });
   };
   const toggleProgressReport = () => {
     const report = document.getElementById("progress-report");
