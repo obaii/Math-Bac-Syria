@@ -105,15 +105,46 @@
       `;
       home.insertBefore(panel, topicSection);
     }
-    document.getElementById("smart-review").addEventListener("click", startSmartReview);
-    document.getElementById("review-plan-toggle").addEventListener("click", toggleReviewPlan);
-    document.getElementById("bookmark-review").addEventListener("click", startBookmarkReview);
-    document.getElementById("guided-review").addEventListener("click", toggleGuidedQuestionList);
-    document.getElementById("progress-report-toggle").addEventListener("click", toggleProgressReport);
-    document.getElementById("export-progress").addEventListener("click", exportProgress);
-    document.getElementById("import-progress-button").addEventListener("click", () => document.getElementById("import-progress-file").click());
-    document.getElementById("import-progress-file").addEventListener("change", importProgress);
-    document.getElementById("toggle-dark-mode").addEventListener("click", toggleDarkMode);
+    // Existing HTML may already contain the panel but omit newer controls.
+    // Ensure required nodes exist before binding; a missing node must never abort all tools.
+    const actions = panel.querySelector(".tools-actions");
+    if (actions && !document.getElementById("review-plan-toggle")) {
+      const planButton = document.createElement("button");
+      planButton.type = "button";
+      planButton.id = "review-plan-toggle";
+      planButton.setAttribute("aria-expanded", "false");
+      planButton.textContent = "خطة المراجعة";
+      const smartButton = document.getElementById("smart-review");
+      if (smartButton && smartButton.nextSibling) actions.insertBefore(planButton, smartButton.nextSibling);
+      else actions.appendChild(planButton);
+    }
+    if (!document.getElementById("review-plan")) {
+      const plan = document.createElement("section");
+      plan.className = "review-plan"; plan.id = "review-plan";
+      plan.setAttribute("aria-live", "polite"); plan.hidden = true;
+      const report = document.getElementById("progress-report");
+      if (report && report.parentNode) report.insertAdjacentElement("afterend", plan);
+      else panel.appendChild(plan);
+    }
+    const bindClick = (id, handler) => {
+      const element = document.getElementById(id);
+      if (!element || element.dataset.enhancementBound === "true") return;
+      element.addEventListener("click", handler);
+      element.dataset.enhancementBound = "true";
+    };
+    bindClick("smart-review", startSmartReview);
+    bindClick("review-plan-toggle", toggleReviewPlan);
+    bindClick("bookmark-review", startBookmarkReview);
+    bindClick("guided-review", toggleGuidedQuestionList);
+    bindClick("progress-report-toggle", toggleProgressReport);
+    bindClick("export-progress", exportProgress);
+    bindClick("import-progress-button", () => document.getElementById("import-progress-file")?.click());
+    const importFile = document.getElementById("import-progress-file");
+    if (importFile && importFile.dataset.enhancementBound !== "true") {
+      importFile.addEventListener("change", importProgress);
+      importFile.dataset.enhancementBound = "true";
+    }
+    bindClick("toggle-dark-mode", toggleDarkMode);
     updateBookmarkUI();
     updateGuidedQuestionList();
     applyDarkMode();
