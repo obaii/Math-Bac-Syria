@@ -168,9 +168,10 @@ function startReviewQuiz(){
 }
 $("review-mistakes").addEventListener("click",startReviewQuiz);
 $("reset-progress").addEventListener("click",()=>{
-  if (!confirm("هل تريد مسح جميع العلامات والأسئلة المحفوظة على هذا الجهاز؟ لا يمكن التراجع عن ذلك.")) return;
+  if (!confirm("هل تريد مسح تقدم الإجابات والعلامات المرجعية وجدول المراجعة على هذا الجهاز؟ لا يمكن التراجع عن ذلك. سيبقى إعداد الوضع الليلي كما هو.")) return;
   progressData = emptyProgress();
   saveProgress();
+  window.dispatchEvent(new CustomEvent("mathBacSyria:reset-progress"));
   refreshDashboard();
   renderTopics();
 });
