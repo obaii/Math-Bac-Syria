@@ -80,3 +80,14 @@ body.dark-mode .topic-mastery { background: #34445d; }
 [hidden] {
   display: none !important;
 }
+
+/* Explicitly preserve the hidden state of all collapsible student tools. */
+#bookmark-list[hidden],
+#guided-question-list[hidden],
+#review-plan[hidden],
+#progress-report[hidden],
+#exam-clock[hidden],
+#exam-submit[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+}
