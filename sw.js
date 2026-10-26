@@ -1,4 +1,4 @@
-const CACHE_NAME = "math-bac-syria-v8";
+const CACHE_NAME = "math-bac-syria-v9";
 const CORE_FILES = [
   "./", "./index.html", "./style.css", "./style-overrides.css",
   "./app.js", "./questions.js", "./questions_vectors_additional.js",
@@ -10,15 +10,12 @@ const MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Fetch fresh copies during installation so a deployment cannot populate
-    // the new cache with stale HTTP-cached assets.
     await Promise.all(CORE_FILES.map(async file => {
       const request = new Request(file, { cache: "reload" });
       const response = await fetch(request);
       if (!response.ok) throw new Error("تعذر تحميل ملف أساسي: " + file);
       await cache.put(file, response);
     }));
-    // Cache MathJax opportunistically for offline use after a successful fetch.
     try {
       const response = await fetch(MATHJAX_URL, { mode: "no-cors", cache: "reload" });
       await cache.put(MATHJAX_URL, response);
