@@ -28,6 +28,14 @@
       .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
       .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
       .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
+      .recent-activity{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+      .recent-activity h4{margin:0 0 6px;font-size:15px}.recent-attempt-list{display:grid;gap:7px;list-style:none;margin:10px 0 0;padding:0}
+      .recent-attempt-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:9px}
+      .recent-attempt-status{font-size:12px;font-weight:700;white-space:nowrap}.recent-attempt-status.is-correct{color:var(--success,#2f9e72)}.recent-attempt-status.is-wrong{color:#c2410c}
+      .recent-attempt-item strong{font-size:13px;overflow-wrap:anywhere}.recent-attempt-item time{font-size:12px;color:var(--muted);text-align:left}
+      .recent-attempt-empty{padding:12px;border:1px dashed var(--line);border-radius:9px;color:var(--muted)}
+      body.dark-mode .recent-attempt-item{border-color:var(--line)}
+      @media(max-width:640px){.recent-attempt-item{grid-template-columns:1fr;gap:5px}.recent-attempt-item time{text-align:right}}
       .mistake-log{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
       .mistake-log h4{margin:0 0 6px;font-size:15px}.mistake-log-list{display:grid;gap:8px;list-style:none;margin:10px 0 0;padding:0}
       .mistake-log-item{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg,#f7f9fc)}
@@ -94,14 +102,9 @@
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
   };
-  const toggleProgressReport = () => {
+  const renderProgressReport = () => {
     const report = document.getElementById("progress-report");
-    const button = document.getElementById("progress-report-toggle");
-    if (!report || !button) return;
-    const opening = report.hidden;
-    report.hidden = !opening;
-    button.setAttribute("aria-expanded", String(opening));
-    if (!opening) return;
+    if (!report) return;
     const topicNames = Array.isArray(topics) ? topics : [...new Set((typeof questions !== "undefined" ? questions : []).map(q => q.topic))];
     const questionBank = typeof questions !== "undefined" ? questions : [];
     const stats = typeof progressData !== "undefined" && progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
@@ -115,6 +118,17 @@
     });
     const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
     const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
+    const attempts = Array.isArray(progressData.attempts) ? progressData.attempts.slice(0, 10) : [];
+    const recentActivity = attempts.length ? attempts.map(attempt => {
+      const date = new Date(attempt.date);
+      const when = Number.isNaN(date.getTime()) ? "تاريخ غير متاح" : date.toLocaleString("ar-SY", { dateStyle: "medium", timeStyle: "short" });
+      const isCorrect = attempt.correct === true;
+      return `<li class="recent-attempt-item">
+        <span class="recent-attempt-status ${isCorrect ? "is-correct" : "is-wrong"}">${isCorrect ? "إجابة صحيحة" : "إجابة خاطئة"}</span>
+        <strong>${escapeHtml(attempt.topic || "بحث غير محدد")}</strong>
+        <time>${escapeHtml(when)}</time>
+      </li>`;
+    }).join("") : '<li class="recent-attempt-empty">لا توجد محاولات مسجّلة بعد. ابدأ التدريب لتظهر نتائجك هنا.</li>';
     report.innerHTML = `
       <h4>تقرير تقدّمك</h4>
       <p>إجمالي المحاولات المسجّلة: <strong>${totalAttempts.toLocaleString("ar")}</strong> · الإجابات الصحيحة: <strong>${totalCorrect.toLocaleString("ar")}</strong></p>
@@ -123,7 +137,21 @@
           <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
           <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span></div>
           <div class="progress-report-track" role="progressbar" aria-label="نسبة النجاح في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
-        </li>`).join("")}</ul>`;
+        </li>`).join("")}</ul>
+      <section class="recent-activity">
+        <h4>آخر المحاولات</h4>
+        <p>آخر ${Math.min(attempts.length, 10).toLocaleString("ar")} محاولات مسجّلة على هذا الجهاز.</p>
+        <ul class="recent-attempt-list">${recentActivity}</ul>
+      </section>`;
+  };
+  const toggleProgressReport = () => {
+    const report = document.getElementById("progress-report");
+    const button = document.getElementById("progress-report-toggle");
+    if (!report || !button) return;
+    const opening = report.hidden;
+    report.hidden = !opening;
+    button.setAttribute("aria-expanded", String(opening));
+    if (opening) renderProgressReport();
   };
   const ensureMistakeLog = () => {
     const actions = document.querySelector("#student-tools .tools-actions");
@@ -195,6 +223,8 @@
     window.refreshDashboard = function () {
       originalRefreshDashboard();
       renderMistakeLog();
+      const report = document.getElementById("progress-report");
+      if (report && !report.hidden) renderProgressReport();
     };
   }
   const applyDarkMode = () => {
