@@ -50,11 +50,13 @@ function renderTopics(){
     const count = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level)).length;
     const done = Object.keys(progressData.mistakes).length + progressData.correct;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
-    const completion = topicStat.answered ? `${Math.round(topicStat.correct/topicStat.answered*100)}٪ نجاح` : "لم تبدأ بعد";
+    const successRate = topicStat.answered ? Math.round(topicStat.correct/topicStat.answered*100) : 0;
+    const completion = topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح` : "لم تبدأ بعد";
     return `<button class="topic-card" data-topic="${topic}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-bottom"><span class="topic-status">${completion}</span><span class="topic-start">${count ? "ابدأ التدريب ←" : "لا توجد أسئلة بهذا المستوى"}</span></span>
+      <span class="topic-mastery" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${successRate}"><span style="width:${successRate}%"></span></span>
     </button>`;
   }).join("");
   $("no-topics").classList.toggle("hidden", availableTopics.length !== 0);
