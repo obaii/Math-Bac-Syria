@@ -46,27 +46,31 @@
     const home = document.getElementById("home");
     const topicSection = document.getElementById("topic-section");
     if (!home || !topicSection) return;
-    const panel = document.createElement("section");
-    panel.className = "student-tools";
-    panel.innerHTML = `
-      <h3>أدوات المراجعة والحفظ</h3>
-      <p>صدّر نسخة احتياطية من تقدمك، أو استوردها على جهاز آخر. المراجعة الذكية تعتمد على الأسئلة التي أخطأت بها ومواعيد مراجعتها.</p>
-      <div class="tools-actions">
-        <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
-        <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
-        <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
-        <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
-        <button type="button" id="export-progress">تصدير التقدم JSON</button>
-        <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
-        <button type="button" id="toggle-dark-mode" aria-pressed="false">تفعيل الوضع الليلي</button>
-        <input id="import-progress-file" type="file" accept="application/json,.json" hidden>
-      </div>
-      <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
-      <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
-      <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
-      <ul class="bookmark-list" id="bookmark-list" hidden></ul>
-    `;
-    home.insertBefore(panel, topicSection);
+    let panel = document.getElementById("student-tools");
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "student-tools";
+      panel.className = "student-tools";
+      panel.innerHTML = `
+        <h3>أدوات المراجعة والحفظ</h3>
+        <p>صدّر نسخة احتياطية من تقدمك، أو استوردها على جهاز آخر. المراجعة الذكية تعتمد على الأسئلة التي أخطأت بها ومواعيد مراجعتها.</p>
+        <div class="tools-actions">
+          <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
+          <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
+          <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
+          <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
+          <button type="button" id="export-progress">تصدير التقدم JSON</button>
+          <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
+          <button type="button" id="toggle-dark-mode" aria-pressed="false">تفعيل الوضع الليلي</button>
+          <input id="import-progress-file" type="file" accept="application/json,.json" hidden>
+        </div>
+        <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
+        <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
+        <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
+        <ul class="bookmark-list" id="bookmark-list" hidden></ul>
+      `;
+      home.insertBefore(panel, topicSection);
+    }
     document.getElementById("smart-review").addEventListener("click", startSmartReview);
     document.getElementById("bookmark-review").addEventListener("click", startBookmarkReview);
     document.getElementById("guided-review").addEventListener("click", toggleGuidedQuestionList);
