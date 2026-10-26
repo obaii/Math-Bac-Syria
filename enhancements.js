@@ -142,8 +142,8 @@
   const startBookmarkReview = () => startTargetedQuiz(extras.bookmarks.map(byKey).filter(Boolean), "المسائل المحفوظة");
   const startSmartReview = () => {
     const now = Date.now();
-    const dueKeys = Object.keys(progressData.mistakes).filter(k => !extras.schedule[k] || (extras.schedule[k].due || 0) <= now);
-    const qs = dueKeys.map(k => byKey(k) || progressData.mistakes[k]).filter(Boolean);
+    const dueKeys = [...new Set([...Object.keys(progressData.mistakes), ...Object.keys(extras.schedule)])].filter(k => (!extras.schedule[k] || (extras.schedule[k].due || 0) <= now) && (byKey(k) || extras.reviewQuestions[k]));
+    const qs = dueKeys.map(k => byKey(k) || extras.reviewQuestions[k]).filter(Boolean);
     if (!qs.length) { alert("لا توجد أسئلة مستحقة للمراجعة الآن. ستظهر الأسئلة الخاطئة هنا عند حلول موعد مراجعتها."); return; }
     startTargetedQuiz(qs, "المراجعة الذكية");
   };
@@ -163,13 +163,16 @@
       if (data.format !== "math-bac-syria-progress" || !data.progress || typeof data.progress !== "object") throw new Error("هذا الملف ليس نسخة احتياطية صالحة للمنصة.");
       if (!confirm("سيتم استبدال التقدم والعلامات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟")) return;
       progressData = data.progress;
-      progressData.mistakes = progressData.mistakes && typeof progressData.mistakes === "object" ? progressData.mistakes : {};
+      const importedMistakes = progressData.mistakes && typeof progressData.mistakes === "object" ? progressData.mistakes : {};
+      progressData.mistakes = {};
+      for (const key of Object.keys(importedMistakes)) { const q = byKey(key); if (q) progressData.mistakes[key] = { topic:q.topic, q:q.q, options:q.options, answer:q.answer, solution:q.solution, level:q.level }; }
       progressData.topicStats = progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
       progressData.attempts = Array.isArray(progressData.attempts) ? progressData.attempts : [];
       progressData.answered = Number(progressData.answered) || 0; progressData.correct = Number(progressData.correct) || 0;
       saveProgress();
       if (data.studentTools && typeof data.studentTools === "object") {
-        extras = { bookmarks:Array.isArray(data.studentTools.bookmarks) ? data.studentTools.bookmarks.filter(k => byKey(k)) : [], schedule:data.studentTools.schedule && typeof data.studentTools.schedule === "object" ? data.studentTools.schedule : {}, reviewQuestions:{}, darkMode:Boolean(data.studentTools.darkMode) };\n        for (const key of Object.keys(extras.schedule)) { const known = byKey(key); if (known) extras.reviewQuestions[key] = known; else delete extras.schedule[key]; }
+        extras = { bookmarks:Array.isArray(data.studentTools.bookmarks) ? data.studentTools.bookmarks.filter(k => byKey(k)) : [], schedule:data.studentTools.schedule && typeof data.studentTools.schedule === "object" ? data.studentTools.schedule : {}, reviewQuestions:{}, darkMode:Boolean(data.studentTools.darkMode) };
+        for (const key of Object.keys(extras.schedule)) { const known = byKey(key); if (known) extras.reviewQuestions[key] = known; else delete extras.schedule[key]; }
         persistExtras();
       }
       if (typeof refreshDashboard === "function") refreshDashboard();
@@ -192,16 +195,24 @@
   if (typeof originalChooseAnswer === "function") {
     window.chooseAnswer = function (choice) {
       const q = typeof quizQuestions !== "undefined" ? quizQuestions[index] : null;
+      const qKeyBefore = q ? keyOf(q) : null;
+      const previousMistake = qKeyBefore ? progressData.mistakes[qKeyBefore] : null;
       const wasSmartReview = document.getElementById("quiz-title")?.textContent === "المراجعة الذكية";
       const wasBookmarkReview = document.getElementById("quiz-title")?.textContent === "المسائل المحفوظة";
       originalChooseAnswer(choice);
       if (!q) return;
       const key = keyOf(q);
       const isCorrect = choice === q.answer;
+      if (wasBookmarkReview && isCorrect && previousMistake) { progressData.mistakes[key] = previousMistake; saveProgress(); if (typeof refreshDashboard === "function") refreshDashboard(); }
       if (!isCorrect) {
+        extras.reviewQuestions[key] = q;
+        progressData.mistakes[key] = { topic:q.topic, q:q.q, options:q.options, answer:q.answer, solution:q.solution, level:q.level };
+        saveProgress();
+        if (typeof refreshDashboard === "function") refreshDashboard();
         const previous = extras.schedule[key] || { stage:0 };
         extras.schedule[key] = { stage:0, due:addDays(1), lastResult:"wrong", updatedAt:new Date().toISOString() };
       } else if (wasSmartReview) {
+        extras.reviewQuestions[key] = q;
         const previous = extras.schedule[key] || { stage:0 };
         const stage = Math.min((Number(previous.stage) || 0) + 1, intervalsDays.length - 1);
         extras.schedule[key] = { stage, due:addDays(intervalsDays[stage]), lastResult:"correct", updatedAt:new Date().toISOString() };
@@ -216,8 +227,9 @@
           if (Array.isArray(q.steps) && q.steps.length) {
             const idea = q.keyIdea ? `<div class="key-idea"><strong>الفكرة الأساسية:</strong> ${escapeHtml(q.keyIdea)}</div>` : "";
             solution.innerHTML = `<strong>خطوات الحل:</strong>${idea}<ol class="solution-steps">${q.steps.map(step => `<li>${step}</li>`).join("")}</ol>`;
-          } else if (q.keyIdea) {
-            solution.insertAdjacentHTML("afterbegin", `<div class="key-idea"><strong>الفكرة الأساسية:</strong> ${escapeHtml(q.keyIdea)}</div>`);
+          } else {
+            const idea = q.keyIdea || generalTopicHint(q);
+            solution.insertAdjacentHTML("afterbegin", `<div class="key-idea"><strong>${q.keyIdea ? "مفتاح الحل:" : "تذكير بالفكرة العامة:"}</strong> ${escapeHtml(idea)}</div>`);
           }
           if (!Array.isArray(q.steps) || !q.steps.length) {
             const note = document.createElement("p"); note.className="muted"; note.textContent="الشرح التفصيلي لهذا السؤال يحتاج إلى مراجعة تعليمية إضافية؛ المعروض أدناه هو الحل المختصر المتاح حالياً.";
