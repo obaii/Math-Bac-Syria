@@ -442,7 +442,11 @@
         </div>
         <p class="exam-note">تُختار الأسئلة من الأبحاث المتاحة في بنك المنصة. هذه محاكاة تدريبية وليست نموذجاً رسمياً معتمداً.</p>`;
       panel.appendChild(section);
-      document.getElementById("start-exam").addEventListener("click", startExam);
+    }
+    const startButton = document.getElementById("start-exam");
+    if (startButton && startButton.dataset.bound !== "true") {
+      startButton.addEventListener("click", startExam);
+      startButton.dataset.bound = "true";
     }
     const head = document.querySelector(".quiz-head");
     if (head && !document.getElementById("exam-clock")) {
