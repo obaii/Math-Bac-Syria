@@ -24,6 +24,10 @@
       .bookmark-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}.bookmark-list button{width:100%;text-align:right;white-space:normal}
       .guided-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .guided-list button{height:100%;font-size:12px;line-height:1.8}
+      .progress-report{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+      .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
+      .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
       .key-idea{margin:10px 0;padding:10px 12px;border-right:4px solid #d5a32b;background:#fff8e6;border-radius:8px}
       .solution-steps{padding-right:22px}.offline-status{font-size:12px;margin-top:10px;color:var(--muted)}
       .footer-disclaimer{font-size:12px;color:var(--muted);max-width:800px;margin:8px auto}
@@ -50,12 +54,14 @@
         <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
         <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
         <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
+        <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
         <button type="button" id="export-progress">تصدير التقدم JSON</button>
         <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
         <button type="button" id="toggle-dark-mode" aria-pressed="false">تفعيل الوضع الليلي</button>
         <input id="import-progress-file" type="file" accept="application/json,.json" hidden>
       </div>
       <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
+      <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
       <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
       <ul class="bookmark-list" id="bookmark-list" hidden></ul>
     `;
@@ -63,6 +69,7 @@
     document.getElementById("smart-review").addEventListener("click", startSmartReview);
     document.getElementById("bookmark-review").addEventListener("click", startBookmarkReview);
     document.getElementById("guided-review").addEventListener("click", toggleGuidedQuestionList);
+    document.getElementById("progress-report-toggle").addEventListener("click", toggleProgressReport);
     document.getElementById("export-progress").addEventListener("click", exportProgress);
     document.getElementById("import-progress-button").addEventListener("click", () => document.getElementById("import-progress-file").click());
     document.getElementById("import-progress-file").addEventListener("change", importProgress);
@@ -73,6 +80,37 @@
     updateOnlineStatus();
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
+  };
+  const toggleProgressReport = () => {
+    const report = document.getElementById("progress-report");
+    const button = document.getElementById("progress-report-toggle");
+    if (!report || !button) return;
+    const opening = report.hidden;
+    report.hidden = !opening;
+    button.setAttribute("aria-expanded", String(opening));
+    if (!opening) return;
+    const topicNames = Array.isArray(topics) ? topics : [...new Set((typeof questions !== "undefined" ? questions : []).map(q => q.topic))];
+    const questionBank = typeof questions !== "undefined" ? questions : [];
+    const stats = typeof progressData !== "undefined" && progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
+    const rows = topicNames.map(topic => {
+      const stat = stats[topic] || { answered: 0, correct: 0 };
+      const answered = Number.isFinite(stat.answered) && stat.answered > 0 ? Math.floor(stat.answered) : 0;
+      const correct = Number.isFinite(stat.correct) && stat.correct > 0 ? Math.min(Math.floor(stat.correct), answered) : 0;
+      const rate = answered ? Math.round(correct / answered * 100) : 0;
+      const count = questionBank.filter(q => q.topic === topic).length;
+      return { topic, answered, correct, rate, count };
+    });
+    const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
+    const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
+    report.innerHTML = `
+      <h4>تقرير تقدّمك</h4>
+      <p>إجمالي المحاولات المسجّلة: <strong>${totalAttempts.toLocaleString("ar")}</strong> · الإجابات الصحيحة: <strong>${totalCorrect.toLocaleString("ar")}</strong></p>
+      <ul class="progress-report-list">${rows.map(row => `
+        <li class="progress-report-item">
+          <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
+          <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span></div>
+          <div class="progress-report-track" role="progressbar" aria-label="نسبة النجاح في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
+        </li>`).join("")}</ul>`;
   };
   const applyDarkMode = () => {
     document.body.classList.toggle("dark-mode", extras.darkMode);
