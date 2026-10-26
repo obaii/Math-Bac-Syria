@@ -141,7 +141,15 @@ function showResults(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function typeset(){
-  if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise().catch(()=>{});
+  if (!window.MathJax) return;
+  const targets = [$("question-text"), $("options"), $("feedback")].filter(Boolean);
+  // Clear MathJax's previous state before typesetting newly injected question content.
+  if (MathJax.typesetClear) MathJax.typesetClear(targets);
+  if (MathJax.typesetPromise) {
+    MathJax.startup.promise
+      .then(() => MathJax.typesetPromise(targets))
+      .catch(error => console.warn("تعذر تنسيق صيغة رياضية في السؤال الحالي", error));
+  }
 }
 $("next").addEventListener("click",()=>{
   if(!answered)return;
