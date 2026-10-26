@@ -252,79 +252,47 @@
     const file = event.target.files && event.target.files[0];
     if (!file) return;
     try {
-      if (file.size > 2_000_000) throw new Error("حجم الملف أكبر من الحد المسموح.");
+      if (file.size > 2_000_000) throw new Error("حجم الملف أكبر من الحد المسموح (2 ميغابايت).");
       const data = JSON.parse(await file.text());
-      if (data.format !== "math-bac-syria-progress" || !data.progress || typeof data.progress !== "object") throw new Error("هذا الملف ليس نسخة احتياطية صالحة للمنصة.");
-      if (!confirm("سيتم استبدال التقدم والعلامات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟")) return;
-      progressData = data.progress;
-      const importedMistakes = progressData.mistakes && typeof progressData.mistakes === "object" ? progressData.mistakes : {};
-      progressData.mistakes = {};
-      for (const key of Object.keys(importedMistakes)) { const q = byKey(key); if (q) progressData.mistakes[key] = { topic:q.topic, q:q.q, options:q.options, answer:q.answer, solution:q.solution, level:q.level }; }
-      progressData.topicStats = progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
-      progressData.attempts = Array.isArray(progressData.attempts) ? progressData.attempts : [];
-      progressData.answered = Number(progressData.answered) || 0; progressData.correct = Number(progressData.correct) || 0;
-      saveProgress();
-      if (data.studentTools && typeof data.studentTools === "object") {
-        extras = { bookmarks:Array.isArray(data.studentTools.bookmarks) ? data.studentTools.bookmarks.filter(k => byKey(k)) : [], schedule:data.studentTools.schedule && typeof data.studentTools.schedule === "object" ? data.studentTools.schedule : {}, reviewQuestions:{}, darkMode:Boolean(data.studentTools.darkMode) };
-        for (const key of Object.keys(extras.schedule)) { const known = byKey(key); if (known) extras.reviewQuestions[key] = known; else delete extras.schedule[key]; }
-        persistExtras();
-      }
-      if (typeof refreshDashboard === "function") refreshDashboard();
-      if (typeof renderTopics === "function") renderTopics();
-      updateBookmarkUI(); applyDarkMode();
-      alert("تم استيراد النسخة الاحتياطية على هذا الجهاز.");
-    } catch (err) { alert("تعذر استيراد الملف: " + err.message); }
-    finally { event.target.value = ""; }
       if (!data || data.format !== "math-bac-syria-progress" || !data.progress || typeof data.progress !== "object" || Array.isArray(data.progress)) {
         throw new Error("هذا الملف ليس نسخة احتياطية صالحة للمنصة.");
       }
+      if (!confirm("سيتم استبدال التقدم والعلامات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟")) return;
       const source = data.progress;
       const toCount = value => Number.isSafeInteger(Number(value)) && Number(value) >= 0 ? Number(value) : 0;
       const nextProgress = {
         answered: toCount(source.answered),
-        correct: toCount(source.correct),
+        correct: Math.min(toCount(source.correct), toCount(source.answered)),
         mistakes: {},
         topicStats: {},
-        attempts: []
+        attempts: Array.isArray(source.attempts) ? source.attempts.slice(0, 100) : []
       };
-      nextProgress.correct = Math.min(nextProgress.correct, nextProgress.answered);
-      const importedMistakes = source.mistakes && typeof source.mistakes === "object" && !Array.isArray(source.mistakes) ? source.mistakes : {};
-      for (const key of Object.keys(importedMistakes)) {
+      const sourceMistakes = source.mistakes && typeof source.mistakes === "object" && !Array.isArray(source.mistakes) ? source.mistakes : {};
+      for (const key of Object.keys(sourceMistakes)) {
         const q = byKey(key);
         if (q) nextProgress.mistakes[key] = { topic:q.topic, q:q.q, options:q.options, answer:q.answer, solution:q.solution, level:q.level };
       }
-      const importedStats = source.topicStats && typeof source.topicStats === "object" && !Array.isArray(source.topicStats) ? source.topicStats : {};
+      const sourceStats = source.topicStats && typeof source.topicStats === "object" && !Array.isArray(source.topicStats) ? source.topicStats : {};
       for (const topic of (typeof topics !== "undefined" ? topics : [])) {
-        const stat = importedStats[topic];
+        const stat = sourceStats[topic];
         if (!stat || typeof stat !== "object") continue;
         const answered = toCount(stat.answered);
         nextProgress.topicStats[topic] = { answered, correct:Math.min(toCount(stat.correct), answered) };
       }
-      nextProgress.attempts = Array.isArray(source.attempts) ? source.attempts.slice(0, 100).filter(item =>
-        item && typeof item === "object" && typeof item.topic === "string" &&
-        (typeof topics === "undefined" || topics.includes(item.topic)) &&
-        typeof item.correct === "boolean" && typeof item.date === "string" && !Number.isNaN(Date.parse(item.date))
-      ) : [];
-      let nextExtras = extras;
-      if (data.studentTools && typeof data.studentTools === "object" && !Array.isArray(data.studentTools)) {
-        const sourceTools = data.studentTools;
-        const schedule = sourceTools.schedule && typeof sourceTools.schedule === "object" && !Array.isArray(sourceTools.schedule) ? sourceTools.schedule : {};
-        nextExtras = {
-          bookmarks:Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))]:[],
-          schedule:{},
-          reviewQuestions:{},
-          darkMode:Boolean(sourceTools.darkMode)
-        };
-        for (const key of Object.keys(schedule)) {
-          const known = byKey(key);
-          const due = Number(schedule[key]);
-          if (known && Number.isFinite(due) && due > 0) {
-            nextExtras.schedule[key] = due;
-            nextExtras.reviewQuestions[key] = known;
-          }
+      let nextExtras = { bookmarks:[], schedule:{}, reviewQuestions:{}, darkMode:false };
+      const sourceTools = data.studentTools && typeof data.studentTools === "object" && !Array.isArray(data.studentTools) ? data.studentTools : {};
+      nextExtras.darkMode = Boolean(sourceTools.darkMode);
+      nextExtras.bookmarks = Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))] : [];
+      const sourceSchedule = sourceTools.schedule && typeof sourceTools.schedule === "object" && !Array.isArray(sourceTools.schedule) ? sourceTools.schedule : {};
+      for (const key of Object.keys(sourceSchedule)) {
+        const q = byKey(key);
+        const item = sourceSchedule[key];
+        const due = Number(typeof item === "object" && item ? item.due : item);
+        if (q && Number.isFinite(due) && due > 0) {
+          nextExtras.schedule[key] = typeof item === "object" && item ? { stage:Math.max(0, Math.min(4, Number(item.stage) || 0)), due, lastResult:item.lastResult || "" } : { stage:0, due };
+          nextExtras.reviewQuestions[key] = q;
         }
       }
-      if (!confirm("سيتم استبدال التقدم والعلامات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟")) return;
       progressData = nextProgress;
       extras = nextExtras;
       saveProgress();
@@ -334,7 +302,7 @@
       updateBookmarkUI();
       updateGuidedQuestionList();
       applyDarkMode();
-      alert("تم استيراد النسخة الاحتياطية بعد التحقق من بياناتها.");
+      alert("تم استيراد النسخة الاحتياطية بنجاح.");
     } catch (err) {
       alert("تعذر استيراد الملف: " + (err && err.message ? err.message : "صيغة الملف غير صالحة."));
     } finally {
