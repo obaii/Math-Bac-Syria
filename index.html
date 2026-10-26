@@ -17,6 +17,14 @@
     #student-tools .tools-actions button{font:inherit;font-size:13px;padding:9px 13px;border:1px solid #d9e1ed;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:42px}
     #student-tools .bookmark-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}
     #student-tools .progress-report{margin-top:12px;padding:12px;border:1px solid #d9e1ed;border-radius:12px}
+    #exam-tools{margin-top:16px;padding:14px;border:1px solid #d9e1ed;border-radius:12px;background:#f8fafc;color:#17243b}
+    #exam-tools h3{margin:0 0 8px;font-size:17px}#exam-tools p{margin:0 0 10px}
+    #exam-tools .exam-config{display:flex;flex-wrap:wrap;align-items:end;gap:10px}
+    #exam-tools label{display:grid;gap:5px;font-size:13px}
+    #exam-tools select{font:inherit;padding:9px;border:1px solid #d9e1ed;border-radius:8px;background:#fff;color:#17243b}
+    #exam-tools button{font:inherit;padding:10px 14px;border-radius:9px;cursor:pointer}
+    body.dark-mode #exam-tools{background:#101827;color:#e7edf8;border-color:#34445d}
+    body.dark-mode #exam-tools select{background:#182438;color:#e7edf8;border-color:#34445d}
     body.dark-mode #student-tools{background:#182438;color:#e7edf8;border-color:#34445d}
     body.dark-mode #student-tools .tools-actions button{background:#182438;color:#e7edf8;border-color:#34445d}
     @media(max-width:640px){#student-tools{padding:14px}#student-tools .tools-actions button{flex:1 1 145px}}
@@ -70,6 +78,15 @@
       <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
       <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
       <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
+      <section id="exam-tools" class="exam-tools">
+        <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
+        <div class="exam-config">
+          <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
+          <label>المدة<select id="exam-duration"><option value="30">30 دقيقة</option><option value="60" selected>60 دقيقة</option><option value="90">90 دقيقة</option></select></label>
+          <button type="button" id="start-exam" class="primary">ابدأ المحاكاة ←</button>
+        </div>
+        <p class="exam-note">تُختار الأسئلة من الأبحاث المتاحة في بنك المنصة. هذه محاكاة تدريبية وليست نموذجاً رسمياً معتمداً.</p>
+      </section>
       <ul class="bookmark-list" id="bookmark-list" hidden></ul>
     </section>
     <div id="topic-section" class="section-heading"><div><p class="eyebrow">تدرّب خطوة بخطوة</p><h2>اختر البحث</h2><p class="section-subtitle">اختر أحد أبحاث المنهاج وابدأ حل الأسئلة فوراً.</p></div><span id="total-count" class="count-pill"></span></div>
