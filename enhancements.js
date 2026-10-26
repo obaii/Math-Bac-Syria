@@ -25,6 +25,15 @@
       .guided-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .guided-list button{height:100%;font-size:12px;line-height:1.8}
       .progress-report{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .review-plan{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px}
+      .review-plan h4{margin:0 0 8px;font-size:15px}.review-plan>p{line-height:1.8}
+      .review-plan-group{margin-top:12px}.review-plan-group h4{display:flex;justify-content:space-between;gap:8px}
+      .review-plan-group h4 span{font-size:12px;color:var(--muted)}
+      .review-plan-list{display:grid;gap:7px;list-style:none;margin:8px 0;padding:0}
+      .review-plan-item{padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg,#f7f9fc)}
+      .review-plan-item p{margin:5px 0;line-height:1.8;overflow-wrap:anywhere}
+      .review-plan-item small,.review-plan-empty{color:var(--muted);font-size:12px}
+      body.dark-mode .review-plan-item{background:var(--card-bg);border-color:var(--line)}
       .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
       .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
       .topic-mastery-status{display:inline-flex;align-items:center;width:fit-content;margin-top:8px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line)}
@@ -79,6 +88,7 @@
         <p>صدّر نسخة احتياطية من تقدمك، أو استوردها على جهاز آخر. المراجعة الذكية تعتمد على الأسئلة التي أخطأت بها ومواعيد مراجعتها.</p>
         <div class="tools-actions">
           <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
+          <button type="button" id="review-plan-toggle" aria-expanded="false">خطة المراجعة</button>
           <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
           <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
           <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
@@ -89,12 +99,14 @@
         </div>
         <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
         <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
+        <section class="review-plan" id="review-plan" aria-live="polite" hidden></section>
         <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
         <ul class="bookmark-list" id="bookmark-list" hidden></ul>
       `;
       home.insertBefore(panel, topicSection);
     }
     document.getElementById("smart-review").addEventListener("click", startSmartReview);
+    document.getElementById("review-plan-toggle").addEventListener("click", toggleReviewPlan);
     document.getElementById("bookmark-review").addEventListener("click", startBookmarkReview);
     document.getElementById("guided-review").addEventListener("click", toggleGuidedQuestionList);
     document.getElementById("progress-report-toggle").addEventListener("click", toggleProgressReport);
@@ -377,12 +389,59 @@
     showQuestion(); window.scrollTo({top:0,behavior:"smooth"});
   };
   const startBookmarkReview = () => startTargetedQuiz(extras.bookmarks.map(byKey).filter(Boolean), "المسائل المحفوظة");
+  const getScheduledReviews = () => {
+    const now = Date.now();
+    return [...new Set([...Object.keys(progressData.mistakes || {}), ...Object.keys(extras.schedule || {}), ...Object.keys(extras.reviewQuestions || {})])]
+      .map(key => {
+        const q = byKey(key) || extras.reviewQuestions[key] || progressData.mistakes[key];
+        const schedule = extras.schedule[key] || {};
+        return q ? { key, q, due: Number.isFinite(Number(schedule.due)) ? Number(schedule.due) : now, stage: Number(schedule.stage) || 0, lastResult: schedule.lastResult || "pending" } : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.due - b.due);
+  };
   const startSmartReview = () => {
     const now = Date.now();
-    const dueKeys = [...new Set([...Object.keys(progressData.mistakes), ...Object.keys(extras.schedule)])].filter(k => (!extras.schedule[k] || (extras.schedule[k].due || 0) <= now) && (byKey(k) || extras.reviewQuestions[k]));
-    const qs = dueKeys.map(k => byKey(k) || extras.reviewQuestions[k]).filter(Boolean);
-    if (!qs.length) { alert("لا توجد أسئلة مستحقة للمراجعة الآن. ستظهر الأسئلة الخاطئة هنا عند حلول موعد مراجعتها."); return; }
+    const dueItems = getScheduledReviews().filter(item => item.due <= now);
+    const qs = dueItems.map(item => item.q);
+    if (!qs.length) { alert("لا توجد أسئلة مستحقة للمراجعة الآن. افتح خطة المراجعة لمعرفة المواعيد القادمة."); return; }
     startTargetedQuiz(qs, "المراجعة الذكية");
+  };
+  const renderReviewPlan = () => {
+    const panel = document.getElementById("review-plan");
+    if (!panel) return;
+    const now = Date.now();
+    const week = now + 7 * 86400000;
+    const items = getScheduledReviews();
+    const due = items.filter(item => item.due <= now);
+    const upcoming = items.filter(item => item.due > now && item.due <= week);
+    const later = items.filter(item => item.due > week);
+    const fmt = value => new Date(value).toLocaleString("ar-SY", { dateStyle:"medium", timeStyle:"short" });
+    const renderGroup = (title, list, emptyText) => `
+      <div class="review-plan-group">
+        <h4>${title} <span>${list.length.toLocaleString("ar")}</span></h4>
+        ${list.length ? `<ul class="review-plan-list">${list.slice(0, 8).map(item => `
+          <li class="review-plan-item">
+            <strong>${escapeHtml(item.q.topic || "بحث غير محدد")}</strong>
+            <p>${escapeHtml(String(item.q.q || "").slice(0, 180))}</p>
+            <small>${item.due <= now ? "مستحق الآن" : "موعد المراجعة: " + escapeHtml(fmt(item.due))}</small>
+          </li>`).join("")}</ul>${list.length > 8 ? `<p class="muted">وتوجد ${(list.length - 8).toLocaleString("ar")} أسئلة أخرى في هذه الفئة.</p>` : ""}` : `<p class="review-plan-empty">${emptyText}</p>`}
+      </div>`;
+    panel.innerHTML = `
+      <h4>خطة المراجعة المتباعدة</h4>
+      <p>تعتمد المواعيد على إجاباتك في المراجعة الذكية، وتُحفظ على هذا الجهاز. الأسئلة التي أخطأت بها ولم تُجدول بعد تظهر ضمن المستحق الآن.</p>
+      ${renderGroup("مستحق اليوم", due, "لا توجد مراجعات مستحقة الآن. أحسنت!") }
+      ${renderGroup("خلال الأيام السبعة القادمة", upcoming, "لا توجد مراجعات مجدولة خلال الأسبوع القادم.") }
+      ${renderGroup("بعد أسبوع", later, "لا توجد مواعيد أبعد من أسبوع.") }`;
+  };
+  const toggleReviewPlan = () => {
+    const panel = document.getElementById("review-plan");
+    const button = document.getElementById("review-plan-toggle");
+    if (!panel || !button) return;
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    button.setAttribute("aria-expanded", String(opening));
+    if (opening) renderReviewPlan();
   };
   const exportProgress = () => {
     const payload = { format:"math-bac-syria-progress", version:1, exportedAt:new Date().toISOString(), progress:progressData, studentTools:extras };
