@@ -9,6 +9,18 @@
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
    <link rel="stylesheet" href="style-overrides.css">
+  <style>
+    #student-tools{display:block!important;margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
+    #student-tools h3{margin:0 0 8px;font-size:18px}
+    #student-tools p{margin:0 0 12px;color:#64748b;font-size:13px}
+    #student-tools .tools-actions{display:flex;flex-wrap:wrap;gap:8px}
+    #student-tools .tools-actions button{font:inherit;font-size:13px;padding:9px 13px;border:1px solid #d9e1ed;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:42px}
+    #student-tools .bookmark-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+    #student-tools .progress-report{margin-top:12px;padding:12px;border:1px solid #d9e1ed;border-radius:12px}
+    body.dark-mode #student-tools{background:#182438;color:#e7edf8;border-color:#34445d}
+    body.dark-mode #student-tools .tools-actions button{background:#182438;color:#e7edf8;border-color:#34445d}
+    @media(max-width:640px){#student-tools{padding:14px}#student-tools .tools-actions button{flex:1 1 145px}}
+  </style>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script defer src="questions.js"></script>
   <script defer src="questions_vectors_additional.js"></script>
@@ -42,6 +54,24 @@
       </div>
       <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
     </div>
+    <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title">
+      <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
+      <p>راجع الأسئلة، واحفظ المسائل المهمة، وتابع تقدمك، وجرّب الوضع الليلي ومحاكاة الامتحان.</p>
+      <div class="tools-actions">
+        <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
+        <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
+        <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
+        <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
+        <button type="button" id="export-progress">تصدير التقدم JSON</button>
+        <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
+        <button type="button" id="toggle-dark-mode" aria-pressed="false">تفعيل الوضع الليلي</button>
+        <input id="import-progress-file" type="file" accept="application/json,.json" hidden>
+      </div>
+      <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
+      <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
+      <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
+      <ul class="bookmark-list" id="bookmark-list" hidden></ul>
+    </section>
     <div id="topic-section" class="section-heading"><div><p class="eyebrow">تدرّب خطوة بخطوة</p><h2>اختر البحث</h2><p class="section-subtitle">اختر أحد أبحاث المنهاج وابدأ حل الأسئلة فوراً.</p></div><span id="total-count" class="count-pill"></span></div>
     <div class="topic-tools">
       <label class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي"></label>
