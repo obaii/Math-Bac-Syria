@@ -1,0 +1,55 @@
+/* تحسينات إضافية آمنة للواجهة — اربط هذا الملف بعد style.css الحالي */
+:root {
+  --focus-ring: #8aa8ff;
+  --surface-hover: #f8faff;
+}
+
+::selection { color: #12233f; background: #dce7ff; }
+a, button, input, select { -webkit-tap-highlight-color: transparent; }
+button, .topic-card, .option, .primary, .secondary, .text-button { touch-action: manipulation; }
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.topic-card:focus-visible,
+.option:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.topic-card, .option, .primary, .secondary, .search-box, .filter-panel select {
+  transition: background-color .18s ease, border-color .18s ease,
+    box-shadow .18s ease, transform .18s ease;
+}
+.topic-card:hover:not(:disabled), .option:hover:not(:disabled) {
+  background-color: var(--surface-hover);
+}
+.search-box input:focus-visible { outline: none; }
+.filter-panel select { max-width: 100%; cursor: pointer; }
+.question-text, .feedback, .solution { overflow-wrap: anywhere; }
+.question-card img, .result-card img { max-width: 100%; height: auto; }
+
+@media (max-width: 600px) {
+  .actions .primary, .actions .secondary { min-height: 44px; }
+  .option { min-height: 46px; align-items: flex-start; }
+  .filter-panel select { min-height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .topic-card, .option, .question-card, .result-card, .dashboard, .stat-card {
+    border: 1px solid CanvasText;
+  }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}
