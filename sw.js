@@ -1,20 +1,26 @@
-const CACHE_NAME = "math-bac-syria-v1";
+const CACHE_NAME = "math-bac-syria-v2";
 const CORE_FILES = [
   "./", "./index.html", "./style.css", "./style-overrides.css",
   "./app.js", "./questions.js", "./questions_vectors_additional.js",
-  "./merge-questions.js", "./enhancements.js", "./manifest.webmanifest",
-  "./merge-questions.js", "./solution-guides.js", "./enhancements.js", "./manifest.webmanifest",
-  "./assets/icon.svg"
+  "./merge-questions.js", "./solution-guides.js", "./enhancements.js",
+  "./manifest.webmanifest", "./assets/icon.svg"
 ];
 const MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(CORE_FILES);
-    // Cache MathJax opportunistically. Offline math rendering is available after a successful fetch.
+    // Fetch fresh copies during installation so a deployment cannot populate
+    // the new cache with stale HTTP-cached assets.
+    await Promise.all(CORE_FILES.map(async file => {
+      const request = new Request(file, { cache: "reload" });
+      const response = await fetch(request);
+      if (!response.ok) throw new Error("تعذر تحميل ملف أساسي: " + file);
+      await cache.put(file, response);
+    }));
+    // Cache MathJax opportunistically for offline use after a successful fetch.
     try {
-      const response = await fetch(MATHJAX_URL, { mode: "no-cors" });
+      const response = await fetch(MATHJAX_URL, { mode: "no-cors", cache: "reload" });
       await cache.put(MATHJAX_URL, response);
     } catch (_) {}
     await self.skipWaiting();
