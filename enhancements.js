@@ -80,6 +80,14 @@
     if (btn) { btn.textContent = extras.darkMode ? "إيقاف الوضع الليلي" : "تفعيل الوضع الليلي"; btn.setAttribute("aria-pressed", String(extras.darkMode)); }
   };
   const toggleDarkMode = () => { extras.darkMode = !extras.darkMode; persistExtras(); applyDarkMode(); };
+  window.addEventListener("mathBacSyria:reset-progress", () => {
+    extras.bookmarks = [];
+    extras.schedule = {};
+    extras.reviewQuestions = {};
+    persistExtras();
+    updateBookmarkUI();
+    updateBookmarkButton();
+  });
   const updateOnlineStatus = () => {
     const el = document.getElementById("offline-status");
     if (el) el.textContent = navigator.onLine ? "متصل بالإنترنت · يجري تجهيز الموارد المتاحة للاستخدام دون اتصال." : "غير متصل · ستعمل الأسئلة المحفوظة محلياً، وقد لا تُعرض المعادلات منسّقة إذا لم تكن MathJax مخزّنة.";
