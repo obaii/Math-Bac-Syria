@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css">
    <link rel="stylesheet" href="style-overrides.css">
   <style>
-    #student-tools{display:block!important;margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
+    .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}\n    body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}\n    #student-tools{display:block!important;margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
     #student-tools h3{margin:0 0 8px;font-size:18px}
     #student-tools p{margin:0 0 12px;color:#64748b;font-size:13px}
     #student-tools .tools-actions{display:flex;flex-wrap:wrap;gap:8px}
@@ -36,11 +36,12 @@
   <script defer src="solution-guides.js"></script>
   <script defer src="app.js"></script>
   <script defer src="enhancements.js?v=20261026-2"></script>
+  <script defer src="pwa-install.js?v=20261026-1"></script>
 </head>
 <body>
 <header class="top">
   <a class="brand" href="#" aria-label="الصفحة الرئيسية" id="brand-home"><span class="brand-symbol">∑</span><span>رياضيات البكالوريا</span></a>
-  <div class="top-actions"><span class="tag">المنهاج السوري · العلمي</span><span class="privacy-note"><span class="privacy-dot"></span> تقدمك محفوظ على جهازك</span></div>
+  <div class="top-actions"><span class="tag">المنهاج السوري · العلمي</span><span class="privacy-note"><span class="privacy-dot"></span> تقدمك محفوظ على جهازك</span><button type="button" id="install-app-button" class="install-app-button">تثبيت التطبيق</button></div>
 </header>
 <main class="container">
   <section class="hero">
