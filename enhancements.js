@@ -636,10 +636,9 @@
     document.head.appendChild(style);
   };
   addExamStyles();
-  ensureExamControls();
-  // دعم إعادة تهيئة الواجهة إذا كان حقل الأدوات قد أُنشئ بعد تحميل السكربت.
-  window.addEventListener("load", ensureExamControls);
-
   addStyles();
   addHomeTools();
+  // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
+  ensureExamControls();
+  window.addEventListener("load", ensureExamControls);
 })();
