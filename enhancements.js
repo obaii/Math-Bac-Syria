@@ -25,9 +25,41 @@
       .guided-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .guided-list button{height:100%;font-size:12px;line-height:1.8}
       .progress-report{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .review-plan{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px}
+      .review-plan h4{margin:0 0 8px;font-size:15px}.review-plan>p{line-height:1.8}
+      .review-plan-group{margin-top:12px}.review-plan-group h4{display:flex;justify-content:space-between;gap:8px}
+      .review-plan-group h4 span{font-size:12px;color:var(--muted)}
+      .review-plan-list{display:grid;gap:7px;list-style:none;margin:8px 0;padding:0}
+      .review-plan-item{padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg,#f7f9fc)}
+      .review-plan-item p{margin:5px 0;line-height:1.8;overflow-wrap:anywhere}
+      .review-plan-item small,.review-plan-empty{color:var(--muted);font-size:12px}
+      body.dark-mode .review-plan-item{background:var(--card-bg);border-color:var(--line)}
       .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
       .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
+      .topic-mastery-status{display:inline-flex;align-items:center;width:fit-content;margin-top:8px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line)}
+      .topic-mastery-status.is-new{color:var(--muted)}.topic-mastery-status.is-review{color:#b45309;background:#fff7ed;border-color:#fed7aa}
+      .topic-mastery-status.is-progress{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}.topic-mastery-status.is-mastered{color:#166534;background:#f0fdf4;border-color:#bbf7d0}
+      .topic-review-button{font:inherit;font-size:12px;margin-top:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
+      body.dark-mode .topic-mastery-status.is-review{color:#fed7aa;background:#431407;border-color:#9a3412}
+      body.dark-mode .topic-mastery-status.is-progress{color:#bfdbfe;background:#172554;border-color:#1d4ed8}
+      body.dark-mode .topic-mastery-status.is-mastered{color:#bbf7d0;background:#052e16;border-color:#166534}
       .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
+      .recent-activity{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+      .recent-activity h4{margin:0 0 6px;font-size:15px}.recent-attempt-list{display:grid;gap:7px;list-style:none;margin:10px 0 0;padding:0}
+      .recent-attempt-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:9px}
+      .recent-attempt-status{font-size:12px;font-weight:700;white-space:nowrap}.recent-attempt-status.is-correct{color:var(--success,#2f9e72)}.recent-attempt-status.is-wrong{color:#c2410c}
+      .recent-attempt-item strong{font-size:13px;overflow-wrap:anywhere}.recent-attempt-item time{font-size:12px;color:var(--muted);text-align:left}
+      .recent-attempt-empty{padding:12px;border:1px dashed var(--line);border-radius:9px;color:var(--muted)}
+      body.dark-mode .recent-attempt-item{border-color:var(--line)}
+      @media(max-width:640px){.recent-attempt-item{grid-template-columns:1fr;gap:5px}.recent-attempt-item time{text-align:right}}
+      .mistake-log{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .mistake-log h4{margin:0 0 6px;font-size:15px}.mistake-log-list{display:grid;gap:8px;list-style:none;margin:10px 0 0;padding:0}
+      .mistake-log-item{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg,#f7f9fc)}
+      .mistake-log-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:6px}
+      .mistake-log-question{line-height:1.8;overflow-wrap:anywhere;margin-bottom:8px}
+      .mistake-log-item button{font:inherit;font-size:13px;min-height:38px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
+      body.dark-mode .mistake-log-item{background:var(--card-bg);border-color:var(--line)}
+      body.dark-mode .mistake-log-item button{background:var(--bg);color:var(--ink);border-color:var(--line)}
       .key-idea{margin:10px 0;padding:10px 12px;border-right:4px solid #d5a32b;background:#fff8e6;border-radius:8px}
       .solution-steps{padding-right:22px}.offline-status{font-size:12px;margin-top:10px;color:var(--muted)}
       .footer-disclaimer{font-size:12px;color:var(--muted);max-width:800px;margin:8px auto}
@@ -56,6 +88,7 @@
         <p>صدّر نسخة احتياطية من تقدمك، أو استوردها على جهاز آخر. المراجعة الذكية تعتمد على الأسئلة التي أخطأت بها ومواعيد مراجعتها.</p>
         <div class="tools-actions">
           <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
+          <button type="button" id="review-plan-toggle" aria-expanded="false">خطة المراجعة</button>
           <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
           <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
           <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
@@ -66,12 +99,14 @@
         </div>
         <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
         <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
+        <section class="review-plan" id="review-plan" aria-live="polite" hidden></section>
         <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
         <ul class="bookmark-list" id="bookmark-list" hidden></ul>
       `;
       home.insertBefore(panel, topicSection);
     }
     document.getElementById("smart-review").addEventListener("click", startSmartReview);
+    document.getElementById("review-plan-toggle").addEventListener("click", toggleReviewPlan);
     document.getElementById("bookmark-review").addEventListener("click", startBookmarkReview);
     document.getElementById("guided-review").addEventListener("click", toggleGuidedQuestionList);
     document.getElementById("progress-report-toggle").addEventListener("click", toggleProgressReport);
@@ -86,27 +121,50 @@
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
   };
-  const toggleProgressReport = () => {
+  const renderProgressReport = () => {
     const report = document.getElementById("progress-report");
-    const button = document.getElementById("progress-report-toggle");
-    if (!report || !button) return;
-    const opening = report.hidden;
-    report.hidden = !opening;
-    button.setAttribute("aria-expanded", String(opening));
-    if (!opening) return;
+    if (!report) return;
     const topicNames = Array.isArray(topics) ? topics : [...new Set((typeof questions !== "undefined" ? questions : []).map(q => q.topic))];
     const questionBank = typeof questions !== "undefined" ? questions : [];
     const stats = typeof progressData !== "undefined" && progressData.topicStats && typeof progressData.topicStats === "object" ? progressData.topicStats : {};
+    const mistakeValues = progressData && progressData.mistakes && typeof progressData.mistakes === "object" ? Object.values(progressData.mistakes) : [];
     const rows = topicNames.map(topic => {
       const stat = stats[topic] || { answered: 0, correct: 0 };
       const answered = Number.isFinite(stat.answered) && stat.answered > 0 ? Math.floor(stat.answered) : 0;
       const correct = Number.isFinite(stat.correct) && stat.correct > 0 ? Math.min(Math.floor(stat.correct), answered) : 0;
       const rate = answered ? Math.round(correct / answered * 100) : 0;
       const count = questionBank.filter(q => q.topic === topic).length;
-      return { topic, answered, correct, rate, count };
+      const mistakeCount = mistakeValues.filter(q => q && q.topic === topic).length;
+      let masteryLabel = "لم يبدأ بعد";
+      let masteryClass = "is-new";
+      if (answered > 0 && mistakeCount > 0) {
+        masteryLabel = `لديه ${mistakeCount.toLocaleString("ar")} من الأخطاء للمراجعة`;
+        masteryClass = "is-review";
+      } else if (answered >= 5 && rate >= 85) {
+        masteryLabel = "متقن مبدئياً";
+        masteryClass = "is-mastered";
+      } else if (answered > 0 && rate >= 70) {
+        masteryLabel = "يتقدم جيداً";
+        masteryClass = "is-progress";
+      } else if (answered > 0) {
+        masteryLabel = "يحتاج إلى تدريب";
+        masteryClass = "is-review";
+      }
+      return { topic, answered, correct, rate, count, mistakeCount, masteryLabel, masteryClass };
     });
     const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
     const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
+    const attempts = Array.isArray(progressData.attempts) ? progressData.attempts.slice(0, 10) : [];
+    const recentActivity = attempts.length ? attempts.map(attempt => {
+      const date = new Date(attempt.date);
+      const when = Number.isNaN(date.getTime()) ? "تاريخ غير متاح" : date.toLocaleString("ar-SY", { dateStyle: "medium", timeStyle: "short" });
+      const isCorrect = attempt.correct === true;
+      return `<li class="recent-attempt-item">
+        <span class="recent-attempt-status ${isCorrect ? "is-correct" : "is-wrong"}">${isCorrect ? "إجابة صحيحة" : "إجابة خاطئة"}</span>
+        <strong>${escapeHtml(attempt.topic || "بحث غير محدد")}</strong>
+        <time>${escapeHtml(when)}</time>
+      </li>`;
+    }).join("") : '<li class="recent-attempt-empty">لا توجد محاولات مسجّلة بعد. ابدأ التدريب لتظهر نتائجك هنا.</li>';
     report.innerHTML = `
       <h4>تقرير تقدّمك</h4>
       <p>إجمالي المحاولات المسجّلة: <strong>${totalAttempts.toLocaleString("ar")}</strong> · الإجابات الصحيحة: <strong>${totalCorrect.toLocaleString("ar")}</strong></p>
@@ -114,9 +172,106 @@
         <li class="progress-report-item">
           <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
           <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span></div>
-          <div class="progress-report-track" role="progressbar" aria-label="نسبة النجاح في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
-        </li>`).join("")}</ul>`;
+          <span class="topic-mastery-status ${row.masteryClass}">${escapeHtml(row.masteryLabel)}</span>
+          <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
+          ${row.mistakeCount ? `<button type="button" class="topic-review-button" data-review-topic="${escapeHtml(row.topic)}">راجع أخطاء هذا البحث (${row.mistakeCount.toLocaleString("ar")})</button>` : ""}
+        </li>`).join("")}</ul>
+      <section class="recent-activity">
+        <h4>آخر المحاولات</h4>
+        <p>آخر ${Math.min(attempts.length, 10).toLocaleString("ar")} محاولات مسجّلة على هذا الجهاز.</p>
+        <ul class="recent-attempt-list">${recentActivity}</ul>
+      </section>`;
+    report.querySelectorAll("[data-review-topic]").forEach(button => {
+      button.addEventListener("click", () => {
+        const topic = button.dataset.reviewTopic;
+        const qs = mistakeValues.filter(q => q && q.topic === topic && q.q && Array.isArray(q.options));
+        if (qs.length) startTargetedQuiz(qs, "مراجعة أخطاء — " + topic);
+      });
+    });
   };
+  const toggleProgressReport = () => {
+    const report = document.getElementById("progress-report");
+    const button = document.getElementById("progress-report-toggle");
+    if (!report || !button) return;
+    const opening = report.hidden;
+    report.hidden = !opening;
+    button.setAttribute("aria-expanded", String(opening));
+    if (opening) renderProgressReport();
+  };
+  const ensureMistakeLog = () => {
+    const actions = document.querySelector("#student-tools .tools-actions");
+    const report = document.getElementById("progress-report");
+    if (!actions || !report) return;
+    if (!document.getElementById("mistake-log-toggle")) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.id = "mistake-log-toggle";
+      button.textContent = "سجل الأخطاء (0)";
+      button.setAttribute("aria-expanded", "false");
+      button.addEventListener("click", toggleMistakeLog);
+      actions.appendChild(button);
+    }
+    if (!document.getElementById("mistake-log")) {
+      const section = document.createElement("section");
+      section.id = "mistake-log";
+      section.className = "mistake-log";
+      section.setAttribute("aria-live", "polite");
+      section.hidden = true;
+      report.insertAdjacentElement("afterend", section);
+    }
+    renderMistakeLog();
+  };
+  const renderMistakeLog = () => {
+    const section = document.getElementById("mistake-log");
+    const button = document.getElementById("mistake-log-toggle");
+    if (!section || typeof progressData === "undefined") return;
+    const keys = Object.keys(progressData.mistakes || {});
+    if (button) {
+      button.textContent = `سجل الأخطاء (${keys.length.toLocaleString("ar")})`;
+      button.disabled = keys.length === 0;
+      button.setAttribute("aria-expanded", String(!section.hidden));
+    }
+    if (!keys.length) {
+      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة مسجّلة للمراجعة حالياً. ستظهر هنا الأسئلة التي تجيب عنها بشكل خاطئ.</p>';
+      return;
+    }
+    const rows = keys.map(key => {
+      const q = byKey(key) || progressData.mistakes[key];
+      if (!q || !q.q || !Array.isArray(q.options)) return null;
+      return { key, q };
+    }).filter(Boolean).sort((a,b) => String(a.q.topic || "").localeCompare(String(b.q.topic || ""), "ar"));
+    section.innerHTML = `
+      <h4>سجل الأخطاء</h4>
+      <p>هذه الأسئلة أخطأتَ في الإجابة عنها. افتح أي سؤال لتتدرّب عليه منفرداً؛ وتُحذف علامة الخطأ عند الإجابة الصحيحة في المراجعة.</p>
+      <ul class="mistake-log-list">${rows.map(({key,q}) => `
+        <li class="mistake-log-item">
+          <div class="mistake-log-meta"><strong>${escapeHtml(q.topic || "بحث غير محدد")}</strong><span>${escapeHtml(q.level || "مستوى غير محدد")}</span></div>
+          <div class="mistake-log-question">${escapeHtml(String(q.q).replace(/<[^>]*>/g, " "))}</div>
+          <button type="button" data-mistake-key="${escapeHtml(key)}">تدرّب على هذا السؤال ←</button>
+        </li>`).join("")}</ul>`;
+    section.querySelectorAll("[data-mistake-key]").forEach(item => item.addEventListener("click", () => {
+      const q = byKey(item.dataset.mistakeKey) || progressData.mistakes[item.dataset.mistakeKey];
+      if (q) startTargetedQuiz([q], "مراجعة خطأ — " + (q.topic || ""));
+    }));
+    if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([section]).catch(() => {});
+  };
+  const toggleMistakeLog = () => {
+    const section = document.getElementById("mistake-log");
+    const button = document.getElementById("mistake-log-toggle");
+    if (!section || !button) return;
+    section.hidden = !section.hidden;
+    button.setAttribute("aria-expanded", String(!section.hidden));
+    renderMistakeLog();
+  };
+  const originalRefreshDashboard = window.refreshDashboard;
+  if (typeof originalRefreshDashboard === "function") {
+    window.refreshDashboard = function () {
+      originalRefreshDashboard();
+      renderMistakeLog();
+      const report = document.getElementById("progress-report");
+      if (report && !report.hidden) renderProgressReport();
+    };
+  }
   const applyDarkMode = () => {
     document.body.classList.toggle("dark-mode", extras.darkMode);
     const btn = document.getElementById("toggle-dark-mode");
@@ -234,12 +389,59 @@
     showQuestion(); window.scrollTo({top:0,behavior:"smooth"});
   };
   const startBookmarkReview = () => startTargetedQuiz(extras.bookmarks.map(byKey).filter(Boolean), "المسائل المحفوظة");
+  const getScheduledReviews = () => {
+    const now = Date.now();
+    return [...new Set([...Object.keys(progressData.mistakes || {}), ...Object.keys(extras.schedule || {}), ...Object.keys(extras.reviewQuestions || {})])]
+      .map(key => {
+        const q = byKey(key) || extras.reviewQuestions[key] || progressData.mistakes[key];
+        const schedule = extras.schedule[key] || {};
+        return q ? { key, q, due: Number.isFinite(Number(schedule.due)) ? Number(schedule.due) : now, stage: Number(schedule.stage) || 0, lastResult: schedule.lastResult || "pending" } : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.due - b.due);
+  };
   const startSmartReview = () => {
     const now = Date.now();
-    const dueKeys = [...new Set([...Object.keys(progressData.mistakes), ...Object.keys(extras.schedule)])].filter(k => (!extras.schedule[k] || (extras.schedule[k].due || 0) <= now) && (byKey(k) || extras.reviewQuestions[k]));
-    const qs = dueKeys.map(k => byKey(k) || extras.reviewQuestions[k]).filter(Boolean);
-    if (!qs.length) { alert("لا توجد أسئلة مستحقة للمراجعة الآن. ستظهر الأسئلة الخاطئة هنا عند حلول موعد مراجعتها."); return; }
+    const dueItems = getScheduledReviews().filter(item => item.due <= now);
+    const qs = dueItems.map(item => item.q);
+    if (!qs.length) { alert("لا توجد أسئلة مستحقة للمراجعة الآن. افتح خطة المراجعة لمعرفة المواعيد القادمة."); return; }
     startTargetedQuiz(qs, "المراجعة الذكية");
+  };
+  const renderReviewPlan = () => {
+    const panel = document.getElementById("review-plan");
+    if (!panel) return;
+    const now = Date.now();
+    const week = now + 7 * 86400000;
+    const items = getScheduledReviews();
+    const due = items.filter(item => item.due <= now);
+    const upcoming = items.filter(item => item.due > now && item.due <= week);
+    const later = items.filter(item => item.due > week);
+    const fmt = value => new Date(value).toLocaleString("ar-SY", { dateStyle:"medium", timeStyle:"short" });
+    const renderGroup = (title, list, emptyText) => `
+      <div class="review-plan-group">
+        <h4>${title} <span>${list.length.toLocaleString("ar")}</span></h4>
+        ${list.length ? `<ul class="review-plan-list">${list.slice(0, 8).map(item => `
+          <li class="review-plan-item">
+            <strong>${escapeHtml(item.q.topic || "بحث غير محدد")}</strong>
+            <p>${escapeHtml(String(item.q.q || "").slice(0, 180))}</p>
+            <small>${item.due <= now ? "مستحق الآن" : "موعد المراجعة: " + escapeHtml(fmt(item.due))}</small>
+          </li>`).join("")}</ul>${list.length > 8 ? `<p class="muted">وتوجد ${(list.length - 8).toLocaleString("ar")} أسئلة أخرى في هذه الفئة.</p>` : ""}` : `<p class="review-plan-empty">${emptyText}</p>`}
+      </div>`;
+    panel.innerHTML = `
+      <h4>خطة المراجعة المتباعدة</h4>
+      <p>تعتمد المواعيد على إجاباتك في المراجعة الذكية، وتُحفظ على هذا الجهاز. الأسئلة التي أخطأت بها ولم تُجدول بعد تظهر ضمن المستحق الآن.</p>
+      ${renderGroup("مستحق اليوم", due, "لا توجد مراجعات مستحقة الآن. أحسنت!") }
+      ${renderGroup("خلال الأيام السبعة القادمة", upcoming, "لا توجد مراجعات مجدولة خلال الأسبوع القادم.") }
+      ${renderGroup("بعد أسبوع", later, "لا توجد مواعيد أبعد من أسبوع.") }`;
+  };
+  const toggleReviewPlan = () => {
+    const panel = document.getElementById("review-plan");
+    const button = document.getElementById("review-plan-toggle");
+    if (!panel || !button) return;
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    button.setAttribute("aria-expanded", String(opening));
+    if (opening) renderReviewPlan();
   };
   const exportProgress = () => {
     const payload = { format:"math-bac-syria-progress", version:1, exportedAt:new Date().toISOString(), progress:progressData, studentTools:extras };
@@ -631,6 +833,7 @@
   addExamStyles();
   addStyles();
   addHomeTools();
+  ensureMistakeLog();
   // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
   ensureExamControls();
   window.addEventListener("load", ensureExamControls);
