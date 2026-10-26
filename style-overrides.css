@@ -53,3 +53,25 @@ select:focus-visible,
     outline: 2px solid Highlight;
   }
 }
+
+
+/* مؤشر بصري لمعدل الإجابات الصحيحة في كل بحث */
+.topic-mastery {
+  display: block;
+  height: 5px;
+  margin-top: 11px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8edf5;
+}
+.topic-mastery > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2457d6, #4b83f4);
+  transition: width .25s ease;
+}
+body.dark-mode .topic-mastery { background: #34445d; }
+@media (prefers-reduced-motion: reduce) {
+  .topic-mastery > span { transition: none; }
+}
