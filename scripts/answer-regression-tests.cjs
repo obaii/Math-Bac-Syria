@@ -75,7 +75,7 @@ const cases = [
   { contains: "قيمة \\(4!\\)", expected: "24" },
   { contains: "عدد طرق اختيار 2 من 6 عناصر دون اعتبار الترتيب هو:", expected: "15" },
   { contains: "إذا كانت \\(\\vec u=(a,2,−1)\\)", expected: "3" },
-  { contains: "إذا كان \\(f(x)=\\frac{x^2-1}{x-1}\\) عندما \\(x\\ne1\\)، فما قيمة \\(f(1)\\)", expected: "2" }
+  { contains: "إذا كان \\(f(x)=\\frac{x^2-1}{x-1}\\) عندما \\(x\\ne1\\)، فما قيمة \\(f(1)\\)", expected: "2" },
   { contains: "طول القطعة AB يساوي", expected: "\\(\\sqrt{38}\\)" },
   { contains: "منتصف القطعة [AB] حيث A(−2,4,1)", expected: "(2,2,3)" },
   { contains: "\\overrightarrow{AB}=(2,−1,4)", expected: "(1,2,6)" },
