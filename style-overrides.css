@@ -301,3 +301,34 @@ body.dark-mode .topic-mastery { background:#34445d; }
   .topic-card, .topic-arrow, .topic-mastery > span { transition:none; }
   .topic-card:hover:not(:disabled) { transform:none; }
 }
+
+
+/* لوحة متابعة تقدّم الطالب */
+.learning-progress {
+  margin: 16px 0 20px;
+  padding: clamp(16px, 2.5vw, 22px);
+  border: 1px solid #e2e9f4;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fff, #f8faff);
+}
+.learning-progress-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.learning-progress-heading h3 { margin:0 0 5px; font-size:18px; }
+.learning-progress-heading p:not(.eyebrow) { margin:0; color:#718096; font-size:12px; line-height:1.8; }
+.learning-progress-heading .eyebrow { margin:0 0 4px; }
+.learning-progress-total { display:flex; flex-direction:column; align-items:center; min-width:90px; padding:10px 14px; border-radius:14px; background:#edf2ff; color:#315edb; }
+.learning-progress-total strong { font-size:26px; line-height:1.3; }
+.learning-progress-total span { font-size:11px; }
+.learning-progress-track { height:9px; margin-top:17px; overflow:hidden; border-radius:999px; background:#e8edf5; }
+.learning-progress-track > span { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#315edb,#65a1ff); transition:width .3s ease; }
+.learning-progress-caption { margin:9px 0 0; color:#667792; font-size:12px; line-height:1.8; }
+body.dark-mode .learning-progress { background:linear-gradient(145deg,#182438,#111d30); border-color:#34445d; }
+body.dark-mode .learning-progress-heading p:not(.eyebrow), body.dark-mode .learning-progress-caption { color:#a7b5ca; }
+body.dark-mode .learning-progress-total { background:#243653; color:#b8ccff; }
+body.dark-mode .learning-progress-track { background:#34445d; }
+@media(max-width:600px) {
+  .learning-progress-heading { align-items:flex-start; }
+  .learning-progress-heading h3 { font-size:16px; }
+  .learning-progress-total { min-width:72px; padding:8px 10px; }
+  .learning-progress-total strong { font-size:22px; }
+}
+@media(prefers-reduced-motion:reduce) { .learning-progress-track > span { transition:none; } }
