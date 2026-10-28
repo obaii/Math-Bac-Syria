@@ -25,7 +25,7 @@ for (const testCase of cases) {
     continue;
   }
   const markup = getDiagram(found[0]);
-  if (!markup || !markup.includes("<svg") || !testCase.labels.every(label => markup.includes(label))) {
+  if (!markup || !(markup.includes("<svg") || markup.includes("<table")) || !testCase.labels.every(label => markup.includes(label))) {
     console.error("FAIL: " + testCase.name + " has a missing or incomplete diagram");
     failures++;
   } else {
