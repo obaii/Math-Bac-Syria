@@ -145,7 +145,7 @@
     };
     bindClick("smart-review", startSmartReview);
     bindClick("review-plan-toggle", toggleReviewPlan);
-    bindClick("bookmark-review", startBookmarkReview);
+    bindClick("bookmark-review", toggleBookmarkList);
     bindClick("guided-review", toggleGuidedQuestionList);
     bindClick("progress-report-toggle", toggleProgressReport);
     bindClick("export-progress", exportProgress);
@@ -424,7 +424,13 @@
       const q = byKey(k);
       return q ? `<li><button type="button" data-bookmark-key="${escapeHtml(k)}">${escapeHtml(q.topic)} — ${escapeHtml(q.q.replace(/<[^>]*>/g,"").slice(0,110))}</button></li>` : "";
     }).join("");
-    list.hidden = extras.bookmarks.length === 0;
+    // لا تُظهر المحفوظات تلقائياً عند تحميل الصفحة؛ زر المحفوظات هو المتحكم الوحيد بفتحها.
+    if (extras.bookmarks.length === 0) list.hidden = true;
+    const bookmarkButton = document.getElementById("bookmark-review");
+    if (bookmarkButton) {
+      bookmarkButton.setAttribute("aria-expanded", String(!list.hidden));
+      bookmarkButton.firstChild && (bookmarkButton.firstChild.textContent = !list.hidden ? "إخفاء المسائل المحفوظة (" : "عرض المسائل المحفوظة (");
+    }
     list.querySelectorAll("[data-bookmark-key]").forEach(btn => btn.addEventListener("click", () => {
       const q = byKey(btn.dataset.bookmarkKey);
       if (q) startTargetedQuiz([q], "المسائل المحفوظة");
@@ -465,7 +471,20 @@
     document.getElementById("quiz-title").textContent = title;
     showQuestion(); window.scrollTo({top:0,behavior:"smooth"});
   };
-  const startBookmarkReview = () => startTargetedQuiz(extras.bookmarks.map(byKey).filter(Boolean), "المسائل المحفوظة");
+  const toggleBookmarkList = () => {
+    const list = document.getElementById("bookmark-list");
+    const button = document.getElementById("bookmark-review");
+    if (!list || !button) return;
+    if (!extras.bookmarks.length) {
+      list.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      return;
+    }
+    list.hidden = !list.hidden;
+    button.setAttribute("aria-expanded", String(!list.hidden));
+    updateBookmarkUI();
+    if (!list.hidden) list.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
   const getScheduledReviews = () => {
     const now = Date.now();
     return [...new Set([...Object.keys(progressData.mistakes || {}), ...Object.keys(extras.schedule || {}), ...Object.keys(extras.reviewQuestions || {})])]
