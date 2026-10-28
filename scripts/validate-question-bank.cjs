@@ -32,6 +32,27 @@ try {
     .trim();
   const slash = String.fromCharCode(92);
   const countToken = (value, token) => value.split(token).length - 1;
+  const extractMathSegments = (value) => {
+    const segments = [];
+    const pattern = /\\\\\\((.*?)\\\\\\)|\\\\\\[([\\s\\S]*?)\\\\\\]/g;
+    for (const match of String(value ?? "").matchAll(pattern)) {
+      segments.push(match[1] ?? match[2] ?? "");
+    }
+    return segments;
+  };
+  const hasUnbalancedBraces = (formula) => {
+    let depth = 0;
+    const text = String(formula ?? "");
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] !== "{" && text[i] !== "}") continue;
+      let slashes = 0;
+      for (let j = i - 1; j >= 0 && text[j] === slash; j--) slashes++;
+      if (slashes % 2 === 1) continue;
+      if (text[i] === "{") depth++;
+      else if (--depth < 0) return true;
+    }
+    return depth !== 0;
+  };
 
   if (!Array.isArray(topics) || topics.length === 0) {
     errors.push("قائمة topics مفقودة أو فارغة.");
@@ -89,6 +110,11 @@ try {
       const displayClose = countToken(text, slash + "]");
       if (inlineOpen !== inlineClose || displayOpen !== displayClose) {
         errors.push(`${label}: محددات LaTeX غير متوازنة في ${field}.`);
+      }
+      for (const [mathIndex, formula] of extractMathSegments(text).entries()) {
+        if (hasUnbalancedBraces(formula)) {
+          errors.push(`${label}: أقواس المعادلة ${mathIndex + 1} غير متوازنة في ${field}.`);
+        }
       }
     }
 
