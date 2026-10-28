@@ -702,8 +702,9 @@
   // محاكاة امتحان شاملة: اختيار متوازن من الأبحاث مع مؤقت ومراجعة بعد التسليم.
   const examState = { active:false, remaining:0, timer:null, answers:[], resultVisible:false };
   const shuffle = list => [...list].sort(() => Math.random() - 0.5);
-  const buildBalancedExam = count => {
-    const bank = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+  const buildBalancedExam = (count, difficulty = "الكل") => {
+    const allQuestions = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+    const bank = difficulty === "الكل" ? allQuestions : allQuestions.filter(q => q.level === difficulty);
     const names = typeof topics !== "undefined" && Array.isArray(topics) ? topics : [...new Set(bank.map(q => q.topic))];
     const pools = names.map(topic => shuffle(bank.filter(q => q.topic === topic)));
     const picked = [];
@@ -761,6 +762,7 @@
         <div class="exam-tools-heading"><div><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div></div>
         <div class="exam-config">
           <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
+          <label>مستوى الأسئلة<select id="exam-difficulty"><option value="الكل" selected>جميع المستويات</option><option value="أساسي">أساسي</option><option value="متوسط">متوسط</option><option value="متقدم">متقدم</option></select></label>
           <label>المدة<select id="exam-duration"><option value="30">30 دقيقة</option><option value="60" selected>60 دقيقة</option><option value="90">90 دقيقة</option></select></label>
           <button type="button" id="start-exam" class="primary">ابدأ المحاكاة ←</button>
         </div>
@@ -839,7 +841,8 @@
     if (!bank.length) { alert("لا يوجد بنك أسئلة متاح لبدء المحاكاة."); return; }
     const wanted = Number(document.getElementById("exam-question-count")?.value || 30);
     const duration = Number(document.getElementById("exam-duration")?.value || 60);
-    const picked = buildBalancedExam(wanted);
+    const difficulty = document.getElementById("exam-difficulty")?.value || "الكل";
+    const picked = buildBalancedExam(wanted, difficulty);
     if (!picked.length) { alert("تعذر تجهيز أسئلة المحاكاة."); return; }
     stopExamTimer();
     examState.active = true;
