@@ -1,7 +1,7 @@
-const CACHE_NAME = "math-bac-syria-v22";
+const CACHE_NAME = "math-bac-syria-v23";
 const CORE_FILES = [
   "./", "./index.html", "./style.css", "./style-overrides.css",
-  "./app.js", "./questions.js", "./questions_vectors_additional.js",
+  "./app.js", "./questions.js", "./questions_vectors_additional.js", "./question-diagrams.js",
   "./merge-questions.js", "./solution-guides.js", "./enhancements.js",
   "./manifest.webmanifest", "./pwa-install.js", "./assets/icon.svg"
 ];
