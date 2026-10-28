@@ -60,7 +60,19 @@ const cases = [
   { contains: "احتمال حدث مستحيل", expected: "0" },
   { contains: "قطعة نقد متوازنة", expected: "\\(\\frac12\\)" },
   { contains: "\\vec u=(2,1,0)\\) و\\(\\vec v=(1,-2,0)", expected: "0" },
-  { contains: "\\lim_{x\\to3}(2x+1)", expected: "7" }
+  { contains: "\\lim_{x\\to3}(2x+1)", expected: "7" },
+  { contains: "طول القطعة AB يساوي", expected: "\\(\\sqrt{38}\\)" },
+  { contains: "منتصف القطعة [AB] حيث A(−2,4,1)", expected: "(2,2,3)" },
+  { contains: "\\overrightarrow{AB}=(2,−1,4)", expected: "(1,2,6)" },
+  { contains: "النقطة C التي تحقق \\(\\overrightarrow{AC}=2", expected: "(5,−4,8)" },
+  { contains: "إذا كان \\(\\overrightarrow{AB}=(2,1,−2)", expected: "(1,4,2)" },
+  { contains: "الجداء السلمي للشعاعين \\(\\vec u=(1,2,−1)", expected: "−1" },
+  { contains: "طول الشعاع \\(\\vec u=(2,−3,6)", expected: "7" },
+  { contains: "\\vec u\\cdot\\vec v=12", expected: "0°" },
+  { contains: "\\overrightarrow{AB}\\cdot\\overrightarrow{AC}\\) يساوي:", expected: "3" },
+  { contains: "المستوى المار بالنقطة A(1,0,2)", expected: "\\(2x−y+3z−8=0\\)" },
+  { contains: "المستويان \\(2x−y+z=1\\) و\\(4x−2y+2z=5\\)", expected: "متوازيان ومتمايزان" },
+  { contains: "المستوى \\(x−y+2z−4=0\\) يقطع محور z", expected: "(0,0,2)" }
 ];
 
 let failures = 0;
