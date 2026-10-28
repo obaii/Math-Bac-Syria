@@ -8,11 +8,11 @@
   <meta name="description" content="منصة تدريب تفاعلية لطلاب البكالوريا العلمي في الرياضيات وفق المنهاج السوري">
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="style-overrides.css?v=20261028-3">
+   <link rel="stylesheet" href="style-overrides.css?v=20261028-4">
   <style>
     .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
     body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
-    #student-tools{display:block!important;margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
+    #student-tools{margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
     #student-tools h3{margin:0 0 8px;font-size:18px}
     #student-tools p{margin:0 0 12px;color:#64748b;font-size:13px}
     #student-tools .tools-actions{display:flex;flex-wrap:wrap;gap:8px}
@@ -67,10 +67,10 @@
     </div>
     <nav class="quick-start" aria-label="اختصارات المنصة">
       <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#exam-tools"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#student-tools"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
     </nav>
-    <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title">
+    <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden>
       <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
       <p>راجع الأسئلة، واحفظ المسائل المهمة، وتابع تقدمك، وجرّب الوضع الليلي ومحاكاة الامتحان.</p>
       <div class="tools-actions">
@@ -86,7 +86,9 @@
       <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
       <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
       <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
-      <section id="exam-tools" class="exam-tools">
+      <ul class="bookmark-list" id="bookmark-list" hidden></ul>
+    </section>
+      <section id="exam-tools" class="exam-tools" hidden>
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
         <div class="exam-config">
           <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
@@ -95,8 +97,6 @@
         </div>
         <p class="exam-note">تُختار الأسئلة من الأبحاث المتاحة في بنك المنصة. هذه محاكاة تدريبية وليست نموذجاً رسمياً معتمداً.</p>
       </section>
-      <ul class="bookmark-list" id="bookmark-list" hidden></ul>
-    </section>
     <div id="topic-section" class="section-heading"><div><p class="eyebrow">تدرّب خطوة بخطوة</p><h2>اختر البحث</h2><p class="section-subtitle">اختر أحد أبحاث المنهاج وابدأ حل الأسئلة فوراً.</p></div><span id="total-count" class="count-pill"></span></div>
     <div class="topic-tools">
       <label class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي"></label>
