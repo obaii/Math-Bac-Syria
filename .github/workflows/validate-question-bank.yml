@@ -16,5 +16,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check enhancements.js
+          node --check questions.js
+          node --check questions_vectors_additional.js
+          node --check merge-questions.js
+          node --check solution-guides.js
+          node --check pwa-install.js
+          node --check scripts/validate-question-bank.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
