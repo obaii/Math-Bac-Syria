@@ -21,7 +21,7 @@ const normalize = (value) => String(value ?? "").normalize("NFKC").replace(/\s+/
 
 // The expected answer is written independently of the answer index in the source data.
 const cases = [
-  { contains: "إذا كان \\(f(x)=\\frac{x^2-1}{x-1}\\)", expected: "2" },
+  { contains: "عندما \\(x\\ne1\\)، فما قيمة \\(\\lim_{x\\to1}f(x)\\)", expected: "2" },
   { contains: "متتالية حسابية حدها الأول \\(u_1=4\\)", expected: "16" },
   { contains: "ما نهاية المتتالية \\(u_n=\\frac{3n+1}{n+2}\\)", expected: "3" },
   { contains: "إذا كان \\(f(x)=x^3\\)", expected: "\\(3x^2\\)" },
