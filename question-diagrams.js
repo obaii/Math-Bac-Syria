@@ -56,5 +56,24 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
+  if (prompt.includes("التوزيع المشترك") && /(جدول|بالجدول|بالاعتماد|وفق)/.test(prompt)) {
+    return `<figure class="question-diagram joint-table-figure" aria-label="جدول التوزيع المشترك للمتغيرين العشوائيين">
+      <figcaption>الجدول المشترك الكامل المستخدم في هذه المجموعة من الأسئلة.</figcaption>
+      <div class="joint-table-scroll">
+        <table class="joint-probability-table">
+          <caption>الاحتمال المشترك P(X=x, Y=y)</caption>
+          <thead><tr><th scope="col">X \\ Y</th><th scope="col">Y=0</th><th scope="col">Y=1</th><th scope="col">Y=2</th><th scope="col">P(X)</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">X=0</th><td>0.12</td><td>0.20</td><td>0.08</td><td>0.40</td></tr>
+            <tr><th scope="row">X=1</th><td>0.06</td><td>0.10</td><td>0.04</td><td>0.20</td></tr>
+            <tr><th scope="row">X=2</th><td>0.12</td><td>0.20</td><td>0.08</td><td>0.40</td></tr>
+            <tr class="joint-table-total"><th scope="row">P(Y)</th><td>0.30</td><td>0.50</td><td>0.20</td><td>1.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>`;
+
+  }
+
   return "";
 }
