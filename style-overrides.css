@@ -177,3 +177,62 @@ body.dark-mode #exam-tools .exam-note { color: #a7b5ca; }
   .install-app-button, #student-tools .tools-actions button, #quiz .option { transition: none; }
   #quiz .option:hover:not(:disabled) { transform: none; }
 }
+
+
+/* Quick navigation cards: direct access to the three main learning paths */
+.quick-start {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 22px;
+}
+.quick-start-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #e3e9f4;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--ink, #19263b);
+  text-decoration: none;
+  box-shadow: 0 5px 18px rgba(25,48,86,.035);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.quick-start-card:hover {
+  transform: translateY(-2px);
+  border-color: #b7c8f7;
+  box-shadow: 0 12px 25px rgba(49,94,219,.08);
+}
+.quick-start-card:focus-visible { outline: 3px solid #9eb5fa; outline-offset: 3px; }
+.quick-start-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  font-size: 21px;
+  font-weight: 800;
+}
+.training-icon { background: #edf2ff; color: #315edb; }
+.exam-icon { background: #e9f8f0; color: #168252; }
+.review-icon { background: #fff5df; color: #a76b0a; }
+.quick-start-copy { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+.quick-start-copy strong { font-size: 13px; line-height: 1.6; }
+.quick-start-copy small { color: #718096; font-size: 10px; line-height: 1.7; }
+.quick-start-arrow { margin-inline-start: auto; color: #8a9ab4; font-size: 17px; transition: transform .18s ease; }
+.quick-start-card:hover .quick-start-arrow { transform: translateX(-3px); color: #315edb; }
+body.dark-mode .quick-start-card { background: #182438; border-color: #34445d; color: #e7edf8; }
+body.dark-mode .quick-start-copy small { color: #a7b5ca; }
+body.dark-mode .quick-start-arrow { color: #a7b5ca; }
+@media (max-width: 760px) {
+  .quick-start { grid-template-columns: 1fr; gap: 9px; margin: 14px 0 18px; }
+  .quick-start-card { padding: 12px 14px; }
+  .quick-start-icon { flex-basis: 38px; width: 38px; height: 38px; border-radius: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quick-start-card, .quick-start-arrow { transition: none; }
+  .quick-start-card:hover { transform: none; }
+}
