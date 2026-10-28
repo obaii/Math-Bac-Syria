@@ -961,9 +961,12 @@
   if (typeof originalExamShowResults === "function") {
     window.showResults = function() {
       if (examState.active) {
+        // The last-question "Next" button reaches showResults() directly rather
+        // than finishExam(); record this successful completion path as well.
         examState.active = false;
         stopExamTimer();
         examState.resultVisible = true;
+        recordExamResult();
         updateExamChrome();
         originalExamShowResults();
         renderExamReview();
