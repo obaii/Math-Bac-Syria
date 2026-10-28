@@ -87,7 +87,8 @@ const cases = [
   { contains: "\\overrightarrow{AB}\\cdot\\overrightarrow{AC}\\) يساوي:", expected: "3" },
   { contains: "المستوى المار بالنقطة A(1,0,2)", expected: "\\(2x−y+3z−8=0\\)" },
   { contains: "المستويان \\(2x−y+z=1\\) و\\(4x−2y+2z=5\\)", expected: "متوازيان ومتمايزان" },
-  { contains: "المستوى \\(x−y+2z−4=0\\) يقطع محور z", expected: "(0,0,2)" }
+  { contains: "المستوى \\(x−y+2z−4=0\\) يقطع محور z", expected: "(0,0,2)" },
+  { contains: "لتكن I منتصف [CD] وJ منتصف [AI] وK منتصف [BJ]", expected: "1/2" }
 ];
 
 let failures = 0;

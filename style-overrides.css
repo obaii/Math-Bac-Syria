@@ -360,3 +360,31 @@ mjx-container { max-width: 100%; }
   .question-text mjx-container { font-size: 1em !important; }
   .exam-review-item mjx-container { font-size: .96em !important; }
 }
+
+
+/* رسومات رياضية مرافقة للأسئلة التي كانت تحيل إلى شكل مفقود. */
+.question-diagram {
+  margin: 14px 0 10px;
+  padding: 12px;
+  border: 1px solid var(--border, #d7deea);
+  border-radius: 14px;
+  background: var(--card, #fff);
+  overflow: hidden;
+}
+.question-diagram figcaption {
+  margin: 0 0 10px;
+  color: var(--text-secondary, #52627a);
+  font-size: .92rem;
+  line-height: 1.7;
+}
+.question-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 460px;
+  margin-inline: auto;
+}
+@media (max-width: 520px) {
+  .question-diagram { padding: 7px; margin-block: 10px; }
+  .question-diagram figcaption { font-size: .85rem; }
+}

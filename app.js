@@ -110,6 +110,10 @@ function showQuestion(){
   $("progress").textContent=`السؤال ${index+1} / ${quizQuestions.length}`;
   $("progress-bar").style.width=`${index/quizQuestions.length*100}%`;
   $("question-text").innerHTML=q.q;
+  if (typeof getQuestionDiagram === "function") {
+    const diagramMarkup = getQuestionDiagram(q);
+    if (diagramMarkup) $("question-text").insertAdjacentHTML("beforeend", diagramMarkup);
+  }
   $("options").innerHTML=q.options.map((option,i)=>`<button class="option" data-option="${i}"><span class="letter">${letters[i]}</span><span>${option}</span></button>`).join("");
   document.querySelectorAll("[data-option]").forEach(btn=>btn.addEventListener("click",()=>chooseAnswer(Number(btn.dataset.option))));
   $("feedback").className="feedback hidden"; $("feedback").innerHTML="";
