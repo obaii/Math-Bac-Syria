@@ -32,7 +32,17 @@ const cases = [
   { contains: "إذا كان \\(z=3+2i\\)", expected: "3" },
   { contains: "كم طريقة لاختيار طالبين من مجموعة فيها 5 طلاب", expected: "10" },
   { contains: "عند رمي حجر نرد متوازن مرة واحدة", expected: "\\(\\frac16\\)" },
-  { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" }
+  { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" },
+
+  { contains: "لكي يكون التابع \\(f(x)=\\frac{1}{x-3}\\) معرفاً", expected: "\\(x\\ne3\\)" },
+  { contains: "إذا كانت \\(u_{n+1}=u_n+5\\)", expected: "حسابية أساسها 5" },
+  { contains: "المتتالية \\(u_n=\\frac{1}{n}\\)", expected: "0" },
+  { contains: "مشتقة التابع \\(f(x)=5x-7\\)", expected: "5" },
+  { contains: "قيمة \\(\\ln(e^3)\\)", expected: "3" },
+  { contains: "حل المعادلة \\(e^x=1\\)", expected: "\\(x=0\\)" },
+  { contains: "تابع أصلي للتابع \\(f(x)=2x\\)", expected: "\\(x^2\\)" },
+  { contains: "إذا كانت إحداثيات الشعاع \\(\\vec{u}=(3,4)\\)", expected: "5" }
+
 ];
 
 let failures = 0;
