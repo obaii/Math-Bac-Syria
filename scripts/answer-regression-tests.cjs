@@ -34,7 +34,7 @@ const cases = [
   { contains: "عند رمي حجر نرد متوازن مرة واحدة", expected: "\\(\\frac16\\)" },
   { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" }
   ,
-  { contains: "إذا كان \\(f(x)=\\frac{x^2-4}{x-2}\\) عندما \\(x\\ne2\\)", expected: "4" },
+  { contains: "فإن \\(\\lim_{x\\to2}f(x)\\) تساوي؟", expected: "4" },
   { contains: "\\lim_{x\\to0}\\frac{\\sin x}{x}", expected: "1" },
   { contains: "متتالية حسابية حدها الأول \\(u_1=2\\)", expected: "22" },
   { contains: "إذا كان \\(u_n=3n-1\\)", expected: "3" },
