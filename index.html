@@ -36,8 +36,8 @@
   <script defer src="questions_vectors_additional.js?v=20261026-10"></script>
   <script defer src="merge-questions.js?v=20261026-10"></script>
   <script defer src="solution-guides.js?v=20261026-10"></script>
-  <script defer src="app.js?v=20261026-10"></script>
-  <script defer src="enhancements.js?v=20261026-10"></script>
+  <script defer src="app.js?v=20261028-1"></script>
+  <script defer src="enhancements.js?v=20261028-1"></script>
   <script defer src="pwa-install.js?v=20261026-3"></script>
 </head>
 <body>
@@ -65,6 +65,14 @@
       </div>
       <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
     </div>
+    <section class="learning-progress" aria-labelledby="learning-progress-title">
+      <div class="learning-progress-heading">
+        <div><p class="eyebrow">خطوتك التالية</p><h3 id="learning-progress-title">رحلتك التعليمية</h3><p>تابع الأبحاث التي بدأت بها، وأكمل تدريجياً بقية المنهاج.</p></div>
+        <div class="learning-progress-total"><strong id="started-topics-count">٠</strong><span>من <b id="all-topics-count">١٤</b> بحثاً</span></div>
+      </div>
+      <div class="learning-progress-track" role="progressbar" aria-label="نسبة الأبحاث التي بدأت بها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="topic-progress-bar"><span id="topic-progress-fill" style="width:0%"></span></div>
+      <p class="learning-progress-caption" id="topic-progress-caption">ابدأ بحل أسئلة من أي بحث لتتبع تقدمك هنا.</p>
+    </section>
     <nav class="quick-start" aria-label="اختصارات المنصة">
       <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
