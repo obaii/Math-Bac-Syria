@@ -13,6 +13,14 @@
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
   const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
+  const typesetMath = target => {
+    const mathJax = window.MathJax;
+    if (!target || !mathJax?.typesetPromise) return;
+    try { mathJax.typesetClear?.([target]); } catch (_) {}
+    Promise.resolve(mathJax.startup?.promise)
+      .then(() => mathJax.typesetPromise([target]))
+      .catch(error => console.warn("تعذر تنسيق المعادلات في هذا القسم", error));
+  };
   const addStyles = () => {
     const style = document.createElement("style");
     style.textContent = `
@@ -276,6 +284,7 @@
         if (typeof startQuiz === "function") startQuiz(topic);
       });
     });
+    typesetMath(report);
   };
   const toggleProgressReport = () => {
     const report = document.getElementById("progress-report");
@@ -341,7 +350,7 @@
       const q = byKey(item.dataset.mistakeKey) || progressData.mistakes[item.dataset.mistakeKey];
       if (q) startTargetedQuiz([q], "مراجعة خطأ — " + (q.topic || ""));
     }));
-    if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([section]).catch(() => {});
+    typesetMath(section);
   };
   const toggleMistakeLog = () => {
     const section = document.getElementById("mistake-log");
@@ -406,6 +415,7 @@
       if (q) startGuidedQuestion(q);
     }));
     if (btn) btn.setAttribute("aria-expanded", String(!list.hidden));
+    typesetMath(list);
   };
   const toggleGuidedQuestionList = () => {
     const list = document.getElementById("guided-question-list");
@@ -447,6 +457,7 @@
       const q = byKey(btn.dataset.bookmarkKey);
       if (q) startTargetedQuiz([q], "المسائل المحفوظة");
     }));
+    typesetMath(list);
   };
   const toggleBookmark = () => {
     const q = typeof quizQuestions !== "undefined" ? quizQuestions[index] : null;
@@ -541,6 +552,7 @@
       ${renderGroup("مستحق اليوم", due, "لا توجد مراجعات مستحقة الآن. أحسنت!") }
       ${renderGroup("خلال الأيام السبعة القادمة", upcoming, "لا توجد مراجعات مجدولة خلال الأسبوع القادم.") }
       ${renderGroup("بعد أسبوع", later, "لا توجد مواعيد أبعد من أسبوع.") }`;
+    typesetMath(panel);
   };
   const toggleReviewPlan = () => {
     const panel = document.getElementById("review-plan");
@@ -673,7 +685,7 @@
             const note = document.createElement("p"); note.className="muted"; note.textContent="الشرح التفصيلي لهذا السؤال يحتاج إلى مراجعة تعليمية إضافية؛ المعروض أدناه هو الحل المختصر المتاح حالياً.";
             solution.appendChild(note);
           }
-          if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([solution]).catch(()=>{});
+          typesetMath(solution);
         }
       }
     };
@@ -860,7 +872,7 @@
     review.innerHTML = `<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
     const actions = card.querySelector(".actions");
     card.insertBefore(review, actions || null);
-    if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([review]).catch(() => {});
+    typesetMath(review);
   };
   const finishExam = timedOut => {
     if (!examState.active) return;
