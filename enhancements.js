@@ -25,6 +25,17 @@
       .guided-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .guided-list button{height:100%;font-size:12px;line-height:1.8}
       .progress-report{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .progress-recommendations{margin:12px 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
+      .progress-recommendations>h4{margin:0 0 5px;font-size:15px}.progress-recommendations>p{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.8}
+      .progress-recommendation-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
+      .progress-recommendation{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg,#f7f9fc)}
+      .progress-recommendation strong{font-size:13px}.progress-recommendation p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.8}
+      .progress-recommendation-actions{display:flex;flex-wrap:wrap;gap:6px;flex-shrink:0}
+      .progress-recommendation-actions button{font:inherit;font-size:12px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
+      .progress-recommendation-actions button:last-child{background:var(--primary,#315edb);color:white;border-color:transparent}
+      .progress-recommendation-empty{padding:12px;border:1px dashed var(--line);border-radius:9px;color:var(--muted);font-size:13px;line-height:1.8}
+      body.dark-mode .progress-recommendation{background:var(--card-bg)}
+      @media(max-width:640px){.progress-recommendation{align-items:stretch;flex-direction:column}.progress-recommendation-actions{display:grid;grid-template-columns:1fr 1fr}.progress-recommendation-actions button{min-height:40px}}
       .review-plan{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px}
       .review-plan h4{margin:0 0 8px;font-size:15px}.review-plan>p{line-height:1.8}
       .review-plan-group{margin-top:12px}.review-plan-group h4{display:flex;justify-content:space-between;gap:8px}
@@ -185,6 +196,30 @@
     });
     const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
     const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
+    // توصيات مبنية على الأداء الفعلي: الأخطاء أولاً، ثم الأبحاث ذات الأداء المنخفض، ثم الأبحاث التي لم تبدأ.
+    const recommendations = [...rows].sort((a, b) => {
+      const priority = row => row.mistakeCount > 0 ? 0 : row.answered === 0 ? 2 : row.rate < 70 ? 1 : row.rate < 85 ? 1 : 3;
+      return priority(a) - priority(b)
+        || b.mistakeCount - a.mistakeCount
+        || (a.answered ? a.rate : 101) - (b.answered ? b.rate : 101)
+        || a.topic.localeCompare(b.topic, "ar");
+    }).filter(row => row.mistakeCount > 0 || row.answered === 0 || row.rate < 85).slice(0, 3);
+    const recommendationMarkup = recommendations.length ? recommendations.map(row => {
+      const reason = row.mistakeCount > 0
+        ? `لديك ${row.mistakeCount.toLocaleString("ar")} أخطاء محفوظة؛ ابدأ بمراجعتها.`
+        : row.answered === 0
+          ? "لم تبدأ هذا البحث بعد؛ خصص له جلسة تدريب قصيرة."
+          : row.rate < 70
+            ? `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ يُنصح بإعادة التدريب.`
+            : `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ راجع الأفكار التي أخطأت فيها.`;
+      return `<li class="progress-recommendation">
+        <div><strong>${escapeHtml(row.topic)}</strong><p>${escapeHtml(reason)}</p></div>
+        <div class="progress-recommendation-actions">
+          ${row.mistakeCount ? `<button type="button" data-recommend-review="${escapeHtml(row.topic)}">مراجعة الأخطاء</button>` : ""}
+          <button type="button" data-recommend-train="${escapeHtml(row.topic)">ابدأ التدريب</button>
+        </div>
+      </li>`;
+    }).join("") : '<li class="progress-recommendation-empty">ممتاز! لا توجد أبحاث تحتاج إلى أولوية خاصة حالياً. واصل التدريب للمحافظة على مستواك.</li>';
     const attempts = Array.isArray(progressData.attempts) ? progressData.attempts.slice(0, 10) : [];
     const recentActivity = attempts.length ? attempts.map(attempt => {
       const date = new Date(attempt.date);
@@ -199,6 +234,11 @@
     report.innerHTML = `
       <h4>تقرير تقدّمك</h4>
       <p>إجمالي المحاولات المسجّلة: <strong>${totalAttempts.toLocaleString("ar")}</strong> · الإجابات الصحيحة: <strong>${totalCorrect.toLocaleString("ar")}</strong></p>
+      <section class="progress-recommendations" aria-labelledby="progress-recommendations-title">
+        <h4 id="progress-recommendations-title">الأبحاث التي تستحق المراجعة أولاً</h4>
+        <p>تتغير هذه الاقتراحات تلقائياً وفق إجاباتك وأخطائك المحفوظة على هذا الجهاز.</p>
+        <ul class="progress-recommendation-list">${recommendationMarkup}</ul>
+      </section>
       <ul class="progress-report-list">${rows.map(row => `
         <li class="progress-report-item">
           <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
@@ -212,11 +252,17 @@
         <p>آخر ${Math.min(attempts.length, 10).toLocaleString("ar")} محاولات مسجّلة على هذا الجهاز.</p>
         <ul class="recent-attempt-list">${recentActivity}</ul>
       </section>`;
-    report.querySelectorAll("[data-review-topic]").forEach(button => {
+    report.querySelectorAll("[data-review-topic], [data-recommend-review]").forEach(button => {
       button.addEventListener("click", () => {
-        const topic = button.dataset.reviewTopic;
+        const topic = button.dataset.reviewTopic || button.dataset.recommendReview;
         const qs = mistakeValues.filter(q => q && q.topic === topic && q.q && Array.isArray(q.options));
         if (qs.length) startTargetedQuiz(qs, "مراجعة أخطاء — " + topic);
+      });
+    });
+    report.querySelectorAll("[data-recommend-train]").forEach(button => {
+      button.addEventListener("click", () => {
+        const topic = button.dataset.recommendTrain;
+        if (typeof startQuiz === "function") startQuiz(topic);
       });
     });
   };
