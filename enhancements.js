@@ -284,6 +284,7 @@
         if (typeof startQuiz === "function") startQuiz(topic);
       });
     });
+    typesetMath(report);
   };
   const toggleProgressReport = () => {
     const report = document.getElementById("progress-report");
@@ -414,6 +415,7 @@
       if (q) startGuidedQuestion(q);
     }));
     if (btn) btn.setAttribute("aria-expanded", String(!list.hidden));
+    typesetMath(list);
   };
   const toggleGuidedQuestionList = () => {
     const list = document.getElementById("guided-question-list");
@@ -455,6 +457,7 @@
       const q = byKey(btn.dataset.bookmarkKey);
       if (q) startTargetedQuiz([q], "المسائل المحفوظة");
     }));
+    typesetMath(list);
   };
   const toggleBookmark = () => {
     const q = typeof quizQuestions !== "undefined" ? quizQuestions[index] : null;
@@ -549,6 +552,7 @@
       ${renderGroup("مستحق اليوم", due, "لا توجد مراجعات مستحقة الآن. أحسنت!") }
       ${renderGroup("خلال الأيام السبعة القادمة", upcoming, "لا توجد مراجعات مجدولة خلال الأسبوع القادم.") }
       ${renderGroup("بعد أسبوع", later, "لا توجد مواعيد أبعد من أسبوع.") }`;
+    typesetMath(panel);
   };
   const toggleReviewPlan = () => {
     const panel = document.getElementById("review-plan");
