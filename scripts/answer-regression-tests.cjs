@@ -99,7 +99,15 @@ const cases = [
   { contains: "كل خانة تساوي حاصل ضرب", expected: "مستقلان" },
   { contains: "P(X=0,Y=0)=0.12", expected: "\\(0.30\\)" },
   { contains: "P(X=0,Y=1)=0.20", expected: "\\(0.50\\)" },
-  { contains: "بالاعتماد على جدول التوزيع المشترك حيث", expected: "\\(0.40\\)" }
+  { contains: "بالاعتماد على جدول التوزيع المشترك حيث", expected: "\\(0.40\\)" },
+  { contains: "مشتقة التابع \\(f(x)=5x-7\\) هي:", expected: "5" },
+  { contains: "احتمال حدث مؤكد يساوي؟", expected: "1" },
+  { contains: "في كيس 3 كرات حمراء و2 زرقاء", expected: "\\(\\frac25\\)" },
+  { contains: "عند رمي حجر نرد متوازن، احتمال ظهور عدد زوجي", expected: "\\(1/2\\)" },
+  { contains: "إذا كان \\(P(A)=0.65\\)", expected: "0.35" },
+  { contains: "مشتقة \\(f(x)=\\ln(3x)\\)", expected: "\\(1/x\\)" },
+  { contains: "مشتقة \\(f(x)=e^{3x}\\)", expected: "\\(3e^{3x}\\)" },
+  { contains: "الأطفال الأربعة من الجنس نفسه", expected: "\\(1/8\\)" } 
 ];
 
 let failures = 0;
