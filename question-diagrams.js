@@ -56,6 +56,19 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
+  if (prompt.includes("التوزيع السابق") && /(احتمال|P\\(X)/.test(prompt)) {
+    return `<figure class="question-diagram distribution-table-figure" aria-label="جدول توزيع المتغير العشوائي X">
+      <figcaption>جدول التوزيع الذي تشير إليه المسألة.</figcaption>
+      <div class="joint-table-scroll">
+        <table class="joint-probability-table">
+          <caption>قانون احتمال X</caption>
+          <thead><tr><th scope="col">x</th><th scope="col">0</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th></tr></thead>
+          <tbody><tr><th scope="row">P(X=x)</th><td>2/20</td><td>8/20</td><td>6/20</td><td>4/20</td></tr></tbody>
+        </table>
+      </div>
+    </figure>`;
+  }
+
   if (prompt.includes("التوزيع المشترك") && /(جدول|بالجدول|بالاعتماد|وفق)/.test(prompt)) {
     return `<figure class="question-diagram joint-table-figure" aria-label="جدول التوزيع المشترك للمتغيرين العشوائيين">
       <figcaption>الجدول المشترك الكامل المستخدم في هذه المجموعة من الأسئلة.</figcaption>
