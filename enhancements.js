@@ -216,7 +216,7 @@
         <div><strong>${escapeHtml(row.topic)}</strong><p>${escapeHtml(reason)}</p></div>
         <div class="progress-recommendation-actions">
           ${row.mistakeCount ? `<button type="button" data-recommend-review="${escapeHtml(row.topic)}">مراجعة الأخطاء</button>` : ""}
-          <button type="button" data-recommend-train="${escapeHtml(row.topic)">ابدأ التدريب</button>
+          <button type="button" data-recommend-train="${escapeHtml(row.topic)}">ابدأ التدريب</button>
         </div>
       </li>`;
     }).join("") : '<li class="progress-recommendation-empty">ممتاز! لا توجد أبحاث تحتاج إلى أولوية خاصة حالياً. واصل التدريب للمحافظة على مستواك.</li>';
