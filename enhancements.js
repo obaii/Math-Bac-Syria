@@ -867,5 +867,35 @@
   ensureMistakeLog();
   // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
   ensureExamControls();
-  window.addEventListener("load", ensureExamControls);
+
+  // لا تعرض لوحات المراجعة أو محاكاة الامتحان إلا عند اختيارها من الاختصارات.
+  const bindHomePanelToggles = () => {
+    document.querySelectorAll("[data-panel-toggle]").forEach(link => {
+      if (link.dataset.panelToggleBound === "true") return;
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        const panelId = link.dataset.panelToggle;
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+        const opening = panel.hidden;
+        ["student-tools", "exam-tools"].forEach(id => {
+          const other = document.getElementById(id);
+          if (other && other !== panel) other.hidden = true;
+        });
+        document.querySelectorAll("[data-panel-toggle]").forEach(item => {
+          item.setAttribute("aria-expanded", String(item === link && opening));
+        });
+        panel.hidden = !opening;
+        if (opening) {
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+      link.dataset.panelToggleBound = "true";
+    });
+  };
+  bindHomePanelToggles();
+  window.addEventListener("load", () => {
+    ensureExamControls();
+    bindHomePanelToggles();
+  });
 })();
