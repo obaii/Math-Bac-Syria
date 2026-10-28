@@ -257,6 +257,7 @@
           <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
           ${row.mistakeCount ? `<button type="button" class="topic-review-button" data-review-topic="${escapeHtml(row.topic)}">راجع أخطاء هذا البحث (${row.mistakeCount.toLocaleString("ar")})</button>` : ""}
         </li>`).join("")}</ul>
+      <section class="exam-history"><h4>سجل محاكاة الامتحان</h4><p>تُحفظ النتائج على هذا الجهاز لمقارنة أدائك عبر الوقت.</p><ul class="exam-history-list">${examHistoryMarkup}</ul></section>
       <section class="recent-activity">
         <h4>آخر المحاولات</h4>
         <p>آخر ${Math.min(attempts.length, 10).toLocaleString("ar")} محاولات مسجّلة على هذا الجهاز.</p>
@@ -873,11 +874,14 @@
     examState.active = false;
     stopExamTimer();
     examState.resultVisible = true;
+    recordExamResult();
     updateExamChrome();
     showResults();
     const detail = document.getElementById("score-detail");
     if (detail) detail.textContent += timedOut ? " · انتهى الوقت، وسُلّمت الإجابات تلقائياً." : " · تم تسليم المحاكاة.";
     renderExamReview();
+    const progressReport = document.getElementById("progress-report");
+    if (progressReport && !progressReport.hidden) renderProgressReport();
     window.scrollTo({top:0,behavior:"smooth"});
   };
   const originalExamChooseAnswer = window.chooseAnswer;
