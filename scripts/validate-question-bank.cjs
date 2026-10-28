@@ -108,9 +108,9 @@ try {
     if (!normalize(q.solution)) errors.push(`${label}: الحل فارغ.`);
     if (!allowedLevels.has(q.level)) errors.push(`${label}: مستوى الصعوبة غير صالح (${q.level}).`);
 
-    const questionKey = `${normalize(q.topic)}::${normalize(q.q)}`;
+    const questionKey = normalize(q.q);
     if (seenQuestions.has(questionKey)) {
-      errors.push(`${label}: سؤال مكرر مع العنصر #${seenQuestions.get(questionKey)}.`);
+      errors.push(`${label}: نص سؤال مكرر مع العنصر #${seenQuestions.get(questionKey)} (حتى لو اختلف البحث).`);
     } else {
       seenQuestions.set(questionKey, index + 1);
     }
