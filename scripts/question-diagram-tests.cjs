@@ -7,8 +7,9 @@ const context = vm.createContext({ console });
 for (const file of ["questions.js", "questions_vectors_additional.js", "merge-questions.js", "question-diagrams.js"]) {
   vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context, { filename: file, timeout: 5000 });
 }
-const questions = context.questions;
-const getDiagram = context.getQuestionDiagram;
+const loaded = vm.runInContext("({ questions, getQuestionDiagram })", context);
+const questions = loaded.questions;
+const getDiagram = loaded.getQuestionDiagram;
 const cases = [
   { name: "logarithmic graph choices", match: q => q.q.includes("f(x)=(\\ln x)^2-1"), labels: ["A", "B", "C", "D"] },
   { name: "cube projection", match: q => q.q.includes("في مكعب طول حرفه 3") && q.q.includes("مسقط M العمودي"), labels: ["M(2,2,1)", "M′(0,2,1)", "ADHE"] },
