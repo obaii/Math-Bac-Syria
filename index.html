@@ -10,7 +10,9 @@
   <link rel="stylesheet" href="style.css">
    <link rel="stylesheet" href="style-overrides.css?v=20261028-1">
   <style>
-    .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}\n    body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}\n    #student-tools{display:block!important;margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
+    .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
+    body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
+    #student-tools{display:block!important;margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
     #student-tools h3{margin:0 0 8px;font-size:18px}
     #student-tools p{margin:0 0 12px;color:#64748b;font-size:13px}
     #student-tools .tools-actions{display:flex;flex-wrap:wrap;gap:8px}
@@ -63,6 +65,11 @@
       </div>
       <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
     </div>
+    <nav class="quick-start" aria-label="اختصارات المنصة">
+      <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#exam-tools"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#student-tools"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
+    </nav>
     <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title">
       <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
       <p>راجع الأسئلة، واحفظ المسائل المهمة، وتابع تقدمك، وجرّب الوضع الليلي ومحاكاة الامتحان.</p>
