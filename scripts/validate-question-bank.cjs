@@ -53,6 +53,24 @@ try {
     }
     return depth !== 0;
   };
+  const findEnvironmentErrors = (formula) => {
+    const stack = [];
+    const issues = [];
+    const pattern = /\\(begin|end)\s*\{([^{}]+)\}/g;
+    for (const match of String(formula ?? "").matchAll(pattern)) {
+      const action = match[1];
+      const name = match[2];
+      if (action === "begin") {
+        stack.push({ name, index: match.index });
+      } else {
+        const opened = stack.pop();
+        if (!opened) issues.push("\\end{" + name + "} بلا بداية مطابقة");
+        else if (opened.name !== name) issues.push("\\begin{" + opened.name + "} لا تطابق \\end{" + name + "}");
+      }
+    }
+    for (const opened of stack) issues.push("\\begin{" + opened.name + "} بلا نهاية مطابقة");
+    return issues;
+  };
 
   if (!Array.isArray(topics) || topics.length === 0) {
     errors.push("قائمة topics مفقودة أو فارغة.");
@@ -114,6 +132,9 @@ try {
       for (const [mathIndex, formula] of extractMathSegments(text).entries()) {
         if (hasUnbalancedBraces(formula)) {
           errors.push(`${label}: أقواس المعادلة ${mathIndex + 1} غير متوازنة في ${field}.`);
+        }
+        for (const issue of findEnvironmentErrors(formula)) {
+          errors.push(`${label}: خطأ في بيئة LaTeX ضمن المعادلة ${mathIndex + 1} في ${field}: ${issue}.`);
         }
       }
     }
