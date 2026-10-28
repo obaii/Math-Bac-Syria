@@ -370,6 +370,7 @@
     extras.bookmarks = [];
     extras.schedule = {};
     extras.reviewQuestions = {};
+    extras.examHistory = [];
     persistExtras();
     updateBookmarkUI();
     updateBookmarkButton();
