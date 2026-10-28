@@ -332,3 +332,31 @@ body.dark-mode .learning-progress-track { background:#34445d; }
   .learning-progress-total strong { font-size:22px; }
 }
 @media(prefers-reduced-motion:reduce) { .learning-progress-track > span { transition:none; } }
+
+
+/* اجعل خاصية hidden موثوقة حتى لا تظهر اللوحات المغلقة بسبب أي قاعدة display أخرى. */
+[hidden],
+#student-tools[hidden],
+#exam-tools[hidden],
+#bookmark-list[hidden],
+#guided-question-list[hidden],
+#progress-report[hidden],
+#review-plan[hidden] { display: none !important; }
+
+/* تحسين عرض المعادلات الطويلة على الهاتف والشاشات الضيقة. */
+.question-text, .feedback, .solution, .exam-review-question,
+.exam-review-solution, .bookmark-list {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: .2em;
+}
+mjx-container { max-width: 100%; }
+@media (max-width: 600px) {
+  .question-text mjx-container { font-size: 1em !important; }
+  .exam-review-item mjx-container { font-size: .96em !important; }
+}
