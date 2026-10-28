@@ -90,7 +90,7 @@ const cases = [
   { contains: "المستوى \\(x−y+2z−4=0\\) يقطع محور z", expected: "(0,0,2)" },
   { contains: "لتكن I منتصف [CD] وJ منتصف [AI] وK منتصف [BJ]", expected: "1/2" },
   { contains: "إذا كانت القطعة المختارة معيبة، فما احتمال أن تكون من المصنع A؟", expected: "\\(\\frac{35}{59}\\)" },
-  { contains: "متغير عشوائي X يأخذ القيم 0 و1 و2 و3 باحتمالات على الترتيب", expected: "\\(\\frac12\\)" },
+  { contains: "ما احتمال أن تكون قيمة X أكبر من أو تساوي 2؟", expected: "\\(\\frac12\\)" },
   { contains: "ما قيمة \\(P(X=3)\\)؟", expected: "\\(\\frac15\\)" },
   { contains: "صف \\(X=0\\) يحوي الاحتمالات", expected: "0.40" },
   { contains: "مجاميع أعمدة \\(Y=0,1,2\\)", expected: "0.50" },
@@ -120,7 +120,7 @@ const cases = [
   { contains: "متتالية هندسية تحقق u₀=3", expected: "4092" },
   { contains: "كرة سوداء واحدة على الأقل إذا كان الترتيب مهماً", expected: "114" },
   { contains: "حل المعادلة التفاضلية \\(2y'+3y=0\\) مع الشرط \\(y(0)=2\\)", expected: "\\(y=2e^{-3x/2}\\)" },
-  { contains: "ما قيمة \\\\(F(1)\\\\)؟", expected: "8" }
+  { contains: "ما قيمة \\(F(1)\\)؟", expected: "8" }
 ];
 
 let failures = 0;
