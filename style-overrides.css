@@ -91,3 +91,89 @@ body.dark-mode .topic-mastery { background: #34445d; }
   display: none !important;
   visibility: hidden !important;
 }
+
+
+/* المرحلة التالية: صقل الواجهة التعليمية دون تغيير منطق الأسئلة */
+:root {
+  --ui-radius: 18px;
+  --ui-shadow: 0 14px 36px rgba(19, 40, 73, .07);
+}
+body { -webkit-font-smoothing: antialiased; }
+.top { border-bottom: 1px solid rgba(226,232,240,.8); }
+.brand { letter-spacing: -.2px; }
+.install-app-button { transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+.install-app-button:hover { background: #f5f8ff; border-color: #9eb5fa; transform: translateY(-1px); }
+.dashboard, #student-tools, #exam-tools, .question-card, .result-card { box-shadow: var(--ui-shadow); }
+#student-tools {
+  margin-top: 22px;
+  padding: clamp(16px, 2.5vw, 24px);
+  border-radius: var(--ui-radius);
+  background: linear-gradient(145deg, #fff, #fbfcff);
+}
+#student-tools > h3 { display: flex; align-items: center; gap: 9px; }
+#student-tools > h3::before {
+  content: "✦";
+  display: inline-grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 10px;
+  background: #edf2ff;
+  color: #315edb;
+  font-size: 15px;
+}
+#student-tools .tools-actions { gap: 9px; }
+#student-tools .tools-actions button {
+  min-height: 42px;
+  border-radius: 11px;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+}
+#student-tools .tools-actions button:hover {
+  border-color: #b7c8f7;
+  background: #f7f9ff;
+  box-shadow: 0 5px 14px rgba(49,94,219,.07);
+  transform: translateY(-1px);
+}
+#student-tools .tools-actions button:active { transform: translateY(0); }
+#exam-tools {
+  margin-top: 20px;
+  padding: clamp(16px, 2.5vw, 22px);
+  border-radius: 16px;
+  border-color: #dce5f5;
+  background: linear-gradient(145deg, #f9fbff, #f1f5ff);
+}
+#exam-tools .exam-tools-heading .eyebrow { margin-bottom: 3px; }
+#exam-tools .exam-tools-heading h3 { font-size: 20px; }
+#exam-tools .exam-config { margin-top: 16px; gap: 12px; }
+#exam-tools .exam-config label { min-width: 150px; flex: 1; }
+#exam-tools select { width: 100%; min-height: 44px; }
+#exam-tools button { min-height: 44px; }
+#exam-tools .exam-note { margin-top: 12px; color: #6b7b94; font-size: 12px; }
+.topic-card { box-shadow: 0 4px 16px rgba(25,48,86,.035); }
+.topic-card:focus-visible { outline-offset: 4px; }
+.search-box, .filter-panel, .stat-card { transition: border-color .18s ease, box-shadow .18s ease; }
+.search-box:focus-within { box-shadow: 0 0 0 4px rgba(49,94,219,.09); }
+#quiz .question-card { border-radius: 20px; }
+#quiz .options { gap: 12px; }
+#quiz .option { border-radius: 14px; padding: 14px 16px; }
+#quiz .option:hover:not(:disabled) { transform: translateX(-2px); }
+#results .result-card { border-radius: 22px; }
+footer { border-top: 1px solid #e8edf5; }
+footer a { color: #315edb; text-underline-offset: 3px; }
+footer a:hover { color: #173da7; }
+body.dark-mode #student-tools { background: linear-gradient(145deg, #182438, #111d30); }
+body.dark-mode #exam-tools { background: linear-gradient(145deg, #182438, #111d30); border-color: #34445d; }
+body.dark-mode #student-tools .tools-actions button:hover { background: #22324b; border-color: #526b95; }
+body.dark-mode #exam-tools .exam-note { color: #a7b5ca; }
+@media (max-width: 600px) {
+  #student-tools { margin-top: 16px; }
+  #student-tools .tools-actions button { flex: 1 1 145px; padding: 9px 10px; }
+  #exam-tools .exam-config { display: grid; grid-template-columns: 1fr 1fr; }
+  #exam-tools .exam-config label { min-width: 0; }
+  #exam-tools .exam-config button { grid-column: 1 / -1; width: 100%; }
+  #exam-tools .exam-tools-heading h3 { font-size: 18px; }
+  #quiz .question-card { padding: 18px 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .install-app-button, #student-tools .tools-actions button, #quiz .option { transition: none; }
+  #quiz .option:hover:not(:disabled) { transform: none; }
+}
