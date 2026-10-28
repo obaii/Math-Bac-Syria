@@ -67,6 +67,25 @@ function refreshDashboard(){
   }
 }
 
+function topicIcon(topic){
+  const name = String(topic || "");
+  if (name.includes("الاحتمالات")) return "🎲";
+  if (name.includes("التحليل التوافقي")) return "🔢";
+  if (name.includes("تطبيقات الأعداد العقدية")) return "🧭";
+  if (name.includes("الأعداد العقدية")) return "ℂ";
+  if (name.includes("الجداء السلمي")) return "·";
+  if (name.includes("المستقيمات والمستويات")) return "📐";
+  if (name.includes("الأشعة")) return "➤";
+  if (name.includes("التكامل")) return "∫";
+  if (name.includes("اللوغاريتمي")) return "ln";
+  if (name.includes("الأسي")) return "eˣ";
+  if (name.includes("الاشتقاق")) return "ƒ′";
+  if (name.includes("نهاية متتالية")) return "uₙ";
+  if (name.includes("المتتاليات")) return "uₙ";
+  if (name.includes("النهايات")) return "↗";
+  return "∑";
+}
+
 function renderTopics(){
   const level = $("difficulty").value;
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
@@ -81,7 +100,7 @@ function renderTopics(){
     const completion = topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح` : "لم تبدأ بعد";
     return `<button class="topic-card" data-topic="${topic}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-arrow">↖</span></span>
-      <span class="topic-card-content"><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
+      <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-bottom"><span class="topic-status">${completion}</span><span class="topic-start">${count ? "ابدأ التدريب ←" : "لا توجد أسئلة بهذا المستوى"}</span></span>
       <span class="topic-mastery" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${successRate}"><span style="width:${successRate}%"></span></span>
     </button>`;
