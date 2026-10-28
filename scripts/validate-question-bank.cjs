@@ -28,8 +28,10 @@ try {
   const allowedLevels = new Set(["أساسي", "متوسط", "متقدم"]);
   const normalize = (value) => String(value ?? "")
     .normalize("NFKC")
-    .replace(/\\s+/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
+  const slash = String.fromCharCode(92);
+  const countToken = (value, token) => value.split(token).length - 1;
 
   if (!Array.isArray(topics) || topics.length === 0) {
     errors.push("قائمة topics مفقودة أو فارغة.");
@@ -74,16 +76,17 @@ try {
       seenQuestions.set(questionKey, index + 1);
     }
 
-    for (const [field, value] of [
+    const fields = [
       ["نص السؤال", q.q],
       ["الحل", q.solution],
       ...((q.options || []).map((option, i) => [`الخيار ${i + 1}`, option]))
-    ]) {
+    ];
+    for (const [field, value] of fields) {
       const text = String(value ?? "");
-      const inlineOpen = (text.match(/\\\\\\(/g) || []).length;
-      const inlineClose = (text.match(/\\\\\\)/g) || []).length;
-      const displayOpen = (text.match(/\\\\\\[/g) || []).length;
-      const displayClose = (text.match(/\\\\\\]/g) || []).length;
+      const inlineOpen = countToken(text, slash + "(");
+      const inlineClose = countToken(text, slash + ")");
+      const displayOpen = countToken(text, slash + "[");
+      const displayClose = countToken(text, slash + "]");
       if (inlineOpen !== inlineClose || displayOpen !== displayClose) {
         errors.push(`${label}: محددات LaTeX غير متوازنة في ${field}.`);
       }
@@ -100,18 +103,18 @@ try {
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
   console.log(`مدخلات الملف الإضافي: ${rawAdditional}`);
-  console.log("\\nتوزيع الأسئلة حسب البحث:");
+  console.log("\nتوزيع الأسئلة حسب البحث:");
   for (const [topic, bucket] of counts) {
     console.log(`- ${topic}: ${bucket.total} (${Object.entries(bucket.levels).map(([level, n]) => `${level}: ${n}`).join("، ") || "لا توجد أسئلة"})`);
     if (bucket.total === 0) warnings.push(`البحث "${topic}" لا يحتوي أسئلة.`);
   }
   for (const warning of warnings) console.warn(`تحذير: ${warning}`);
   if (errors.length) {
-    console.error(`\\nفشل الفحص: ${errors.length} مشكلة:`);
+    console.error(`\nفشل الفحص: ${errors.length} مشكلة:`);
     for (const error of errors) console.error(`- ${error}`);
     process.exitCode = 1;
   } else {
-    console.log("\\nنجح فحص بنية بنك الأسئلة والمعادلات.");
+    console.log("\nنجح فحص بنية بنك الأسئلة والمعادلات.");
   }
 } catch (error) {
   console.error("تعذر تنفيذ فحص بنك الأسئلة:", error);
