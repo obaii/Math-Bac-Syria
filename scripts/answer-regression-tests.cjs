@@ -64,7 +64,7 @@ const cases = [
   { contains: "طول القطعة AB يساوي", expected: "\\(\\sqrt{38}\\)" },
   { contains: "منتصف القطعة [AB] حيث A(−2,4,1)", expected: "(2,2,3)" },
   { contains: "\\overrightarrow{AB}=(2,−1,4)", expected: "(1,2,6)" },
-  { contains: "النقطة C التي تحقق \\((\\overrightarrow{AC}=2", expected: "(5,−4,8)" },
+  { contains: "النقطة C التي تحقق \\(\\overrightarrow{AC}=2", expected: "(5,−4,8)" },
   { contains: "فإن \\overrightarrow{AC} يساوي:", expected: "(1,4,2)" },
   { contains: "الجداء السلمي للشعاعين \\vec u=(1,2,−1)", expected: "−1" },
   { contains: "طول الشعاع \\vec u=(2,−3,6)", expected: "7" },
