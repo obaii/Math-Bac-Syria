@@ -803,6 +803,22 @@
     document.getElementById("exam-review")?.remove();
     const review = document.createElement("section");
     review.id = "exam-review"; review.className = "exam-review";
+    const topicResults = new Map();
+    quizQuestions.forEach((q, i) => {
+      const topic = q.topic || "أبحاث متنوعة";
+      const item = topicResults.get(topic) || { total: 0, correct: 0 };
+      item.total++;
+      if (examState.answers[i] === q.answer) item.correct++;
+      topicResults.set(topic, item);
+    });
+    const topicSummary = [...topicResults.entries()]
+      .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))
+      .map(([topic, stat]) => {
+        const rate = Math.round(stat.correct / stat.total * 100);
+        const status = rate >= 80 ? "مستوى جيد" : rate >= 50 ? "يحتاج بعض التدريب" : "أولوية للمراجعة";
+        const statusClass = rate >= 80 ? "exam-answer-good" : "exam-answer-bad";
+        return `<li class="exam-topic-result"><div><strong>${escapeHtml(topic)}</strong><span class="${statusClass}">${status}</span></div><div class="exam-topic-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rate}"><span style="width:${rate}%"></span></div><small>${stat.correct.toLocaleString("ar")} صحيحة من ${stat.total.toLocaleString("ar")} · ${rate.toLocaleString("ar")}٪</small></li>`;
+      }).join("");
     const rows = quizQuestions.map((q, i) => {
       const chosen = examState.answers[i];
       const correct = chosen === q.answer;
@@ -815,7 +831,7 @@
         <div class="exam-review-solution"><strong>الحل:</strong> ${escapeHtml(String(q.solution || "لا يتوفر شرح لهذا السؤال."))}</div>
       </li>`;
     }).join("");
-    review.innerHTML = `<h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
+    review.innerHTML = `<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
     const actions = card.querySelector(".actions");
     card.insertBefore(review, actions || null);
     if (window.MathJax?.typesetPromise) window.MathJax.typesetPromise([review]).catch(() => {});
@@ -915,7 +931,13 @@
       .exam-clock{align-self:center;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--card-bg,white);color:var(--ink)}
       .exam-clock-low{border-color:#c2410c;color:#c2410c}
       #exam-submit{margin-inline-end:8px}#exam-submit[hidden],#exam-clock[hidden]{display:none}
-      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin-bottom:6px}
+      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin:20px 0 6px}
+      .exam-topic-results{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 24px}
+      .exam-topic-result{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
+      .exam-topic-result>div:first-child{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;font-size:13px}
+      .exam-topic-result small{display:block;margin-top:7px;color:var(--muted,#718096);font-size:12px}
+      .exam-topic-track{height:7px;margin-top:10px;overflow:hidden;border-radius:999px;background:var(--line)}
+      .exam-topic-track span{display:block;height:100%;border-radius:inherit;background:var(--success,#2f9e72)}
       .exam-review-list{padding-inline-start:24px;display:grid;gap:12px}.exam-review-item{padding:14px;border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}
       .exam-review-title{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
       .exam-review-question{margin:8px 0;font-size:16px}.exam-review-item p{margin:6px 0}
