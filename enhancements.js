@@ -955,7 +955,7 @@
       .exam-clock{align-self:center;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--card-bg,white);color:var(--ink)}
       .exam-clock-low{border-color:#c2410c;color:#c2410c}
       #exam-submit{margin-inline-end:8px}#exam-submit[hidden],#exam-clock[hidden]{display:none}
-      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin:20px 0 6px}
+      .exam-history{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px}.exam-history>h4{margin:0 0 5px}.exam-history>p{font-size:12px;color:var(--muted)}\n      .exam-history-list{list-style:none;padding:0;margin:10px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}\n      .exam-history-item{padding:12px;border:1px solid var(--line);border-radius:10px}.exam-history-item>div{display:flex;justify-content:space-between;gap:8px}.exam-history-item>div span{font-weight:700}.exam-history-item p,.exam-history-item small{font-size:12px;color:var(--muted);margin:6px 0 0}\n      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin:20px 0 6px}
       .exam-topic-results{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 24px}
       .exam-topic-result{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
       .exam-topic-result>div:first-child{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;font-size:13px}
