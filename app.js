@@ -16,12 +16,12 @@ if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQues
   }
 }
 const letters = ["أ","ب","ج","د"];
-const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [] });
+const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [], seenQuestions: {} });
 function loadProgress(){
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if (!saved || typeof saved !== "object") return emptyProgress();
-    return { ...emptyProgress(), ...saved, mistakes: saved.mistakes || {}, topicStats: saved.topicStats || {}, attempts: Array.isArray(saved.attempts) ? saved.attempts : [] };
+    return { ...emptyProgress(), ...saved, mistakes: saved.mistakes || {}, topicStats: saved.topicStats || {}, attempts: Array.isArray(saved.attempts) ? saved.attempts : [], seenQuestions: saved.seenQuestions && typeof saved.seenQuestions === "object" ? saved.seenQuestions : {} };
   } catch(e) { return emptyProgress(); }
 }
 let progressData = loadProgress();
@@ -30,6 +30,9 @@ function saveProgress(){
   catch(e) { console.warn("تعذر حفظ التقدم محلياً", e); }
 }
 function questionKey(q){ return `${q.topic}::${q.q}`; }
+function countSeenQuestions(topic = "") {
+  return questions.reduce((count, q) => count + ((!topic || q.topic === topic) && progressData.seenQuestions[questionKey(q)] ? 1 : 0), 0);
+}
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
@@ -65,6 +68,28 @@ function refreshDashboard(){
           ? "رائع! بدأت جميع الأبحاث. واصل التدريب لتحسين نتائجك."
           : `بدأت ${started.toLocaleString("ar")} من ${total.toLocaleString("ar")} بحثاً؛ تبقّى ${(total-started).toLocaleString("ar")} لتبدأ بها.`;
   }
+
+  const uniqueCount = countSeenQuestions();
+  const bankCount = questions.length;
+  const questionCountNode = $("unique-question-count");
+  const bankCountNode = $("total-bank-question-count");
+  const questionFill = $("question-progress-fill");
+  const questionTrack = $("question-progress-bar");
+  const questionCaption = $("question-progress-caption");
+  const questionPercent = bankCount ? Math.round(uniqueCount / bankCount * 100) : 0;
+  if (questionCountNode) questionCountNode.textContent = uniqueCount.toLocaleString("ar");
+  if (bankCountNode) bankCountNode.textContent = bankCount.toLocaleString("ar");
+  if (questionFill) questionFill.style.width = questionPercent + "%";
+  if (questionTrack) questionTrack.setAttribute("aria-valuenow", String(questionPercent));
+  if (questionCaption) {
+    questionCaption.textContent = progressData.answered > 0 && uniqueCount === 0
+      ? "نتائجك السابقة ما زالت محفوظة؛ يبدأ عدّ الأسئلة المختلفة من هذا التحديث."
+      : uniqueCount === 0
+        ? "ابدأ التدريب لتتبع عدد الأسئلة المختلفة التي حللتها."
+        : uniqueCount === bankCount
+          ? "أحسنت! جرّبت جميع الأسئلة المختلفة في البنك."
+          : `جرّبت ${uniqueCount.toLocaleString("ar")} من ${bankCount.toLocaleString("ar")} سؤالاً مختلفاً (${questionPercent.toLocaleString("ar")}٪).`;
+  }
 }
 
 function renderTopics(){
@@ -75,15 +100,15 @@ function renderTopics(){
   $("topic-grid").innerHTML = availableTopics.map(topic=>{
     const i = topics.indexOf(topic);
     const count = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level)).length;
-    const done = Object.keys(progressData.mistakes).length + progressData.correct;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
     const successRate = topicStat.answered ? Math.round(topicStat.correct/topicStat.answered*100) : 0;
-    const completion = topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح` : "لم تبدأ بعد";
+    const seenCount = questions.filter(q => q.topic === topic && (level === "الكل" || q.level === level) && progressData.seenQuestions[questionKey(q)]).length;
+    const coverageRate = count ? Math.min(100, Math.round(seenCount/count*100)) : 0;
     return `<button class="topic-card" data-topic="${topic}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
-      <span class="topic-card-bottom"><span class="topic-status">${completion}</span><span class="topic-start">${count ? "ابدأ التدريب ←" : "لا توجد أسئلة بهذا المستوى"}</span></span>
-      <span class="topic-mastery" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${successRate}"><span style="width:${successRate}%"></span></span>
+      <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">${topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح · ابدأ ←` : "ابدأ التدريب ←"}</span></span>
+      <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}"><span style="width:${coverageRate}%"></span></span>
     </button>`;
   }).join("");
   $("no-topics").classList.toggle("hidden", availableTopics.length !== 0);
@@ -129,6 +154,8 @@ function chooseAnswer(choice){
   if(isCorrect)correctCount++;
   if (!reviewMode) {
     progressData.answered += 1;
+    progressData.seenQuestions = progressData.seenQuestions || {};
+    progressData.seenQuestions[questionKey(q)] = true;
     if (isCorrect) {
       progressData.correct += 1;
       delete progressData.mistakes[questionKey(q)];
