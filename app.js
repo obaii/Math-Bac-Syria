@@ -38,6 +38,33 @@ function refreshDashboard(){
   $("stat-percent").textContent = progressData.answered ? `${Math.round(progressData.correct / progressData.answered * 100).toLocaleString("ar")}٪` : "—";
   $("review-mistakes").disabled = mistakes === 0;
   $("review-mistakes").classList.toggle("is-disabled", mistakes === 0);
+
+  // تقدم الأبحاث يعتمد على الأبحاث التي أجاب الطالب عن سؤال واحد على الأقل منها.
+  const topicNames = Array.isArray(topics) ? topics : [];
+  const started = topicNames.filter(topic => {
+    const stat = progressData.topicStats[topic];
+    return stat && Number(stat.answered) > 0;
+  }).length;
+  const total = topicNames.length;
+  const percent = total ? Math.round(started / total * 100) : 0;
+  const startedNode = $("started-topics-count");
+  const totalNode = $("all-topics-count");
+  const fill = $("topic-progress-fill");
+  const track = $("topic-progress-bar");
+  const caption = $("topic-progress-caption");
+  if (startedNode) startedNode.textContent = started.toLocaleString("ar");
+  if (totalNode) totalNode.textContent = total.toLocaleString("ar");
+  if (fill) fill.style.width = percent + "%";
+  if (track) track.setAttribute("aria-valuenow", String(percent));
+  if (caption) {
+    caption.textContent = total === 0
+      ? "ستظهر متابعة تقدمك عند توفر الأبحاث."
+      : started === 0
+        ? "ابدأ بحل أسئلة من أي بحث لتتبع تقدمك هنا."
+        : started === total
+          ? "رائع! بدأت جميع الأبحاث. واصل التدريب لتحسين نتائجك."
+          : `بدأت ${started.toLocaleString("ar")} من ${total.toLocaleString("ar")} بحثاً؛ تبقّى ${(total-started).toLocaleString("ar")} لتبدأ بها.`;
+  }
 }
 
 function renderTopics(){
