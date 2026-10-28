@@ -32,6 +32,15 @@ for (const testCase of cases) {
     console.log("PASS: " + testCase.name);
   }
 }
+const tableQuestions = questions.filter(q =>
+  q.q.includes("التوزيع المشترك") && /(جدول|بالجدول|بالاعتماد|وفق)/.test(q.q)
+);
+if (tableQuestions.length !== 8 || tableQuestions.some(q => !getDiagram(q).includes("joint-probability-table"))) {
+  console.error("FAIL: all eight shared-table questions must include the joint probability table");
+  failures++;
+} else {
+  console.log("PASS: all eight shared-table questions include the table");
+}
 const tetra = questions.find(q => q.q.includes("لتكن I منتصف [CD]"));
 if (!tetra || tetra.options[tetra.answer] !== "1/2") {
   console.error("FAIL: corrected tetrahedron answer must be 1/2");
@@ -41,5 +50,5 @@ if (!fs.existsSync(path.join(root, "assets", "question-11-graphs.png"))) {
   console.error("FAIL: existing derivative graph asset is missing");
   failures++;
 }
-console.log("\nQuestion diagram checks: " + (cases.length + 2 - failures) + "/" + (cases.length + 2) + " passed.");
+console.log("\nQuestion diagram checks: " + (cases.length + 3 - failures) + "/" + (cases.length + 3) + " passed.");
 if (failures) process.exitCode = 1;
