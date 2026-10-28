@@ -477,3 +477,14 @@ body.dark-mode .question-coverage-total { background:#243653; color:#b8ccff; }
   .question-coverage-total { min-width:72px; padding:8px 10px; }
   .question-coverage-total strong { font-size:22px; }
 }
+
+
+/* الانتقال من تحليل المحاكاة إلى تدريب مباشر على البحث المحدد */
+.exam-topic-result-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.exam-topic-practice { display:inline-flex; align-items:center; justify-content:center; gap:8px; margin-top:10px; padding:8px 12px; border:1px solid #cbd8f8; border-radius:10px; background:#f2f5ff; color:#315edb; font:inherit; font-size:12px; font-weight:700; cursor:pointer; transition:background .18s ease, border-color .18s ease, transform .18s ease; }
+.exam-topic-practice:hover { background:#e6edff; border-color:#9bb3f5; }
+.exam-topic-practice:focus-visible { outline:3px solid #8ca9ff; outline-offset:2px; }
+.exam-topic-practice:active { transform:translateY(1px); }
+body.dark-mode .exam-topic-practice { background:#243653; color:#c5d4ff; border-color:#405579; }
+body.dark-mode .exam-topic-practice:hover { background:#2b4164; }
+@media(max-width:600px) { .exam-topic-practice { width:100%; } .exam-topic-result-heading { align-items:flex-start; flex-wrap:wrap; } }

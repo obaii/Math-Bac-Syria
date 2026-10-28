@@ -903,7 +903,7 @@
         const rate = Math.round(stat.correct / stat.total * 100);
         const status = rate >= 80 ? "مستوى جيد" : rate >= 50 ? "يحتاج بعض التدريب" : "أولوية للمراجعة";
         const statusClass = rate >= 80 ? "exam-answer-good" : "exam-answer-bad";
-        return `<li class="exam-topic-result"><div><strong>${escapeHtml(topic)}</strong><span class="${statusClass}">${status}</span></div><div class="exam-topic-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rate}"><span style="width:${rate}%"></span></div><small>${stat.correct.toLocaleString("ar")} صحيحة من ${stat.total.toLocaleString("ar")} · ${rate.toLocaleString("ar")}٪</small></li>`;
+        return `<li class="exam-topic-result"><div class="exam-topic-result-heading"><strong>${escapeHtml(topic)}</strong><span class="${statusClass}">${status}</span></div><div class="exam-topic-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rate}"><span style="width:${rate}%"></span></div><small>${stat.correct.toLocaleString("ar")} صحيحة من ${stat.total.toLocaleString("ar")} · ${rate.toLocaleString("ar")}٪</small><button type="button" class="exam-topic-practice" data-exam-topic="${escapeHtml(topic)}">تدرّب على هذا البحث <span aria-hidden="true">←</span></button></li>`;
       }).join("");
     const rows = quizQuestions.map((q, i) => {
       const chosen = examState.answers[i];
@@ -920,6 +920,15 @@
     review.innerHTML = `<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
     const actions = card.querySelector(".actions");
     card.insertBefore(review, actions || null);
+    review.querySelectorAll(".exam-topic-practice").forEach(button => {
+      button.addEventListener("click", () => {
+        const topic = button.dataset.examTopic;
+        if (!topic || typeof window.startQuiz !== "function") return;
+        document.getElementById("exam-review")?.remove();
+        window.startQuiz(topic);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
     typesetMath(review);
   };
   const finishExam = timedOut => {
