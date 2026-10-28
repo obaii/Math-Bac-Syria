@@ -56,7 +56,7 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
-  if (prompt.includes("التوزيع السابق") && /(احتمال|P\\(X)/.test(prompt)) {
+  if (prompt.includes("التوزيع السابق") && (prompt.includes("احتمال") || prompt.includes("P(X"))) {
     return `<figure class="question-diagram distribution-table-figure" aria-label="جدول توزيع المتغير العشوائي X">
       <figcaption>جدول التوزيع الذي تشير إليه المسألة.</figcaption>
       <div class="joint-table-scroll">
