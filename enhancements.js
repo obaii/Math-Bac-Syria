@@ -383,6 +383,7 @@
     persistExtras();
     updateBookmarkUI();
     updateBookmarkButton();
+    renderExamHistory();
   });
   const updateOnlineStatus = () => {
     const el = document.getElementById("offline-status");
@@ -718,6 +719,38 @@
     }
     return shuffle(picked);
   };
+  const renderExamHistory = () => {
+    const panel = document.getElementById("exam-history");
+    if (!panel) return;
+    const history = Array.isArray(extras.examHistory) ? extras.examHistory.slice(0, 5) : [];
+    if (!history.length) {
+      panel.innerHTML = "<h4>سجل المحاكاة السابقة</h4><p>ستظهر هنا نتائج آخر المحاكاة بعد إنهاء أول امتحان تجريبي. يُحفظ السجل على هذا الجهاز فقط.</p>";
+      return;
+    }
+    const rows = history.map((entry, index) => {
+      const total = Math.max(0, Number(entry.total) || 0);
+      const correct = Math.min(total, Math.max(0, Number(entry.correct) || 0));
+      const rate = total ? Math.round(correct / total * 100) : 0;
+      const parsedDate = Date.parse(entry.date || "");
+      const dateLabel = Number.isFinite(parsedDate)
+        ? new Date(parsedDate).toLocaleString("ar-SY", { dateStyle: "medium", timeStyle: "short" })
+        : "تاريخ غير متاح";
+      const topics = entry.topicResults && typeof entry.topicResults === "object" ? Object.entries(entry.topicResults) : [];
+      const weakest = topics
+        .filter(([, stat]) => stat && Number(stat.total) > 0)
+        .sort((a, b) => (Number(a[1].correct) / Number(a[1].total)) - (Number(b[1].correct) / Number(b[1].total)))[0];
+      const weakLabel = weakest
+        ? `أولوية المراجعة: ${escapeHtml(weakest[0])} (${Math.round(Math.max(0, Number(weakest[1].correct) || 0) / Number(weakest[1].total) * 100).toLocaleString("ar")}٪)`
+        : "لا يتوفر تفصيل حسب البحث لهذه المحاولة.";
+      return `<li class="exam-history-item">
+        <div><strong>المحاكاة ${(history.length - index).toLocaleString("ar")}</strong><span>${rate.toLocaleString("ar")}٪</span></div>
+        <p>${correct.toLocaleString("ar")} صحيحة من ${total.toLocaleString("ar")}</p>
+        <small>${escapeHtml(dateLabel)}</small>
+        <p>${weakLabel}</p>
+      </li>`;
+    }).join("");
+    panel.innerHTML = `<h4>سجل المحاكاة السابقة</h4><p>آخر خمس محاكاة محفوظة على هذا الجهاز، مع اقتراح البحث الذي يستحق المراجعة أولاً.</p><ol class="exam-history-list">${rows}</ol>`;
+  };
   const ensureExamControls = () => {
     const panel = document.querySelector(".student-tools");
     if (panel && !document.getElementById("exam-tools")) {
@@ -734,6 +767,17 @@
         <p class="exam-note">تُختار الأسئلة من الأبحاث المتاحة في بنك المنصة. هذه محاكاة تدريبية وليست نموذجاً رسمياً معتمداً.</p>`;
       panel.appendChild(section);
     }
+    const examPanel = document.getElementById("exam-tools");
+    if (examPanel && !document.getElementById("exam-history")) {
+      const historyPanel = document.createElement("section");
+      historyPanel.id = "exam-history";
+      historyPanel.className = "exam-history";
+      historyPanel.setAttribute("aria-live", "polite");
+      const note = examPanel.querySelector(".exam-note");
+      if (note) note.insertAdjacentElement("afterend", historyPanel);
+      else examPanel.appendChild(historyPanel);
+    }
+    renderExamHistory();
     const startButton = document.getElementById("start-exam");
     if (startButton) {
       // Use the button's direct handler so stale/duplicate listeners cannot leave the
@@ -834,6 +878,7 @@
     });
     extras.examHistory = [{ date:new Date().toISOString(), correct, total, topicResults }, ...(extras.examHistory || [])].slice(0, 20);
     persistExtras();
+    renderExamHistory();
   };
   const renderExamReview = () => {
     const card = document.querySelector("#results .result-card");
