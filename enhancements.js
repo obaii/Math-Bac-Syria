@@ -743,7 +743,7 @@
         ? `أولوية المراجعة: ${escapeHtml(weakest[0])} (${Math.round(Math.max(0, Number(weakest[1].correct) || 0) / Number(weakest[1].total) * 100).toLocaleString("ar")}٪)`
         : "لا يتوفر تفصيل حسب البحث لهذه المحاولة.";
       return `<li class="exam-history-item">
-        <div><strong>المحاكاة ${(history.length - index).toLocaleString("ar")}</strong><span>${rate.toLocaleString("ar")}٪</span></div>
+        <div><strong>${index === 0 ? "أحدث محاكاة" : `محاكاة سابقة ${index.toLocaleString("ar")}`}</strong><span>${rate.toLocaleString("ar")}٪</span></div>
         <p>${correct.toLocaleString("ar")} صحيحة من ${total.toLocaleString("ar")}</p>
         <small>${escapeHtml(dateLabel)}</small>
         <p>${weakLabel}</p>
