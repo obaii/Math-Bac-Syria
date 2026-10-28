@@ -6,7 +6,7 @@
   const safeParse = (raw, fallback) => { try { return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } };
   const loadExtras = () => {
     const x = safeParse(localStorage.getItem(EXTRA_KEY), {});
-    return { bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks : [], schedule: x.schedule && typeof x.schedule === "object" ? x.schedule : {}, reviewQuestions: x.reviewQuestions && typeof x.reviewQuestions === "object" ? x.reviewQuestions : {}, darkMode: Boolean(x.darkMode) };
+    return { bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks : [], schedule: x.schedule && typeof x.schedule === "object" ? x.schedule : {}, reviewQuestions: x.reviewQuestions && typeof x.reviewQuestions === "object" ? x.reviewQuestions : {}, examHistory: Array.isArray(x.examHistory) ? x.examHistory.slice(0, 20) : [], darkMode: Boolean(x.darkMode) };
   };
   let extras = loadExtras();
   const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); } };
@@ -220,6 +220,16 @@
         </div>
       </li>`;
     }).join("") : '<li class="progress-recommendation-empty">ممتاز! لا توجد أبحاث تحتاج إلى أولوية خاصة حالياً. واصل التدريب للمحافظة على مستواك.</li>';
+    const examHistory = Array.isArray(extras.examHistory) ? extras.examHistory.slice(0, 10) : [];
+    const examHistoryMarkup = examHistory.length ? examHistory.map((exam, i) => {
+      const date = new Date(exam.date);
+      const when = Number.isNaN(date.getTime()) ? "تاريخ غير متاح" : date.toLocaleString("ar-SY", { dateStyle:"medium", timeStyle:"short" });
+      const rate = exam.total ? Math.round(exam.correct / exam.total * 100) : 0;
+      const previous = examHistory[i + 1];
+      const previousRate = previous && previous.total ? Math.round(previous.correct / previous.total * 100) : null;
+      const change = previousRate === null ? "" : ` · ${rate > previousRate ? "تحسن" : rate < previousRate ? "تراجع" : "ثبات"} ${Math.abs(rate - previousRate).toLocaleString("ar")} نقطة مئوية مقارنة بالمحاولة السابقة`;
+      return `<li class="exam-history-item"><div><strong>محاكاة ${(examHistory.length - i).toLocaleString("ar")}</strong><span>${rate.toLocaleString("ar")}٪</span></div><p>${exam.correct.toLocaleString("ar")} صحيحة من ${exam.total.toLocaleString("ar")} سؤالاً · ${escapeHtml(when)}</p>${change ? `<small>${escapeHtml(change.trim())}</small>` : ""}</li>`;
+    }).join("") : '<li class="recent-attempt-empty">لم تُسجّل محاكاة سابقة بعد. بعد إنهاء أول محاكاة ستظهر نتائجها هنا.</li>';
     const attempts = Array.isArray(progressData.attempts) ? progressData.attempts.slice(0, 10) : [];
     const recentActivity = attempts.length ? attempts.map(attempt => {
       const date = new Date(attempt.date);
@@ -580,6 +590,7 @@
       let nextExtras = { bookmarks:[], schedule:{}, reviewQuestions:{}, darkMode:false };
       const sourceTools = data.studentTools && typeof data.studentTools === "object" && !Array.isArray(data.studentTools) ? data.studentTools : {};
       nextExtras.darkMode = Boolean(sourceTools.darkMode);
+      nextExtras.examHistory = Array.isArray(sourceTools.examHistory) ? sourceTools.examHistory.filter(e => e && Number.isFinite(e.correct) && Number.isFinite(e.total) && e.total > 0).slice(0, 20) : [];
       nextExtras.bookmarks = Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))] : [];
       const sourceSchedule = sourceTools.schedule && typeof sourceTools.schedule === "object" && !Array.isArray(sourceTools.schedule) ? sourceTools.schedule : {};
       for (const key of Object.keys(sourceSchedule)) {
@@ -796,6 +807,19 @@
       updateExamChrome();
       if (examState.remaining <= 0) finishExam(true);
     }, 1000);
+  };
+  const recordExamResult = () => {
+    const total = quizQuestions.length;
+    const correct = quizQuestions.reduce((sum, q, i) => sum + (examState.answers[i] === q.answer ? 1 : 0), 0);
+    const topicResults = {};
+    quizQuestions.forEach((q, i) => {
+      const topic = q.topic || "أبحاث متنوعة";
+      if (!topicResults[topic]) topicResults[topic] = { total:0, correct:0 };
+      topicResults[topic].total++;
+      if (examState.answers[i] === q.answer) topicResults[topic].correct++;
+    });
+    extras.examHistory = [{ date:new Date().toISOString(), correct, total, topicResults }, ...(extras.examHistory || [])].slice(0, 20);
+    persistExtras();
   };
   const renderExamReview = () => {
     const card = document.querySelector("#results .result-card");
