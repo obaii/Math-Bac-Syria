@@ -42,7 +42,7 @@ if (tableQuestions.length !== 8 || tableQuestions.some(q => !getDiagram(q).inclu
 } else {
   console.log("PASS: all eight shared-table questions include the table");
 }
-const distributionQuestions = questions.filter(q => q.q.includes("التوزيع السابق") && /احتمال|P\\(X/.test(q.q));
+const distributionQuestions = questions.filter(q => q.q.includes("التوزيع السابق") && (q.q.includes("احتمال") || q.q.includes("P(X")));
 if (distributionQuestions.length !== 2 || distributionQuestions.some(q => !getDiagram(q).includes("distribution-table-figure"))) {
   console.error("FAIL: both questions using the previous distribution must display its table");
   failures++;
