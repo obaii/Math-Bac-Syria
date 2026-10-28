@@ -34,7 +34,7 @@ try {
   const countToken = (value, token) => value.split(token).length - 1;
   const extractMathSegments = (value) => {
     const segments = [];
-    const pattern = /\\\\\\((.*?)\\\\\\)|\\\\\\[([\\s\\S]*?)\\\\\\]/g;
+    const pattern = new RegExp(slash + "\\\\((.*?)" + slash + "\\\\)|" + slash + "\\\\[([\\s\\S]*?)" + slash + "\\\\]", "g");
     for (const match of String(value ?? "").matchAll(pattern)) {
       segments.push(match[1] ?? match[2] ?? "");
     }
