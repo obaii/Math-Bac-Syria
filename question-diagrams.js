@@ -28,12 +28,12 @@ function getQuestionDiagram(question) {
         <polygon points="70,95 220,140 335,80 185,35" fill="#f8fafc" stroke="#64748b" stroke-width="1.4"/>
         <path d="M70 205L220 250L335 190L335 80L220 35L70 95Z M220 250V140 M335 190V80 M185 145V35 M220 140L335 80 M70 95L220 140" fill="none" stroke="#64748b" stroke-width="1.5"/>
         <polygon points="220,250 185,145 335,80" fill="#f59e0b" fill-opacity=".16" stroke="#d97706" stroke-width="1.5"/>
-        <path d="M267 158L150 123" stroke="#b42318" stroke-width="2.2" stroke-dasharray="6 4" fill="none"/>
-        <circle cx="267" cy="158" r="4.5" fill="#b42318"/><circle cx="150" cy="123" r="4.5" fill="#b42318"/>
+        <path d="M247 158L147 128" stroke="#b42318" stroke-width="2.2" stroke-dasharray="6 4" fill="none"/>
+        <circle cx="247" cy="158" r="4.5" fill="#b42318"/><circle cx="147" cy="128" r="4.5" fill="#b42318"/>
         <g font-family="sans-serif" font-size="13" fill="#172b4d" font-weight="600">
           <text x="55" y="220">A</text><text x="220" y="270">B</text><text x="345" y="199">C</text><text x="188" y="160">D</text>
           <text x="55" y="88">E</text><text x="218" y="132">F</text><text x="345" y="75">G</text><text x="188" y="29">H</text>
-          <text x="273" y="153" fill="#b42318">M(2,2,1)</text><text x="92" y="116" fill="#b42318">M′(0,2,1)</text>
+          <text x="253" y="153" fill="#b42318">M(2,2,1)</text><text x="84" y="122" fill="#b42318">M′(0,2,1)</text>
         </g>
       </svg>
     </figure>`;
@@ -45,12 +45,12 @@ function getQuestionDiagram(question) {
       <svg viewBox="0 0 380 260" role="img" aria-labelledby="tetrahedron-title" xmlns="http://www.w3.org/2000/svg">
         <title id="tetrahedron-title">رباعي وجوه ABCD مع النقاط I وJ وK المحددة بمنتصفات القطع</title>
         <path d="M48 218L330 218L146 42Z M48 218L250 65L330 218 M146 42L250 65" fill="none" stroke="#64748b" stroke-width="1.7"/>
-        <path d="M146 42L200 141L48 218 M330 218L200 141 M330 218L124 128" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="5 4"/>
-        <path d="M330 218L124 128" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-dasharray="5 4"/>
-        <circle cx="198" cy="53.5" r="4" fill="#2563eb"/><circle cx="172" cy="97" r="4" fill="#2563eb"/><circle cx="227" cy="173" r="4" fill="#0f766e"/>
+        <path d="M48 218L198 53.5 M330 218L123 135.75" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="5 4"/>
+        <path d="M330 218L123 135.75" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-dasharray="5 4"/>
+        <circle cx="198" cy="53.5" r="4" fill="#2563eb"/><circle cx="123" cy="135.75" r="4" fill="#2563eb"/><circle cx="227" cy="173" r="4" fill="#0f766e"/>
         <g font-family="sans-serif" font-size="13" font-weight="600" fill="#172b4d">
           <text x="33" y="234">A</text><text x="336" y="234">B</text><text x="132" y="34">C</text><text x="255" y="60">D</text>
-          <text x="204" y="47" fill="#2563eb">I</text><text x="157" y="91" fill="#2563eb">J</text><text x="234" y="174" fill="#0f766e">K</text>
+          <text x="204" y="47" fill="#2563eb">I</text><text x="108" y="132" fill="#2563eb">J</text><text x="234" y="174" fill="#0f766e">K</text>
         </g>
       </svg>
     </figure>`;
