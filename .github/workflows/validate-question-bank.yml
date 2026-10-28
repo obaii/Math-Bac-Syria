@@ -1,0 +1,20 @@
+name: Validate question bank
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate questions and math delimiters
+        run: node scripts/validate-question-bank.cjs
