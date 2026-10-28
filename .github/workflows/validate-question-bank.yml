@@ -26,5 +26,8 @@ jobs:
           node --check solution-guides.js
           node --check pwa-install.js
           node --check scripts/validate-question-bank.cjs
+          node --check scripts/answer-regression-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
+      - name: Run verified answer regression checks
+        run: node scripts/answer-regression-tests.cjs
