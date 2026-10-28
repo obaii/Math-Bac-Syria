@@ -13,7 +13,8 @@ const getDiagram = loaded.getQuestionDiagram;
 const cases = [
   { name: "logarithmic graph choices", match: q => q.q.includes("f(x)=(\\ln x)^2-1"), labels: ["A", "B", "C", "D"] },
   { name: "cube projection", match: q => q.q.includes("في مكعب طول حرفه 3") && q.q.includes("مسقط M العمودي"), labels: ["M(2,2,1)", "M′(0,2,1)", "ADHE"] },
-  { name: "tetrahedron midpoints", match: q => q.q.includes("لتكن I منتصف [CD]"), labels: ["I منتصف [CD]", "J منتصف [AI]", "K منتصف [BJ]"] }
+  { name: "tetrahedron midpoints", match: q => q.q.includes("لتكن I منتصف [CD]"), labels: ["I منتصف [CD]", "J منتصف [AI]", "K منتصف [BJ]"] },
+  { name: "joint probability table", match: q => q.q.includes("الوارد في المسألة") && q.q.includes("P(X=1,Y=2)"), labels: ["0.12", "0.06", "0.04", "0.30", "0.50", "P(X)"] }
 ];
 let failures = 0;
 for (const testCase of cases) {
@@ -40,5 +41,5 @@ if (!fs.existsSync(path.join(root, "assets", "question-11-graphs.png"))) {
   console.error("FAIL: existing derivative graph asset is missing");
   failures++;
 }
-console.log("\nQuestion diagram checks: " + (cases.length + 1 - failures) + "/" + (cases.length + 1) + " passed.");
+console.log("\nQuestion diagram checks: " + (cases.length + 2 - failures) + "/" + (cases.length + 2) + " passed.");
 if (failures) process.exitCode = 1;
