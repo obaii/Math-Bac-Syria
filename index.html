@@ -8,7 +8,7 @@
   <meta name="description" content="منصة تدريب تفاعلية لطلاب البكالوريا العلمي في الرياضيات وفق المنهاج السوري">
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="style-overrides.css?v=20261028-5">
+   <link rel="stylesheet" href="style-overrides.css?v=20261028-9">
   <style>
     .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
     body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
@@ -46,12 +46,13 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script defer src="questions.js?v=20261028-3"></script>
+  <script defer src="questions.js?v=20261028-4"></script>
   <script defer src="questions_vectors_additional.js?v=20261028-1"></script>
   <script defer src="merge-questions.js?v=20261028-1"></script>
   <script defer src="solution-guides.js?v=20261028-1"></script>
-  <script defer src="app.js?v=20261028-3"></script>
-  <script defer src="enhancements.js?v=20261028-9"></script>
+  <script defer src="question-diagrams.js?v=20261028-3"></script>
+  <script defer src="app.js?v=20261028-6"></script>
+  <script defer src="enhancements.js?v=20261029-2"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
 <body>
@@ -87,6 +88,18 @@
       <div class="learning-progress-track" role="progressbar" aria-label="نسبة الأبحاث التي بدأت بها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="topic-progress-bar"><span id="topic-progress-fill" style="width:0%"></span></div>
       <p class="learning-progress-caption" id="topic-progress-caption">ابدأ بحل أسئلة من أي بحث لتتبع تقدمك هنا.</p>
     </section>
+    <section class="question-coverage" aria-labelledby="question-coverage-title">
+      <div class="question-coverage-heading">
+        <div>
+          <p class="eyebrow">تقدّمك في بنك الأسئلة</p>
+          <h3 id="question-coverage-title">تغطية الأسئلة</h3>
+          <p>تُحتسب الأسئلة المختلفة التي جرّبت حلّها مرة واحدة، حتى لو أعدت حلها لاحقاً.</p>
+        </div>
+        <div class="question-coverage-total"><strong id="unique-question-count">٠</strong><span>من <b id="total-bank-question-count">٠</b> سؤالاً</span></div>
+      </div>
+      <div class="learning-progress-track" id="question-progress-bar" role="progressbar" aria-label="نسبة الأسئلة المختلفة التي جرى حلها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="question-progress-fill" style="width:0%"></span></div>
+      <p class="learning-progress-caption" id="question-progress-caption">ابدأ التدريب لتتبع عدد الأسئلة المختلفة التي حللتها.</p>
+    </section>
     <nav class="quick-start" aria-label="اختصارات المنصة">
       <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
@@ -114,6 +127,7 @@
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
         <div class="exam-config">
           <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
+          <label>مستوى الأسئلة<select id="exam-difficulty"><option value="الكل" selected>جميع المستويات</option><option value="أساسي">أساسي</option><option value="متوسط">متوسط</option><option value="متقدم">متقدم</option></select></label>
           <label>المدة<select id="exam-duration"><option value="30">30 دقيقة</option><option value="60" selected>60 دقيقة</option><option value="90">90 دقيقة</option></select></label>
           <button type="button" id="start-exam" class="primary">ابدأ المحاكاة ←</button>
         </div>

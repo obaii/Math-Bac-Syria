@@ -16,12 +16,44 @@ if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQues
   }
 }
 const letters = ["أ","ب","ج","د"];
-const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [] });
+const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [], seenQuestions: {} });
+const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
 function loadProgress(){
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (!saved || typeof saved !== "object") return emptyProgress();
-    return { ...emptyProgress(), ...saved, mistakes: saved.mistakes || {}, topicStats: saved.topicStats || {}, attempts: Array.isArray(saved.attempts) ? saved.attempts : [] };
+    if (!isRecord(saved)) return emptyProgress();
+    const toCount = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    const answered = toCount(saved.answered);
+    const topicStats = {};
+    if (isRecord(saved.topicStats)) {
+      for (const [topic, stat] of Object.entries(saved.topicStats)) {
+        if (!topic || !isRecord(stat)) continue;
+        const topicAnswered = toCount(stat.answered);
+        topicStats[topic] = { answered: topicAnswered, correct: Math.min(toCount(stat.correct), topicAnswered) };
+      }
+    }
+    const attempts = Array.isArray(saved.attempts) ? saved.attempts.filter(attempt =>
+      isRecord(attempt) &&
+      typeof attempt.topic === "string" &&
+      typeof attempt.correct === "boolean" &&
+      typeof attempt.date === "string" &&
+      Number.isFinite(Date.parse(attempt.date))
+    ).slice(0, 100).map(attempt => ({ topic: attempt.topic, correct: attempt.correct, date: attempt.date })) : [];
+    const seenQuestions = {};
+    if (isRecord(saved.seenQuestions)) {
+      for (const [key, seen] of Object.entries(saved.seenQuestions)) {
+        if (seen === true) seenQuestions[key] = true;
+      }
+    }
+    return {
+      ...emptyProgress(),
+      answered,
+      correct: Math.min(toCount(saved.correct), answered),
+      mistakes: isRecord(saved.mistakes) ? saved.mistakes : {},
+      topicStats,
+      attempts,
+      seenQuestions
+    };
   } catch(e) { return emptyProgress(); }
 }
 let progressData = loadProgress();
@@ -30,10 +62,15 @@ function saveProgress(){
   catch(e) { console.warn("تعذر حفظ التقدم محلياً", e); }
 }
 function questionKey(q){ return `${q.topic}::${q.q}`; }
+function countSeenQuestions(topic = "") {
+  return questions.reduce((count, q) => count + ((!topic || q.topic === topic) && progressData.seenQuestions[questionKey(q)] ? 1 : 0), 0);
+}
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
-  const mistakes = Object.keys(progressData.mistakes).length;
+  const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
+  const mistakeKeys = Object.keys(mistakeMap).filter(key => questions.some(q => questionKey(q) === key));
+  const mistakes = mistakeKeys.length;
   $("stat-mistakes").textContent = mistakes.toLocaleString("ar");
   $("stat-percent").textContent = progressData.answered ? `${Math.round(progressData.correct / progressData.answered * 100).toLocaleString("ar")}٪` : "—";
   $("review-mistakes").disabled = mistakes === 0;
@@ -65,6 +102,47 @@ function refreshDashboard(){
           ? "رائع! بدأت جميع الأبحاث. واصل التدريب لتحسين نتائجك."
           : `بدأت ${started.toLocaleString("ar")} من ${total.toLocaleString("ar")} بحثاً؛ تبقّى ${(total-started).toLocaleString("ar")} لتبدأ بها.`;
   }
+
+  const uniqueCount = countSeenQuestions();
+  const bankCount = questions.length;
+  const questionCountNode = $("unique-question-count");
+  const bankCountNode = $("total-bank-question-count");
+  const questionFill = $("question-progress-fill");
+  const questionTrack = $("question-progress-bar");
+  const questionCaption = $("question-progress-caption");
+  const questionPercent = bankCount ? Math.round(uniqueCount / bankCount * 100) : 0;
+  if (questionCountNode) questionCountNode.textContent = uniqueCount.toLocaleString("ar");
+  if (bankCountNode) bankCountNode.textContent = bankCount.toLocaleString("ar");
+  if (questionFill) questionFill.style.width = questionPercent + "%";
+  if (questionTrack) questionTrack.setAttribute("aria-valuenow", String(questionPercent));
+  if (questionCaption) {
+    questionCaption.textContent = progressData.answered > 0 && uniqueCount === 0
+      ? "نتائجك السابقة ما زالت محفوظة؛ يبدأ عدّ الأسئلة المختلفة من هذا التحديث."
+      : uniqueCount === 0
+        ? "ابدأ التدريب لتتبع عدد الأسئلة المختلفة التي حللتها."
+        : uniqueCount === bankCount
+          ? "أحسنت! جرّبت جميع الأسئلة المختلفة في البنك."
+          : `جرّبت ${uniqueCount.toLocaleString("ar")} من ${bankCount.toLocaleString("ar")} سؤالاً مختلفاً (${questionPercent.toLocaleString("ar")}٪).`;
+  }
+}
+
+function topicIcon(topic){
+  const name = String(topic || "");
+  if (name.includes("الاحتمالات")) return "🎲";
+  if (name.includes("التحليل التوافقي")) return "🔢";
+  if (name.includes("تطبيقات الأعداد العقدية")) return "🧭";
+  if (name.includes("الأعداد العقدية")) return "ℂ";
+  if (name.includes("الجداء السلمي")) return "·";
+  if (name.includes("المستقيمات والمستويات")) return "📐";
+  if (name.includes("الأشعة")) return "➤";
+  if (name.includes("التكامل")) return "∫";
+  if (name.includes("اللوغاريتمي")) return "ln";
+  if (name.includes("الأسي")) return "eˣ";
+  if (name.includes("الاشتقاق")) return "ƒ′";
+  if (name.includes("نهاية متتالية")) return "uₙ";
+  if (name.includes("المتتاليات")) return "uₙ";
+  if (name.includes("النهايات")) return "↗";
+  return "∑";
 }
 
 function renderTopics(){
@@ -75,15 +153,15 @@ function renderTopics(){
   $("topic-grid").innerHTML = availableTopics.map(topic=>{
     const i = topics.indexOf(topic);
     const count = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level)).length;
-    const done = Object.keys(progressData.mistakes).length + progressData.correct;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
     const successRate = topicStat.answered ? Math.round(topicStat.correct/topicStat.answered*100) : 0;
-    const completion = topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح` : "لم تبدأ بعد";
+    const seenCount = questions.filter(q => q.topic === topic && (level === "الكل" || q.level === level) && progressData.seenQuestions[questionKey(q)]).length;
+    const coverageRate = count ? Math.min(100, Math.round(seenCount/count*100)) : 0;
     return `<button class="topic-card" data-topic="${topic}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-arrow">↖</span></span>
-      <span class="topic-card-content"><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
-      <span class="topic-card-bottom"><span class="topic-status">${completion}</span><span class="topic-start">${count ? "ابدأ التدريب ←" : "لا توجد أسئلة بهذا المستوى"}</span></span>
-      <span class="topic-mastery" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${successRate}"><span style="width:${successRate}%"></span></span>
+      <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
+      <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">${topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح · ابدأ ←` : "ابدأ التدريب ←"}</span></span>
+      <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}"><span style="width:${coverageRate}%"></span></span>
     </button>`;
   }).join("");
   $("no-topics").classList.toggle("hidden", availableTopics.length !== 0);
@@ -110,6 +188,10 @@ function showQuestion(){
   $("progress").textContent=`السؤال ${index+1} / ${quizQuestions.length}`;
   $("progress-bar").style.width=`${index/quizQuestions.length*100}%`;
   $("question-text").innerHTML=q.q;
+  if (typeof getQuestionDiagram === "function") {
+    const diagramMarkup = getQuestionDiagram(q);
+    if (diagramMarkup) $("question-text").insertAdjacentHTML("beforeend", diagramMarkup);
+  }
   $("options").innerHTML=q.options.map((option,i)=>`<button class="option" data-option="${i}"><span class="letter">${letters[i]}</span><span>${option}</span></button>`).join("");
   document.querySelectorAll("[data-option]").forEach(btn=>btn.addEventListener("click",()=>chooseAnswer(Number(btn.dataset.option))));
   $("feedback").className="feedback hidden"; $("feedback").innerHTML="";
@@ -125,6 +207,8 @@ function chooseAnswer(choice){
   if(isCorrect)correctCount++;
   if (!reviewMode) {
     progressData.answered += 1;
+    progressData.seenQuestions = progressData.seenQuestions || {};
+    progressData.seenQuestions[questionKey(q)] = true;
     if (isCorrect) {
       progressData.correct += 1;
       delete progressData.mistakes[questionKey(q)];
@@ -190,8 +274,12 @@ $("difficulty").addEventListener("change",renderTopics);
 $("topic-search").addEventListener("input",renderTopics);
 $("brand-home").addEventListener("click",e=>{e.preventDefault();$("quiz").classList.add("hidden");$("results").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});});
 function startReviewQuiz(){
-  reviewQuestions = Object.values(progressData.mistakes);
-  if (!reviewQuestions.length) { alert("لا توجد إجابات خاطئة للمراجعة حالياً. أحسنت!"); return; }
+  const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
+  // Rebuild review questions from the current bank so obsolete backup entries cannot break the quiz.
+  reviewQuestions = Object.keys(mistakeMap)
+    .map(key => questions.find(q => questionKey(q) === key))
+    .filter(q => q && typeof q.q === "string" && Array.isArray(q.options) && q.options.length === 4);
+  if (!reviewQuestions.length) { alert("لا توجد أسئلة خاطئة صالحة للمراجعة حالياً. قد تكون العلامات المتبقية من نسخة قديمة من بنك الأسئلة."); refreshDashboard(); return; }
   reviewMode = true;
   currentTopic = "مراجعة الأخطاء";
   quizQuestions = [...reviewQuestions].sort(()=>Math.random()-0.5);

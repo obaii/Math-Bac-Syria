@@ -4,12 +4,19 @@
   const EXTRA_KEY = "mathBacSyriaStudentToolsV1";
   const intervalsDays = [1, 3, 7, 14, 30];
   const safeParse = (raw, fallback) => { try { return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } };
+  const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const loadExtras = () => {
-    const x = safeParse(localStorage.getItem(EXTRA_KEY), {});
-    return { bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks : [], schedule: x.schedule && typeof x.schedule === "object" ? x.schedule : {}, reviewQuestions: x.reviewQuestions && typeof x.reviewQuestions === "object" ? x.reviewQuestions : {}, examHistory: Array.isArray(x.examHistory) ? x.examHistory.slice(0, 20) : [], darkMode: Boolean(x.darkMode) };
+    const parsed = safeParse(localStorage.getItem(EXTRA_KEY), {});
+    const x = isRecord(parsed) ? parsed : {};
+    return {
+      bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks.filter(key => typeof key === "string") : [],
+      schedule: isRecord(x.schedule) ? x.schedule : {},
+      reviewQuestions: isRecord(x.reviewQuestions) ? x.reviewQuestions : {},
+      examHistory: Array.isArray(x.examHistory) ? x.examHistory.filter(item => isRecord(item) && Number.isFinite(item.correct) && Number.isFinite(item.total) && item.total > 0).slice(0, 20) : [],
+      darkMode: Boolean(x.darkMode)
+    };
   };
-  let extras = loadExtras();
-  const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); } };
+  const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); return true; } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); return false; } };
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
   const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
@@ -63,6 +70,8 @@
       body.dark-mode .topic-mastery-status.is-progress{color:#bfdbfe;background:#172554;border-color:#1d4ed8}
       body.dark-mode .topic-mastery-status.is-mastered{color:#bbf7d0;background:#052e16;border-color:#166534}
       .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
+      .progress-coverage-caption{display:block;margin-top:5px;color:var(--muted);font-size:12px}
+      .progress-coverage-caption{display:block;margin-top:5px;color:var(--muted);font-size:12px}
       .recent-activity{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
       .recent-activity h4{margin:0 0 6px;font-size:15px}.recent-attempt-list{display:grid;gap:7px;list-style:none;margin:10px 0 0;padding:0}
       .recent-attempt-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:9px}
@@ -183,7 +192,11 @@
       const answered = Number.isFinite(stat.answered) && stat.answered > 0 ? Math.floor(stat.answered) : 0;
       const correct = Number.isFinite(stat.correct) && stat.correct > 0 ? Math.min(Math.floor(stat.correct), answered) : 0;
       const rate = answered ? Math.round(correct / answered * 100) : 0;
-      const count = questionBank.filter(q => q.topic === topic).length;
+      const topicQuestions = questionBank.filter(q => q.topic === topic);
+      const count = topicQuestions.length;
+      const seenCount = topicQuestions.reduce((sum, q) => sum + (progressData && progressData.seenQuestions && progressData.seenQuestions[questionKey(q)] ? 1 : 0), 0);
+      const remainingCount = Math.max(0, count - seenCount);
+      const coverageRate = count ? Math.min(100, Math.round(seenCount / count * 100)) : 0;
       const mistakeCount = mistakeValues.filter(q => q && q.topic === topic).length;
       let masteryLabel = "لم يبدأ بعد";
       let masteryClass = "is-new";
@@ -200,18 +213,19 @@
         masteryLabel = "يحتاج إلى تدريب";
         masteryClass = "is-review";
       }
-      return { topic, answered, correct, rate, count, mistakeCount, masteryLabel, masteryClass };
+      return { topic, answered, correct, rate, count, seenCount, remainingCount, coverageRate, mistakeCount, masteryLabel, masteryClass };
     });
     const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
     const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
     // توصيات مبنية على الأداء الفعلي: الأخطاء أولاً، ثم الأبحاث ذات الأداء المنخفض، ثم الأبحاث التي لم تبدأ.
     const recommendations = [...rows].sort((a, b) => {
-      const priority = row => row.mistakeCount > 0 ? 0 : row.answered === 0 ? 2 : row.rate < 70 ? 1 : row.rate < 85 ? 1 : 3;
+      const priority = row => row.mistakeCount > 0 ? 0 : row.answered > 0 && row.rate < 70 ? 1 : row.answered === 0 ? 2 : row.rate < 85 ? 3 : row.remainingCount > 0 ? 4 : 5;
       return priority(a) - priority(b)
         || b.mistakeCount - a.mistakeCount
         || (a.answered ? a.rate : 101) - (b.answered ? b.rate : 101)
+        || b.remainingCount - a.remainingCount
         || a.topic.localeCompare(b.topic, "ar");
-    }).filter(row => row.mistakeCount > 0 || row.answered === 0 || row.rate < 85).slice(0, 3);
+    }).filter(row => row.mistakeCount > 0 || row.answered === 0 || row.rate < 85 || row.remainingCount > 0).slice(0, 3);
     const recommendationMarkup = recommendations.length ? recommendations.map(row => {
       const reason = row.mistakeCount > 0
         ? `لديك ${row.mistakeCount.toLocaleString("ar")} أخطاء محفوظة؛ ابدأ بمراجعتها.`
@@ -219,7 +233,9 @@
           ? "لم تبدأ هذا البحث بعد؛ خصص له جلسة تدريب قصيرة."
           : row.rate < 70
             ? `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ يُنصح بإعادة التدريب.`
-            : `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ راجع الأفكار التي أخطأت فيها.`;
+            : row.rate < 85
+              ? `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ راجع الأفكار التي أخطأت فيها.`
+              : `جرّبت ${row.seenCount.toLocaleString("ar")} من ${row.count.toLocaleString("ar")} سؤالاً مختلفاً؛ بقي ${row.remainingCount.toLocaleString("ar")} للتجربة.`;
       return `<li class="progress-recommendation">
         <div><strong>${escapeHtml(row.topic)}</strong><p>${escapeHtml(reason)}</p></div>
         <div class="progress-recommendation-actions">
@@ -260,7 +276,9 @@
       <ul class="progress-report-list">${rows.map(row => `
         <li class="progress-report-item">
           <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
-          <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span></div>
+          <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span><span>جرّبت ${row.seenCount.toLocaleString("ar")} · بقي ${row.remainingCount.toLocaleString("ar")}</span></div>
+          <div class="progress-report-track" role="progressbar" aria-label="نسبة الأسئلة التي جرى تجربتها في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.coverageRate}"><span style="width:${row.coverageRate}%"></span></div>
+          <small class="progress-coverage-caption">${row.coverageRate.toLocaleString("ar")}٪ من أسئلة هذا البحث جرى تجربتها</small>
           <span class="topic-mastery-status ${row.masteryClass}">${escapeHtml(row.masteryLabel)}</span>
           <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
           ${row.mistakeCount ? `<button type="button" class="topic-review-button" data-review-topic="${escapeHtml(row.topic)}">راجع أخطاء هذا البحث (${row.mistakeCount.toLocaleString("ar")})</button>` : ""}
@@ -322,21 +340,21 @@
     const section = document.getElementById("mistake-log");
     const button = document.getElementById("mistake-log-toggle");
     if (!section || typeof progressData === "undefined") return;
-    const keys = Object.keys(progressData.mistakes || {});
-    if (button) {
-      button.textContent = `سجل الأخطاء (${keys.length.toLocaleString("ar")})`;
-      button.disabled = keys.length === 0;
-      button.setAttribute("aria-expanded", String(!section.hidden));
-    }
-    if (!keys.length) {
-      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة مسجّلة للمراجعة حالياً. ستظهر هنا الأسئلة التي تجيب عنها بشكل خاطئ.</p>';
-      return;
-    }
-    const rows = keys.map(key => {
-      const q = byKey(key) || progressData.mistakes[key];
-      if (!q || !q.q || !Array.isArray(q.options)) return null;
+    const mistakes = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
+    const rows = Object.keys(mistakes).map(key => {
+      const q = byKey(key);
+      if (!q || typeof q.q !== "string" || !Array.isArray(q.options) || q.options.length !== 4) return null;
       return { key, q };
     }).filter(Boolean).sort((a,b) => String(a.q.topic || "").localeCompare(String(b.q.topic || ""), "ar"));
+    if (button) {
+      button.textContent = `سجل الأخطاء (${rows.length.toLocaleString("ar")})`;
+      button.disabled = rows.length === 0;
+      button.setAttribute("aria-expanded", String(!section.hidden));
+    }
+    if (!rows.length) {
+      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة صالحة للمراجعة حالياً. قد تكون بعض العلامات من نسخة قديمة من بنك الأسئلة.</p>';
+      return;
+    }
     section.innerHTML = `
       <h4>سجل الأخطاء</h4>
       <p>هذه الأسئلة أخطأتَ في الإجابة عنها. افتح أي سؤال لتتدرّب عليه منفرداً؛ وتُحذف علامة الخطأ عند الإجابة الصحيحة في المراجعة.</p>
@@ -511,11 +529,21 @@
   };
   const getScheduledReviews = () => {
     const now = Date.now();
-    return [...new Set([...Object.keys(progressData.mistakes || {}), ...Object.keys(extras.schedule || {}), ...Object.keys(extras.reviewQuestions || {})])]
+    const mistakes = progressData && progressData.mistakes && typeof progressData.mistakes === "object" ? progressData.mistakes : {};
+    const scheduleMap = extras && extras.schedule && typeof extras.schedule === "object" && !Array.isArray(extras.schedule) ? extras.schedule : {};
+    const reviewMap = extras && extras.reviewQuestions && typeof extras.reviewQuestions === "object" && !Array.isArray(extras.reviewQuestions) ? extras.reviewQuestions : {};
+    return [...new Set([...Object.keys(mistakes), ...Object.keys(scheduleMap), ...Object.keys(reviewMap)])]
       .map(key => {
-        const q = byKey(key) || extras.reviewQuestions[key] || progressData.mistakes[key];
-        const schedule = extras.schedule[key] || {};
-        return q ? { key, q, due: Number.isFinite(Number(schedule.due)) ? Number(schedule.due) : now, stage: Number(schedule.stage) || 0, lastResult: schedule.lastResult || "pending" } : null;
+        // A review entry is usable only while its key still exists in the current bank.
+        const q = byKey(key);
+        if (!q) return null;
+        const schedule = scheduleMap[key] && typeof scheduleMap[key] === "object" && !Array.isArray(scheduleMap[key]) ? scheduleMap[key] : {};
+        const rawDue = schedule.due;
+        const parsedDue = rawDue !== null && rawDue !== "" && rawDue !== undefined ? Number(rawDue) : NaN;
+        const due = Number.isFinite(parsedDue) && parsedDue > 0 ? parsedDue : now;
+        const rawStage = Number(schedule.stage);
+        const stage = Number.isFinite(rawStage) ? Math.max(0, Math.min(intervalsDays.length - 1, Math.floor(rawStage))) : 0;
+        return { key, q, due, stage, lastResult: typeof schedule.lastResult === "string" ? schedule.lastResult : "pending" };
       })
       .filter(Boolean)
       .sort((a, b) => a.due - b.due);
@@ -588,8 +616,14 @@
         correct: Math.min(toCount(source.correct), toCount(source.answered)),
         mistakes: {},
         topicStats: {},
-        attempts: Array.isArray(source.attempts) ? source.attempts.slice(0, 100) : []
+        attempts: Array.isArray(source.attempts) ? source.attempts.slice(0, 100) : [],
+        seenQuestions: {}
       };
+      // Restore only keys that still belong to the current question bank; ignore malformed or obsolete entries.
+      const sourceSeen = source.seenQuestions && typeof source.seenQuestions === "object" && !Array.isArray(source.seenQuestions) ? source.seenQuestions : {};
+      for (const key of Object.keys(sourceSeen)) {
+        if (sourceSeen[key] && byKey(key)) nextProgress.seenQuestions[key] = true;
+      }
       const sourceMistakes = source.mistakes && typeof source.mistakes === "object" && !Array.isArray(source.mistakes) ? source.mistakes : {};
       for (const key of Object.keys(sourceMistakes)) {
         const q = byKey(key);
@@ -617,10 +651,25 @@
           nextExtras.reviewQuestions[key] = q;
         }
       }
+      // Persist both records before mutating in-memory state. If either write fails, restore the previous storage values.
+      const previousProgressRaw = localStorage.getItem(STORAGE_KEY);
+      const previousExtrasRaw = localStorage.getItem(EXTRA_KEY);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextProgress));
+        localStorage.setItem(EXTRA_KEY, JSON.stringify(nextExtras));
+      } catch (storageError) {
+        try {
+          if (previousProgressRaw === null) localStorage.removeItem(STORAGE_KEY);
+          else localStorage.setItem(STORAGE_KEY, previousProgressRaw);
+          if (previousExtrasRaw === null) localStorage.removeItem(EXTRA_KEY);
+          else localStorage.setItem(EXTRA_KEY, previousExtrasRaw);
+        } catch (rollbackError) {
+          console.warn("تعذر استعادة بيانات التخزين السابقة بالكامل", rollbackError);
+        }
+        throw new Error("تعذر حفظ النسخة الاحتياطية على هذا الجهاز؛ لم يُعلن نجاح الاستيراد. تحقق من مساحة التخزين ثم حاول مجدداً.");
+      }
       progressData = nextProgress;
       extras = nextExtras;
-      saveProgress();
-      persistExtras();
       if (typeof refreshDashboard === "function") refreshDashboard();
       if (typeof renderTopics === "function") renderTopics();
       updateBookmarkUI();
@@ -702,8 +751,9 @@
   // محاكاة امتحان شاملة: اختيار متوازن من الأبحاث مع مؤقت ومراجعة بعد التسليم.
   const examState = { active:false, remaining:0, timer:null, answers:[], resultVisible:false };
   const shuffle = list => [...list].sort(() => Math.random() - 0.5);
-  const buildBalancedExam = count => {
-    const bank = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+  const buildBalancedExam = (count, difficulty = "الكل") => {
+    const allQuestions = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+    const bank = difficulty === "الكل" ? allQuestions : allQuestions.filter(q => q.level === difficulty);
     const names = typeof topics !== "undefined" && Array.isArray(topics) ? topics : [...new Set(bank.map(q => q.topic))];
     const pools = names.map(topic => shuffle(bank.filter(q => q.topic === topic)));
     const picked = [];
@@ -761,6 +811,7 @@
         <div class="exam-tools-heading"><div><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div></div>
         <div class="exam-config">
           <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
+          <label>مستوى الأسئلة<select id="exam-difficulty"><option value="الكل" selected>جميع المستويات</option><option value="أساسي">أساسي</option><option value="متوسط">متوسط</option><option value="متقدم">متقدم</option></select></label>
           <label>المدة<select id="exam-duration"><option value="30">30 دقيقة</option><option value="60" selected>60 دقيقة</option><option value="90">90 دقيقة</option></select></label>
           <button type="button" id="start-exam" class="primary">ابدأ المحاكاة ←</button>
         </div>
@@ -839,7 +890,8 @@
     if (!bank.length) { alert("لا يوجد بنك أسئلة متاح لبدء المحاكاة."); return; }
     const wanted = Number(document.getElementById("exam-question-count")?.value || 30);
     const duration = Number(document.getElementById("exam-duration")?.value || 60);
-    const picked = buildBalancedExam(wanted);
+    const difficulty = document.getElementById("exam-difficulty")?.value || "الكل";
+    const picked = buildBalancedExam(wanted, difficulty);
     if (!picked.length) { alert("تعذر تجهيز أسئلة المحاكاة."); return; }
     stopExamTimer();
     examState.active = true;
@@ -894,13 +946,30 @@
       if (examState.answers[i] === q.answer) item.correct++;
       topicResults.set(topic, item);
     });
+    const totalQuestions = quizQuestions.length;
+    const correctAnswers = quizQuestions.reduce((sum, q, i) => sum + (examState.answers[i] === q.answer ? 1 : 0), 0);
+    const answeredQuestions = examState.answers.filter(answer => Number.isInteger(answer) && answer >= 0).length;
+    const skippedQuestions = Math.max(0, totalQuestions - answeredQuestions);
+    const wrongAnswered = Math.max(0, answeredQuestions - correctAnswers);
+    const overallRate = totalQuestions ? Math.round(correctAnswers / totalQuestions * 100) : 0;
+    const weakestTopic = [...topicResults.entries()]
+      .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))[0]?.[0];
+    const resultSummary = `<div class="exam-result-summary" aria-label="ملخص نتيجة المحاكاة">
+      <div class="exam-result-summary-main"><span>النتيجة النهائية</span><strong>${correctAnswers.toLocaleString("ar")} / ${totalQuestions.toLocaleString("ar")}</strong><b>${overallRate.toLocaleString("ar")}٪ إجابات صحيحة</b></div>
+      <div class="exam-result-metrics">
+        <div><span>إجابات صحيحة</span><strong>${correctAnswers.toLocaleString("ar")}</strong></div>
+        <div><span>إجابات خاطئة</span><strong>${wrongAnswered.toLocaleString("ar")}</strong></div>
+        <div><span>أسئلة متروكة</span><strong>${skippedQuestions.toLocaleString("ar")}</strong></div>
+      </div>
+      ${weakestTopic ? `<div class="exam-result-next-step"><div><strong>خطوتك التالية</strong><p>ابدأ بالبحث الذي حققت فيه أدنى نسبة: ${escapeHtml(weakestTopic)}.</p></div><button type="button" class="exam-topic-practice" data-exam-topic="${escapeHtml(weakestTopic)}">تدرّب على أضعف بحث <span aria-hidden="true">←</span></button></div>` : ""}
+    </div>`;
     const topicSummary = [...topicResults.entries()]
       .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))
       .map(([topic, stat]) => {
         const rate = Math.round(stat.correct / stat.total * 100);
         const status = rate >= 80 ? "مستوى جيد" : rate >= 50 ? "يحتاج بعض التدريب" : "أولوية للمراجعة";
         const statusClass = rate >= 80 ? "exam-answer-good" : "exam-answer-bad";
-        return `<li class="exam-topic-result"><div><strong>${escapeHtml(topic)}</strong><span class="${statusClass}">${status}</span></div><div class="exam-topic-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rate}"><span style="width:${rate}%"></span></div><small>${stat.correct.toLocaleString("ar")} صحيحة من ${stat.total.toLocaleString("ar")} · ${rate.toLocaleString("ar")}٪</small></li>`;
+        return `<li class="exam-topic-result"><div class="exam-topic-result-heading"><strong>${escapeHtml(topic)}</strong><span class="${statusClass}">${status}</span></div><div class="exam-topic-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${rate}"><span style="width:${rate}%"></span></div><small>${stat.correct.toLocaleString("ar")} صحيحة من ${stat.total.toLocaleString("ar")} · ${rate.toLocaleString("ar")}٪</small><button type="button" class="exam-topic-practice" data-exam-topic="${escapeHtml(topic)}">تدرّب على هذا البحث <span aria-hidden="true">←</span></button></li>`;
       }).join("");
     const rows = quizQuestions.map((q, i) => {
       const chosen = examState.answers[i];
@@ -914,9 +983,18 @@
         <div class="exam-review-solution"><strong>الحل:</strong> ${escapeHtml(String(q.solution || "لا يتوفر شرح لهذا السؤال."))}</div>
       </li>`;
     }).join("");
-    review.innerHTML = `<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
+    review.innerHTML = `${resultSummary}<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
     const actions = card.querySelector(".actions");
     card.insertBefore(review, actions || null);
+    review.querySelectorAll(".exam-topic-practice").forEach(button => {
+      button.addEventListener("click", () => {
+        const topic = button.dataset.examTopic;
+        if (!topic || typeof window.startQuiz !== "function") return;
+        document.getElementById("exam-review")?.remove();
+        window.startQuiz(topic);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
     typesetMath(review);
   };
   const finishExam = timedOut => {
@@ -1021,6 +1099,17 @@
       .exam-clock-low{border-color:#c2410c;color:#c2410c}
       #exam-submit{margin-inline-end:8px}#exam-submit[hidden],#exam-clock[hidden]{display:none}
       .exam-history{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px}.exam-history>h4{margin:0 0 5px}.exam-history>p{font-size:12px;color:var(--muted)}\n      .exam-history-list{list-style:none;padding:0;margin:10px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}\n      .exam-history-item{padding:12px;border:1px solid var(--line);border-radius:10px}.exam-history-item>div{display:flex;justify-content:space-between;gap:8px}.exam-history-item>div span{font-weight:700}.exam-history-item p,.exam-history-item small{font-size:12px;color:var(--muted);margin:6px 0 0}\n      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin:20px 0 6px}
+      .exam-result-summary{margin:16px 0 24px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--bg,#f7f9fc)}
+      .exam-result-summary-main{display:grid;gap:5px}.exam-result-summary-main>span,.exam-result-metrics>div>span{font-size:12px;color:var(--muted)}
+      .exam-result-summary-main>strong{font-size:clamp(24px,4vw,34px);font-variant-numeric:tabular-nums}.exam-result-summary-main>b{font-size:14px;color:var(--success,#2f9e72)}
+      .exam-result-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px}
+      .exam-result-metrics>div{display:grid;gap:5px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card-bg,white)}
+      .exam-result-metrics strong{font-size:20px;font-variant-numeric:tabular-nums}
+      .exam-result-next-step{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+      .exam-result-next-step p{margin:4px 0 0;font-size:13px;line-height:1.8;color:var(--muted)}
+      .exam-result-next-step .exam-topic-practice{margin-top:0;flex-shrink:0}
+      body.dark-mode .exam-result-summary{background:var(--card-bg);border-color:var(--line)}
+      @media(max-width:600px){.exam-result-summary{padding:13px}.exam-result-metrics{gap:6px}.exam-result-metrics>div{padding:9px 7px}.exam-result-metrics strong{font-size:18px}.exam-result-metrics>div>span{font-size:11px}.exam-result-next-step{align-items:stretch;flex-direction:column}.exam-result-next-step .exam-topic-practice{width:100%}}
       .exam-topic-results{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 24px}
       .exam-topic-result{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
       .exam-topic-result>div:first-child{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;font-size:13px}
