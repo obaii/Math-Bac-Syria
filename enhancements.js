@@ -273,7 +273,7 @@
           <div class="progress-report-track" role="progressbar" aria-label="نسبة الأسئلة التي جرى تجربتها في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.coverageRate}"><span style="width:${row.coverageRate}%"></span></div>
           <small class="progress-coverage-caption">${row.coverageRate.toLocaleString("ar")}٪ من أسئلة هذا البحث جرى تجربتها</small>
           <span class="topic-mastery-status ${row.masteryClass}">${escapeHtml(row.masteryLabel)}</span>
-          <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%</span></div>
+          <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
           ${row.mistakeCount ? `<button type="button" class="topic-review-button" data-review-topic="${escapeHtml(row.topic)}">راجع أخطاء هذا البحث (${row.mistakeCount.toLocaleString("ar")})</button>` : ""}
         </li>`).join("")}</ul>
       <section class="exam-history"><h4>سجل محاكاة الامتحان</h4><p>تُحفظ النتائج على هذا الجهاز لمقارنة أدائك عبر الوقت.</p><ul class="exam-history-list">${examHistoryMarkup}</ul></section>
