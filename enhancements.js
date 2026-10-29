@@ -4,11 +4,18 @@
   const EXTRA_KEY = "mathBacSyriaStudentToolsV1";
   const intervalsDays = [1, 3, 7, 14, 30];
   const safeParse = (raw, fallback) => { try { return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } };
+  const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
   const loadExtras = () => {
-    const x = safeParse(localStorage.getItem(EXTRA_KEY), {});
-    return { bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks : [], schedule: x.schedule && typeof x.schedule === "object" ? x.schedule : {}, reviewQuestions: x.reviewQuestions && typeof x.reviewQuestions === "object" ? x.reviewQuestions : {}, examHistory: Array.isArray(x.examHistory) ? x.examHistory.slice(0, 20) : [], darkMode: Boolean(x.darkMode) };
+    const parsed = safeParse(localStorage.getItem(EXTRA_KEY), {});
+    const x = isRecord(parsed) ? parsed : {};
+    return {
+      bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks.filter(key => typeof key === "string") : [],
+      schedule: isRecord(x.schedule) ? x.schedule : {},
+      reviewQuestions: isRecord(x.reviewQuestions) ? x.reviewQuestions : {},
+      examHistory: Array.isArray(x.examHistory) ? x.examHistory.filter(item => isRecord(item) && Number.isFinite(item.correct) && Number.isFinite(item.total) && item.total > 0).slice(0, 20) : [],
+      darkMode: Boolean(x.darkMode)
+    };
   };
-  let extras = loadExtras();
   const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); } };
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
