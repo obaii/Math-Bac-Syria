@@ -4,8 +4,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const source = fs.readFileSync(path.join(__dirname, "..", "enhancements.js"), "utf8");
-const safeStepRendering = /q\.steps\.map\(step\s*=>\s*`<li>\$\{escapeHtml\(step\)\}<\\/li>`\)\.join\(" "\)/.test(source)
-  || source.includes('${q.steps.map(step => `<li>${escapeHtml(step)}</li>`).join("")}');
+const safeStepRendering = source.includes('${q.steps.map(step => `<li>${escapeHtml(step)}</li>`).join("")}');
 if (!safeStepRendering) {
   console.error("FAIL: detailed solution steps must pass through escapeHtml before insertion.");
   process.exitCode = 1;
