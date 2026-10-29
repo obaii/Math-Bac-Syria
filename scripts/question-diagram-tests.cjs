@@ -25,9 +25,9 @@ const cases = [
 ,
   { name: "right circular cone sketch", match: q => q.q.includes("مخروط دائري قائم محوره محور z"), labels: ["مخروط", "المحور", "حافة القاعدة"] },
   { name: "sphere center and radius sketch", match: q => q.q.includes("ما معادلة الكرة مركزها مبدأ الإحداثيات"), labels: ["كرة", "نصف القطر", "O"] },
-  { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2"), labels: ["منحنى", "المماس", "نقطة التماس"] },
+  { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2") && q.q.includes("عند النقطة ذات الفاصلة 1"), labels: ["منحنى", "المماس", "نقطة التماس"] },
   { name: "plane normal vector sketch", match: q => q.q.includes("المستوى المار بالنقطة A(1,0,2) والناظم له"), labels: ["مستوى", "شعاع ناظم", "n"] },
-  { name: "spatial lines sketch", match: q => q.q.includes("المستقيم d معطى بالتمثيل"), labels: ["مستقيمين", "d", "d′"] }
+  { name: "spatial lines sketch", match: q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"), labels: ["مستقيمين", "d", "d′"] }
 ];
 let failures = 0;
 for (const testCase of cases) {
