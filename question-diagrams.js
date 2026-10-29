@@ -88,5 +88,83 @@ function getQuestionDiagram(question) {
 
   }
 
+
+  // Cube with the two specified midpoints: visual aid for the dot-product question.
+  if (prompt.includes("مكعب") && prompt.includes("منتصف") && prompt.includes("HG") && prompt.includes("FB")) {
+    return `<figure class="question-diagram" aria-label="مكعب يوضح منتصفي HG وFB والشعاعين IE وIK">
+      <figcaption>رسم تخطيطي للمكعب؛ I منتصف HG وK منتصف FB.</figcaption>
+      <svg viewBox="0 0 380 290" role="img" aria-labelledby="cube-midpoints-title" xmlns="http://www.w3.org/2000/svg">
+        <title id="cube-midpoints-title">مكعب ABCDEFGH مع النقطتين I وK</title>
+        <g fill="none" stroke="#64748b" stroke-width="1.7" stroke-linejoin="round">
+          <path d="M65 215L210 250L315 190L170 155Z M65 95L210 130L315 70L170 35Z M65 95V215 M210 130V250 M315 70V190 M170 35V155"/>
+          <path d="M65 215L170 155 M65 95L170 35" stroke-dasharray="4 4" opacity=".7"/>
+        </g>
+        <path d="M242.5 52.5L65 95 M242.5 52.5L210 250" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="6 4" fill="none"/>
+        <circle cx="242.5" cy="52.5" r="4.5" fill="#0f766e"/><circle cx="210" cy="190" r="4.5" fill="#0f766e"/>
+        <g font-family="sans-serif" font-size="13" font-weight="600" fill="var(--text, #172b4d)">
+          <text x="49" y="231">A</text><text x="214" y="267">B</text><text x="321" y="201">C</text><text x="154" y="170">D</text>
+          <text x="48" y="91">E</text><text x="214" y="125">F</text><text x="321" y="68">G</text><text x="154" y="30">H</text>
+          <text x="248" y="48" fill="#0f766e">I</text><text x="216" y="190" fill="#0f766e">K</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // A schematic only: marks the tetrahedron and the two centroids without giving the answer.
+  if (prompt.includes("مركز ثقل المثلث BCD") && prompt.includes("مركز ثقل رباعي الوجوه")) {
+    return `<figure class="question-diagram" aria-label="رباعي وجوه يوضح مركز ثقل المثلث BCD ومركز ثقل رباعي الوجوه">
+      <figcaption>رسم تخطيطي لمواضع A وB وC وD ومركزي الثقل G وO.</figcaption>
+      <svg viewBox="0 0 360 260" role="img" aria-labelledby="tetra-centroid-title" xmlns="http://www.w3.org/2000/svg">
+        <title id="tetra-centroid-title">رباعي وجوه ABCD مع G وO</title>
+        <g fill="none" stroke="#64748b" stroke-width="1.7" stroke-linejoin="round">
+          <path d="M38 220L318 220L146 38Z M38 220L240 65L318 220 M146 38L240 65"/>
+        </g>
+        <path d="M318 220L146 38 M38 220L240 65 M146 38L240 65" fill="none" stroke="#0f766e" stroke-width="1.8" stroke-dasharray="5 4"/>
+        <path d="M38 220L235 108" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="5 4"/>
+        <circle cx="235" cy="108" r="4.5" fill="#0f766e"/><circle cx="186" cy="136" r="4.5" fill="#2563eb"/>
+        <g font-family="sans-serif" font-size="13" font-weight="600" fill="var(--text, #172b4d)">
+          <text x="22" y="237">A</text><text x="323" y="237">B</text><text x="132" y="30">C</text><text x="246" y="61">D</text>
+          <text x="241" y="105" fill="#0f766e">G</text><text x="192" y="134" fill="#2563eb">O</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // A simple four-sector spinner for the binomial experiment prompt.
+  if (prompt.includes("قرص دائري مقسم إلى أربعة أقسام متساوية")) {
+    return `<figure class="question-diagram" aria-label="قرص احتمالات مقسم إلى أربعة أقسام متساوية">
+      <figcaption>أربعة أقسام متساوية؛ القسم المظلل هو الحدث الذي احتماله 1/4.</figcaption>
+      <svg viewBox="0 0 250 220" role="img" aria-labelledby="spinner-title" xmlns="http://www.w3.org/2000/svg">
+        <title id="spinner-title">قرص دائري من أربعة أقسام متساوية مع قسم مظلل</title>
+        <circle cx="110" cy="105" r="76" fill="#fff" stroke="#64748b" stroke-width="2"/>
+        <path d="M110 105L110 29A76 76 0 0 1 186 105Z" fill="#93c5fd" stroke="#64748b" stroke-width="1.5"/>
+        <path d="M110 105L186 105A76 76 0 0 1 110 181Z M110 105L110 181A76 76 0 0 1 34 105Z M110 105L34 105A76 76 0 0 1 110 29Z" fill="none" stroke="#64748b" stroke-width="1.5"/>
+        <circle cx="110" cy="105" r="4" fill="#334155"/>
+        <text x="110" y="205" text-anchor="middle" font-size="12" fill="var(--text, #172b4d)">احتمال القسم المظلل = 1/4</text>
+      </svg>
+    </figure>`;
+  }
+
+  // Probability tree matching the events named in the prompt.
+  if (prompt.includes("في مخطط شجري") && prompt.includes("P(B|A)=x") && prompt.includes("P(B|A′)=1/4")) {
+    return `<figure class="question-diagram" aria-label="مخطط شجري للحدثين A وA′ ثم B">
+      <figcaption>المخطط يوضح فرعي A وA′ ثم احتمالي B الشرطيين المذكورين في السؤال.</figcaption>
+      <svg viewBox="0 0 390 220" role="img" aria-labelledby="prob-tree-title" xmlns="http://www.w3.org/2000/svg">
+        <title id="prob-tree-title">شجرة احتمالات للحدثين A وA′</title>
+        <g fill="none" stroke="#64748b" stroke-width="1.8">
+          <path d="M40 110L135 55 M40 110L135 165 M135 55L245 28 M135 55L245 78 M135 165L245 140 M135 165L245 190"/>
+        </g>
+        <g font-family="sans-serif" font-size="12" fill="var(--text, #172b4d)">
+          <text x="13" y="105">البداية</text><text x="83" y="70">1/3</text><text x="78" y="157">2/3</text>
+          <text x="143" y="43">A</text><text x="143" y="185">A′</text>
+          <text x="177" y="31">x</text><text x="171" y="77">1−x</text><text x="170" y="139">1/4</text><text x="170" y="195">3/4</text>
+          <text x="255" y="32">B</text><text x="255" y="82">B′</text><text x="255" y="144">B</text><text x="255" y="194">B′</text>
+          <text x="315" y="111" font-size="11">P(B)=1/4</text>
+        </g>
+        <circle cx="40" cy="110" r="4" fill="#2563eb"/><circle cx="135" cy="55" r="4" fill="#0f766e"/><circle cx="135" cy="165" r="4" fill="#0f766e"/>
+      </svg>
+    </figure>`;
+  }
+
   return "";
 }
