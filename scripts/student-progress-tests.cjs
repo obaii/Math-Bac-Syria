@@ -36,6 +36,7 @@ const checks = [
   ["backup import attempts to restore prior storage after a failed write", /catch \(storageError\)[\s\S]*?previousProgressRaw === null[\s\S]*?previousExtrasRaw === null[\s\S]*?تعذر حفظ النسخة الاحتياطية على هذا الجهاز/.test(enhancements)],
   ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)],
   ["student-tools script cache version is bumped for updated deployment", /enhancements\.js\?v=20261029-2/.test(html)],
+  ["diagram stylesheet cache version is bumped after styling changes", /style-overrides\.css\?v=20261029-1/.test(html)],
   ["loaded progress counters reject negative or unsafe values", /const toCount = value => Number\.isSafeInteger\(value\) && value >= 0 \? value : 0/.test(app) && /correct: Math\.min\(toCount\(saved\.correct\), answered\)/.test(app)],
   ["loaded topic statistics are normalized and correct counts are clamped", /const topicStats = \{\}[\s\S]*?topicStats\[topic\] = \{ answered: topicAnswered, correct: Math\.min\(toCount\(stat\.correct\), topicAnswered\) \}/.test(app)],
   ["loaded attempts reject malformed records and invalid dates", /typeof attempt\.correct === "boolean"[\s\S]*?Number\.isFinite\(Date\.parse\(attempt\.date\)\)/.test(app)],
