@@ -93,7 +93,9 @@ const stylesheet = fs.readFileSync(path.join(root, "style-overrides.css"), "utf8
 if (!stylesheet.includes(".question-diagram") ||
     !stylesheet.includes("@media (max-width: 520px)") ||
     !stylesheet.includes("var(--card") ||
-    !stylesheet.includes("var(--text")) {
+    !stylesheet.includes("var(--text") ||
+    !stylesheet.includes(".question-text > .question-diagram") ||
+    !stylesheet.includes("font-weight: 400")) {
   console.error("FAIL: responsive/dark-theme diagram styling is missing or incomplete.");
   failures++;
 }
