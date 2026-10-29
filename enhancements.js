@@ -897,6 +897,23 @@
       if (examState.answers[i] === q.answer) item.correct++;
       topicResults.set(topic, item);
     });
+    const totalQuestions = quizQuestions.length;
+    const correctAnswers = quizQuestions.reduce((sum, q, i) => sum + (examState.answers[i] === q.answer ? 1 : 0), 0);
+    const answeredQuestions = examState.answers.filter(answer => Number.isInteger(answer) && answer >= 0).length;
+    const skippedQuestions = Math.max(0, totalQuestions - answeredQuestions);
+    const wrongAnswered = Math.max(0, answeredQuestions - correctAnswers);
+    const overallRate = totalQuestions ? Math.round(correctAnswers / totalQuestions * 100) : 0;
+    const weakestTopic = [...topicResults.entries()]
+      .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))[0]?.[0];
+    const resultSummary = `<div class="exam-result-summary" aria-label="ملخص نتيجة المحاكاة">
+      <div class="exam-result-summary-main"><span>النتيجة النهائية</span><strong>${correctAnswers.toLocaleString("ar")} / ${totalQuestions.toLocaleString("ar")}</strong><b>${overallRate.toLocaleString("ar")}٪ إجابات صحيحة</b></div>
+      <div class="exam-result-metrics">
+        <div><span>إجابات صحيحة</span><strong>${correctAnswers.toLocaleString("ar")}</strong></div>
+        <div><span>إجابات خاطئة</span><strong>${wrongAnswered.toLocaleString("ar")}</strong></div>
+        <div><span>أسئلة متروكة</span><strong>${skippedQuestions.toLocaleString("ar")}</strong></div>
+      </div>
+      ${weakestTopic ? `<div class="exam-result-next-step"><div><strong>خطوتك التالية</strong><p>ابدأ بالبحث الذي حققت فيه أدنى نسبة: ${escapeHtml(weakestTopic)}.</p></div><button type="button" class="exam-topic-practice" data-exam-topic="${escapeHtml(weakestTopic)}">تدرّب على أضعف بحث <span aria-hidden="true">←</span></button></div>` : ""}
+    </div>`;
     const topicSummary = [...topicResults.entries()]
       .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))
       .map(([topic, stat]) => {
@@ -917,7 +934,7 @@
         <div class="exam-review-solution"><strong>الحل:</strong> ${escapeHtml(String(q.solution || "لا يتوفر شرح لهذا السؤال."))}</div>
       </li>`;
     }).join("");
-    review.innerHTML = `<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
+    review.innerHTML = `${resultSummary}<h3>تحليل نتيجتك حسب البحث</h3><p class="muted">رتّبنا الأبحاث من الأقل أداءً إلى الأعلى لتعرف أين تبدأ المراجعة.</p><ul class="exam-topic-results">${topicSummary}</ul><h3>مراجعة الإجابات والحلول</h3><p class="muted">يمكنك مراجعة إجابتك والإجابة الصحيحة والحل بعد انتهاء المحاكاة.</p><ol class="exam-review-list">${rows}</ol>`;
     const actions = card.querySelector(".actions");
     card.insertBefore(review, actions || null);
     review.querySelectorAll(".exam-topic-practice").forEach(button => {
@@ -1033,6 +1050,17 @@
       .exam-clock-low{border-color:#c2410c;color:#c2410c}
       #exam-submit{margin-inline-end:8px}#exam-submit[hidden],#exam-clock[hidden]{display:none}
       .exam-history{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px}.exam-history>h4{margin:0 0 5px}.exam-history>p{font-size:12px;color:var(--muted)}\n      .exam-history-list{list-style:none;padding:0;margin:10px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}\n      .exam-history-item{padding:12px;border:1px solid var(--line);border-radius:10px}.exam-history-item>div{display:flex;justify-content:space-between;gap:8px}.exam-history-item>div span{font-weight:700}.exam-history-item p,.exam-history-item small{font-size:12px;color:var(--muted);margin:6px 0 0}\n      .exam-review{margin-top:24px;text-align:right}.exam-review h3{font-size:20px;margin:20px 0 6px}
+      .exam-result-summary{margin:16px 0 24px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--bg,#f7f9fc)}
+      .exam-result-summary-main{display:grid;gap:5px}.exam-result-summary-main>span,.exam-result-metrics>div>span{font-size:12px;color:var(--muted)}
+      .exam-result-summary-main>strong{font-size:clamp(24px,4vw,34px);font-variant-numeric:tabular-nums}.exam-result-summary-main>b{font-size:14px;color:var(--success,#2f9e72)}
+      .exam-result-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px}
+      .exam-result-metrics>div{display:grid;gap:5px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card-bg,white)}
+      .exam-result-metrics strong{font-size:20px;font-variant-numeric:tabular-nums}
+      .exam-result-next-step{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+      .exam-result-next-step p{margin:4px 0 0;font-size:13px;line-height:1.8;color:var(--muted)}
+      .exam-result-next-step .exam-topic-practice{margin-top:0;flex-shrink:0}
+      body.dark-mode .exam-result-summary{background:var(--card-bg);border-color:var(--line)}
+      @media(max-width:600px){.exam-result-summary{padding:13px}.exam-result-metrics{gap:6px}.exam-result-metrics>div{padding:9px 7px}.exam-result-metrics strong{font-size:18px}.exam-result-metrics>div>span{font-size:11px}.exam-result-next-step{align-items:stretch;flex-direction:column}.exam-result-next-step .exam-topic-practice{width:100%}}
       .exam-topic-results{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 24px}
       .exam-topic-result{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
       .exam-topic-result>div:first-child{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;font-size:13px}
