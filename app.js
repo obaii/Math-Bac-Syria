@@ -17,11 +17,12 @@ if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQues
 }
 const letters = ["أ","ب","ج","د"];
 const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [], seenQuestions: {} });
+const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
 function loadProgress(){
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if (!saved || typeof saved !== "object") return emptyProgress();
-    return { ...emptyProgress(), ...saved, mistakes: saved.mistakes || {}, topicStats: saved.topicStats || {}, attempts: Array.isArray(saved.attempts) ? saved.attempts : [], seenQuestions: saved.seenQuestions && typeof saved.seenQuestions === "object" ? saved.seenQuestions : {} };
+    return { ...emptyProgress(), ...saved, mistakes: isRecord(saved.mistakes) ? saved.mistakes : {}, topicStats: isRecord(saved.topicStats) ? saved.topicStats : {}, attempts: Array.isArray(saved.attempts) ? saved.attempts : [], seenQuestions: isRecord(saved.seenQuestions) ? saved.seenQuestions : {} };
   } catch(e) { return emptyProgress(); }
 }
 let progressData = loadProgress();
