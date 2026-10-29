@@ -333,21 +333,21 @@
     const section = document.getElementById("mistake-log");
     const button = document.getElementById("mistake-log-toggle");
     if (!section || typeof progressData === "undefined") return;
-    const keys = Object.keys(progressData.mistakes || {});
-    if (button) {
-      button.textContent = `سجل الأخطاء (${keys.length.toLocaleString("ar")})`;
-      button.disabled = keys.length === 0;
-      button.setAttribute("aria-expanded", String(!section.hidden));
-    }
-    if (!keys.length) {
-      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة مسجّلة للمراجعة حالياً. ستظهر هنا الأسئلة التي تجيب عنها بشكل خاطئ.</p>';
-      return;
-    }
-    const rows = keys.map(key => {
-      const q = byKey(key) || progressData.mistakes[key];
-      if (!q || !q.q || !Array.isArray(q.options)) return null;
+    const mistakes = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
+    const rows = Object.keys(mistakes).map(key => {
+      const q = byKey(key);
+      if (!q || typeof q.q !== "string" || !Array.isArray(q.options) || q.options.length !== 4) return null;
       return { key, q };
     }).filter(Boolean).sort((a,b) => String(a.q.topic || "").localeCompare(String(b.q.topic || ""), "ar"));
+    if (button) {
+      button.textContent = `سجل الأخطاء (${rows.length.toLocaleString("ar")})`;
+      button.disabled = rows.length === 0;
+      button.setAttribute("aria-expanded", String(!section.hidden));
+    }
+    if (!rows.length) {
+      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة صالحة للمراجعة حالياً. قد تكون بعض العلامات من نسخة قديمة من بنك الأسئلة.</p>';
+      return;
+    }
     section.innerHTML = `
       <h4>سجل الأخطاء</h4>
       <p>هذه الأسئلة أخطأتَ في الإجابة عنها. افتح أي سؤال لتتدرّب عليه منفرداً؛ وتُحذف علامة الخطأ عند الإجابة الصحيحة في المراجعة.</p>
@@ -522,11 +522,21 @@
   };
   const getScheduledReviews = () => {
     const now = Date.now();
-    return [...new Set([...Object.keys(progressData.mistakes || {}), ...Object.keys(extras.schedule || {}), ...Object.keys(extras.reviewQuestions || {})])]
+    const mistakes = progressData && progressData.mistakes && typeof progressData.mistakes === "object" ? progressData.mistakes : {};
+    const scheduleMap = extras && extras.schedule && typeof extras.schedule === "object" && !Array.isArray(extras.schedule) ? extras.schedule : {};
+    const reviewMap = extras && extras.reviewQuestions && typeof extras.reviewQuestions === "object" && !Array.isArray(extras.reviewQuestions) ? extras.reviewQuestions : {};
+    return [...new Set([...Object.keys(mistakes), ...Object.keys(scheduleMap), ...Object.keys(reviewMap)])]
       .map(key => {
-        const q = byKey(key) || extras.reviewQuestions[key] || progressData.mistakes[key];
-        const schedule = extras.schedule[key] || {};
-        return q ? { key, q, due: Number.isFinite(Number(schedule.due)) ? Number(schedule.due) : now, stage: Number(schedule.stage) || 0, lastResult: schedule.lastResult || "pending" } : null;
+        // A review entry is usable only while its key still exists in the current bank.
+        const q = byKey(key);
+        if (!q) return null;
+        const schedule = scheduleMap[key] && typeof scheduleMap[key] === "object" && !Array.isArray(scheduleMap[key]) ? scheduleMap[key] : {};
+        const rawDue = schedule.due;
+        const parsedDue = rawDue !== null && rawDue !== "" && rawDue !== undefined ? Number(rawDue) : NaN;
+        const due = Number.isFinite(parsedDue) && parsedDue > 0 ? parsedDue : now;
+        const rawStage = Number(schedule.stage);
+        const stage = Number.isFinite(rawStage) ? Math.max(0, Math.min(intervalsDays.length - 1, Math.floor(rawStage))) : 0;
+        return { key, q, due, stage, lastResult: typeof schedule.lastResult === "string" ? schedule.lastResult : "pending" };
       })
       .filter(Boolean)
       .sort((a, b) => a.due - b.due);
