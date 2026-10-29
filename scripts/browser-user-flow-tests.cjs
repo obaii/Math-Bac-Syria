@@ -181,8 +181,36 @@ const assert = require("node:assert/strict");
     assert.ok(phone390.pageWidth <= phone390.viewport + 2, `home page should not overflow horizontally on 390px phones (page=${phone390.pageWidth}, viewport=${phone390.viewport})`);
     assert.ok(phone390.searchRight <= phone390.viewport + 1, "topic search should fit within a 390px viewport");
 
+    // Verify that the cached application shell can reopen when the network is unavailable.
+    await page.evaluate(async () => {
+      if (navigator.serviceWorker.controller) return;
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error("service worker did not take control of the page")), 10000);
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          clearTimeout(timeout);
+          resolve();
+        }, { once: true });
+      });
+    });
+    await page.context().setOffline(true);
+    try {
+      await page.reload({ waitUntil: "domcontentloaded", timeout: 10000 });
+      await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14, null, { timeout: 10000 });
+      const offlineShell = await page.evaluate(() => ({
+        topicCards: document.querySelectorAll("#topic-grid [data-topic]").length,
+        questionsLoaded: typeof questions !== "undefined" && Array.isArray(questions) && questions.length > 0,
+        pageWidth: document.documentElement.scrollWidth,
+        viewport: document.documentElement.clientWidth
+      }));
+      assert.equal(offlineShell.topicCards, 14, "all topic cards should render when the app is reopened offline");
+      assert.equal(offlineShell.questionsLoaded, true, "question data should load from cache while offline");
+      assert.ok(offlineShell.pageWidth <= offlineShell.viewport + 2, "offline home page should not overflow horizontally");
+    } finally {
+      await page.context().setOffline(false);
+    }
+
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
-    console.log("PASS: desktop flows, topic cards, bookmarks, quiz feedback, exam simulation, 360/390px responsive layout, question diagram bounds, and MathJax fraction/radical rendering");
+    console.log("PASS: desktop flows, topic cards, bookmarks, quiz feedback, exam simulation, 360/390px responsive layout, question diagram bounds, MathJax rendering, and offline launch");
   } finally {
     await browser.close();
   }
