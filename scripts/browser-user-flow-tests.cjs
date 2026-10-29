@@ -57,10 +57,16 @@ const assert = require("node:assert/strict");
       const clock = document.querySelector("#exam-clock");
       return clock && !clock.hidden;
     });
-    assert.ok(await page.locator("#options [data-option]").count() === 4, "exam simulation should start with four answer choices");
+    assert.equal(await page.locator("#options [data-option]").count(), 4, "exam simulation should start with four answer choices");
+    await page.locator("#options [data-option]").first().click();
+    await page.locator("#exam-submit").click();
+    await page.locator("#results").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#score").innerText()).trim().length > 0, "exam submission should show a score");
+    const examHistory = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
+    assert.ok(examHistory && examHistory.examHistory && examHistory.examHistory.length > 0, "exam result should be saved locally");
 
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
-    console.log("PASS: topics, panel toggles, night mode, quiz feedback, bookmark persistence/list, exam start, and local progress");
+    console.log("PASS: topics, panel toggles, night mode, quiz feedback, bookmark persistence/list, exam submission/result, and local progress");
   } finally {
     await browser.close();
   }
