@@ -65,8 +65,94 @@ const assert = require("node:assert/strict");
     const examHistory = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(examHistory && examHistory.examHistory && examHistory.examHistory.length > 0, "exam result should be saved locally");
 
+    // Responsive regression checks at common phone widths.
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
+    const mobileHome = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      pageWidth: document.documentElement.scrollWidth,
+      topicGridWidth: document.querySelector("#topic-grid").getBoundingClientRect().width,
+      topicCards: [...document.querySelectorAll("#topic-grid [data-topic]")].map(el => {
+        const rect = el.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, width: rect.width };
+      })
+    }));
+    assert.ok(mobileHome.pageWidth <= mobileHome.viewport + 2, `home page should not overflow horizontally on 360px phones (page=${mobileHome.pageWidth}, viewport=${mobileHome.viewport})`);
+    assert.equal(mobileHome.topicCards.length, 14, "all 14 topic cards should remain available on mobile");
+    assert.ok(mobileHome.topicCards.every(card => card.width > 0 && card.left >= -1 && card.right <= mobileHome.viewport + 1), "topic cards should fit inside the phone viewport");
+
+    // Force a question that has a built-in diagram, then check SVG bounds on mobile.
+    const diagramResult = await page.evaluate(() => {
+      const q = questions.find(item => typeof getQuestionDiagram === "function" && getQuestionDiagram(item));
+      if (!q) return { found: false };
+      startQuiz(q.topic);
+      quizQuestions = [q];
+      index = 0;
+      showQuestion();
+      const figure = document.querySelector("#question-text .question-diagram");
+      const svg = figure?.querySelector("svg");
+      if (!figure || !svg) return { found: true, rendered: false };
+      const rect = svg.getBoundingClientRect();
+      const textRect = document.querySelector("#question-text").getBoundingClientRect();
+      return {
+        found: true,
+        rendered: true,
+        svgLeft: rect.left,
+        svgRight: rect.right,
+        svgWidth: rect.width,
+        textLeft: textRect.left,
+        textRight: textRect.right,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      };
+    });
+    assert.equal(diagramResult.found, true, "at least one question should have an associated diagram");
+    assert.equal(diagramResult.rendered, true, "the selected question diagram should render as SVG");
+    assert.ok(diagramResult.svgWidth > 0, "the question diagram SVG should have a visible width");
+    assert.ok(diagramResult.svgLeft >= -1 && diagramResult.svgRight <= diagramResult.viewport + 1, "diagram SVG should fit inside the mobile viewport");
+    assert.ok(diagramResult.pageWidth <= diagramResult.viewport + 2, "a diagram should not create page-level horizontal overflow");
+
+    // Exercise MathJax with a representative fraction and radical, without changing saved question data.
+    const mathResult = await page.evaluate(async () => {
+      const node = document.querySelector("#question-text");
+      node.innerHTML = String.raw`اختبار عرض المعادلة: \\(\\frac{1}{2}+\\sqrt{3}\\)`;
+      if (!window.MathJax || typeof window.MathJax.typesetPromise !== "function") {
+        return { available: false };
+      }
+      await window.MathJax.typesetPromise([node]);
+      const rendered = node.querySelector("mjx-container");
+      if (!rendered) return { available: true, rendered: false };
+      const rect = rendered.getBoundingClientRect();
+      return {
+        available: true,
+        rendered: true,
+        left: rect.left,
+        right: rect.right,
+        width: rect.width,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      };
+    });
+    assert.equal(mathResult.available, true, "MathJax should load for equation rendering");
+    assert.equal(mathResult.rendered, true, "a fraction and radical should be typeset by MathJax");
+    assert.ok(mathResult.width > 0 && mathResult.left >= -1 && mathResult.right <= mathResult.viewport + 1, "the rendered equation should fit within the mobile viewport");
+    assert.ok(mathResult.pageWidth <= mathResult.viewport + 2, "a rendered equation should not create page-level horizontal overflow");
+
+    // A slightly wider phone should also keep the page and controls within the viewport.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
+    const phone390 = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      pageWidth: document.documentElement.scrollWidth,
+      searchRight: document.querySelector("#topic-search").getBoundingClientRect().right
+    }));
+    assert.ok(phone390.pageWidth <= phone390.viewport + 2, `home page should not overflow horizontally on 390px phones (page=${phone390.pageWidth}, viewport=${phone390.viewport})`);
+    assert.ok(phone390.searchRight <= phone390.viewport + 1, "topic search should fit within a 390px viewport");
+
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
-    console.log("PASS: topics, panel toggles, night mode, quiz feedback, bookmark persistence/list, exam submission/result, and local progress");
+    console.log("PASS: desktop flows, topic cards, bookmarks, quiz feedback, exam simulation, 360/390px responsive layout, question diagram bounds, and MathJax fraction/radical rendering");
   } finally {
     await browser.close();
   }
