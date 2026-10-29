@@ -510,3 +510,24 @@ body.dark-mode .solution-key-idea {
   color: #e2eaff;
 }
 body.dark-mode .solution-steps li::marker { color: #b8ccff; }
+
+
+/* Keep supplemental figures visually separate from the bold question prompt. */
+.question-text > .question-diagram {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.question-text > .question-diagram figcaption {
+  font-weight: 400;
+}
+.question-text > .question-diagram .joint-probability-table {
+  font-size: .95rem;
+  font-weight: 400;
+}
+@media (max-width: 520px) {
+  .question-text > .question-diagram .joint-probability-table th,
+  .question-text > .question-diagram .joint-probability-table td {
+    padding: 6px 7px;
+  }
+}
