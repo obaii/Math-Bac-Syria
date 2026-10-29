@@ -16,7 +16,7 @@
       darkMode: Boolean(x.darkMode)
     };
   };
-  const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); } };
+  const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); return true; } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); return false; } };
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
   const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
@@ -651,10 +651,25 @@
           nextExtras.reviewQuestions[key] = q;
         }
       }
+      // Persist both records before mutating in-memory state. If either write fails, restore the previous storage values.
+      const previousProgressRaw = localStorage.getItem(STORAGE_KEY);
+      const previousExtrasRaw = localStorage.getItem(EXTRA_KEY);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextProgress));
+        localStorage.setItem(EXTRA_KEY, JSON.stringify(nextExtras));
+      } catch (storageError) {
+        try {
+          if (previousProgressRaw === null) localStorage.removeItem(STORAGE_KEY);
+          else localStorage.setItem(STORAGE_KEY, previousProgressRaw);
+          if (previousExtrasRaw === null) localStorage.removeItem(EXTRA_KEY);
+          else localStorage.setItem(EXTRA_KEY, previousExtrasRaw);
+        } catch (rollbackError) {
+          console.warn("تعذر استعادة بيانات التخزين السابقة بالكامل", rollbackError);
+        }
+        throw new Error("تعذر حفظ النسخة الاحتياطية على هذا الجهاز؛ لم يُعلن نجاح الاستيراد. تحقق من مساحة التخزين ثم حاول مجدداً.");
+      }
       progressData = nextProgress;
       extras = nextExtras;
-      saveProgress();
-      persistExtras();
       if (typeof refreshDashboard === "function") refreshDashboard();
       if (typeof renderTopics === "function") renderTopics();
       updateBookmarkUI();

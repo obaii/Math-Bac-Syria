@@ -31,7 +31,10 @@ const checks = [
   ["empty or obsolete mistake entries produce a useful empty state", /لا توجد أسئلة صالحة للمراجعة حالياً/.test(enhancements)],
   ["dashboard counts only mistakes that still exist in the current bank", /const mistakeKeys = Object\.keys\(mistakeMap\)\.filter\(key => questions\.some\(q => questionKey\(q\) === key\)\)/.test(app)],
   ["mistake review reconstructs questions from the current bank", /reviewQuestions = Object\.keys\(mistakeMap\)[\s\S]*?questions\.find\(q => questionKey\(q\) === key\)[\s\S]*?q\.options\.length === 4/.test(app)],
-  ["obsolete-only mistake logs do not start an invalid quiz", /لا توجد أسئلة خاطئة صالحة للمراجعة حالياً/.test(app)]
+  ["obsolete-only mistake logs do not start an invalid quiz", /لا توجد أسئلة خاطئة صالحة للمراجعة حالياً/.test(app)],
+  ["backup import writes both records before changing in-memory state", /localStorage\.setItem\(STORAGE_KEY, JSON\.stringify\(nextProgress\)\)[\s\S]*?localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(nextExtras\)\)[\s\S]*?progressData = nextProgress;[\s\S]*?extras = nextExtras;/.test(enhancements)],
+  ["backup import attempts to restore prior storage after a failed write", /catch \(storageError\)[\s\S]*?previousProgressRaw === null[\s\S]*?previousExtrasRaw === null[\s\S]*?تعذر حفظ النسخة الاحتياطية على هذا الجهاز/.test(enhancements)],
+  ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
