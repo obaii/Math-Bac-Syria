@@ -36,6 +36,7 @@ jobs:
           node --check scripts/exam-config-tests.cjs
           node --check scripts/exam-review-navigation-tests.cjs
           node --check scripts/exam-result-summary-tests.cjs
+          node --check scripts/user-flow-smoke-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
       - name: Run verified answer regression checks
@@ -56,3 +57,5 @@ jobs:
         run: node scripts/exam-review-navigation-tests.cjs
       - name: Check exam result summary
         run: node scripts/exam-result-summary-tests.cjs
+      - name: Smoke-test key student user flows
+        run: node scripts/user-flow-smoke-tests.cjs
