@@ -190,7 +190,7 @@
       "نعوض \\(n=5\\) و\\(k=2\\): \\(\\binom{5}{2}=\\frac{5!}{2!3!}\\).",
       "بالتبسيط نحصل على \\(\\frac{5\\times4}{2}=10\\) طرق."
     ]
-  },
+  }
 ];
   for (const guide of guides) {
     const q = questions.find(item => item.topic === guide.topic && item.q === guide.q);
