@@ -9,8 +9,8 @@ const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const checks = [
   ["student tools reject arrays where saved maps are expected", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: isRecord\(x\.schedule\) \? x\.schedule : \{\}/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
   ["saved exam history ignores malformed entries", /examHistory: Array\.isArray\(x\.examHistory\) \? x\.examHistory\.filter\(item => isRecord\(item\) && Number\.isFinite\(item\.correct\) && Number\.isFinite\(item\.total\) && item\.total > 0\)/.test(enhancements)],
-  ["old saved progress defaults to an empty unique-question map", /seenQuestions: isRecord\(saved\.seenQuestions\) \? saved\.seenQuestions : \{\}/.test(app)],
-  ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /topicStats: isRecord\(saved\.topicStats\) \? saved\.topicStats : \{\}/.test(app) && /seenQuestions: isRecord\(saved\.seenQuestions\) \? saved\.seenQuestions : \{\}/.test(app)],
+  ["old saved progress defaults to an empty unique-question map", /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
+  ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /const topicStats = \{\};[\s\S]*?if \(isRecord\(saved\.topicStats\)\)/.test(app) && /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
   ["each practice answer records its unique question key", /progressData\.seenQuestions\[questionKey\(q\)\] = true/.test(app)],
   ["global coverage counts unique questions from the current bank", /const uniqueCount = countSeenQuestions\(\)/.test(app) && /const bankCount = questions\.length/.test(app)],
   ["topic coverage respects the selected difficulty filter", /q\.topic === topic && \(level === "الكل" \|\| q\.level === level\) && progressData\.seenQuestions\[questionKey\(q\)\]/.test(app)],
