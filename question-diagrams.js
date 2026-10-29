@@ -120,11 +120,11 @@ function getQuestionDiagram(question) {
           <path d="M38 220L318 220L146 38Z M38 220L240 65L318 220 M146 38L240 65"/>
         </g>
         <path d="M318 220L146 38 M38 220L240 65 M146 38L240 65" fill="none" stroke="#0f766e" stroke-width="1.8" stroke-dasharray="5 4"/>
-        <path d="M38 220L212 155" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="5 4"/>
-        <circle cx="235" cy="108" r="4.5" fill="#0f766e"/><circle cx="168" cy="170" r="4.5" fill="#2563eb"/>
+        <path d="M38 220L235 108" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="5 4"/>
+        <circle cx="235" cy="108" r="4.5" fill="#0f766e"/><circle cx="186" cy="136" r="4.5" fill="#2563eb"/>
         <g font-family="sans-serif" font-size="13" font-weight="600" fill="var(--text, #172b4d)">
           <text x="22" y="237">A</text><text x="323" y="237">B</text><text x="132" y="30">C</text><text x="246" y="61">D</text>
-          <text x="241" y="105" fill="#0f766e">G</text><text x="174" y="168" fill="#2563eb">O</text>
+          <text x="241" y="105" fill="#0f766e">G</text><text x="192" y="134" fill="#2563eb">O</text>
         </g>
       </svg>
     </figure>`;
