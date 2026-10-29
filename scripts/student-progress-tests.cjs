@@ -18,7 +18,9 @@ const checks = [
   ["progress report clamps remaining topic questions at zero", /const remainingCount = Math\.max\(0, count - seenCount\)/.test(enhancements)],
   ["progress report shows tried and remaining questions", /جرّبت \$\{row\.seenCount\.toLocaleString\("ar"\)\} · بقي \$\{row\.remainingCount\.toLocaleString\("ar"\)\}/.test(enhancements)],
   ["untried questions can inform review recommendations", /row\.remainingCount > 0/.test(enhancements) && /جرّبت \$\{row\.seenCount\.toLocaleString\("ar"\)\} من \$\{row\.count\.toLocaleString\("ar"\)\} سؤالاً مختلفاً/.test(enhancements)],
-  ["zero-question topics produce zero coverage without division by zero", /const coverageRate = count \? Math\.min\(100, Math\.round\(seenCount \/ count \* 100\)\) : 0/.test(enhancements)]
+  ["zero-question topics produce zero coverage without division by zero", /const coverageRate = count \? Math\.min\(100, Math\.round\(seenCount \/ count \* 100\)\) : 0/.test(enhancements)],
+  ["backup import restores the unique-question coverage map", /seenQuestions: \{\}/.test(enhancements) && /const sourceSeen = source\.seenQuestions[\s\S]*?if \(sourceSeen\[key\] && byKey\(key\)\) nextProgress\.seenQuestions\[key\] = true/.test(enhancements)],
+  ["backup import ignores unknown or false unique-question keys", /if \(sourceSeen\[key\] && byKey\(key\)\) nextProgress\.seenQuestions\[key\] = true/.test(enhancements)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
