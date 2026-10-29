@@ -9,6 +9,7 @@ const assert = require("node:assert/strict");
   const page = await browser.newPage({ viewport: { width: 1365, height: 900 } });
   const pageErrors = [];
   page.on("pageerror", error => pageErrors.push(error.message));
+  page.on("dialog", dialog => dialog.accept());
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
