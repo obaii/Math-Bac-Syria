@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+"use strict";
+
+// Regression guard for the curated, step-by-step solution guides.
+// This checks guide attachment and rendering hooks; it is not a mathematical audit.
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
+
+const root = path.resolve(__dirname, "..");
+const context = vm.createContext({ console });
+for (const file of [
+  "questions.js",
+  "questions_vectors_additional.js",
+  "merge-questions.js",
+  "solution-guides.js"
+]) {
+  vm.runInContext(
+    fs.readFileSync(path.join(root, file), "utf8"),
+    context,
+    { filename: file, timeout: 5000 }
+  );
+}
+
+const { questions } = vm.runInContext("({ questions })", context);
+const guided = questions.filter((q) => Array.isArray(q.steps) && q.steps.length > 0);
+const failures = [];
+
+if (guided.length < 12) {
+  failures.push(`Expected at least 12 guided questions, found ${guided.length}.`);
+}
+
+for (const [index, q] of guided.entries()) {
+  const label = `Guided question #${index + 1} (${q.topic || "unknown topic"})`;
+  if (typeof q.q !== "string" || !q.q.trim()) failures.push(`${label}: question text is missing.`);
+  if (typeof q.keyIdea !== "string" || !q.keyIdea.trim()) failures.push(`${label}: keyIdea is missing.`);
+  if (q.steps.length < 2) failures.push(`${label}: expected at least two solution steps.`);
+  if (q.steps.some((step) => typeof step !== "string" || !step.trim())) {
+    failures.push(`${label}: contains an empty or invalid solution step.`);
+  }
+}
+
+const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
+if (!enhancements.includes('class="solution-steps"')) {
+  failures.push("The guided-solution renderer no longer creates the solution-steps list.");
+}
+if (!enhancements.includes('typesetMath(solution)')) {
+  failures.push("The guided-solution renderer no longer asks MathJax to typeset the solution.");
+}
+if (!enhancements.includes("q.keyIdea")) {
+  failures.push("The guided-solution renderer no longer displays the key idea.");
+}
+
+if (failures.length) {
+  console.error("Detailed solution guide checks failed:");
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exitCode = 1;
+} else {
+  console.log(`PASS: ${guided.length} questions have structured solution steps and a key idea.`);
+  console.log("PASS: the guided-solution renderer includes the step list, key idea, and MathJax typesetting hook.");
+}

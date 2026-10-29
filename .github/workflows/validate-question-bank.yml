@@ -30,6 +30,7 @@ jobs:
           node --check scripts/answer-regression-tests.cjs
           node --check scripts/question-diagram-tests.cjs
           node --check scripts/diagram-reference-coverage-tests.cjs
+          node --check scripts/detailed-solution-guides-tests.cjs
           node --check scripts/student-progress-tests.cjs
           node --check scripts/exam-config-tests.cjs
           node --check scripts/exam-review-navigation-tests.cjs
@@ -42,6 +43,8 @@ jobs:
         run: node scripts/question-diagram-tests.cjs
       - name: Check explicitly referenced question diagrams
         run: node scripts/diagram-reference-coverage-tests.cjs
+      - name: Check detailed solution guide coverage
+        run: node scripts/detailed-solution-guides-tests.cjs
       - name: Check student progress tracking
         run: node scripts/student-progress-tests.cjs
       - name: Check exam difficulty configuration
