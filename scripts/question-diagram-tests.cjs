@@ -18,7 +18,7 @@ const cases = [
   { name: "discrete distribution table", match: q => q.q.includes("التوزيع السابق") && q.q.includes("P(X=3)"), labels: ["2/20", "8/20", "6/20", "4/20"] }
 ,
 
-  { name: "cube midpoint vectors", match: q => q.q.includes("مكعب") && q.q.includes("منتصف HG") && q.q.includes("منتصف FB"), labels: ["مكعب", "I", "K", "IE"] },
+  { name: "cube midpoint vectors", match: q => q.q.includes("مكعب") && q.q.includes("منتصف") && q.q.includes("HG") && q.q.includes("FB"), labels: ["مكعب", "I", "K", "IE"] },
   { name: "tetrahedron centroid relation", match: q => q.q.includes("مركز ثقل المثلث BCD") && q.q.includes("مركز ثقل رباعي الوجوه"), labels: ["رباعي وجوه", "G", "O"] },
   { name: "four-sector probability spinner", match: q => q.q.includes("قرص دائري مقسم إلى أربعة أقسام متساوية"), labels: ["أربعة أقسام متساوية", "1/4"] },
   { name: "conditional probability tree", match: q => q.q.includes("في مخطط شجري") && q.q.includes("P(B|A)=x") && q.q.includes("P(B|A′)=1/4"), labels: ["مخطط شجري", "A′", "1/4", "P(B)=1/4"] }
