@@ -531,3 +531,25 @@ body.dark-mode .solution-steps li::marker { color: #b8ccff; }
     padding: 6px 7px;
   }
 }
+
+
+/* رابط تجاوز المحتوى لتحسين التنقل بلوحة المفاتيح وقارئات الشاشة */
+.skip-link {
+  position: fixed;
+  z-index: 10000;
+  top: 8px;
+  right: 8px;
+  transform: translateY(calc(-100% - 16px));
+  padding: 10px 14px;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  background: var(--card-bg, #fff);
+  color: var(--text, #12233f);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 18%);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+#main-content:focus { outline: none; }
