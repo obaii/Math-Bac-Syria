@@ -8,7 +8,14 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
-const context = vm.createContext({ console });
+const attachmentWarnings = [];
+const context = vm.createContext({
+  console: {
+    warn: (...args) => attachmentWarnings.push(args.join(" ")),
+    log: (...args) => console.log(...args),
+    error: (...args) => console.error(...args)
+  }
+});
 for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
@@ -43,6 +50,10 @@ for (const [index, q] of guided.entries()) {
   if (q.steps.some((step) => typeof step !== "string" || !step.trim())) {
     failures.push(`${label}: contains an empty or invalid solution step.`);
   }
+}
+
+if (attachmentWarnings.length) {
+  failures.push(...attachmentWarnings.map((warning) => `Guide attachment warning: ${warning}`));
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
