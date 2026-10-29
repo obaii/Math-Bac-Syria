@@ -20,7 +20,12 @@ const checks = [
   ["untried questions can inform review recommendations", /row\.remainingCount > 0/.test(enhancements) && /جرّبت \$\{row\.seenCount\.toLocaleString\("ar"\)\} من \$\{row\.count\.toLocaleString\("ar"\)\} سؤالاً مختلفاً/.test(enhancements)],
   ["zero-question topics produce zero coverage without division by zero", /const coverageRate = count \? Math\.min\(100, Math\.round\(seenCount \/ count \* 100\)\) : 0/.test(enhancements)],
   ["backup import restores the unique-question coverage map", /seenQuestions: \{\}/.test(enhancements) && /const sourceSeen = source\.seenQuestions[\s\S]*?if \(sourceSeen\[key\] && byKey\(key\)\) nextProgress\.seenQuestions\[key\] = true/.test(enhancements)],
-  ["backup import ignores unknown or false unique-question keys", /if \(sourceSeen\[key\] && byKey\(key\)\) nextProgress\.seenQuestions\[key\] = true/.test(enhancements)]
+  ["backup import ignores unknown or false unique-question keys", /if \(sourceSeen\[key\] && byKey\(key\)\) nextProgress\.seenQuestions\[key\] = true/.test(enhancements)],
+  ["review scheduling ignores stale keys absent from the current question bank", /const q = byKey\(key\);[\s\S]*?if \(!q\) return null;/.test(enhancements)],
+  ["null or empty review dates are treated as unscheduled, not timestamp zero", /rawDue !== null && rawDue !== "" && rawDue !== undefined \? Number\(rawDue\) : NaN/.test(enhancements)],
+  ["review stages are clamped to supported spaced-repetition intervals", /Math\.max\(0, Math\.min\(intervalsDays\.length - 1, Math\.floor\(rawStage\)\)\)/.test(enhancements)],
+  ["mistake log only renders valid questions from the current bank", /const q = byKey\(key\);[\s\S]*?q\.options\.length !== 4/.test(enhancements)],
+  ["empty or obsolete mistake entries produce a useful empty state", /لا توجد أسئلة صالحة للمراجعة حالياً/.test(enhancements)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
