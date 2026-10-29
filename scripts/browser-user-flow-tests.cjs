@@ -14,6 +14,36 @@ const assert = require("node:assert/strict");
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
 
+    // Verify PWA metadata and service-worker activation on the local test origin.
+    const manifestResult = await page.evaluate(async () => {
+      const link = document.querySelector('link[rel="manifest"]');
+      if (!link) return { found: false };
+      const response = await fetch(link.href);
+      if (!response.ok) return { found: true, status: response.status };
+      const manifest = await response.json();
+      return {
+        found: true,
+        status: response.status,
+        standalone: manifest.display === "standalone",
+        hasStartUrl: typeof manifest.start_url === "string" && manifest.start_url.length > 0,
+        hasIcons: Array.isArray(manifest.icons) && manifest.icons.length > 0
+      };
+    });
+    assert.equal(manifestResult.found, true, "the home page should link to a web app manifest");
+    assert.equal(manifestResult.status, 200, "the web app manifest should load successfully");
+    assert.equal(manifestResult.standalone, true, "the manifest should request standalone display");
+    assert.equal(manifestResult.hasStartUrl, true, "the manifest should define a start URL");
+    assert.equal(manifestResult.hasIcons, true, "the manifest should define at least one app icon");
+
+    await page.waitForFunction(async () => {
+      if (!( "serviceWorker" in navigator)) return false;
+      const registration = await navigator.serviceWorker.getRegistration();
+      return Boolean(registration && registration.active);
+    }, null, { timeout: 20000 });
+    const installButton = page.locator("#install-app-button");
+    assert.equal(await installButton.count(), 1, "the install-app control should exist");
+    assert.ok(await installButton.isVisible(), "the install-app control should be visible");
+
     const topicButtons = page.locator("#topic-grid [data-topic]");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
