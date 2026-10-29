@@ -7,7 +7,8 @@ const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const checks = [
-  ["old saved progress defaults to an empty unique-question map", /seenQuestions: saved\.seenQuestions && typeof saved\.seenQuestions === "object" \? saved\.seenQuestions : \{\}/.test(app)],
+  ["old saved progress defaults to an empty unique-question map", /seenQuestions: isRecord\(saved\.seenQuestions\) \? saved\.seenQuestions : \{\}/.test(app)],
+  ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /topicStats: isRecord\(saved\.topicStats\) \? saved\.topicStats : \{\}/.test(app) && /seenQuestions: isRecord\(saved\.seenQuestions\) \? saved\.seenQuestions : \{\}/.test(app)],
   ["each practice answer records its unique question key", /progressData\.seenQuestions\[questionKey\(q\)\] = true/.test(app)],
   ["global coverage counts unique questions from the current bank", /const uniqueCount = countSeenQuestions\(\)/.test(app) && /const bankCount = questions\.length/.test(app)],
   ["topic coverage respects the selected difficulty filter", /q\.topic === topic && \(level === "الكل" \|\| q\.level === level\) && progressData\.seenQuestions\[questionKey\(q\)\]/.test(app)],
