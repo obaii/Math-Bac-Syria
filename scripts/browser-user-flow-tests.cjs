@@ -46,26 +46,28 @@ const assert = require("node:assert/strict");
 
     // Simulate the browser's beforeinstallprompt flow to cover accepted and dismissed choices.
     const dismissedPrompt = await page.evaluate(() => {
-      let promptCalls = 0;
+      window.__installPromptCalls = 0;
       const event = new Event("beforeinstallprompt", { cancelable: true });
-      event.prompt = async () => { promptCalls += 1; };
+      event.prompt = async () => { window.__installPromptCalls += 1; };
       event.userChoice = Promise.resolve({ outcome: "dismissed" });
       window.dispatchEvent(event);
-      return { promptReady: !document.querySelector("#install-app-button").disabled, promptCalls };
+      return { promptReady: !document.querySelector("#install-app-button").disabled };
     });
     assert.equal(dismissedPrompt.promptReady, true, "a deferred install prompt should enable the install button");
     await installButton.click();
+    assert.equal(await page.evaluate(() => window.__installPromptCalls), 1, "clicking install should call the browser prompt exactly once");
     assert.equal(await installButton.innerText(), "تثبيت التطبيق", "dismissing the browser prompt should leave installation available");
     const acceptedPrompt = await page.evaluate(() => {
-      let promptCalls = 0;
+      window.__installPromptCalls = 0;
       const event = new Event("beforeinstallprompt", { cancelable: true });
-      event.prompt = async () => { promptCalls += 1; };
+      event.prompt = async () => { window.__installPromptCalls += 1; };
       event.userChoice = Promise.resolve({ outcome: "accepted" });
       window.dispatchEvent(event);
-      return { promptReady: !document.querySelector("#install-app-button").disabled, promptCalls };
+      return { promptReady: !document.querySelector("#install-app-button").disabled };
     });
     assert.equal(acceptedPrompt.promptReady, true, "the install button should be re-enabled for a later install attempt");
     await installButton.click();
+    assert.equal(await page.evaluate(() => window.__installPromptCalls), 1, "a second install click should invoke the newly deferred browser prompt exactly once");
     assert.equal(await installButton.innerText(), "جارٍ تثبيت التطبيق...", "accepting the browser prompt should show installation progress");
     await page.evaluate(() => window.dispatchEvent(new Event("appinstalled")));
     assert.equal(await installButton.innerText(), "تم تثبيت التطبيق", "the appinstalled event should update the install button");
