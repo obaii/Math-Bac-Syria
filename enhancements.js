@@ -599,8 +599,14 @@
         correct: Math.min(toCount(source.correct), toCount(source.answered)),
         mistakes: {},
         topicStats: {},
-        attempts: Array.isArray(source.attempts) ? source.attempts.slice(0, 100) : []
+        attempts: Array.isArray(source.attempts) ? source.attempts.slice(0, 100) : [],
+        seenQuestions: {}
       };
+      // Restore only keys that still belong to the current question bank; ignore malformed or obsolete entries.
+      const sourceSeen = source.seenQuestions && typeof source.seenQuestions === "object" && !Array.isArray(source.seenQuestions) ? source.seenQuestions : {};
+      for (const key of Object.keys(sourceSeen)) {
+        if (sourceSeen[key] && byKey(key)) nextProgress.seenQuestions[key] = true;
+      }
       const sourceMistakes = source.mistakes && typeof source.mistakes === "object" && !Array.isArray(source.mistakes) ? source.mistakes : {};
       for (const key of Object.keys(sourceMistakes)) {
         const q = byKey(key);
