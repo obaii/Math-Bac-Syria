@@ -36,7 +36,9 @@ function countSeenQuestions(topic = "") {
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
-  const mistakes = Object.keys(progressData.mistakes).length;
+  const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
+  const mistakeKeys = Object.keys(mistakeMap).filter(key => questions.some(q => questionKey(q) === key));
+  const mistakes = mistakeKeys.length;
   $("stat-mistakes").textContent = mistakes.toLocaleString("ar");
   $("stat-percent").textContent = progressData.answered ? `${Math.round(progressData.correct / progressData.answered * 100).toLocaleString("ar")}٪` : "—";
   $("review-mistakes").disabled = mistakes === 0;
@@ -240,8 +242,12 @@ $("difficulty").addEventListener("change",renderTopics);
 $("topic-search").addEventListener("input",renderTopics);
 $("brand-home").addEventListener("click",e=>{e.preventDefault();$("quiz").classList.add("hidden");$("results").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});});
 function startReviewQuiz(){
-  reviewQuestions = Object.values(progressData.mistakes);
-  if (!reviewQuestions.length) { alert("لا توجد إجابات خاطئة للمراجعة حالياً. أحسنت!"); return; }
+  const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
+  // Rebuild review questions from the current bank so obsolete backup entries cannot break the quiz.
+  reviewQuestions = Object.keys(mistakeMap)
+    .map(key => questions.find(q => questionKey(q) === key))
+    .filter(q => q && typeof q.q === "string" && Array.isArray(q.options) && q.options.length === 4);
+  if (!reviewQuestions.length) { alert("لا توجد أسئلة خاطئة صالحة للمراجعة حالياً. قد تكون العلامات المتبقية من نسخة قديمة من بنك الأسئلة."); refreshDashboard(); return; }
   reviewMode = true;
   currentTopic = "مراجعة الأخطاء";
   quizQuestions = [...reviewQuestions].sort(()=>Math.random()-0.5);
