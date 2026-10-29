@@ -44,6 +44,33 @@ const assert = require("node:assert/strict");
     assert.equal(await installButton.count(), 1, "the install-app control should exist");
     assert.ok(await installButton.isVisible(), "the install-app control should be visible");
 
+    // Simulate the browser's beforeinstallprompt flow to cover accepted and dismissed choices.
+    const dismissedPrompt = await page.evaluate(() => {
+      let promptCalls = 0;
+      const event = new Event("beforeinstallprompt", { cancelable: true });
+      event.prompt = async () => { promptCalls += 1; };
+      event.userChoice = Promise.resolve({ outcome: "dismissed" });
+      window.dispatchEvent(event);
+      return { promptReady: !document.querySelector("#install-app-button").disabled, promptCalls };
+    });
+    assert.equal(dismissedPrompt.promptReady, true, "a deferred install prompt should enable the install button");
+    await installButton.click();
+    assert.equal(await installButton.innerText(), "تثبيت التطبيق", "dismissing the browser prompt should leave installation available");
+    const acceptedPrompt = await page.evaluate(() => {
+      let promptCalls = 0;
+      const event = new Event("beforeinstallprompt", { cancelable: true });
+      event.prompt = async () => { promptCalls += 1; };
+      event.userChoice = Promise.resolve({ outcome: "accepted" });
+      window.dispatchEvent(event);
+      return { promptReady: !document.querySelector("#install-app-button").disabled, promptCalls };
+    });
+    assert.equal(acceptedPrompt.promptReady, true, "the install button should be re-enabled for a later install attempt");
+    await installButton.click();
+    assert.equal(await installButton.innerText(), "جارٍ تثبيت التطبيق...", "accepting the browser prompt should show installation progress");
+    await page.evaluate(() => window.dispatchEvent(new Event("appinstalled")));
+    assert.equal(await installButton.innerText(), "تم تثبيت التطبيق", "the appinstalled event should update the install button");
+    assert.equal(await installButton.isDisabled(), true, "the install button should be disabled after installation");
+
     const topicButtons = page.locator("#topic-grid [data-topic]");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
