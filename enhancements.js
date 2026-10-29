@@ -16,6 +16,8 @@
       darkMode: Boolean(x.darkMode)
     };
   };
+  // Load the student-tool state before any setup function can render or read it.
+  let extras = loadExtras();
   const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); return true; } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); return false; } };
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
