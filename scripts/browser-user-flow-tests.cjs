@@ -26,7 +26,17 @@ const assert = require("node:assert/strict");
         status: response.status,
         standalone: manifest.display === "standalone",
         hasStartUrl: typeof manifest.start_url === "string" && manifest.start_url.length > 0,
-        hasIcons: Array.isArray(manifest.icons) && manifest.icons.length > 0
+        hasIcons: Array.isArray(manifest.icons) && manifest.icons.length > 0,
+        rasterIcons: await Promise.all((manifest.icons || []).filter(icon => icon.type === "image/png").map(async icon => {
+          try {
+            const iconResponse = await fetch(new URL(icon.src, link.href));
+            if (!iconResponse.ok) return { sizes: icon.sizes, ok: false };
+            const bitmap = await createImageBitmap(await iconResponse.blob());
+            return { sizes: icon.sizes, ok: true, width: bitmap.width, height: bitmap.height };
+          } catch (_) {
+            return { sizes: icon.sizes, ok: false };
+          }
+        }))
       };
     });
     assert.equal(manifestResult.found, true, "the home page should link to a web app manifest");
@@ -34,6 +44,8 @@ const assert = require("node:assert/strict");
     assert.equal(manifestResult.standalone, true, "the manifest should request standalone display");
     assert.equal(manifestResult.hasStartUrl, true, "the manifest should define a start URL");
     assert.equal(manifestResult.hasIcons, true, "the manifest should define at least one app icon");
+    assert.ok(manifestResult.rasterIcons.some(icon => icon.ok && icon.sizes === "192x192" && icon.width === 192 && icon.height === 192), "the manifest should serve a valid 192x192 PNG icon");
+    assert.ok(manifestResult.rasterIcons.some(icon => icon.ok && icon.sizes === "512x512" && icon.width === 512 && icon.height === 512), "the manifest should serve a valid 512x512 PNG icon");
 
     await page.waitForFunction(async () => {
       if (!( "serviceWorker" in navigator)) return false;
