@@ -27,7 +27,7 @@ const checks = [
   ["mistake log only renders valid questions from the current bank", /const q = byKey\(key\);[\s\S]*?q\.options\.length !== 4/.test(enhancements)],
   ["empty or obsolete mistake entries produce a useful empty state", /لا توجد أسئلة صالحة للمراجعة حالياً/.test(enhancements)],
   ["dashboard counts only mistakes that still exist in the current bank", /const mistakeKeys = Object\.keys\(mistakeMap\)\.filter\(key => questions\.some\(q => questionKey\(q\) === key\)\)/.test(app)],
-  ["mistake review reconstructs questions from the current bank", /reviewQuestions = Object\.keys\(mistakeMap\)[\\s\\S]*?questions\.find\(q => questionKey\(q\) === key\)[\\s\\S]*?q\.options\.length === 4/.test(app)],
+  ["mistake review reconstructs questions from the current bank", /reviewQuestions = Object\.keys\(mistakeMap\)[\s\S]*?questions\.find\(q => questionKey\(q\) === key\)[\s\S]*?q\.options\.length === 4/.test(app)],
   ["obsolete-only mistake logs do not start an invalid quiz", /لا توجد أسئلة خاطئة صالحة للمراجعة حالياً/.test(app)]
 ];
 let failures = 0;
