@@ -33,13 +33,13 @@ const visualQuestions = questions.filter(requiresVisual);
 let failures = 0;
 
 for (const q of visualQuestions) {
-  const imagePaths = [...q.q.matchAll(/<img\\s+[^>]*src=["']([^"']+)["']/g)]
+  const imagePaths = [...q.q.matchAll(/<img\s+[^>]*src=["']([^"']+)["']/g)]
     .map((match) => match[1]);
   const hasExistingImages = imagePaths.length > 0 &&
     imagePaths.every((src) => fs.existsSync(path.join(root, src)));
   const diagram = getQuestionDiagram(q);
   const hasGeneratedDiagram = typeof diagram === "string" &&
-    /<(?:svg|table)\\b/.test(diagram);
+    /<(?:svg|table)\b/.test(diagram);
 
   if (!hasExistingImages && !hasGeneratedDiagram) {
     console.error("FAIL: a question references a figure/table but has no available visual:");
@@ -56,7 +56,7 @@ if (visualQuestions.length === 0) {
 }
 
 console.log(
-  "\\nDiagram reference coverage: " +
+  "\nDiagram reference coverage: " +
   (visualQuestions.length - failures) + "/" + visualQuestions.length + " passed."
 );
 if (failures) process.exitCode = 1;
