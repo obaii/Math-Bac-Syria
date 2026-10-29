@@ -194,6 +194,11 @@
 ];
   for (const guide of guides) {
     const q = questions.find(item => item.topic === guide.topic && item.q === guide.q);
-    if (q) { q.keyIdea = guide.keyIdea; q.steps = guide.steps; }
+    if (q) {
+      q.keyIdea = guide.keyIdea;
+      q.steps = guide.steps;
+    } else {
+      console.warn(`تعذر إرفاق الحل التفصيلي؛ لم يُعثر على السؤال المطابق في البحث: ${guide.topic}`);
+    }
   }
 })();
