@@ -9,8 +9,8 @@ const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const checks = [
   ["student tools reject arrays where saved maps are expected", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: isRecord\(x\.schedule\) \? x\.schedule : \{\}/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
   ["saved exam history ignores malformed entries", /examHistory: Array\.isArray\(x\.examHistory\) \? x\.examHistory\.filter\(item => isRecord\(item\) && Number\.isFinite\(item\.correct\) && Number\.isFinite\(item\.total\) && item\.total > 0\)/.test(enhancements)],
-  ["old saved progress defaults to an empty unique-question map", /seenQuestions: isRecord\(saved\.seenQuestions\) \? saved\.seenQuestions : \{\}/.test(app)],
-  ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /topicStats: isRecord\(saved\.topicStats\) \? saved\.topicStats : \{\}/.test(app) && /seenQuestions: isRecord\(saved\.seenQuestions\) \? saved\.seenQuestions : \{\}/.test(app)],
+  ["old saved progress defaults to an empty unique-question map", /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
+  ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /const topicStats = \{\};[\s\S]*?if \(isRecord\(saved\.topicStats\)\)/.test(app) && /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
   ["each practice answer records its unique question key", /progressData\.seenQuestions\[questionKey\(q\)\] = true/.test(app)],
   ["global coverage counts unique questions from the current bank", /const uniqueCount = countSeenQuestions\(\)/.test(app) && /const bankCount = questions\.length/.test(app)],
   ["topic coverage respects the selected difficulty filter", /q\.topic === topic && \(level === "الكل" \|\| q\.level === level\) && progressData\.seenQuestions\[questionKey\(q\)\]/.test(app)],
@@ -35,7 +35,11 @@ const checks = [
   ["backup import writes both records before changing in-memory state", /localStorage\.setItem\(STORAGE_KEY, JSON\.stringify\(nextProgress\)\)[\s\S]*?localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(nextExtras\)\)[\s\S]*?progressData = nextProgress;[\s\S]*?extras = nextExtras;/.test(enhancements)],
   ["backup import attempts to restore prior storage after a failed write", /catch \(storageError\)[\s\S]*?previousProgressRaw === null[\s\S]*?previousExtrasRaw === null[\s\S]*?تعذر حفظ النسخة الاحتياطية على هذا الجهاز/.test(enhancements)],
   ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)],
-  ["student-tools script cache version is bumped for updated deployment", /enhancements\.js\?v=20261029-2/.test(html)]
+  ["student-tools script cache version is bumped for updated deployment", /enhancements\.js\?v=20261029-2/.test(html)],
+  ["loaded progress counters reject negative or unsafe values", /const toCount = value => Number\.isSafeInteger\(value\) && value >= 0 \? value : 0/.test(app) && /correct: Math\.min\(toCount\(saved\.correct\), answered\)/.test(app)],
+  ["loaded topic statistics are normalized and correct counts are clamped", /const topicStats = \{\}[\s\S]*?topicStats\[topic\] = \{ answered: topicAnswered, correct: Math\.min\(toCount\(stat\.correct\), topicAnswered\) \}/.test(app)],
+  ["loaded attempts reject malformed records and invalid dates", /typeof attempt\.correct === "boolean"[\s\S]*?Number\.isFinite\(Date\.parse\(attempt\.date\)\)/.test(app)],
+  ["loaded unique-question map accepts only true markers", /if \(seen === true\) seenQuestions\[key\] = true/.test(app)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {

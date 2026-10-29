@@ -21,8 +21,39 @@ const isRecord = value => value !== null && typeof value === "object" && !Array.
 function loadProgress(){
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (!saved || typeof saved !== "object") return emptyProgress();
-    return { ...emptyProgress(), ...saved, mistakes: isRecord(saved.mistakes) ? saved.mistakes : {}, topicStats: isRecord(saved.topicStats) ? saved.topicStats : {}, attempts: Array.isArray(saved.attempts) ? saved.attempts : [], seenQuestions: isRecord(saved.seenQuestions) ? saved.seenQuestions : {} };
+    if (!isRecord(saved)) return emptyProgress();
+    const toCount = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    const answered = toCount(saved.answered);
+    const topicStats = {};
+    if (isRecord(saved.topicStats)) {
+      for (const [topic, stat] of Object.entries(saved.topicStats)) {
+        if (!topic || !isRecord(stat)) continue;
+        const topicAnswered = toCount(stat.answered);
+        topicStats[topic] = { answered: topicAnswered, correct: Math.min(toCount(stat.correct), topicAnswered) };
+      }
+    }
+    const attempts = Array.isArray(saved.attempts) ? saved.attempts.filter(attempt =>
+      isRecord(attempt) &&
+      typeof attempt.topic === "string" &&
+      typeof attempt.correct === "boolean" &&
+      typeof attempt.date === "string" &&
+      Number.isFinite(Date.parse(attempt.date))
+    ).slice(0, 100).map(attempt => ({ topic: attempt.topic, correct: attempt.correct, date: attempt.date })) : [];
+    const seenQuestions = {};
+    if (isRecord(saved.seenQuestions)) {
+      for (const [key, seen] of Object.entries(saved.seenQuestions)) {
+        if (seen === true) seenQuestions[key] = true;
+      }
+    }
+    return {
+      ...emptyProgress(),
+      answered,
+      correct: Math.min(toCount(saved.correct), answered),
+      mistakes: isRecord(saved.mistakes) ? saved.mistakes : {},
+      topicStats,
+      attempts,
+      seenQuestions
+    };
   } catch(e) { return emptyProgress(); }
 }
 let progressData = loadProgress();
