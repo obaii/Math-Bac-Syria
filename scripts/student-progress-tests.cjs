@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
+const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const checks = [
   ["old saved progress defaults to an empty unique-question map", /seenQuestions: saved\.seenQuestions && typeof saved\.seenQuestions === "object" \? saved\.seenQuestions : \{\}/.test(app)],
