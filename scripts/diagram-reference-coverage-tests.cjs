@@ -53,16 +53,16 @@ const visualQuestions = questions.filter(requiresVisual);
 let failures = 0;
 
 for (const question of visualQuestions) {
-  const imagePaths = [...question.q.matchAll(/<img\\s+[^>]*src=["']([^"']+)["']/g)]
+  const imagePaths = [...question.q.matchAll(/<img\s+[^>]*src=["']([^"']+)["']/g)]
     .map((match) => match[1]);
   const hasExistingImages = imagePaths.length > 0 &&
     imagePaths.every((src) =>
-      !/^https?:\\/\\//i.test(src) &&
+      !/^https?:\/\//i.test(src) &&
       fs.existsSync(path.resolve(root, src))
     );
   const diagram = getQuestionDiagram(question);
   const hasGeneratedDiagram = typeof diagram === "string" &&
-    /<(?:svg|table)\\b/.test(diagram);
+    /<(?:svg|table)\b/.test(diagram);
 
   if (!hasExistingImages && !hasGeneratedDiagram) {
     console.error("FAIL: an explicitly visual question has no available image or generated diagram:");
