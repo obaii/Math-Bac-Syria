@@ -26,8 +26,8 @@ const checks = [
   ["review stages are clamped to supported spaced-repetition intervals", /Math\.max\(0, Math\.min\(intervalsDays\.length - 1, Math\.floor\(rawStage\)\)\)/.test(enhancements)],
   ["mistake log only renders valid questions from the current bank", /const q = byKey\(key\);[\s\S]*?q\.options\.length !== 4/.test(enhancements)],
   ["empty or obsolete mistake entries produce a useful empty state", /لا توجد أسئلة صالحة للمراجعة حالياً/.test(enhancements)],
-  ["dashboard counts only mistakes that still exist in the current bank", /const mistakeKeys = Object\\.keys\\(mistakeMap\\)\\.filter\\(key => questions\\.some\\(q => questionKey\\(q\\) === key\\)\\)/.test(app)],
-  ["mistake review reconstructs questions from the current bank", /reviewQuestions = Object\\.keys\\(mistakeMap\\)[\\s\\S]*?questions\\.find\\(q => questionKey\\(q\\) === key\\)[\\s\\S]*?q\\.options\\.length === 4/.test(app)],
+  ["dashboard counts only mistakes that still exist in the current bank", /const mistakeKeys = Object\.keys\(mistakeMap\)\.filter\(key => questions\.some\(q => questionKey\(q\) === key\)\)/.test(app)],
+  ["mistake review reconstructs questions from the current bank", /reviewQuestions = Object\.keys\(mistakeMap\)[\\s\\S]*?questions\.find\(q => questionKey\(q\) === key\)[\\s\\S]*?q\.options\.length === 4/.test(app)],
   ["obsolete-only mistake logs do not start an invalid quiz", /لا توجد أسئلة خاطئة صالحة للمراجعة حالياً/.test(app)]
 ];
 let failures = 0;
