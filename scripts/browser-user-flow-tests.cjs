@@ -192,7 +192,7 @@ const assert = require("node:assert/strict");
         }, { once: true });
       });
     });
-    await page.setOfflineMode(true);
+    await page.context().setOffline(true);
     try {
       await page.reload({ waitUntil: "domcontentloaded", timeout: 10000 });
       await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14, null, { timeout: 10000 });
@@ -206,7 +206,7 @@ const assert = require("node:assert/strict");
       assert.equal(offlineShell.questionsLoaded, true, "question data should load from cache while offline");
       assert.ok(offlineShell.pageWidth <= offlineShell.viewport + 2, "offline home page should not overflow horizontally");
     } finally {
-      await page.setOfflineMode(false);
+      await page.context().setOffline(false);
     }
 
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
