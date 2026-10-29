@@ -22,6 +22,12 @@ const cases = [
   { name: "tetrahedron centroid relation", match: q => q.q.includes("مركز ثقل المثلث BCD") && q.q.includes("مركز ثقل رباعي الوجوه"), labels: ["رباعي وجوه", "G", "O"] },
   { name: "four-sector probability spinner", match: q => q.q.includes("قرص دائري مقسم إلى أربعة أقسام متساوية"), labels: ["أربعة أقسام متساوية", "1/4"] },
   { name: "conditional probability tree", match: q => q.q.includes("في مخطط شجري") && q.q.includes("P(B|A)=x") && q.q.includes("P(B|A′)=1/4"), labels: ["مخطط شجري", "A′", "1/4", "P(B)=1/4"] }
+,
+  { name: "right circular cone sketch", match: q => q.q.includes("مخروط دائري قائم محوره محور z"), labels: ["مخروط", "المحور", "حافة القاعدة"] },
+  { name: "sphere center and radius sketch", match: q => q.q.includes("ما معادلة الكرة مركزها مبدأ الإحداثيات"), labels: ["كرة", "نصف القطر", "O"] },
+  { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2"), labels: ["منحنى", "المماس", "نقطة التماس"] },
+  { name: "plane normal vector sketch", match: q => q.q.includes("المستوى المار بالنقطة A(1,0,2) والناظم له"), labels: ["مستوى", "شعاع ناظم", "n"] },
+  { name: "spatial lines sketch", match: q => q.q.includes("المستقيم d معطى بالتمثيل"), labels: ["مستقيمين", "d", "d′"] }
 ];
 let failures = 0;
 for (const testCase of cases) {
