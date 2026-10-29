@@ -12,9 +12,11 @@ function readJsonDeclaration(source, declaration) {
   const start = source.indexOf(declaration);
   if (start < 0) throw new Error("Missing declaration: " + declaration);
   const valueStart = start + declaration.length;
-  let end = source.indexOf(";\\n", valueStart);\n  if (end >= 0) end += 1;\n  else end = source.indexOf(";", valueStart);
-  if (end < 0) throw new Error("Missing declaration terminator: " + declaration);
-  return JSON.parse(source.slice(valueStart, end).trim());
+  const lineEnd = source.indexOf(String.fromCharCode(10), valueStart);
+  if (lineEnd < 0) throw new Error("Missing declaration line ending: " + declaration);
+  const terminator = source.lastIndexOf(";", lineEnd);
+  if (terminator < valueStart) throw new Error("Missing declaration terminator: " + declaration);
+  return JSON.parse(source.slice(valueStart, terminator).trim());
 }
 let topics;
 let questions;
