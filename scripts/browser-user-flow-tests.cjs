@@ -116,7 +116,7 @@ const assert = require("node:assert/strict");
     // Exercise MathJax with a representative fraction and radical, without changing saved question data.
     const mathResult = await page.evaluate(async () => {
       const node = document.querySelector("#question-text");
-      node.innerHTML = String.raw`اختبار عرض المعادلة: \\(\\frac{1}{2}+\\sqrt{3}\\)`;
+      node.innerHTML = String.raw`اختبار عرض المعادلة: \( \frac{1}{2}+\sqrt{3} \)`;
       if (!window.MathJax || typeof window.MathJax.typesetPromise !== "function") {
         return { available: false };
       }
