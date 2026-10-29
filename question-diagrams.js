@@ -90,7 +90,7 @@ function getQuestionDiagram(question) {
 
 
   // Cube with the two specified midpoints: visual aid for the dot-product question.
-  if (prompt.includes("مكعب") && prompt.includes("منتصف HG") && prompt.includes("منتصف FB")) {
+  if (prompt.includes("مكعب") && prompt.includes("منتصف") && prompt.includes("HG") && prompt.includes("FB")) {
     return `<figure class="question-diagram" aria-label="مكعب يوضح منتصفي HG وFB والشعاعين IE وIK">
       <figcaption>رسم تخطيطي للمكعب؛ I منتصف HG وK منتصف FB.</figcaption>
       <svg viewBox="0 0 380 290" role="img" aria-labelledby="cube-midpoints-title" xmlns="http://www.w3.org/2000/svg">
