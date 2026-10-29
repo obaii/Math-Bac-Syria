@@ -99,7 +99,7 @@ function getQuestionDiagram(question) {
           <path d="M65 215L210 250L315 190L170 155Z M65 95L210 130L315 70L170 35Z M65 95V215 M210 130V250 M315 70V190 M170 35V155"/>
           <path d="M65 215L170 155 M65 95L170 35" stroke-dasharray="4 4" opacity=".7"/>
         </g>
-        <path d="M242.5 52.5L65 95 M242.5 52.5L210 250" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="6 4" fill="none"/>
+        <path d="M242.5 52.5L65 95 M242.5 52.5L210 190" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="6 4" fill="none"/>
         <circle cx="242.5" cy="52.5" r="4.5" fill="#0f766e"/><circle cx="210" cy="190" r="4.5" fill="#0f766e"/>
         <g font-family="sans-serif" font-size="13" font-weight="600" fill="var(--text, #172b4d)">
           <text x="49" y="231">A</text><text x="214" y="267">B</text><text x="321" y="201">C</text><text x="154" y="170">D</text>
