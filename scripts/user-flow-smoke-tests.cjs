@@ -8,21 +8,32 @@ const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const questionsSource = fs.readFileSync(path.join(root, "questions.js"), "utf8");
 
-const topicMatch = questionsSource.match(/const topics = (\[[^\n]+\]);/);
-const questionMatch = questionsSource.match(/const questions = (\[.*\]);/);
-let topics = [];
-let questions = [];
+function readJsonDeclaration(source, declaration) {
+  const start = source.indexOf(declaration);
+  if (start < 0) throw new Error("Missing declaration: " + declaration);
+  const valueStart = start + declaration.length;
+  const end = source.indexOf(";", valueStart);
+  if (end < 0) throw new Error("Missing declaration terminator: " + declaration);
+  return JSON.parse(source.slice(valueStart, end).trim());
+}
+let topics;
+let questions;
 try {
-  if (topicMatch) topics = JSON.parse(topicMatch[1]);
-  if (questionMatch) questions = JSON.parse(questionMatch[1]);
+  topics = readJsonDeclaration(questionsSource, "const topics =");
+  questions = readJsonDeclaration(questionsSource, "const questions =");
 } catch (error) {
   console.error("Could not parse the primary question-bank declarations:", error.message);
   process.exit(1);
 }
 
-const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+const ids = html.split('id="').slice(1).map(part => part.split('"')[0]);
 const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
-const scriptPaths = [...html.matchAll(/<script\s+defer\s+src="([^"]+)"/g)].map(match => match[1].split("?")[0]);
+const scriptPaths = html.split("<script").slice(1).map(part => {
+  const srcStart = part.indexOf('src="');
+  if (srcStart < 0) return "";
+  return part.slice(srcStart + 5).split('"')[0].split("?")[0];
+}).filter(Boolean);
+const has = value => html.includes(value);
 const checks = [
   ["the curriculum exposes exactly 14 named topics", topics.length === 14 && topics.every(topic => typeof topic === "string" && topic.trim())],
   ["every named topic has at least one primary-bank question", topics.every(topic => questions.some(question => question.topic === topic))],
@@ -30,15 +41,15 @@ const checks = [
   ["HTML element IDs are unique", duplicateIds.length === 0],
   ["topic search, difficulty filter, and topic grid are present", ["topic-search", "difficulty", "topic-grid", "no-topics"].every(id => ids.includes(id))],
   ["quiz question, choices, feedback, next, and result controls are present", ["quiz", "question-text", "options", "feedback", "next", "results", "score", "retry", "to-home"].every(id => ids.includes(id))],
-  ["review and exam panels start hidden and have explicit entry controls", /id="student-tools"[^>]*\shidden/.test(html) && /id="exam-tools"[^>]*\shidden/.test(html) && ["student-tools", "exam-tools"].every(panel => html.includes('data-panel-toggle="' + panel + '"'))],
+  ["review and exam panels start hidden and have explicit entry controls", has('id="student-tools"') && has('id="exam-tools"') && has('id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden') && has('id="exam-tools" class="exam-tools" hidden') && has('data-panel-toggle="student-tools"') && has('data-panel-toggle="exam-tools"')],
   ["student tools expose bookmark, review, progress, backup, and night-mode controls", ["smart-review", "bookmark-review", "guided-review", "progress-report-toggle", "export-progress", "import-progress-button", "toggle-dark-mode"].every(id => ids.includes(id))],
   ["exam setup exposes start, question count, difficulty, and duration", ["start-exam", "exam-question-count", "exam-difficulty", "exam-duration"].every(id => ids.includes(id))],
   ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
-  ["topic selection, search, and difficulty changes are wired in the app", /document\.querySelectorAll\("\[data-topic\]"\)[\s\S]*?startQuiz\(btn\.dataset\.topic\)/.test(app) && /\$\("topic-search"\)\.addEventListener\("input",renderTopics\)/.test(app) && /\$\("difficulty"\)\.addEventListener\("change",renderTopics\)/.test(app)],
-  ["answer feedback, solution rendering, and progress persistence are wired", /function chooseAnswer\(/.test(app) && /\$\("feedback"\)\.innerHTML/.test(app) && /function saveProgress\(/.test(app) && /progressData\.seenQuestions\[questionKey\(q\)\] = true/.test(app)],
-  ["exam and student-tool click handlers exist", /\$\("start-exam"\)\.addEventListener\("click"/.test(enhancements) && /\$\("bookmark-review"\)\.addEventListener\("click"/.test(enhancements) && /\$\("toggle-dark-mode"\)\.addEventListener\("click"/.test(enhancements)],
-  ["mathematics rendering and supplemental diagrams are connected", html.includes("tex-mml-chtml.js") && /getQuestionDiagram\(q\)/.test(app) && html.includes("question-diagrams.js")),
-  ["service worker and install-app entry points are included", html.includes("pwa-install.js") && html.includes('id="install-app-button"') && fs.existsSync(path.join(root, "sw.js"))]
+  ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && app.includes("startQuiz(btn.dataset.topic)") && app.includes('$("topic-search").addEventListener("input",renderTopics)') && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
+  ["answer feedback, solution rendering, and progress persistence are wired", app.includes("function chooseAnswer(") && app.includes('$("feedback").innerHTML') && app.includes("function saveProgress(") && app.includes("progressData.seenQuestions[questionKey(q)] = true")],
+  ["exam and student-tool click handlers exist", enhancements.includes('$("start-exam").addEventListener("click"') && enhancements.includes('$("bookmark-review").addEventListener("click"') && enhancements.includes('$("toggle-dark-mode").addEventListener("click"')],
+  ["mathematics rendering and supplemental diagrams are connected", has("tex-mml-chtml.js") && app.includes("getQuestionDiagram(q)") && has("question-diagrams.js")],
+  ["service worker and install-app entry points are included", has("pwa-install.js") && has('id="install-app-button"') && fs.existsSync(path.join(root, "sw.js"))]
 ];
 
 let failures = 0;
