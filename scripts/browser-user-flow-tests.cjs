@@ -39,13 +39,27 @@ const assert = require("node:assert/strict");
     assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "answer feedback should include a solution");
     const savedProgress = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null"));
     assert.ok(savedProgress && savedProgress.answered === 1, "answer progress should persist to local storage");
+    const savedTools = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
+    assert.ok(savedTools && savedTools.bookmarks && savedTools.bookmarks.length === 1, "bookmark should persist to local storage");
 
-    await page.getByRole("link", { name: /الصفحة الرئيسية/ }).click().catch(async () => {
-      await page.locator("#back").click();
+    await page.locator("#back").click();
+    await page.waitForFunction(() => !document.querySelector("#quiz").classList.contains("hidden"));
+    await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
+    await page.getByRole("button", { name: /المسائل المحفوظة/ }).click();
+    await page.waitForFunction(() => !document.querySelector("#bookmark-list").hidden);
+    assert.ok(await page.locator("#bookmark-list li").count() > 0, "saved-question list should render a bookmarked question");
+
+    await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
+    await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    await page.waitForFunction(() => {
+      const clock = document.querySelector("#exam-clock");
+      return clock && !clock.hidden;
     });
-    await page.waitForTimeout(100);
+    assert.ok(await page.locator("#options [data-option]").count() === 4, "exam simulation should start with four answer choices");
+
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
-    console.log("PASS: topic list, hidden panels, night mode, quiz choices, answer feedback, bookmark control, and local progress");
+    console.log("PASS: topics, panel toggles, night mode, quiz feedback, bookmark persistence/list, exam start, and local progress");
   } finally {
     await browser.close();
   }
