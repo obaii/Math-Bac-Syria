@@ -43,7 +43,7 @@ const assert = require("node:assert/strict");
     assert.ok(savedTools && savedTools.bookmarks && savedTools.bookmarks.length === 1, "bookmark should persist to local storage");
 
     await page.locator("#back").click();
-    await page.waitForFunction(() => !document.querySelector("#quiz").classList.contains("hidden"));
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
     await page.getByRole("button", { name: /المسائل المحفوظة/ }).click();
     await page.waitForFunction(() => !document.querySelector("#bookmark-list").hidden);
