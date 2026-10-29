@@ -42,12 +42,23 @@ const visualReferencePatterns = [
   /(?:وفق|حسب) التوزيع السابق/,
   /الجدول التالي/,
   /الشكل (?:التالي|المجاور|المقابل)/,
-  /(?:الرسم البياني|المنحنى المرسوم|الرسم المرفق)/
+  /(?:الرسم البياني|المنحنى المرسوم|الرسم المرفق)/,
+  /التوزيع السابق/,
+  /في مخطط شجري/,
+  /قرص دائري مقسم إلى أربعة أقسام متساوية/,
+  /مكعب.*منتصف.*HG.*FB/,
+  /مركز ثقل المثلث BCD/,
+  /في مكعب طول حرفه 3.*مسقط M العمودي/,
+  /في رباعي وجوه ABCD.*منتصف \\[CD\\]/
 ];
 
 const requiresVisual = (question) =>
   typeof question.q === "string" &&
-  visualReferencePatterns.some((pattern) => pattern.test(question.q));
+  (
+    visualReferencePatterns.some((pattern) => pattern.test(question.q)) ||
+    (question.q.includes("التوزيع المشترك") &&
+      /(جدول|بالجدول|بالاعتماد|وفق)/.test(question.q))
+  );
 
 const visualQuestions = questions.filter(requiresVisual);
 let failures = 0;
