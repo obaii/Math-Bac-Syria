@@ -166,5 +166,90 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
+
+  // Generic spatial cone sketch: supports visualization without changing question data.
+  if (prompt.includes("مخروط دائري قائم")) {
+    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمخروط دائري قائم">
+      <figcaption>رسم توضيحي لشكل المخروط ومحوره وقاعدته الدائرية؛ الأبعاد والمعطيات تؤخذ من نص السؤال.</figcaption>
+      <svg viewBox="0 0 340 250" role="img" aria-label="مخروط دائري قائم ومحوره">
+        <ellipse cx="170" cy="194" rx="88" ry="25" fill="#dbeafe" fill-opacity=".7" stroke="#64748b" stroke-width="1.7"/>
+        <path d="M170 35L82 194 M170 35L258 194" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+        <path d="M170 35V194" stroke="#0f766e" stroke-width="1.8" stroke-dasharray="5 4"/>
+        <path d="M170 194H258" stroke="#b45309" stroke-width="2"/>
+        <circle cx="170" cy="194" r="3.5" fill="#b45309"/>
+        <g font-family="sans-serif" font-size="13" fill="var(--text, #172b4d)">
+          <text x="180" y="31">الرأس</text><text x="179" y="116">المحور</text>
+          <text x="204" y="185">r</text><text x="164" y="214">O</text><text x="260" y="205">حافة القاعدة</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // Schematic sphere for questions whose main object is a sphere.
+  if (prompt.includes("الكرة") && /(معادلة الكرة|كرة نصف قطرها|سطح الكرة|الكرة مركزها)/.test(prompt)) {
+    return `<figure class="question-diagram" aria-label="رسم تخطيطي لكرة يوضح المركز ونصف القطر">
+      <figcaption>رسم تخطيطي يوضح المركز ونصف القطر؛ لا يمثل مقياساً عددياً للإحداثيات.</figcaption>
+      <svg viewBox="0 0 340 240" role="img" aria-label="كرة مركزها O ونصف قطرها r">
+        <circle cx="160" cy="118" r="78" fill="#dbeafe" fill-opacity=".42" stroke="#64748b" stroke-width="1.8"/>
+        <ellipse cx="160" cy="118" rx="78" ry="25" fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="5 4"/>
+        <ellipse cx="160" cy="118" rx="30" ry="78" fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="5 4"/>
+        <path d="M160 118L224 73" stroke="#2563eb" stroke-width="2.4"/>
+        <circle cx="160" cy="118" r="4" fill="#0f766e"/>
+        <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
+          <text x="145" y="137">O</text><text x="192" y="86">r</text><text x="239" y="70">نصف القطر</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // Conceptual tangent sketch for function questions asking for a tangent equation.
+  if (prompt.includes("معادلة المماس") && (prompt.includes("منحني") || prompt.includes("منحنى"))) {
+    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمنحنى ومماس عند نقطة">
+      <figcaption>رسم مفاهيمي يوضح نقطة التماس والمماس؛ استخدم معطيات السؤال لتحديد المعادلة الفعلية.</figcaption>
+      <svg viewBox="0 0 340 230" role="img" aria-label="منحنى ومماس عند نقطة تماس">
+        <path d="M28 184H315 M62 205V22" fill="none" stroke="#64748b" stroke-width="1.5"/>
+        <path d="M72 181 C108 178 128 143 157 111 S219 66 291 42" fill="none" stroke="#2563eb" stroke-width="2.8"/>
+        <path d="M91 174L276 48" fill="none" stroke="#b45309" stroke-width="2.3" stroke-dasharray="6 4"/>
+        <circle cx="157" cy="111" r="4.5" fill="#0f766e"/>
+        <g font-family="sans-serif" font-size="13" fill="var(--text, #172b4d)">
+          <text x="165" y="104">نقطة التماس</text><text x="224" y="83">المماس</text><text x="296" y="201">x</text><text x="48" y="25">y</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // Plane with a normal vector, a schematic aid for analytic geometry questions.
+  if (prompt.includes("المستوى") && /(شعاع ناظم|الناظم له|ناظم المستوى)/.test(prompt)) {
+    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمستوى وشعاع ناظم">
+      <figcaption>رسم مفاهيمي لمستوى وشعاع ناظم عمودي عليه؛ الإحداثيات الدقيقة تبقى وفق نص السؤال.</figcaption>
+      <svg viewBox="0 0 340 230" role="img" aria-label="مستوى P وشعاع ناظم n">
+        <polygon points="38,157 190,196 302,117 150,78" fill="#dbeafe" fill-opacity=".8" stroke="#64748b" stroke-width="1.7"/>
+        <path d="M170 138L170 35" stroke="#0f766e" stroke-width="2.6"/>
+        <path d="M164 47L170 35L176 47" fill="none" stroke="#0f766e" stroke-width="2.6"/>
+        <circle cx="170" cy="138" r="3.5" fill="#b45309"/>
+        <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
+          <text x="277" y="112">المستوى P</text><text x="181" y="48">n</text><text x="179" y="151">A</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // Spatial line sketch for line/plane position questions with parametric forms.
+  if ((prompt.includes("المستقيم") || prompt.includes("المستقيمان")) &&
+      /(تمثيل وسيطي|تمثيلين|وضعهما|نقطة التقاطع|معطى بالتمثيل)/.test(prompt)) {
+    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمستقيمين في الفضاء">
+      <figcaption>رسم مفاهيمي للعلاقات الممكنة بين مستقيمين في الفضاء؛ يُحدد الوضع الدقيق من المعادلات الواردة في السؤال.</figcaption>
+      <svg viewBox="0 0 340 230" role="img" aria-label="مستقيمان في فضاء ثلاثي الأبعاد">
+        <path d="M42 185L145 211L302 151 M42 185L95 46L302 151 M95 46L145 211" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+        <path d="M58 169L278 80" stroke="#2563eb" stroke-width="2.6"/>
+        <path d="M93 62L251 180" stroke="#0f766e" stroke-width="2.6"/>
+        <circle cx="185" cy="117" r="4" fill="#b45309"/>
+        <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
+          <text x="264" y="73">d</text><text x="255" y="196">d′</text><text x="194" y="111">P</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
   return "";
 }
