@@ -22,9 +22,14 @@ for (const file of [
   );
 }
 
-const { questions } = vm.runInContext("({ questions })", context);
+const { questions, topics } = vm.runInContext("({ questions, topics })", context);
 const guided = questions.filter((q) => Array.isArray(q.steps) && q.steps.length > 0);
 const failures = [];
+for (const topic of topics) {
+  if (!guided.some((q) => q.topic === topic)) {
+    failures.push(`No detailed solution guide is attached to topic: ${topic}.`);
+  }
+}
 
 if (guided.length < 12) {
   failures.push(`Expected at least 12 guided questions, found ${guided.length}.`);
@@ -57,5 +62,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(`PASS: ${guided.length} questions have structured solution steps and a key idea.`);
+  console.log(`PASS: all ${topics.length} curriculum topics have at least one detailed guide.`);
   console.log("PASS: the guided-solution renderer includes the step list, key idea, and MathJax typesetting hook.");
 }
