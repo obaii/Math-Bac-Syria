@@ -63,6 +63,8 @@
       body.dark-mode .topic-mastery-status.is-progress{color:#bfdbfe;background:#172554;border-color:#1d4ed8}
       body.dark-mode .topic-mastery-status.is-mastered{color:#bbf7d0;background:#052e16;border-color:#166534}
       .progress-report-track{height:7px;margin-top:7px;border-radius:99px;background:var(--line);overflow:hidden}.progress-report-track span{display:block;height:100%;background:var(--success,#2f9e72)}
+      .progress-coverage-caption{display:block;margin-top:5px;color:var(--muted);font-size:12px}
+      .progress-coverage-caption{display:block;margin-top:5px;color:var(--muted);font-size:12px}
       .recent-activity{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
       .recent-activity h4{margin:0 0 6px;font-size:15px}.recent-attempt-list{display:grid;gap:7px;list-style:none;margin:10px 0 0;padding:0}
       .recent-attempt-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:9px}
@@ -183,7 +185,11 @@
       const answered = Number.isFinite(stat.answered) && stat.answered > 0 ? Math.floor(stat.answered) : 0;
       const correct = Number.isFinite(stat.correct) && stat.correct > 0 ? Math.min(Math.floor(stat.correct), answered) : 0;
       const rate = answered ? Math.round(correct / answered * 100) : 0;
-      const count = questionBank.filter(q => q.topic === topic).length;
+      const topicQuestions = questionBank.filter(q => q.topic === topic);
+      const count = topicQuestions.length;
+      const seenCount = topicQuestions.reduce((sum, q) => sum + (progressData && progressData.seenQuestions && progressData.seenQuestions[questionKey(q)] ? 1 : 0), 0);
+      const remainingCount = Math.max(0, count - seenCount);
+      const coverageRate = count ? Math.min(100, Math.round(seenCount / count * 100)) : 0;
       const mistakeCount = mistakeValues.filter(q => q && q.topic === topic).length;
       let masteryLabel = "لم يبدأ بعد";
       let masteryClass = "is-new";
@@ -200,18 +206,19 @@
         masteryLabel = "يحتاج إلى تدريب";
         masteryClass = "is-review";
       }
-      return { topic, answered, correct, rate, count, mistakeCount, masteryLabel, masteryClass };
+      return { topic, answered, correct, rate, count, seenCount, remainingCount, coverageRate, mistakeCount, masteryLabel, masteryClass };
     });
     const totalAttempts = rows.reduce((sum, row) => sum + row.answered, 0);
     const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
     // توصيات مبنية على الأداء الفعلي: الأخطاء أولاً، ثم الأبحاث ذات الأداء المنخفض، ثم الأبحاث التي لم تبدأ.
     const recommendations = [...rows].sort((a, b) => {
-      const priority = row => row.mistakeCount > 0 ? 0 : row.answered === 0 ? 2 : row.rate < 70 ? 1 : row.rate < 85 ? 1 : 3;
+      const priority = row => row.mistakeCount > 0 ? 0 : row.answered > 0 && row.rate < 70 ? 1 : row.answered === 0 ? 2 : row.rate < 85 ? 3 : row.remainingCount > 0 ? 4 : 5;
       return priority(a) - priority(b)
         || b.mistakeCount - a.mistakeCount
         || (a.answered ? a.rate : 101) - (b.answered ? b.rate : 101)
+        || b.remainingCount - a.remainingCount
         || a.topic.localeCompare(b.topic, "ar");
-    }).filter(row => row.mistakeCount > 0 || row.answered === 0 || row.rate < 85).slice(0, 3);
+    }).filter(row => row.mistakeCount > 0 || row.answered === 0 || row.rate < 85 || row.remainingCount > 0).slice(0, 3);
     const recommendationMarkup = recommendations.length ? recommendations.map(row => {
       const reason = row.mistakeCount > 0
         ? `لديك ${row.mistakeCount.toLocaleString("ar")} أخطاء محفوظة؛ ابدأ بمراجعتها.`
@@ -219,7 +226,9 @@
           ? "لم تبدأ هذا البحث بعد؛ خصص له جلسة تدريب قصيرة."
           : row.rate < 70
             ? `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ يُنصح بإعادة التدريب.`
-            : `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ راجع الأفكار التي أخطأت فيها.`;
+            : row.rate < 85
+              ? `نسبة الإجابات الصحيحة ${row.rate.toLocaleString("ar")}٪؛ راجع الأفكار التي أخطأت فيها.`
+              : `جرّبت ${row.seenCount.toLocaleString("ar")} من ${row.count.toLocaleString("ar")} سؤالاً مختلفاً؛ بقي ${row.remainingCount.toLocaleString("ar")} للتجربة.`;
       return `<li class="progress-recommendation">
         <div><strong>${escapeHtml(row.topic)}</strong><p>${escapeHtml(reason)}</p></div>
         <div class="progress-recommendation-actions">
@@ -260,7 +269,9 @@
       <ul class="progress-report-list">${rows.map(row => `
         <li class="progress-report-item">
           <div class="progress-report-top"><strong>${escapeHtml(row.topic)}</strong><span>${row.answered ? `${row.correct.toLocaleString("ar")} صحيحة من ${row.answered.toLocaleString("ar")} محاولة · ${row.rate.toLocaleString("ar")}%` : "لم تبدأ بعد"}</span></div>
-          <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span></div>
+          <div class="progress-report-top"><span>${row.count.toLocaleString("ar")} سؤالاً متاحاً</span><span>جرّبت ${row.seenCount.toLocaleString("ar")} · بقي ${row.remainingCount.toLocaleString("ar")}</span></div>
+          <div class="progress-report-track" role="progressbar" aria-label="نسبة الأسئلة التي جرى تجربتها في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.coverageRate}"><span style="width:${row.coverageRate}%"></span></div>
+          <small class="progress-coverage-caption">${row.coverageRate.toLocaleString("ar")}٪ من أسئلة هذا البحث جرى تجربتها</small>
           <span class="topic-mastery-status ${row.masteryClass}">${escapeHtml(row.masteryLabel)}</span>
           <div class="progress-report-track" role="progressbar" aria-label="نسبة الإجابات الصحيحة في ${escapeHtml(row.topic)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${row.rate}"><span style="width:${row.rate}%"></span></div>
           ${row.mistakeCount ? `<button type="button" class="topic-review-button" data-review-topic="${escapeHtml(row.topic)}">راجع أخطاء هذا البحث (${row.mistakeCount.toLocaleString("ar")})</button>` : ""}
