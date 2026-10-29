@@ -235,9 +235,22 @@ function chooseAnswer(choice){
   });
   const fb=$("feedback");
   fb.className=`feedback ${isCorrect?"good":"bad"}`;
+  const escapeSolutionText = value => String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+  const hasGuidedSteps = typeof q.keyIdea === "string" && q.keyIdea.trim() &&
+    Array.isArray(q.steps) && q.steps.length > 0 &&
+    q.steps.every(step => typeof step === "string" && step.trim());
+  const solutionContent = hasGuidedSteps
+    ? `<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>${escapeSolutionText(q.keyIdea)}</div></div>
+       <ol class="solution-steps">${q.steps.map(step => `<li>${escapeSolutionText(step)}</li>`).join("")}</ol>`
+    : `<div>${q.solution}</div>`;
   fb.innerHTML=`<strong>${isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة"}</strong>
     <div>${isCorrect?"اختيارك صحيح.":"الإجابة الصحيحة هي: "+letters[q.answer]+" — "+q.options[q.answer]}</div>
-    <div class="solution"><strong>الحل:</strong><div>${q.solution}</div></div>`;
+    <div class="solution"><strong>الحل:</strong>${solutionContent}</div>`;
   $("next").disabled=false;
   $("progress-bar").style.width=`${(index+1)/quizQuestions.length*100}%`;
   typeset();

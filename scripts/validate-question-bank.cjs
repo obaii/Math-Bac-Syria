@@ -18,6 +18,7 @@ try {
   load("questions.js");
   load("questions_vectors_additional.js");
   load("merge-questions.js");
+  load("solution-guides.js");
   const data = vm.runInContext(
     "({ topics, questions, additional: vectorQuestionsAdditional })",
     context
@@ -145,6 +146,18 @@ try {
       bucket.levels[q.level] = (bucket.levels[q.level] || 0) + 1;
     }
   }
+
+  const guidedQuestions = (questions || []).filter(q =>
+    typeof q.keyIdea === "string" && q.keyIdea.trim() &&
+    Array.isArray(q.steps) && q.steps.length > 0 &&
+    q.steps.every(step => typeof step === "string" && step.trim())
+  );
+  const guidedTopics = new Set(guidedQuestions.map(q => q.topic));
+  for (const topic of topics || []) {
+    if (!guidedTopics.has(topic)) errors.push(`لا يوجد سؤال بحل تفصيلي للبحث "${topic}".`);
+  }
+  console.log(`الأسئلة ذات الحل التفصيلي: ${guidedQuestions.length}`);
+  console.log(`الأبحاث التي لديها حل تفصيلي واحد على الأقل: ${guidedTopics.size} من ${(topics || []).length}`);
 
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   console.log(`عدد الأبحاث: ${topics.length}`);

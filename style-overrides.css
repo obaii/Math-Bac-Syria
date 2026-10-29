@@ -488,3 +488,25 @@ body.dark-mode .question-coverage-total { background:#243653; color:#b8ccff; }
 body.dark-mode .exam-topic-practice { background:#243653; color:#c5d4ff; border-color:#405579; }
 body.dark-mode .exam-topic-practice:hover { background:#2b4164; }
 @media(max-width:600px) { .exam-topic-practice { width:100%; } .exam-topic-result-heading { align-items:flex-start; flex-wrap:wrap; } }
+
+
+/* عرض الحلول التفصيلية ومفتاح الفكرة بصورة واضحة في واجهة السؤال. */
+.solution-key-idea {
+  margin: 10px 0 12px;
+  padding: 11px 13px;
+  border-inline-start: 4px solid #5478d8;
+  border-radius: 10px;
+  background: #eef3ff;
+  color: #243b69;
+  line-height: 1.9;
+}
+.solution-key-idea > strong { display:block; margin-bottom:4px; }
+.solution-steps { margin: 8px 0 2px; padding-inline-start: 1.6rem; }
+.solution-steps li { padding: 4px 3px; line-height: 1.95; }
+.solution-steps li::marker { color: #315edb; font-weight: 800; }
+body.dark-mode .solution-key-idea {
+  background: #20314d;
+  border-inline-start-color: #9bb4ff;
+  color: #e2eaff;
+}
+body.dark-mode .solution-steps li::marker { color: #b8ccff; }
