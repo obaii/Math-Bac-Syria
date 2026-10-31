@@ -256,7 +256,35 @@
       const change = previousRate === null ? "" : ` · ${rate > previousRate ? "تحسن" : rate < previousRate ? "تراجع" : "ثبات"} ${Math.abs(rate - previousRate).toLocaleString("ar")} نقطة مئوية مقارنة بالمحاولة السابقة`;
       return `<li class="exam-history-item"><div><strong>محاكاة ${(examHistory.length - i).toLocaleString("ar")}</strong><span>${rate.toLocaleString("ar")}٪</span></div><p>${exam.correct.toLocaleString("ar")} صحيحة من ${exam.total.toLocaleString("ar")} سؤالاً · ${escapeHtml(when)}</p>${change ? `<small>${escapeHtml(change.trim())}</small>` : ""}</li>`;
     }).join("") : '<li class="recent-attempt-empty">لم تُسجّل محاكاة سابقة بعد. بعد إنهاء أول محاكاة ستظهر نتائجها هنا.</li>';
-    const attempts = Array.isArray(progressData.attempts) ? progressData.attempts.slice(0, 10) : [];
+    const allAttempts = Array.isArray(progressData.attempts) ? progressData.attempts : [];
+    const attempts = allAttempts.slice(0, 10);
+    const dayKey = value => {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? null : [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+    };
+    const activeDays = new Set(allAttempts.map(item => item && dayKey(item.date)).filter(Boolean));
+    const today = new Date();
+    const todayKey = dayKey(today);
+    const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+    let streak = 0;
+    let cursor = activeDays.has(todayKey) ? today : activeDays.has(dayKey(yesterday)) ? yesterday : null;
+    while (cursor && activeDays.has(dayKey(cursor))) {
+      streak++;
+      cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 1);
+    }
+    const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6);
+    const weeklyAttempts = allAttempts.filter(item => {
+      const date = new Date(item && item.date);
+      return !Number.isNaN(date.getTime()) && date >= weekStart && date <= today;
+    });
+    const weeklyDays = new Set(weeklyAttempts.map(item => dayKey(item.date)).filter(Boolean)).size;
+    const weeklyCorrect = weeklyAttempts.filter(item => item.correct === true).length;
+    const weeklyRate = weeklyAttempts.length ? Math.round(weeklyCorrect / weeklyAttempts.length * 100) : null;
+    const rhythmMarkup = `<section class="study-rhythm" aria-label="انتظام التدريب">
+      <div><strong>${weeklyDays.toLocaleString("ar")}</strong><span>أيام تدريب خلال آخر ٧ أيام</span></div>
+      <div><strong>${streak.toLocaleString("ar")}</strong><span>أيام متتالية من التدريب</span></div>
+      <div><strong>${weeklyRate === null ? "—" : weeklyRate.toLocaleString("ar") + "٪"}</strong><span>دقة الإجابات خلال آخر ٧ أيام</span></div>
+    </section>`;
     const recentActivity = attempts.length ? attempts.map(attempt => {
       const date = new Date(attempt.date);
       const when = Number.isNaN(date.getTime()) ? "تاريخ غير متاح" : date.toLocaleString("ar-SY", { dateStyle: "medium", timeStyle: "short" });
@@ -270,6 +298,7 @@
     report.innerHTML = `
       <h4>تقرير تقدّمك</h4>
       <p>إجمالي المحاولات المسجّلة: <strong>${totalAttempts.toLocaleString("ar")}</strong> · الإجابات الصحيحة: <strong>${totalCorrect.toLocaleString("ar")}</strong></p>
+      ${rhythmMarkup}
       <section class="progress-recommendations" aria-labelledby="progress-recommendations-title">
         <h4 id="progress-recommendations-title">الأبحاث التي تستحق المراجعة أولاً</h4>
         <p>تتغير هذه الاقتراحات تلقائياً وفق إجاباتك وأخطائك المحفوظة على هذا الجهاز.</p>
