@@ -168,6 +168,25 @@ const assert = require("node:assert/strict");
     assert.ok(mobileHome.pageWidth <= mobileHome.viewport + 2, `home page should not overflow horizontally on 360px phones (page=${mobileHome.pageWidth}, viewport=${mobileHome.viewport})`);
     assert.equal(mobileHome.topicCards.length, 14, "all 14 topic cards should remain available on mobile");
     assert.ok(mobileHome.topicCards.every(card => card.width > 0 && card.left >= -1 && card.right <= mobileHome.viewport + 1), "topic cards should fit inside the phone viewport");
+    const mobileHeader = await page.evaluate(() => {
+      const header = document.querySelector(".top").getBoundingClientRect();
+      const brand = document.querySelector("#brand-home").getBoundingClientRect();
+      const install = document.querySelector("#install-app-button").getBoundingClientRect();
+      return {
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        headerLeft: header.left,
+        headerRight: header.right,
+        brandLeft: brand.left,
+        brandRight: brand.right,
+        installLeft: install.left,
+        installRight: install.right,
+        installVisible: install.width > 0 && getComputedStyle(document.querySelector("#install-app-button")).display !== "none"
+      };
+    });
+    assert.ok(mobileHeader.pageWidth <= mobileHeader.viewport + 2, "mobile header should not cause horizontal page overflow");
+    assert.ok(mobileHeader.brandLeft >= -1 && mobileHeader.brandRight <= mobileHeader.viewport + 1, "brand should remain within the phone viewport");
+    assert.ok(mobileHeader.installVisible && mobileHeader.installLeft >= -1 && mobileHeader.installRight <= mobileHeader.viewport + 1, "install action should remain visible and within the phone viewport");
 
     // Force a question that has a built-in diagram, then check SVG bounds on mobile.
     const diagramResult = await page.evaluate(() => {
