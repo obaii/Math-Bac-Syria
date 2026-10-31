@@ -121,6 +121,22 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => !document.querySelector("#bookmark-list").hidden);
     assert.ok(await page.locator("#bookmark-list li").count() > 0, "saved-question list should render a bookmarked question");
 
+    // Seed a deterministic three-day practice streak and verify the progress report derives it.
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [0, 1, 2].map((offset, index) => ({
+        topic: "اختبار الانتظام",
+        correct: index !== 1,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 12).toISOString()
+      }));
+    });
+    await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
+    const rhythm = page.locator("#progress-report .study-rhythm");
+    await rhythm.waitFor({ state: "visible" });
+    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "3", "the report should count three active days in the last seven days");
+    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
+    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
+
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
     await page.locator("#quiz").waitFor({ state: "visible" });
