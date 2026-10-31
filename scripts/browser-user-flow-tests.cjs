@@ -238,6 +238,10 @@ const assert = require("node:assert/strict");
     assert.ok(phone390.pageWidth <= phone390.viewport + 2, `home page should not overflow horizontally on 390px phones (page=${phone390.pageWidth}, viewport=${phone390.viewport})`);
     assert.ok(phone390.searchRight <= phone390.viewport + 1, "topic search should fit within a 390px viewport");
 
+    // Open the intentionally collapsed student-tools panel before testing its controls.
+    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+
     // Importing a backup must discard malformed attempt records before they reach the progress report.
     const validBackupDate = new Date().toISOString();
     const backupPayload = {
