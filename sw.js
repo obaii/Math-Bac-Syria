@@ -45,7 +45,7 @@ self.addEventListener("fetch", event => {
       }).catch(() => caches.match(request).then(cached => cached || caches.match("./index.html"))));
       return;
     }
-    event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+    event.respondWith(caches.match(request, { ignoreSearch: true }).then(cached => cached || fetch(request).then(response => {
       if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
       return response;
     })));
