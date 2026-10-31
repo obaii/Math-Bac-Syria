@@ -133,9 +133,9 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
     const rhythm = page.locator("#progress-report .study-rhythm");
     await rhythm.waitFor({ state: "visible" });
-    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "٣", "the report should count three active days in the last seven days");
-    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "٣", "the report should calculate a three-day consecutive practice streak");
-    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "٦٧٪", "the report should calculate weekly answer accuracy from saved attempts");
+    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "3", "the report should count three active days in the last seven days");
+    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
+    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
 
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
