@@ -42,6 +42,12 @@
       .guided-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .guided-list button{height:100%;font-size:12px;line-height:1.8}
       .progress-report{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .study-rhythm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:12px}
+      .study-rhythm>div{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc);text-align:center}
+      .study-rhythm strong{display:block;font-size:22px;color:var(--primary,#315edb)}
+      .study-rhythm span{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+      body.dark-mode .study-rhythm>div{background:var(--card-bg)}
+      @media(max-width:420px){.study-rhythm{grid-template-columns:1fr}}
       .progress-recommendations{margin:12px 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
       .progress-recommendations>h4{margin:0 0 5px;font-size:15px}.progress-recommendations>p{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.8}
       .progress-recommendation-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
