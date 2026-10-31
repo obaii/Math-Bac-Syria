@@ -288,6 +288,13 @@ const assert = require("node:assert/strict");
       mimeType: "application/json",
       buffer: Buffer.from(JSON.stringify(backupPayload))
     });
+    // File input change handling is asynchronous; wait for the import to finish before asserting. 
+    await page.waitForFunction(() => {
+      const progress = JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null");
+      return Array.isArray(progress?.attempts)
+        && progress.attempts.length === 1
+        && progress.attempts[0].topic === "الاشتقاق";
+    });
     const importedAttempts = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null").attempts);
     assert.equal(importedAttempts.length, 1, "backup import should retain only valid attempts for current topics");
     assert.equal(importedAttempts[0].topic, "الاشتقاق", "backup import should preserve a valid current topic");
