@@ -346,8 +346,9 @@ const assert = require("node:assert/strict");
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة خطأ"), "choosing a mistake-log item should launch focused practice");
 
-    await page.locator("#back").click();
-    await page.waitForFunction(() => !document.querySelector("#home").classList.contains("hidden"));
+    // Reload to return to the home screen; focused practice has no in-quiz back control.
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     await page.locator('[data-panel-toggle="student-tools"]').click();
     await page.locator("#student-tools").waitFor({ state: "visible" });
     await page.locator("#smart-review").click();
