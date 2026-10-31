@@ -238,6 +238,36 @@ const assert = require("node:assert/strict");
     assert.ok(phone390.pageWidth <= phone390.viewport + 2, `home page should not overflow horizontally on 390px phones (page=${phone390.pageWidth}, viewport=${phone390.viewport})`);
     assert.ok(phone390.searchRight <= phone390.viewport + 1, "topic search should fit within a 390px viewport");
 
+    // Importing a backup must discard malformed attempt records before they reach the progress report.
+    const validBackupDate = new Date().toISOString();
+    const backupPayload = {
+      format: "math-bac-syria-progress",
+      version: 1,
+      progress: {
+        answered: 1, correct: 1, mistakes: {}, topicStats: {},
+        seenQuestions: {}, attempts: [
+          { topic: "الاشتقاق", correct: true, date: validBackupDate },
+          { topic: "بحث غير موجود", correct: true, date: validBackupDate },
+          { topic: "الاشتقاق", correct: "yes", date: validBackupDate },
+          { topic: "الاشتقاق", correct: false, date: "not-a-date" },
+          { topic: "الاشتقاق", correct: false, date: new Date(Date.now() + 3 * 86400000).toISOString() }
+        ]
+      },
+      studentTools: {}
+    };
+    await page.locator("#import-progress-file").setInputFiles({
+      name: "test-backup.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(backupPayload))
+    });
+    const importedAttempts = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null").attempts);
+    assert.equal(importedAttempts.length, 1, "backup import should retain only valid attempts for current topics");
+    assert.equal(importedAttempts[0].topic, "الاشتقاق", "backup import should preserve a valid current topic");
+    await page.locator("#student-tools").scrollIntoViewIfNeeded();
+    await page.locator("#progress-report-toggle").click();
+    await page.waitForFunction(() => !document.querySelector("#progress-report").hidden);
+    assert.ok((await page.locator("#progress-report").innerText()).includes("إجابة صحيحة"), "progress report should render the sanitized imported attempt");
+
     // Verify that the cached application shell can reopen when the network is unavailable.
     await page.evaluate(async () => {
       if (navigator.serviceWorker.controller) return;
