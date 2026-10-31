@@ -335,6 +335,21 @@ const assert = require("node:assert/strict");
     assert.ok(reviewBuckets[0].heading.includes("مستحق اليوم") && reviewBuckets[0].count === "1", "an unscheduled mistake should be listed as due today");
     assert.ok(reviewBuckets[1].heading.includes("خلال الأيام السبعة القادمة") && reviewBuckets[1].count === "1", "a review scheduled within seven days should be listed as upcoming");
     assert.ok(reviewBuckets[2].heading.includes("بعد أسبوع") && reviewBuckets[2].count === "1", "a review scheduled beyond seven days should be listed later");
+
+    // The mistake log should list valid missed questions and launch focused practice.
+    const mistakeLogButton = page.locator("#mistake-log-toggle");
+    assert.equal(await mistakeLogButton.isEnabled(), true, "the mistake-log shortcut should be enabled when valid mistakes exist");
+    await mistakeLogButton.click();
+    await page.locator("#mistake-log").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#mistake-log .mistake-log-item").count(), 1, "the mistake log should show the unscheduled missed question");
+    await page.locator("#mistake-log [data-mistake-key]").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة خطأ"), "choosing a mistake-log item should launch focused practice");
+
+    await page.locator("#back").click();
+    await page.waitForFunction(() => !document.querySelector("#home").classList.contains("hidden"));
+    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await page.locator("#student-tools").waitFor({ state: "visible" });
     await page.locator("#smart-review").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), "المراجعة الذكية", "smart review should launch the due question set");
