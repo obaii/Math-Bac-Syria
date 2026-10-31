@@ -89,6 +89,11 @@ const assert = require("node:assert/strict");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
     assert.equal(await page.locator("#exam-tools").isVisible(), false, "exam setup should start hidden");
+    for (const id of ["stat-answered", "stat-correct", "stat-mistakes", "stat-percent"]) {
+      const live = await page.locator("#" + id).getAttribute("aria-live");
+      assert.equal(live, "polite", id + " should announce dashboard updates to assistive technology");
+      assert.equal(await page.locator("#" + id).getAttribute("aria-atomic"), "true", id + " should announce its complete updated value");
+    }
 
     await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
     assert.equal(await page.locator("#student-tools").isVisible(), true, "student tools should open from their shortcut; hidden=" + await page.locator("#student-tools").evaluate(el => el.hidden) + "; page errors=" + pageErrors.join(" | "));
