@@ -653,9 +653,20 @@
         correct: Math.min(toCount(source.correct), toCount(source.answered)),
         mistakes: {},
         topicStats: {},
-        attempts: Array.isArray(source.attempts) ? source.attempts.slice(0, 100) : [],
+        attempts: [],
         seenQuestions: {}
       };
+      // Keep only well-formed attempt records for topics that still exist in this version.
+      const allowedTopics = new Set(typeof topics !== "undefined" && Array.isArray(topics) ? topics : []);
+      nextProgress.attempts = (Array.isArray(source.attempts) ? source.attempts : [])
+        .filter(item => item && typeof item === "object" && !Array.isArray(item)
+          && allowedTopics.has(item.topic)
+          && typeof item.correct === "boolean"
+          && typeof item.date === "string"
+          && Number.isFinite(Date.parse(item.date))
+          && Date.parse(item.date) <= Date.now() + 86400000)
+        .slice(0, 100)
+        .map(item => ({ topic: item.topic, correct: item.correct, date: new Date(item.date).toISOString() }));
       // Restore only keys that still belong to the current question bank; ignore malformed or obsolete entries.
       const sourceSeen = source.seenQuestions && typeof source.seenQuestions === "object" && !Array.isArray(source.seenQuestions) ? source.seenQuestions : {};
       for (const key of Object.keys(sourceSeen)) {
