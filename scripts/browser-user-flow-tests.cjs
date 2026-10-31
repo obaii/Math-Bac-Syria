@@ -303,6 +303,42 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => !document.querySelector("#progress-report").hidden);
     assert.ok((await page.locator("#progress-report").innerText()).includes("إجابة صحيحة"), "progress report should render the sanitized imported attempt");
 
+    // Verify all three spaced-review buckets and that unscheduled mistakes are due immediately.
+    await page.evaluate(() => {
+      const [dueQuestion, upcomingQuestion, laterQuestion] = questions.slice(0, 3);
+      const keyOf = q => `${q.topic}::${q.q}`;
+      const now = Date.now();
+      localStorage.setItem("mathBacSyriaProgressV1", JSON.stringify({
+        answered: 0, correct: 0,
+        mistakes: { [keyOf(dueQuestion)]: { topic: dueQuestion.topic, q: dueQuestion.q } },
+        topicStats: {}, attempts: [], seenQuestions: {}
+      }));
+      localStorage.setItem("mathBacSyriaStudentToolsV1", JSON.stringify({
+        bookmarks: [], reviewQuestions: [],
+        schedule: {
+          [keyOf(upcomingQuestion)]: { stage: 1, due: now + 3 * 86400000 },
+          [keyOf(laterQuestion)]: { stage: 2, due: now + 10 * 86400000 }
+        },
+        examHistory: [], darkMode: false
+      }));
+    });
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+    await page.locator("#review-plan-toggle").click();
+    await page.locator("#review-plan").waitFor({ state: "visible" });
+    const reviewBuckets = await page.locator("#review-plan .review-plan-group").evaluateAll(groups =>
+      groups.map(group => ({ heading: group.querySelector("h4")?.innerText || "", count: group.querySelector("h4 span")?.innerText || "", content: group.innerText }))
+    );
+    assert.equal(reviewBuckets.length, 3, "the review plan should render due, upcoming, and later groups");
+    assert.ok(reviewBuckets[0].heading.includes("مستحق اليوم") && reviewBuckets[0].count === "1", "an unscheduled mistake should be listed as due today");
+    assert.ok(reviewBuckets[1].heading.includes("خلال الأيام السبعة القادمة") && reviewBuckets[1].count === "1", "a review scheduled within seven days should be listed as upcoming");
+    assert.ok(reviewBuckets[2].heading.includes("بعد أسبوع") && reviewBuckets[2].count === "1", "a review scheduled beyond seven days should be listed later");
+    await page.locator("#smart-review").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), "المراجعة الذكية", "smart review should launch the due question set");
+
     // Verify that the cached application shell can reopen when the network is unavailable.
     await page.evaluate(async () => {
       if (navigator.serviceWorker.controller) return;
