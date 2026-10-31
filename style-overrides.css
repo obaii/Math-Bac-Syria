@@ -553,3 +553,31 @@ body.dark-mode .solution-steps li::marker { color: #b8ccff; }
   transform: translateY(0);
 }
 #main-content:focus { outline: none; }
+
+
+/* Keep the brand and install action usable on narrow phone headers. */
+@media (max-width: 600px) {
+  .top {
+    height: auto;
+    min-height: 62px;
+    padding: 8px 14px;
+    gap: 10px;
+  }
+  .top-actions {
+    min-width: 0;
+    gap: 8px;
+  }
+  .privacy-note { display: none; }
+  .install-app-button {
+    min-height: 40px;
+    padding: 7px 9px;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 420px) {
+  .top { padding-inline: 12px; }
+  .top .tag { display: none; }
+  .brand { min-width: 0; gap: 7px; font-size: 14px; }
+  .brand-symbol { flex: 0 0 34px; width: 34px; height: 34px; }
+  .install-app-button { font-size: 12px; }
+}
