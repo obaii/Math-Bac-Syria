@@ -1222,6 +1222,8 @@
         });
         panel.hidden = !opening;
         if (opening) {
+          panel.setAttribute("tabindex", "-1");
+          panel.focus({ preventScroll: true });
           panel.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       });
