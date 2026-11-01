@@ -183,6 +183,30 @@ function renderRecentActivity(){
   }
 }
 
+function renderWeakTopicRecommendation(){
+  const section = $("weak-topic-recommendation");
+  const name = $("weak-topic-name");
+  const rateNode = $("weak-topic-rate");
+  const detail = $("weak-topic-detail");
+  const button = $("weak-topic-button");
+  if (!section || !name || !rateNode || !detail || !button) return;
+  const candidates = (Array.isArray(topics) ? topics : []).map(topic => {
+    const stat = progressData.topicStats && progressData.topicStats[topic];
+    const answered = stat && Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+    const correct = stat && Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+    return { topic, answered, correct, rate: answered ? Math.round(correct / answered * 100) : 0 };
+  }).filter(item => item.answered > 0 && questions.some(q => q.topic === item.topic));
+  candidates.sort((a, b) => a.rate - b.rate || b.answered - a.answered || a.topic.localeCompare(b.topic, "ar"));
+  const weakest = candidates[0];
+  section.hidden = !weakest;
+  if (!weakest) return;
+  name.textContent = weakest.topic;
+  rateNode.textContent = weakest.rate.toLocaleString("ar") + "٪";
+  detail.textContent = weakest.answered.toLocaleString("ar") + " إجابة مسجلة، منها " +
+    weakest.correct.toLocaleString("ar") + " صحيحة. هذا البحث هو الأقل في نسبة الإجابات الصحيحة بين الأبحاث التي بدأت بها.";
+  button.onclick = () => startQuiz(weakest.topic);
+}
+
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
@@ -244,6 +268,7 @@ function refreshDashboard(){
   }
   renderRecentActivity();
   renderPerformanceTrend();
+  renderWeakTopicRecommendation();
 }
 
 function topicIcon(topic){
