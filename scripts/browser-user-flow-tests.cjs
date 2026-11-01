@@ -102,6 +102,22 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /إيقاف الوضع الليلي/ }).click();
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), false, "night mode should toggle off");
 
+    // Seed a deterministic three-day practice streak and verify the progress report derives it.
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [0, 1, 2].map((offset, index) => ({
+        topic: "اختبار الانتظام",
+        correct: index !== 1,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 12).toISOString()
+      }));
+    });
+    await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
+    const rhythm = page.locator("#progress-report .study-rhythm");
+    await rhythm.waitFor({ state: "visible" });
+    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "3", "the report should count three active days in the last seven days");
+    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
+    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
+
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     assert.equal(await page.locator("#exam-tools").isVisible(), true, "exam setup should open from its shortcut");
     await page.getByRole("link", { name: /ابدأ التدريب/ }).click();
@@ -144,29 +160,6 @@ const assert = require("node:assert/strict");
     assert.ok(["0", "٠"].includes(removedBookmarkState.count), "the saved-question counter should update after removal");
     assert.equal(removedBookmarkState.listHidden, true, "the saved-question list should hide when its last item is removed");
     assert.equal(removedBookmarkState.pressed, "false", "the current-question bookmark control should return to its unsaved state");
-
-    // Return from the focused saved-question quiz to the home screen, then reopen
-    // the hidden student-tools panel before interacting with its report control.
-    await page.locator("#back").click();
-    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
-    await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
-    await page.locator("#student-tools").waitFor({ state: "visible" });
-
-    // Seed a deterministic three-day practice streak and verify the progress report derives it.
-    await page.evaluate(() => {
-      const now = new Date();
-      progressData.attempts = [0, 1, 2].map((offset, index) => ({
-        topic: "اختبار الانتظام",
-        correct: index !== 1,
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 12).toISOString()
-      }));
-    });
-    await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
-    const rhythm = page.locator("#progress-report .study-rhythm");
-    await rhythm.waitFor({ state: "visible" });
-    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "3", "the report should count three active days in the last seven days");
-    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
-    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
 
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
