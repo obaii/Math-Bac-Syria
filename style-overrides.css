@@ -834,3 +834,48 @@ body.dark-mode .topic-card-performance { color: #a7b5ca; }
   .topic-state { font-size: 9px; padding: 4px 6px; }
   .topic-card-performance { font-size: 10px; }
 }
+
+
+/* اقتراح البحث الأقل أداءً: يظهر فقط بعد وجود نتائج فعلية. */
+.weak-topic-recommendation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 18px 0;
+  padding: 18px 20px;
+  border: 1px solid #d9e3f2;
+  border-radius: 16px;
+  background: #f7f9ff;
+  color: #172b4d;
+}
+.weak-topic-recommendation[hidden] { display: none !important; }
+.weak-topic-copy { min-width: 0; }
+.weak-topic-copy .eyebrow { margin: 0 0 4px; }
+.weak-topic-copy h3 { margin: 0 0 6px; font-size: 17px; }
+.weak-topic-name { margin: 0 0 4px; font-weight: 800; }
+.weak-topic-detail { margin: 0; color: #64748b; font-size: 12px; line-height: 1.8; }
+.weak-topic-action { display: grid; justify-items: center; gap: 5px; flex: 0 0 auto; }
+.weak-topic-action strong { font-size: 25px; line-height: 1.2; color: #3154b5; }
+.weak-topic-action span { color: #64748b; font-size: 10px; }
+.weak-topic-action button {
+  margin-top: 4px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: #3154b5;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.weak-topic-action button:focus-visible { outline: 3px solid #8da9f4; outline-offset: 3px; }
+body.dark-mode .weak-topic-recommendation { background: #182438; border-color: #405579; color: #e7edf8; }
+body.dark-mode .weak-topic-detail, body.dark-mode .weak-topic-action span { color: #a7b5ca; }
+body.dark-mode .weak-topic-action strong { color: #b8ccff; }
+@media(max-width:600px) {
+  .weak-topic-recommendation { align-items: stretch; flex-direction: column; padding: 15px; gap: 12px; }
+  .weak-topic-action { grid-template-columns: auto 1fr; justify-items: start; align-items: center; }
+  .weak-topic-action button { grid-column: 1 / -1; width: 100%; min-height: 44px; }
+}
