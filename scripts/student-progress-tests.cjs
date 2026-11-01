@@ -35,7 +35,7 @@ const checks = [
   ["backup import writes both records before changing in-memory state", /localStorage\.setItem\(STORAGE_KEY, JSON\.stringify\(nextProgress\)\)[\s\S]*?localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(nextExtras\)\)[\s\S]*?progressData = nextProgress;[\s\S]*?extras = nextExtras;/.test(enhancements)],
   ["backup import attempts to restore prior storage after a failed write", /catch \(storageError\)[\s\S]*?previousProgressRaw === null[\s\S]*?previousExtrasRaw === null[\s\S]*?تعذر حفظ النسخة الاحتياطية على هذا الجهاز/.test(enhancements)],
   ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)],
-  ["student-tools script cache version is bumped for updated deployment", /enhancements\.js\?v=20261029-2/.test(html)],
+  ["student-tools script cache version is bumped for updated deployment", /enhancements\.js\?v=20261101-3/.test(html)],
   ["diagram stylesheet cache version is bumped after styling changes", /style-overrides\.css\?v=20261101-10/.test(html) && /app\.js\?v=20261101-10/.test(html)],
   ["topic mastery waits for at least ten answers before awarding a level", /if \(answered < 10 \|\| rate < 60\)/.test(app) && /function getTopicMastery\(stat\)/.test(app)],
   ["topic mastery distinguishes not-started, practice, good, and mastered states", ["not-started", "practice", "good", "mastered"].every(key => app.includes(`key: "${key}"`)) && ["لم يبدأ بعد", "يحتاج إلى تدريب", "جيد", "متقن"].every(label => app.includes(label))],
