@@ -328,6 +328,31 @@ const assert = require("node:assert/strict");
     const examHistory = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(examHistory && examHistory.examHistory && examHistory.examHistory.length > 0, "exam result should be saved locally");
 
+    // The end-of-session summary lists only mistakes from this session and retries that subset.
+    const sessionSummaryFixture = await page.evaluate(() => {
+      const sample = questions.slice(0, 2);
+      quizQuestions = sample;
+      sessionMistakes = [sample[1]];
+      correctCount = 1;
+      reviewMode = false;
+      currentTopic = sample[0].topic;
+      showResults();
+      return { total: quizQuestions.length, mistakeQuestion: sample[1].q };
+    });
+    assert.equal(await page.locator("#score").innerText(), "1 / 2 (50٪)", "the session summary should retain the correct score");
+    assert.equal(await page.locator("#session-result-review .session-mistake-list li").count(), 1, "the summary should list only questions answered incorrectly in this session");
+    assert.ok((await page.locator("#session-result-review").innerText()).includes(sessionSummaryFixture.mistakeQuestion.replace(/<[^>]*>/g, " ").trim().slice(0, 12)), "the mistake list should identify the missed question");
+    await page.locator("#retry-session-mistakes").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.evaluate(() => quizQuestions.length), 1, "retry should contain only this session's incorrect questions");
+    assert.equal(await page.locator("#quiz-title").innerText(), "إعادة تدريب أخطاء الجلسة", "retry should be clearly identified as a session-only review");
+    const retryAnswer = await page.evaluate(() => quizQuestions[0].answer);
+    await page.locator('#options [data-option="' + retryAnswer + '"]').click();
+    await page.locator("#next").click();
+    await page.locator("#results").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#session-result-review .session-mistake-list li").count(), 0, "a correctly retried question should no longer appear as a session mistake");
+    assert.equal(await page.locator("#retry-session-mistakes").count(), 0, "the retry action should be absent when the session has no mistakes");
+
     // Responsive regression checks at common phone widths.
     await page.setViewportSize({ width: 360, height: 800 });
     await page.reload({ waitUntil: "domcontentloaded" });
