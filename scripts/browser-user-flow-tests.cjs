@@ -161,6 +161,10 @@ const assert = require("node:assert/strict");
     assert.equal(removedBookmarkState.listHidden, true, "the saved-question list should hide when its last item is removed");
     assert.equal(removedBookmarkState.pressed, "false", "the current-question bookmark control should return to its unsaved state");
 
+    // Removing the last bookmark happens inside the focused quiz; return to the home
+    // screen before interacting with the home-page exam shortcut.
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
     await page.locator("#quiz").waitFor({ state: "visible" });
