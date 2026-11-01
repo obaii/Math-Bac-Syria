@@ -625,3 +625,51 @@ body.dark-mode .solution-steps li::marker { color: #b8ccff; }
 body.dark-mode .search-clear { background: #263958; color: #e7edf8; }
 body.dark-mode .search-clear:hover { background: #344b70; }
 .search-clear[hidden] { display: none !important; }
+
+
+/* بطاقة العودة إلى آخر بحث تدريبي، مع عرض واضح على الهاتف والوضع الليلي. */
+.resume-session {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 20px;
+  padding:18px 20px;
+  border:1px solid #cbd8f8;
+  border-radius:16px;
+  background:linear-gradient(135deg,#f2f6ff,#fff);
+  color:#172b4d;
+}
+.resume-session[hidden] { display:none !important; }
+.resume-session-copy { min-width:0; }
+.resume-session .eyebrow { margin:0 0 4px; }
+.resume-session h3 { margin:0 0 5px; font-size:18px; }
+.resume-session p:not(.eyebrow) { margin:0; color:#64748b; font-size:13px; line-height:1.7; }
+.resume-session p strong { color:#315edb; }
+.resume-topic-button {
+  flex:0 0 auto;
+  min-height:44px;
+  padding:10px 15px;
+  border:0;
+  border-radius:11px;
+  background:#315edb;
+  color:#fff;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+.resume-topic-button:hover { background:#254bb8; }
+.resume-topic-button:focus-visible { outline:3px solid #8ca9ff; outline-offset:3px; }
+body.dark-mode .resume-session {
+  border-color:#405579;
+  background:linear-gradient(135deg,#20314d,#182438);
+  color:#e7edf8;
+}
+body.dark-mode .resume-session p:not(.eyebrow) { color:#a7b5ca; }
+body.dark-mode .resume-session p strong { color:#b8ccff; }
+@media(max-width:600px) {
+  .resume-session { align-items:stretch; flex-direction:column; padding:15px; gap:12px; }
+  .resume-session h3 { font-size:16px; }
+  .resume-topic-button { width:100%; }
+}
