@@ -5,14 +5,39 @@
   const intervalsDays = [1, 3, 7, 14, 30];
   const safeParse = (raw, fallback) => { try { return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } };
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
+  const normalizeExamHistory = history => Array.isArray(history) ? history
+    .filter(item => isRecord(item)
+      && Number.isSafeInteger(item.correct) && item.correct >= 0
+      && Number.isSafeInteger(item.total) && item.total > 0
+      && item.correct <= item.total
+      && typeof item.date === "string"
+      && Number.isFinite(Date.parse(item.date)))
+    .slice(0, 20)
+    .map(item => ({ date:new Date(item.date).toISOString(), correct:item.correct, total:item.total,
+      ...(isRecord(item.topicResults) ? { topicResults:item.topicResults } : {}) })) : [];
+  const normalizeSchedule = schedule => {
+    if (!isRecord(schedule)) return {};
+    const normalized = {};
+    for (const [key, value] of Object.entries(schedule)) {
+      if (!key) continue;
+      const record = isRecord(value) ? value : { due:value };
+      const due = Number(record.due);
+      if (!Number.isFinite(due) || due <= 0) continue;
+      const rawStage = Number(record.stage);
+      const stage = Number.isFinite(rawStage) ? Math.max(0, Math.min(intervalsDays.length - 1, Math.floor(rawStage))) : 0;
+      const lastResult = ["wrong", "correct", "pending"].includes(record.lastResult) ? record.lastResult : "pending";
+      normalized[key] = { stage, due, lastResult };
+    }
+    return normalized;
+  };
   const loadExtras = () => {
     const parsed = safeParse(localStorage.getItem(EXTRA_KEY), {});
     const x = isRecord(parsed) ? parsed : {};
     return {
       bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks.filter(key => typeof key === "string") : [],
-      schedule: isRecord(x.schedule) ? x.schedule : {},
+      schedule: normalizeSchedule(x.schedule),
       reviewQuestions: isRecord(x.reviewQuestions) ? x.reviewQuestions : {},
-      examHistory: Array.isArray(x.examHistory) ? x.examHistory.filter(item => isRecord(item) && Number.isFinite(item.correct) && Number.isFinite(item.total) && item.total > 0).slice(0, 20) : [],
+      examHistory: normalizeExamHistory(x.examHistory),
       darkMode: Boolean(x.darkMode)
     };
   };
@@ -687,17 +712,14 @@
       let nextExtras = { bookmarks:[], schedule:{}, reviewQuestions:{}, darkMode:false };
       const sourceTools = data.studentTools && typeof data.studentTools === "object" && !Array.isArray(data.studentTools) ? data.studentTools : {};
       nextExtras.darkMode = Boolean(sourceTools.darkMode);
-      nextExtras.examHistory = Array.isArray(sourceTools.examHistory) ? sourceTools.examHistory.filter(e => e && Number.isFinite(e.correct) && Number.isFinite(e.total) && e.total > 0).slice(0, 20) : [];
+      nextExtras.examHistory = normalizeExamHistory(sourceTools.examHistory);
       nextExtras.bookmarks = Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))] : [];
-      const sourceSchedule = sourceTools.schedule && typeof sourceTools.schedule === "object" && !Array.isArray(sourceTools.schedule) ? sourceTools.schedule : {};
-      for (const key of Object.keys(sourceSchedule)) {
+      const restoredSchedule = normalizeSchedule(sourceTools.schedule);
+      for (const [key, item] of Object.entries(restoredSchedule)) {
         const q = byKey(key);
-        const item = sourceSchedule[key];
-        const due = Number(typeof item === "object" && item ? item.due : item);
-        if (q && Number.isFinite(due) && due > 0) {
-          nextExtras.schedule[key] = typeof item === "object" && item ? { stage:Math.max(0, Math.min(4, Number(item.stage) || 0)), due, lastResult:item.lastResult || "" } : { stage:0, due };
-          nextExtras.reviewQuestions[key] = q;
-        }
+        if (!q) continue;
+        nextExtras.schedule[key] = item;
+        nextExtras.reviewQuestions[key] = q;
       }
       // Persist both records before mutating in-memory state. If either write fails, restore the previous storage values.
       const previousProgressRaw = localStorage.getItem(STORAGE_KEY);

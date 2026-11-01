@@ -302,6 +302,7 @@ const assert = require("node:assert/strict");
 
     // Importing a backup must discard malformed attempt records before they reach the progress report.
     const validBackupDate = new Date().toISOString();
+    const backupQuestionKey = await page.evaluate(() => `${questions[0].topic}::${questions[0].q}`);
     const backupPayload = {
       format: "math-bac-syria-progress",
       version: 1,
@@ -315,7 +316,18 @@ const assert = require("node:assert/strict");
           { topic: "الاشتقاق", correct: false, date: new Date(Date.now() + 3 * 86400000).toISOString() }
         ]
       },
-      studentTools: {}
+      studentTools: {
+        examHistory: [
+          { correct: 1, total: 1, date: validBackupDate },
+          { correct: 3, total: 2, date: validBackupDate },
+          { correct: -1, total: 2, date: validBackupDate },
+          { correct: 1, total: 2, date: "not-a-date" }
+        ],
+        schedule: {
+          [backupQuestionKey]: { stage: "not-a-stage", due: Date.now() + 86400000, lastResult: { invalid: true } },
+          "بحث غير موجود::سؤال قديم": { stage: 2, due: Date.now() + 86400000, lastResult: "correct" }
+        }
+      }
     };
     await page.locator("#import-progress-file").setInputFiles({
       name: "test-backup.json",
@@ -332,6 +344,12 @@ const assert = require("node:assert/strict");
     const importedAttempts = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null").attempts);
     assert.equal(importedAttempts.length, 1, "backup import should retain only valid attempts for current topics");
     assert.equal(importedAttempts[0].topic, "الاشتقاق", "backup import should preserve a valid current topic");
+    const importedTools = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
+    assert.equal(importedTools.examHistory.length, 1, "backup import should discard impossible exam scores and invalid dates");
+    assert.equal(importedTools.examHistory[0].correct, 1, "backup import should preserve a valid exam result");
+    assert.equal(importedTools.schedule[backupQuestionKey].stage, 0, "invalid review stages should safely reset to the first stage");
+    assert.equal(importedTools.schedule[backupQuestionKey].lastResult, "pending", "invalid review result markers should be normalized");
+    assert.equal(Object.keys(importedTools.schedule).length, 1, "backup import should discard review entries for obsolete questions");
     await page.locator("#student-tools").scrollIntoViewIfNeeded();
     await page.locator("#progress-report-toggle").click();
     await page.waitForFunction(() => !document.querySelector("#progress-report").hidden);

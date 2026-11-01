@@ -7,8 +7,8 @@ const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const checks = [
-  ["student tools reject arrays where saved maps are expected", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: isRecord\(x\.schedule\) \? x\.schedule : \{\}/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
-  ["saved exam history ignores malformed entries", /examHistory: Array\.isArray\(x\.examHistory\) \? x\.examHistory\.filter\(item => isRecord\(item\) && Number\.isFinite\(item\.correct\) && Number\.isFinite\(item\.total\) && item\.total > 0\)/.test(enhancements)],
+  ["student tools reject arrays and malformed values in saved maps", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: normalizeSchedule\(x\.schedule\)/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
+  ["saved exam history uses strict score and date validation", /examHistory: normalizeExamHistory\(x\.examHistory\)/.test(enhancements) && /item\.correct <= item\.total/.test(enhancements)],
   ["old saved progress defaults to an empty unique-question map", /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
   ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /const topicStats = \{\};[\s\S]*?if \(isRecord\(saved\.topicStats\)\)/.test(app) && /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
   ["each practice answer records its unique question key", /progressData\.seenQuestions\[questionKey\(q\)\] = true/.test(app)],
@@ -40,7 +40,11 @@ const checks = [
   ["loaded progress counters reject negative or unsafe values", /const toCount = value => Number\.isSafeInteger\(value\) && value >= 0 \? value : 0/.test(app) && /correct: Math\.min\(toCount\(saved\.correct\), answered\)/.test(app)],
   ["loaded topic statistics are normalized and correct counts are clamped", /const topicStats = \{\}[\s\S]*?topicStats\[topic\] = \{ answered: topicAnswered, correct: Math\.min\(toCount\(stat\.correct\), topicAnswered\) \}/.test(app)],
   ["loaded attempts reject malformed records and invalid dates", /typeof attempt\.correct === "boolean"[\s\S]*?Number\.isFinite\(Date\.parse\(attempt\.date\)\)/.test(app)],
-  ["loaded unique-question map accepts only true markers", /if \(seen === true\) seenQuestions\[key\] = true/.test(app)]
+  ["loaded unique-question map accepts only true markers", /if \(seen === true\) seenQuestions\[key\] = true/.test(app)],
+  ["saved exam history rejects impossible scores and invalid dates", /const normalizeExamHistory = history => Array\.isArray\(history\)[\s\S]*?item\.correct <= item\.total[\s\S]*?Number\.isFinite\(Date\.parse\(item\.date\)\)/.test(enhancements)],
+  ["backup import uses the same normalized exam-history validator", /nextExtras\.examHistory = normalizeExamHistory\(sourceTools\.examHistory\)/.test(enhancements)],
+  ["saved review schedules reject invalid due dates and normalize stages", /const normalizeSchedule = schedule => \{[\s\S]*?if \(!Number\.isFinite\(due\) \|\| due <= 0\) continue;[\s\S]*?Math\.min\(intervalsDays\.length - 1, Math\.floor\(rawStage\)\)/.test(enhancements)],
+  ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
