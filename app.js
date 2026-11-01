@@ -66,6 +66,59 @@ function questionKey(q){ return `${q.topic}::${q.q}`; }
 function countSeenQuestions(topic = "") {
   return questions.reduce((count, q) => count + ((!topic || q.topic === topic) && progressData.seenQuestions[questionKey(q)] ? 1 : 0), 0);
 }
+function renderRecentActivity(){
+  const section = $("recent-activity");
+  const list = $("recent-activity-list");
+  if (!section || !list) return;
+  const validAttempts = (Array.isArray(progressData.attempts) ? progressData.attempts : [])
+    .filter(attempt => attempt && typeof attempt.topic === "string" &&
+      Array.isArray(topics) && topics.includes(attempt.topic) &&
+      typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
+  const recentTopics = [];
+  const seenTopics = new Set();
+  for (const attempt of validAttempts) {
+    if (seenTopics.has(attempt.topic)) continue;
+    seenTopics.add(attempt.topic);
+    const topicAttempts = validAttempts.filter(item => item.topic === attempt.topic);
+    const correct = topicAttempts.filter(item => item.correct).length;
+    recentTopics.push({
+      topic: attempt.topic,
+      count: topicAttempts.length,
+      rate: Math.round(correct / topicAttempts.length * 100),
+      date: attempt.date
+    });
+    if (recentTopics.length === 5) break;
+  }
+  list.replaceChildren();
+  section.hidden = recentTopics.length === 0;
+  const dateFormatter = new Intl.DateTimeFormat("ar", {
+    day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
+  });
+  for (const item of recentTopics) {
+    const row = document.createElement("li");
+    row.className = "recent-activity-item";
+    const details = document.createElement("div");
+    details.className = "recent-activity-details";
+    const title = document.createElement("strong");
+    title.textContent = item.topic;
+    const meta = document.createElement("span");
+    meta.textContent = item.count.toLocaleString("ar") + " إجابة · " +
+      item.rate.toLocaleString("ar") + "٪ صحيحة";
+    const date = document.createElement("time");
+    date.dateTime = item.date;
+    date.textContent = dateFormatter.format(new Date(item.date));
+    details.append(title, meta, date);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "recent-activity-button";
+    button.textContent = "تدرّب مجدداً";
+    button.setAttribute("aria-label", "تدرّب مجدداً في بحث " + item.topic);
+    button.addEventListener("click", () => startQuiz(item.topic));
+    row.append(details, button);
+    list.append(row);
+  }
+}
+
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
@@ -125,6 +178,7 @@ function refreshDashboard(){
           ? "أحسنت! جرّبت جميع الأسئلة المختلفة في البنك."
           : `جرّبت ${uniqueCount.toLocaleString("ar")} من ${bankCount.toLocaleString("ar")} سؤالاً مختلفاً (${questionPercent.toLocaleString("ar")}٪).`;
   }
+  renderRecentActivity();
 }
 
 function topicIcon(topic){
