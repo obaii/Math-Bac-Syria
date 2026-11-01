@@ -103,8 +103,8 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#achievement-list .achievement-card").count(), 7, "the dashboard should show seven achievement badges");
     assert.ok(await page.locator("#achievement-section").isVisible(), "achievement badges should be visible on the dashboard");
     const badgeFixture = await page.evaluate(() => {
-      progressData.answered = 12;
-      progressData.correct = 10;
+      progressData.answered = 120;
+      progressData.correct = 100;
       progressData.topicStats = Object.fromEntries(topics.slice(0, 5).map(topic => [topic, { answered: 2, correct: 2 }]));
       const now = new Date();
       progressData.attempts = [0, 1, 2].map(offset => ({ topic: topics[0], correct: true, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-offset, 12).toISOString() }));
