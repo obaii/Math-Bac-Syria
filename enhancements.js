@@ -524,6 +524,7 @@
   const startGuidedQuestion = q => {
     currentTopic = q.topic;
     reviewMode = false;
+    sessionMistakes = [];
     quizQuestions = [q];
     index = 0;
     correctCount = 0;
@@ -585,7 +586,7 @@
   };
   const startTargetedQuiz = (qs, title) => {
     if (!qs.length) { alert("لا توجد أسئلة محفوظة متاحة. تحقق من النسخة الاحتياطية أو احفظ سؤالاً أولاً."); return; }
-    currentTopic = title; reviewMode = true; quizQuestions = [...qs]; index = 0; correctCount = 0; answered = false;
+    currentTopic = title; reviewMode = true; sessionMistakes = []; quizQuestions = [...qs]; index = 0; correctCount = 0; answered = false;
     document.getElementById("home").classList.add("hidden");
     document.getElementById("results").classList.add("hidden");
     document.getElementById("quiz").classList.remove("hidden");
@@ -985,6 +986,7 @@
     examState.answers = Array(picked.length).fill(null);
     currentTopic = "محاكاة الامتحان";
     reviewMode = false;
+    sessionMistakes = [];
     quizQuestions = picked;
     index = 0; correctCount = 0; answered = false;
     document.getElementById("results")?.classList.add("hidden");
