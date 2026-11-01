@@ -802,3 +802,35 @@ body.dark-mode .performance-trend-chart { border-color: #405579; }
   .performance-trend-day { grid-template-rows: 18px 96px auto auto; gap: 4px; }
   .performance-trend-count { font-size: 9px; }
 }
+
+
+/* حالة واضحة وملخص إجابات مختصر داخل كل بطاقة بحث. */
+.topic-card-top { display: flex; align-items: center; gap: 8px; }
+.topic-state {
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 82px);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+.topic-state.not-started { background: #f1f4f8; color: #64748b; }
+.topic-state.in-progress { background: #edf3ff; color: #3154b5; }
+.topic-state.covered { background: #e9f7ef; color: #247447; }
+.topic-card-performance {
+  display: block;
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.7;
+}
+body.dark-mode .topic-state.not-started { background: #29384d; color: #b6c2d4; }
+body.dark-mode .topic-state.in-progress { background: #263b61; color: #c1d2ff; }
+body.dark-mode .topic-state.covered { background: #1f4939; color: #a9e4c3; }
+body.dark-mode .topic-card-performance { color: #a7b5ca; }
+@media(max-width:600px) {
+  .topic-state { font-size: 9px; padding: 4px 6px; }
+  .topic-card-performance { font-size: 10px; }
+}
