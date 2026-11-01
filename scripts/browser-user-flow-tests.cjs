@@ -110,6 +110,7 @@ const assert = require("node:assert/strict");
     assert.equal(await clearSearch.isVisible(), false, "the clear-search control should hide again after clearing");
     assert.equal(await topicSearch.evaluate(el => document.activeElement === el), true, "clearing the search should return keyboard focus to the search field");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
+    assert.equal(await page.locator("#resume-session").isVisible(), false, "resume card should stay hidden until a topic has been practiced");
     assert.equal(await page.locator("#exam-tools").isVisible(), false, "exam setup should start hidden");
     for (const id of ["stat-answered", "stat-correct", "stat-mistakes", "stat-percent"]) {
       const live = await page.locator("#" + id).getAttribute("aria-live");
@@ -160,6 +161,14 @@ const assert = require("node:assert/strict");
     const savedTools = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(savedTools && savedTools.bookmarks && savedTools.bookmarks.length === 1, "bookmark should persist to local storage");
 
+    const lastPracticedTopic = await page.locator("#quiz-title").innerText();
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+    assert.equal(await page.locator("#resume-session").isVisible(), true, "the last practiced topic should appear on the home page");
+    assert.equal(await page.locator("#resume-topic-name").innerText(), lastPracticedTopic, "the resume card should identify the last practiced topic");
+    await page.locator("#resume-topic-button").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), lastPracticedTopic, "resume should reopen the last practiced topic");
     await page.locator("#back").click();
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
