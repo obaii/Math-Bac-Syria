@@ -19,7 +19,7 @@
   <meta name="twitter:description" content="تدرّب على رياضيات البكالوريا العلمي السوريّة مع التصحيح الفوري والحلول المفصلة.">
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="style-overrides.css?v=20261101-3">
+   <link rel="stylesheet" href="style-overrides.css?v=20261101-4">
   <style>
     .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
     body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
@@ -62,7 +62,7 @@
   <script defer src="merge-questions.js?v=20261028-1"></script>
   <script defer src="solution-guides.js?v=20261029-1"></script>
   <script defer src="question-diagrams.js?v=20261029-1"></script>
-  <script defer src="app.js?v=20261101-3"></script>
+  <script defer src="app.js?v=20261101-4"></script>
   <script defer src="enhancements.js?v=20261029-2"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
@@ -129,6 +129,17 @@
         </div>
       </div>
       <ul id="recent-activity-list" class="recent-activity-list" aria-live="polite"></ul>
+    </section>
+    <section id="performance-trend" class="performance-trend" aria-labelledby="performance-trend-title" hidden>
+      <div class="performance-trend-heading">
+        <div>
+          <p class="eyebrow">مؤشر التقدّم</p>
+          <h3 id="performance-trend-title">تطوّر أدائك خلال آخر ٧ أيام</h3>
+          <p>نسبة الإجابات الصحيحة لكل يوم، اعتماداً على سجل إجاباتك المحفوظ.</p>
+        </div>
+      </div>
+      <ol id="performance-trend-chart" class="performance-trend-chart" aria-label="مخطط نسبة الإجابات الصحيحة خلال الأيام السبعة الماضية"></ol>
+      <p id="performance-trend-summary" class="performance-trend-summary" aria-live="polite"></p>
     </section>
     <nav class="quick-start" aria-label="اختصارات المنصة">
       <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
