@@ -957,3 +957,13 @@ body.dark-mode .achievement-card.is-unlocked .achievement-icon { background:#285
 body.dark-mode .achievement-status { background:#29384d; color:#b6c2d4; }
 body.dark-mode .achievement-card.is-unlocked .achievement-status { background:#28513f; color:#a9e4c3; }
 @media(max-width:600px){.achievement-heading{align-items:flex-start;flex-direction:column}.achievement-heading h3{font-size:16px}.achievement-list{grid-template-columns:1fr}.achievement-card{padding:10px}}
+
+
+/* نسبة إنجاز الأسئلة داخل جلسة التدريب */
+#quiz .quiz-head { flex-wrap:wrap; }
+#quiz .progress-percent { flex:0 0 auto; color:#3154b5; font-size:12px; font-weight:800; font-variant-numeric:tabular-nums; }
+#quiz .progress-track { overflow:hidden; }
+#quiz .progress-track > #progress-bar { min-width:0; transition:width .22s ease; }
+body.dark-mode #quiz .progress-percent { color:#b8ccff; }
+@media(max-width:600px){#quiz .quiz-head{align-items:center;gap:8px}#quiz .progress-percent{margin-inline-start:auto}}
+@media(prefers-reduced-motion:reduce){#quiz .progress-track > #progress-bar{transition:none}}
