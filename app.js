@@ -6,6 +6,7 @@ let answered = false;
 let reviewMode = false;
 let reviewQuestions = [];
 const STORAGE_KEY = "mathBacSyriaProgressV1";
+const LAST_TOPIC_KEY = "mathBacSyriaLastTopicV1";
 const $ = (id) => document.getElementById(id);
 // Include supplementary vector questions without replacing or duplicating existing items.
 if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQuestionsAdditional)) {
@@ -170,8 +171,27 @@ function renderTopics(){
   document.querySelectorAll("[data-topic]").forEach(btn=>btn.addEventListener("click",()=>startQuiz(btn.dataset.topic)));
   refreshDashboard();
 }
+function updateResumeCard(){
+  const section = $("resume-session");
+  const name = $("resume-topic-name");
+  const button = $("resume-topic-button");
+  if (!section || !name || !button) return;
+  let lastTopic = "";
+  try { lastTopic = localStorage.getItem(LAST_TOPIC_KEY) || ""; }
+  catch (_) { lastTopic = ""; }
+  if (!lastTopic || !Array.isArray(topics) || !topics.includes(lastTopic) || !questions.some(q => q.topic === lastTopic)) {
+    section.hidden = true;
+    return;
+  }
+  name.textContent = lastTopic;
+  section.hidden = false;
+  button.onclick = () => startQuiz(lastTopic);
+}
+
 function startQuiz(topic){
   currentTopic = topic;
+  try { localStorage.setItem(LAST_TOPIC_KEY, topic); } catch (_) {}
+  updateResumeCard();
   reviewMode = false;
   const level = $("difficulty").value;
   quizQuestions = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level));
@@ -315,9 +335,12 @@ $("reset-progress").addEventListener("click",()=>{
   if (!confirm("هل تريد مسح تقدم الإجابات والعلامات المرجعية وجدول المراجعة على هذا الجهاز؟ لا يمكن التراجع عن ذلك. سيبقى إعداد الوضع الليلي كما هو.")) return;
   progressData = emptyProgress();
   saveProgress();
+  try { localStorage.removeItem(LAST_TOPIC_KEY); } catch (_) {}
+  updateResumeCard();
   window.dispatchEvent(new CustomEvent("mathBacSyria:reset-progress"));
   refreshDashboard();
   renderTopics();
 });
 renderTopics();
 refreshDashboard();
+updateResumeCard();
