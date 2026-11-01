@@ -125,6 +125,18 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /المسائل المحفوظة/ }).click();
     await page.waitForFunction(() => !document.querySelector("#bookmark-list").hidden);
     assert.ok(await page.locator("#bookmark-list li").count() > 0, "saved-question list should render a bookmarked question");
+    assert.equal(await page.locator("#bookmark-current").getAttribute("aria-pressed"), "true", "the current question should show its saved state");
+    await page.locator("#bookmark-current").click();
+    const removedBookmarkState = await page.evaluate(() => ({
+      bookmarks: JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").bookmarks || [],
+      count: document.querySelector("#bookmark-count")?.textContent,
+      listHidden: document.querySelector("#bookmark-list")?.hidden,
+      pressed: document.querySelector("#bookmark-current")?.getAttribute("aria-pressed")
+    }));
+    assert.equal(removedBookmarkState.bookmarks.length, 0, "removing a bookmark should persist an empty saved-question list");
+    assert.equal(removedBookmarkState.count, "٠", "the saved-question counter should update after removal");
+    assert.equal(removedBookmarkState.listHidden, true, "the saved-question list should hide when its last item is removed");
+    assert.equal(removedBookmarkState.pressed, "false", "the current-question bookmark control should return to its unsaved state");
 
     // Seed a deterministic three-day practice streak and verify the progress report derives it.
     await page.evaluate(() => {
