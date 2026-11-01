@@ -252,6 +252,66 @@ function renderWeakTopicRecommendation(){
   button.onclick = () => startQuiz(weakest.topic);
 }
 
+function renderAchievements(){
+  const section = $("achievement-section");
+  const list = $("achievement-list");
+  const summary = $("achievement-summary");
+  if (!section || !list || !summary) return;
+  const answered = Number.isSafeInteger(progressData.answered) && progressData.answered > 0 ? progressData.answered : 0;
+  const correct = Number.isSafeInteger(progressData.correct) && progressData.correct >= 0 ? Math.min(progressData.correct, answered) : 0;
+  const rate = answered ? Math.round(correct / answered * 100) : 0;
+  const startedTopics = (Array.isArray(topics) ? topics : []).filter(topic => {
+    const stat = progressData.topicStats && progressData.topicStats[topic];
+    return stat && Number.isSafeInteger(stat.answered) && stat.answered > 0;
+  }).length;
+  const validAttempts = (Array.isArray(progressData.attempts) ? progressData.attempts : []).filter(attempt =>
+    attempt && typeof attempt.topic === "string" && Array.isArray(topics) && topics.includes(attempt.topic) &&
+    typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
+  const activeDates = new Set(validAttempts.map(attempt => {
+    const date = new Date(attempt.date);
+    return [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+  }));
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dateKey = date => [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+  let streak = 0;
+  const firstDay = activeDates.has(dateKey(today)) ? 0 : 1;
+  for (let offset = firstDay; offset < 100; offset++) {
+    const day = new Date(today.getFullYear(), today.getMonth(), today.getDate()-offset);
+    if (!activeDates.has(dateKey(day))) break;
+    streak++;
+  }
+  const badges = [
+    { id:"first-answer", icon:"🌱", title:"البداية الأولى", description:"سجّلت أول إجابة تدريبية.", value:answered, target:1, unlocked:answered>=1, progressText:answered>=1?"تم الإنجاز":"ابدأ بحل سؤال واحد" },
+    { id:"ten-answers", icon:"✍️", title:"خطوات ثابتة", description:"أكملت ١٠ إجابات تدريبية.", value:answered, target:10, unlocked:answered>=10, progressText:answered.toLocaleString("ar")+" / ١٠ إجابات" },
+    { id:"fifty-answers", icon:"📘", title:"مثابر", description:"أكملت ٥٠ إجابة تدريبية.", value:answered, target:50, unlocked:answered>=50, progressText:answered.toLocaleString("ar")+" / ٥٠ إجابة" },
+    { id:"hundred-answers", icon:"🏅", title:"مئة خطوة", description:"أكملت ١٠٠ إجابة تدريبية.", value:answered, target:100, unlocked:answered>=100, progressText:answered.toLocaleString("ar")+" / ١٠٠ إجابة" },
+    { id:"explorer", icon:"🧭", title:"مستكشف الأبحاث", description:"بدأت التدريب في خمسة أبحاث مختلفة.", value:startedTopics, target:5, unlocked:startedTopics>=5, progressText:startedTopics.toLocaleString("ar")+" / ٥ أبحاث" },
+    { id:"accuracy", icon:"🎯", title:"دقة مميزة", description:"حققت دقة ٨٠٪ على الأقل بعد ١٠ إجابات.", value:answered>=10 && rate>=80 ? 1 : 0, target:1, unlocked:answered>=10 && rate>=80, progressText:answered<10?"أكمل ١٠ إجابات أولاً":rate.toLocaleString("ar")+"٪ من الدقة المطلوبة ٨٠٪" },
+    { id:"streak", icon:"🔥", title:"ثلاثة أيام متتالية", description:"تدرّبت في ثلاثة أيام متتابعة.", value:streak, target:3, unlocked:streak>=3, progressText:streak.toLocaleString("ar")+" / ٣ أيام" }
+  ];
+  list.replaceChildren();
+  for (const badge of badges) {
+    const item = document.createElement("li");
+    item.className = "achievement-card" + (badge.unlocked ? " is-unlocked" : " is-locked");
+    item.dataset.achievement = badge.id;
+    item.dataset.unlocked = String(badge.unlocked);
+    const icon = document.createElement("span"); icon.className = "achievement-icon"; icon.textContent = badge.icon;
+    const copy = document.createElement("div"); copy.className = "achievement-copy";
+    const title = document.createElement("strong"); title.textContent = badge.title;
+    const description = document.createElement("span"); description.textContent = badge.description;
+    const progress = document.createElement("small"); progress.textContent = badge.progressText;
+    copy.append(title, description, progress);
+    const status = document.createElement("span"); status.className = "achievement-status"; status.textContent = badge.unlocked ? "مكتملة" : "قيد التقدم";
+    item.append(icon, copy, status);
+    list.append(item);
+  }
+  const unlockedCount = badges.filter(badge => badge.unlocked).length;
+  summary.textContent = "أنجزت " + unlockedCount.toLocaleString("ar") + " من " + badges.length.toLocaleString("ar") + " إنجازات.";
+  section.dataset.unlockedCount = String(unlockedCount);
+  section.dataset.totalCount = String(badges.length);
+}
+
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
@@ -314,6 +374,7 @@ function refreshDashboard(){
   renderRecentActivity();
   renderPerformanceTrend();
   renderActivityCalendar();
+  renderAchievements();
   renderWeakTopicRecommendation();
 }
 
