@@ -967,3 +967,14 @@ body.dark-mode .achievement-card.is-unlocked .achievement-status { background:#2
 body.dark-mode #quiz .progress-percent { color:#b8ccff; }
 @media(max-width:600px){#quiz .quiz-head{align-items:center;gap:8px}#quiz .progress-percent{margin-inline-start:auto}}
 @media(prefers-reduced-motion:reduce){#quiz .progress-track > #progress-bar{transition:none}}
+
+
+/* ملخص أرقام جلسة التدريب الحالية. */
+.session-progress-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin:10px 0 18px; }
+.session-progress-summary > div { display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; padding:10px 12px; border:1px solid #e2e9f4; border-radius:12px; background:#f8faff; }
+.session-progress-summary span { color:#718096; font-size:11px; }
+.session-progress-summary strong { color:#243653; font-size:13px; font-variant-numeric:tabular-nums; white-space:nowrap; }
+body.dark-mode .session-progress-summary > div { background:#202f46; border-color:#34445d; }
+body.dark-mode .session-progress-summary span { color:#a7b5ca; }
+body.dark-mode .session-progress-summary strong { color:#e7edf8; }
+@media(max-width:600px) { .session-progress-summary { gap:6px; } .session-progress-summary > div { flex-direction:column; align-items:flex-start; padding:9px; } .session-progress-summary span { font-size:10px; } .session-progress-summary strong { font-size:12px; } }
