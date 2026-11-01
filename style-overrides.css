@@ -993,3 +993,35 @@ body.dark-mode .session-result-review h3 { color:#e7edf8; }
 body.dark-mode .session-mistake-list li { background:#202f46; border-color:#34445d; }
 body.dark-mode .session-mistake-list li p { color:#a7b5ca; }
 @media(max-width:600px){.session-result-review{padding:12px}.session-mistake-list{padding-inline-start:20px}#retry-session-mistakes{width:100%}}
+
+
+/* ورقة أسئلة محاكاة الامتحان: تنقّل سريع وعلامات مراجعة واضحة. */
+.exam-question-nav { margin:14px 0 18px; padding:13px; border:1px solid #dbe4f2; border-radius:13px; background:#f7f9fd; }
+.exam-question-nav[hidden] { display:none !important; }
+.exam-nav-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:11px; }
+.exam-nav-toolbar p { margin:0; color:#52627a; font-size:12px; font-weight:700; line-height:1.7; }
+#exam-mark-question { flex:0 0 auto; min-height:40px; padding:7px 10px; border:1px solid #cbd8f8; border-radius:9px; background:#fff; color:#3154b5; font:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+#exam-mark-question[aria-pressed="true"] { background:#fff5d9; border-color:#e8c66e; color:#825b08; }
+.exam-nav-grid { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:7px; }
+.exam-nav-number { position:relative; min-width:0; min-height:38px; border:1px solid #d8e0ec; border-radius:9px; background:#fff; color:#40516a; font:inherit; font-size:12px; font-weight:800; cursor:pointer; }
+.exam-nav-number.is-answered { background:#e9f6ee; border-color:#b8ddc5; color:#247447; }
+.exam-nav-number.is-marked::after { content:""; position:absolute; inset-block-start:4px; inset-inline-end:4px; width:6px; height:6px; border-radius:50%; background:#d39a22; }
+.exam-nav-number.is-current { outline:3px solid #8ca9ff; outline-offset:1px; border-color:#3154b5; }
+#options .option.exam-selected { outline:3px solid #6488ed; outline-offset:1px; border-color:#3154b5; }
+.exam-answer-skipped { color:#98600b; font-weight:800; }
+body.dark-mode .exam-question-nav { background:#111d30; border-color:#405579; }
+body.dark-mode .exam-nav-toolbar p { color:#a7b5ca; }
+body.dark-mode #exam-mark-question { background:#202f46; border-color:#405579; color:#c5d4ff; }
+body.dark-mode #exam-mark-question[aria-pressed="true"] { background:#49391f; border-color:#8a6b32; color:#ffd58a; }
+body.dark-mode .exam-nav-number { background:#202f46; border-color:#405579; color:#e7edf8; }
+body.dark-mode .exam-nav-number.is-answered { background:#1f4939; border-color:#35614f; color:#a9e4c3; }
+body.dark-mode .exam-nav-number.is-current { border-color:#91aaff; }
+body.dark-mode #options .option.exam-selected { border-color:#91aaff; }
+body.dark-mode .exam-answer-skipped { color:#ffd58a; }
+@media(max-width:600px) {
+  .exam-question-nav { padding:10px; }
+  .exam-nav-toolbar { align-items:stretch; flex-direction:column; }
+  #exam-mark-question { width:100%; }
+  .exam-nav-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
+  .exam-nav-number { min-height:42px; }
+}
