@@ -63,8 +63,8 @@ if (!/solution-guides\.js\?v=20261029-1/.test(indexHtml)) {
 if (!/app\.js\?v=20261101-12/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
-if (!/enhancements\.js\?v=20261101-4/.test(indexHtml)) {
-  failures.push("index.html must use the refreshed cache version for the updated solution presentation.");
+if (!/enhancements\.js\?v=20261101-5/.test(indexHtml)) {
+  failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
 if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261101-12")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
