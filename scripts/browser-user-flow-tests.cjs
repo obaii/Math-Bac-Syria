@@ -224,8 +224,18 @@ const assert = require("node:assert/strict");
     await page.locator("#bookmark-current").scrollIntoViewIfNeeded();
     await page.locator("#bookmark-current").click();
     await page.getByRole("button", { name: /السؤال التالي|عرض النتيجة/ }).isEnabled();
+    await page.evaluate(() => {
+      const currentQuestion = quizQuestions[index];
+      currentQuestion.keyIdea = "الفكرة الأساسية للاختبار";
+      currentQuestion.steps = ["الخطوة الأولى للاختبار", "الخطوة الثانية للاختبار"];
+    });
     await page.locator("#options [data-option]").first().click();
     await page.locator("#feedback").waitFor({ state: "visible" });
+    const solutionPanel = page.locator("#feedback .solution");
+    assert.equal(await solutionPanel.locator(".solution-heading strong").innerText(), "شرح الحل", "the solution should have a clear heading");
+    assert.ok((await solutionPanel.locator(".key-idea").innerText()).includes("الفكرة الأساسية للاختبار"), "the key idea should appear in its own highlighted panel");
+    assert.equal(await solutionPanel.locator(".solution-steps li").count(), 2, "guided solution steps should appear as separate numbered items");
+    assert.equal(await solutionPanel.locator(".solution-steps li").first().innerText(), "الخطوة الأولى للاختبار", "the solution steps should retain their original order and text");
     const expectedProgress = String(Math.round(100 / Number((await page.locator("#question-number").innerText()).split(" من ")[1])));
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("aria-valuenow"), expectedProgress, "answering a question should update the accessible progress value");
     assert.match(await page.locator("#progress-percent").innerText(), /مكتمل/, "answering a question should update the visible completion label");
