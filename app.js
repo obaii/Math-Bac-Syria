@@ -148,6 +148,8 @@ function topicIcon(topic){
 function renderTopics(){
   const level = $("difficulty").value;
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
+  const clearSearchButton = $("clear-topic-search");
+  if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
   const availableTopics = topics.filter(topic => topic.toLocaleLowerCase("ar").includes(search));
   $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
   $("topic-grid").innerHTML = availableTopics.map(topic=>{
@@ -284,7 +286,13 @@ $("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("hom
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));
 $("to-home").addEventListener("click",()=>{$("results").classList.add("hidden");$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});});
 $("difficulty").addEventListener("change",renderTopics);
-$("topic-search").addEventListener("input",renderTopics);
+const topicSearchInput = $("topic-search");
+topicSearchInput.addEventListener("input",renderTopics);
+$("clear-topic-search").addEventListener("click",()=>{
+  topicSearchInput.value = "";
+  renderTopics();
+  topicSearchInput.focus();
+});
 $("brand-home").addEventListener("click",e=>{e.preventDefault();$("quiz").classList.add("hidden");$("results").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});});
 function startReviewQuiz(){
   const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};

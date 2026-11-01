@@ -60,10 +60,10 @@ const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
 if (!/solution-guides\.js\?v=20261029-1/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
-if (!/app\.js\?v=20261029-1/.test(indexHtml)) {
+if (!/app\.js\?v=20261101-1/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
-if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261029-1")) {
+if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261101-1")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
 

@@ -601,3 +601,27 @@ body.dark-mode .solution-steps li::marker { color: #b8ccff; }
     font-size: 11px;
   }
 }
+
+
+/* Clear-search control: visible only while the topic filter has text. */
+.search-clear {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: #edf2ff;
+  color: #3154b5;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.search-clear:hover { background: #dfe8ff; }
+.search-clear:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+body.dark-mode .search-clear { background: #263958; color: #e7edf8; }
+body.dark-mode .search-clear:hover { background: #344b70; }
+.search-clear[hidden] { display: none !important; }
