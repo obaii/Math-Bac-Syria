@@ -5,6 +5,7 @@ let correctCount = 0;
 let answered = false;
 let reviewMode = false;
 let reviewQuestions = [];
+let sessionMistakes = [];
 const STORAGE_KEY = "mathBacSyriaProgressV1";
 const LAST_TOPIC_KEY = "mathBacSyriaLastTopicV1";
 const $ = (id) => document.getElementById(id);
@@ -465,7 +466,7 @@ function startQuiz(topic){
   quizQuestions = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level));
   if(!quizQuestions.length){ alert("لا توجد أسئلة في هذا المستوى لهذا البحث حالياً. اختر مستوى آخر."); return; }
   quizQuestions = [...quizQuestions].sort(()=>Math.random()-0.5);
-  index=0; correctCount=0; answered=false;
+  index=0; correctCount=0; answered=false; sessionMistakes=[];
   $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent=topic;
   showQuestion();
@@ -515,6 +516,7 @@ function chooseAnswer(choice){
   const q=quizQuestions[index];
   const isCorrect=choice===q.answer;
   if(isCorrect)correctCount++;
+  else if (!sessionMistakes.some(item => questionKey(item) === questionKey(q))) sessionMistakes.push(q);
   if (!reviewMode) {
     progressData.answered += 1;
     progressData.seenQuestions = progressData.seenQuestions || {};
@@ -569,10 +571,59 @@ function chooseAnswer(choice){
 function showResults(){
   $("quiz").classList.add("hidden"); $("results").classList.remove("hidden");
   const total=quizQuestions.length;
-  const percent=Math.round(correctCount/total*100);
+  const wrongCount=Math.max(0, total-correctCount);
+  const percent=total ? Math.round(correctCount/total*100) : 0;
   $("score").textContent=`${correctCount} / ${total} (${percent}٪)`;
-  $("score-detail").textContent=`إجابات صحيحة: ${correctCount} · إجابات خاطئة: ${total-correctCount} · ${reviewMode ? "مراجعة الأخطاء" : "البحث: "+currentTopic}`;
+  $("score-detail").textContent=`إجابات صحيحة: ${correctCount} · إجابات خاطئة: ${wrongCount} · ${reviewMode ? "مراجعة الأخطاء" : "البحث: "+currentTopic}`;
+  const resultCard = $("results").querySelector(".result-card");
+  let sessionPanel = $("session-result-review");
+  if (!sessionPanel) {
+    sessionPanel = document.createElement("section");
+    sessionPanel.id = "session-result-review";
+    sessionPanel.className = "session-result-review";
+    sessionPanel.setAttribute("aria-live", "polite");
+    resultCard.querySelector(".actions").before(sessionPanel);
+  }
+  sessionPanel.replaceChildren();
+  const heading = document.createElement("h3");
+  heading.textContent = sessionMistakes.length ? "أسئلة تحتاج إلى مراجعة" : "أداء رائع، لا توجد أخطاء في هذه الجلسة";
+  sessionPanel.append(heading);
+  if (sessionMistakes.length) {
+    const list = document.createElement("ol");
+    list.className = "session-mistake-list";
+    for (const question of sessionMistakes) {
+      const item = document.createElement("li");
+      const topic = document.createElement("strong");
+      topic.textContent = question.topic || currentTopic;
+      const snippet = document.createElement("p");
+      snippet.textContent = String(question.q || "").replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim();
+      item.append(topic, snippet);
+      list.append(item);
+    }
+    sessionPanel.append(list);
+    const retryMistakes = document.createElement("button");
+    retryMistakes.type = "button";
+    retryMistakes.id = "retry-session-mistakes";
+    retryMistakes.className = "secondary";
+    retryMistakes.textContent = "إعادة تدريب الأخطاء فقط";
+    retryMistakes.addEventListener("click", startSessionMistakeQuiz);
+    sessionPanel.append(retryMistakes);
+  }
   if (reviewMode) $("quiz-title").textContent = "مراجعة الإجابات الخاطئة";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function startSessionMistakeQuiz(){
+  const retryQuestions = [...sessionMistakes];
+  if (!retryQuestions.length) return;
+  reviewQuestions = retryQuestions;
+  reviewMode = true;
+  currentTopic = "إعادة تدريب أخطاء الجلسة";
+  quizQuestions = [...retryQuestions].sort(()=>Math.random()-0.5);
+  sessionMistakes = [];
+  index=0; correctCount=0; answered=false;
+  $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
+  $("quiz-title").textContent=currentTopic;
+  showQuestion();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function typeset(){
@@ -611,6 +662,7 @@ function startReviewQuiz(){
     .filter(q => q && typeof q.q === "string" && Array.isArray(q.options) && q.options.length === 4);
   if (!reviewQuestions.length) { alert("لا توجد أسئلة خاطئة صالحة للمراجعة حالياً. قد تكون العلامات المتبقية من نسخة قديمة من بنك الأسئلة."); refreshDashboard(); return; }
   reviewMode = true;
+  sessionMistakes = [];
   currentTopic = "مراجعة الأخطاء";
   quizQuestions = [...reviewQuestions].sort(()=>Math.random()-0.5);
   index=0; correctCount=0; answered=false;
