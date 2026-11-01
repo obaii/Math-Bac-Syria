@@ -130,6 +130,51 @@ function renderPerformanceTrend(){
     " إجابة، ونسبة صحة " + weeklyRate.toLocaleString("ar") + "٪.";
 }
 
+function renderActivityCalendar(){
+  const section = $("activity-calendar");
+  const grid = $("activity-calendar-grid");
+  const summary = $("activity-calendar-summary");
+  if (!section || !grid || !summary) return;
+  const validAttempts = (Array.isArray(progressData.attempts) ? progressData.attempts : []).filter(attempt =>
+    attempt && typeof attempt.topic === "string" && Array.isArray(topics) && topics.includes(attempt.topic) &&
+    typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const countsByDay = new Map();
+  for (const attempt of validAttempts) {
+    const date = new Date(attempt.date);
+    const key = [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+    countsByDay.set(key, (countsByDay.get(key) || 0) + 1);
+  }
+  const days = [];
+  for (let offset = 27; offset >= 0; offset--) {
+    const date = new Date(today.getFullYear(), today.getMonth(), today.getDate()-offset);
+    const key = [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+    const count = countsByDay.get(key) || 0;
+    days.push({ key, date, count, weekday: new Intl.DateTimeFormat("ar",{weekday:"short"}).format(date),
+      label: new Intl.DateTimeFormat("ar",{day:"numeric",month:"long",year:"numeric"}).format(date) });
+  }
+  grid.replaceChildren();
+  for (const day of days) {
+    const cell = document.createElement("li");
+    const level = day.count === 0 ? 0 : day.count === 1 ? 1 : day.count <= 3 ? 2 : day.count <= 6 ? 3 : 4;
+    cell.className = "activity-calendar-day level-" + level;
+    cell.textContent = day.date.getDate().toLocaleString("ar");
+    cell.title = day.label + ": " + day.count.toLocaleString("ar") + " إجابة";
+    cell.setAttribute("aria-label", day.weekday + " " + day.label + ": " + day.count.toLocaleString("ar") + " إجابة");
+    cell.setAttribute("data-date", day.key);
+    cell.setAttribute("data-count", String(day.count));
+    grid.append(cell);
+  }
+  const lastSeven = days.slice(-7);
+  const weeklyAnswers = lastSeven.reduce((sum, day) => sum + day.count, 0);
+  const activeDays = lastSeven.filter(day => day.count > 0).length;
+  summary.textContent = "آخر ٧ أيام: " + weeklyAnswers.toLocaleString("ar") + " إجابة خلال " + activeDays.toLocaleString("ar") + " أيام نشطة.";
+  section.dataset.totalAnswers = String(weeklyAnswers);
+  section.dataset.activeDays = String(activeDays);
+  section.hidden = false;
+}
+
 function renderRecentActivity(){
   const section = $("recent-activity");
   const list = $("recent-activity-list");
@@ -268,6 +313,7 @@ function refreshDashboard(){
   }
   renderRecentActivity();
   renderPerformanceTrend();
+  renderActivityCalendar();
   renderWeakTopicRecommendation();
 }
 
