@@ -835,7 +835,7 @@
   }
 
   // محاكاة امتحان شاملة: اختيار متوازن من الأبحاث مع مؤقت ومراجعة بعد التسليم.
-  const examState = { active:false, remaining:0, timer:null, answers:[], resultVisible:false };
+  const examState = { active:false, remaining:0, timer:null, answers:[], marked:[], resultVisible:false };
   const shuffle = list => [...list].sort(() => Math.random() - 0.5);
   const buildBalancedExam = (count, difficulty = "الكل") => {
     const allQuestions = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
@@ -944,6 +944,53 @@
       clock.setAttribute("role","timer"); clock.setAttribute("aria-live","off");
       head.appendChild(clock);
     }
+    const questionLabel = document.querySelector("#quiz .question-label");
+    if (questionLabel && !document.getElementById("exam-question-nav")) {
+      const nav = document.createElement("section");
+      nav.id = "exam-question-nav";
+      nav.className = "exam-question-nav";
+      nav.hidden = true;
+      nav.setAttribute("aria-label", "ورقة أسئلة المحاكاة");
+      nav.innerHTML = `
+        <div class="exam-nav-toolbar">
+          <p id="exam-nav-status" aria-live="polite"></p>
+          <button type="button" id="exam-mark-question" aria-pressed="false">☆ وضع علامة للمراجعة</button>
+        </div>
+        <div id="exam-nav-grid" class="exam-nav-grid" role="group" aria-label="الانتقال إلى سؤال"></div>`;
+      questionLabel.insertAdjacentElement("afterend", nav);
+    }
+    const markButton = document.getElementById("exam-mark-question");
+    if (markButton && !markButton.dataset.bound) {
+      markButton.addEventListener("click", () => {
+        if (!examState.active || !quizQuestions[index]) return;
+        examState.marked[index] = !examState.marked[index];
+        updateExamChrome();
+      });
+      markButton.dataset.bound = "true";
+    }
+    const nextButton = document.getElementById("next");
+    if (nextButton && !nextButton.dataset.examNavigationBound) {
+      nextButton.addEventListener("click", event => {
+        if (!examState.active) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const nextIndex = index + 1;
+        if (nextIndex < quizQuestions.length) {
+          index = nextIndex;
+          renderExamQuestion();
+          return;
+        }
+        const pendingIndex = examState.answers.findIndex(answer => answer === null);
+        if (pendingIndex >= 0) {
+          index = pendingIndex;
+          renderExamQuestion();
+        } else {
+          const status = document.getElementById("exam-nav-status");
+          if (status) status.textContent = "أجبت عن جميع الأسئلة. راجع علاماتك ثم اضغط «إنهاء وتسليم الامتحان».";
+        }
+      }, true);
+      nextButton.dataset.examNavigationBound = "true";
+    }
     const actions = document.querySelector("#quiz .actions");
     if (actions && !document.getElementById("exam-submit")) {
       const submit = document.createElement("button");
@@ -953,9 +1000,42 @@
       actions.insertBefore(submit, actions.firstChild);
     }
   };
+  const renderExamNavigator = () => {
+    const nav = document.getElementById("exam-question-nav");
+    const grid = document.getElementById("exam-nav-grid");
+    const status = document.getElementById("exam-nav-status");
+    const markButton = document.getElementById("exam-mark-question");
+    if (!nav || !grid || !examState.active) return;
+    const answeredCount = examState.answers.filter(answer => answer !== null).length;
+    const markedCount = examState.marked.filter(Boolean).length;
+    if (status) status.textContent = `تمت الإجابة عن ${answeredCount.toLocaleString("ar")} من ${quizQuestions.length.toLocaleString("ar")} سؤالاً · علامات المراجعة: ${markedCount.toLocaleString("ar")}`;
+    grid.innerHTML = quizQuestions.map((question, questionIndex) => {
+      const isAnswered = examState.answers[questionIndex] !== null;
+      const isMarked = Boolean(examState.marked[questionIndex]);
+      const isCurrent = questionIndex === index;
+      const classes = ["exam-nav-number", isAnswered ? "is-answered" : "", isMarked ? "is-marked" : "", isCurrent ? "is-current" : ""].filter(Boolean).join(" ");
+      const stateLabel = isAnswered ? "تمت الإجابة" : "لم تتم الإجابة";
+      const markLabel = isMarked ? "، محدد للمراجعة" : "";
+      return `<button type="button" class="${classes}" data-exam-go="${questionIndex}" aria-label="السؤال ${questionIndex + 1}: ${stateLabel}${markLabel}" ${isCurrent ? 'aria-current="step"' : ""}>${(questionIndex + 1).toLocaleString("ar")}</button>`;
+    }).join("");
+    grid.querySelectorAll("[data-exam-go]").forEach(button => {
+      button.addEventListener("click", () => {
+        const target = Number(button.dataset.examGo);
+        if (!examState.active || !Number.isInteger(target) || target < 0 || target >= quizQuestions.length) return;
+        index = target;
+        renderExamQuestion();
+      });
+    });
+    if (markButton) {
+      const marked = Boolean(examState.marked[index]);
+      markButton.textContent = marked ? "★ إزالة علامة المراجعة" : "☆ وضع علامة للمراجعة";
+      markButton.setAttribute("aria-pressed", String(marked));
+    }
+  };
   const updateExamChrome = () => {
     const clock = document.getElementById("exam-clock");
     const submit = document.getElementById("exam-submit");
+    const nav = document.getElementById("exam-question-nav");
     if (clock) {
       clock.hidden = !examState.active;
       clock.classList.toggle("exam-clock-low", examState.active && examState.remaining <= 300);
@@ -966,6 +1046,24 @@
       }
     }
     if (submit) submit.hidden = !examState.active;
+    if (nav) nav.hidden = !examState.active;
+    if (examState.active) renderExamNavigator();
+  };
+  const renderExamQuestion = () => {
+    showQuestion();
+    const savedChoice = examState.answers[index];
+    if (savedChoice !== null) {
+      answered = true;
+      document.querySelectorAll("#options [data-option]").forEach((button, optionIndex) => {
+        button.disabled = true;
+        if (optionIndex === savedChoice) button.classList.add("exam-selected");
+      });
+      const feedback = document.getElementById("feedback");
+      if (feedback) { feedback.className = "feedback hidden"; feedback.innerHTML = ""; }
+    }
+    const nextButton = document.getElementById("next");
+    if (nextButton) nextButton.disabled = false;
+    updateExamChrome();
   };
   const stopExamTimer = () => {
     if (examState.timer) clearInterval(examState.timer);
@@ -984,6 +1082,7 @@
     examState.resultVisible = false;
     examState.remaining = duration * 60;
     examState.answers = Array(picked.length).fill(null);
+    examState.marked = Array(picked.length).fill(false);
     currentTopic = "محاكاة الامتحان";
     reviewMode = false;
     sessionMistakes = [];
@@ -996,7 +1095,7 @@
     document.getElementById("exam-review")?.remove();
     ensureExamControls();
     updateExamChrome();
-    showQuestion();
+    renderExamQuestion();
     window.scrollTo({top:0,behavior:"smooth"});
     examState.timer = setInterval(() => {
       if (!examState.active) return;
@@ -1039,10 +1138,11 @@
     const skippedQuestions = Math.max(0, totalQuestions - answeredQuestions);
     const wrongAnswered = Math.max(0, answeredQuestions - correctAnswers);
     const overallRate = totalQuestions ? Math.round(correctAnswers / totalQuestions * 100) : 0;
+    const performanceLabel = overallRate >= 85 ? "أداء متقن" : overallRate >= 70 ? "أداء جيد جداً" : overallRate >= 60 ? "أداء جيد" : "يحتاج إلى مزيد من التدريب";
     const weakestTopic = [...topicResults.entries()]
       .sort((a, b) => (a[1].correct / a[1].total) - (b[1].correct / b[1].total))[0]?.[0];
     const resultSummary = `<div class="exam-result-summary" aria-label="ملخص نتيجة المحاكاة">
-      <div class="exam-result-summary-main"><span>النتيجة النهائية</span><strong>${correctAnswers.toLocaleString("ar")} / ${totalQuestions.toLocaleString("ar")}</strong><b>${overallRate.toLocaleString("ar")}٪ إجابات صحيحة</b></div>
+      <div class="exam-result-summary-main"><span>العلامة التدريبية</span><strong>${correctAnswers.toLocaleString("ar")} / ${totalQuestions.toLocaleString("ar")}</strong><b>${overallRate.toLocaleString("ar")}٪ إجابات صحيحة · ${performanceLabel}</b></div>
       <div class="exam-result-metrics">
         <div><span>إجابات صحيحة</span><strong>${correctAnswers.toLocaleString("ar")}</strong></div>
         <div><span>إجابات خاطئة</span><strong>${wrongAnswered.toLocaleString("ar")}</strong></div>
@@ -1060,10 +1160,13 @@
       }).join("");
     const rows = quizQuestions.map((q, i) => {
       const chosen = examState.answers[i];
-      const correct = chosen === q.answer;
-      const chosenText = Number.isInteger(chosen) && chosen >= 0 ? q.options[chosen] : "لم تتم الإجابة";
+      const skipped = chosen === null || chosen === -1;
+      const correct = !skipped && chosen === q.answer;
+      const chosenText = !skipped && Number.isInteger(chosen) && chosen >= 0 ? q.options[chosen] : "لم تتم الإجابة";
+      const answerStatus = skipped ? "سؤال متروك" : correct ? "إجابة صحيحة" : "إجابة خاطئة";
+      const statusClass = skipped ? "exam-answer-skipped" : correct ? "exam-answer-good" : "exam-answer-bad";
       return `<li class="exam-review-item">
-        <div class="exam-review-title"><strong>السؤال ${i+1} — ${escapeHtml(q.topic || "")}</strong><span class="${correct ? "exam-answer-good" : "exam-answer-bad"}">${correct ? "إجابة صحيحة" : "إجابة غير صحيحة"}</span></div>
+        <div class="exam-review-title"><strong>السؤال ${i+1} — ${escapeHtml(q.topic || "")}</strong><span class="${statusClass}">${answerStatus}</span></div>
         <div class="exam-review-question">${escapeHtml(String(q.q || ""))}</div>
         <p><strong>إجابتك:</strong> ${escapeHtml(String(chosenText))}</p>
         <p><strong>الإجابة الصحيحة:</strong> ${escapeHtml(String(q.options?.[q.answer] ?? ""))}</p>
@@ -1086,7 +1189,7 @@
   };
   const finishExam = timedOut => {
     if (!examState.active) return;
-    if (!timedOut && !confirm("هل تريد تسليم الامتحان الآن؟ ستُحسب الأسئلة غير المجابة إجابات خاطئة.")) return;
+    if (!timedOut && !confirm("هل تريد تسليم الامتحان الآن؟ ستظهر الأسئلة غير المجابة في النتيجة كأسئلة متروكة.")) return;
     // تُسجل الأسئلة المتروكة عبر مسار التصحيح نفسه لضمان تحديث التقدم والمراجعة.
     for (let i = 0; i < quizQuestions.length; i++) {
       if (examState.answers[i] !== null) continue;
@@ -1118,7 +1221,11 @@
         // إخفاء التصحيح الفوري أثناء المحاكاة؛ تظهر الحلول بعد التسليم فقط.
         const feedback = document.getElementById("feedback");
         if (feedback) { feedback.className = "feedback hidden"; feedback.innerHTML = ""; }
-        document.querySelectorAll("#options .option").forEach(btn => btn.classList.remove("correct","wrong"));
+        document.querySelectorAll("#options .option").forEach((btn, optionIndex) => {
+          btn.classList.remove("correct","wrong","exam-selected");
+          if (optionIndex === choice) btn.classList.add("exam-selected");
+        });
+        updateExamChrome();
       }
     };
   }
