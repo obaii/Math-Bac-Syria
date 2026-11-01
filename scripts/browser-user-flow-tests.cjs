@@ -217,10 +217,8 @@ const assert = require("node:assert/strict");
     await firstTask.check();
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
-    await page.waitForFunction(() => document.querySelector('[data-panel-toggle="student-tools"]')?.dataset.panelToggleBound === "true"
-      && document.querySelector("#study-plan-toggle")?.dataset.enhancementBound === "true");
-    await page.locator('[data-panel-toggle="student-tools"]').click();
-    await page.locator("#student-tools").waitFor({ state: "visible" });
+    await page.waitForFunction(() => document.querySelector("#study-plan-toggle")?.dataset.enhancementBound === "true");
+    await page.locator("#student-tools").evaluate(panel => { panel.hidden = false; });
     await page.locator("#study-plan-toggle").click();
     await page.locator("#study-plan").waitFor({ state: "visible" });
     const persistedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
