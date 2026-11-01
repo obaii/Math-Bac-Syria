@@ -279,10 +279,14 @@ function renderTopics(){
     const successRate = topicStat.answered ? Math.round(topicStat.correct/topicStat.answered*100) : 0;
     const seenCount = questions.filter(q => q.topic === topic && (level === "الكل" || q.level === level) && progressData.seenQuestions[questionKey(q)]).length;
     const coverageRate = count ? Math.min(100, Math.round(seenCount/count*100)) : 0;
-    return `<button class="topic-card" data-topic="${topic}" ${count===0?"disabled":""}>
-      <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-arrow">↖</span></span>
+    const attempts = Number.isSafeInteger(topicStat.answered) && topicStat.answered > 0 ? topicStat.answered : 0;
+    const correctAnswers = Number.isSafeInteger(topicStat.correct) && topicStat.correct > 0 ? Math.min(topicStat.correct, attempts) : 0;
+    const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
+    return `<button class="topic-card" data-topic="${topic}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" ${count===0?"disabled":""}>
+      <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
-      <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">${topicStat.answered ? `${successRate.toLocaleString("ar")}٪ نجاح · ابدأ ←` : "ابدأ التدريب ←"}</span></span>
+      <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">ابدأ التدريب ←</span></span>
+      <span class="topic-card-performance">${attempts ? `${attempts.toLocaleString("ar")} إجابة · ${correctAnswers.toLocaleString("ar")} صحيحة · ${successRate.toLocaleString("ar")}٪ دقة` : "لم تسجل إجابات بعد"}</span>
       <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}"><span style="width:${coverageRate}%"></span></span>
     </button>`;
   }).join("");
