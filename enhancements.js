@@ -169,7 +169,7 @@
       const todayPlan = plan.days.find(day => day.date === today);
       const upcoming = plan.days.filter(day => day.date > today).slice(0,3);
       const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+' · '+escapeHtml(day.date)+'</h4><ul>'+day.tasks.map(task =>
-        '<li><label><input type="checkbox" data-study-task="'+escapeHtml(task.id)+'" '+(task.done?'checked':'')+'><span><strong>'+escapeHtml(task.title)+'</strong><small>'+(task.kind==="practice" ? task.target+" سؤالاً" : "حتى "+task.target+" أسئلة")+'</small></span></label><button type="button" data-study-open="'+task.kind+'" data-study-topic="'+escapeHtml(task.topic || "")+'">'+(task.kind==="practice" ? "ابدأ التدريب" : "افتح المراجعة")+'</button></li>'
+        '<li><label><input type="checkbox" data-study-task="'+escapeHtml(task.id)+'" '+(task.done?'checked':'')+'><span><strong>'+escapeHtml(task.title)+'</strong><small>'+(task.kind==="practice" ? task.target+" سؤالاً" : "حتى "+task.target+" أسئلة")+'</small></span></label><button type="button" data-study-open="'+task.kind+'" data-study-topic="'+escapeHtml(task.topic || "")+'" data-study-target="'+task.target+'">'+(task.kind==="practice" ? "ابدأ التدريب" : "افتح المراجعة")+'</button></li>'
       ).join("")+'</ul></section>';
       panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit">إعادة تنظيم الخطة</button></div><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
       const edit = document.getElementById("study-plan-edit");
@@ -202,7 +202,7 @@
         return;
       }
       const mistakeMap = typeof progressData !== "undefined" && isRecord(progressData.mistakes) ? progressData.mistakes : {};
-      const missed = Object.keys(mistakeMap).map(byKey).filter(q => q && Array.isArray(q.options) && q.options.length === 4).slice(0, Number(button.closest("li")?.querySelector("[data-study-task]")?.dataset.studyTask ? 5 : 5));
+      const missed = Object.keys(mistakeMap).map(byKey).filter(q => q && Array.isArray(q.options) && q.options.length === 4).slice(0, Math.max(1, Number(button.dataset.studyTarget) || 5));
       if (missed.length && typeof startTargetedQuiz === "function") startTargetedQuiz(missed, "مراجعة أخطاء الخطة");
       else alert("لا توجد أخطاء محفوظة للمراجعة حالياً. واصل التدريب لتحديث هذه المهمة.");
     }));
