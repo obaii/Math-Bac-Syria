@@ -463,9 +463,9 @@ const assert = require("node:assert/strict");
       groups.map(group => ({ heading: group.querySelector("h4")?.innerText || "", count: group.querySelector("h4 span")?.innerText || "", content: group.innerText }))
     );
     assert.equal(reviewBuckets.length, 3, "the review plan should render due, upcoming, and later groups");
-    assert.ok(reviewBuckets[0].heading.includes("مستحق اليوم") && reviewBuckets[0].count === "1", "an unscheduled mistake should be listed as due today");
-    assert.ok(reviewBuckets[1].heading.includes("خلال الأيام السبعة القادمة") && reviewBuckets[1].count === "1", "a review scheduled within seven days should be listed as upcoming");
-    assert.ok(reviewBuckets[2].heading.includes("بعد أسبوع") && reviewBuckets[2].count === "1", "a review scheduled beyond seven days should be listed later");
+    assert.ok(reviewBuckets[0].heading.includes("مستحق اليوم") && ["1", "١"].includes(reviewBuckets[0].count), "an unscheduled mistake should be listed as due today");
+    assert.ok(reviewBuckets[1].heading.includes("خلال الأيام السبعة القادمة") && ["1", "١"].includes(reviewBuckets[1].count), "a review scheduled within seven days should be listed as upcoming");
+    assert.ok(reviewBuckets[2].heading.includes("بعد أسبوع") && ["1", "١"].includes(reviewBuckets[2].count), "a review scheduled beyond seven days should be listed later");
 
     // The mistake log should list valid missed questions and launch focused practice.
     const mistakeLogButton = page.locator("#mistake-log-toggle");
