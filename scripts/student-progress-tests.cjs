@@ -69,8 +69,7 @@ const checks = [
   ["session retry is tested for filtering and an empty error-free result", /retry should contain only this session/.test(browser) && /retry action should be absent when the session has no mistakes/.test(browser)],
   ["session result panel supports dark mode and narrow screens", /body\.dark-mode \.session-result-review/.test(css) && /@media\(max-width:600px\)\{\.session-result-review/.test(css)],
   ["application and stylesheet cache versions include session result and exam updates", /app\.js\?v=20261101-12/.test(html) && /style-overrides\.css\?v=20261101-13/.test(html)],
-  ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)]
-
+  ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)],
   ["study plan uses a separate field inside existing student-tools storage", /studyPlan: normalizeStudyPlan\(x\.studyPlan\)/.test(enhancements) && /EXTRA_KEY = "mathBacSyriaStudentToolsV1"/.test(enhancements)],
   ["study plan validates the exam date and daily question target", /function normalizeStudyPlan\(value\)/.test(enhancements) && /dailyTarget < 5 \|\| dailyTarget > 30/.test(enhancements) && /parseLocalDate\(value\.examDate\)/.test(enhancements)],
   ["study plan prioritizes topics using real mistake counts and answer accuracy", /const getStudyPriorityTopics = \(\)/.test(enhancements) && /errorCount \* 3 \+ errorRate \* 5/.test(enhancements)],
