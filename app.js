@@ -90,6 +90,7 @@ function renderPerformanceTrend(){
       key,
       label: new Intl.DateTimeFormat("ar", { weekday: "short" }).format(day),
       count: attempts.length,
+      correct,
       rate: attempts.length ? Math.round(correct / attempts.length * 100) : 0
     });
   }
@@ -123,7 +124,7 @@ function renderPerformanceTrend(){
     item.append(rate, track, label, count);
     chart.append(item);
   }
-  const correctTotal = days.reduce((sum, day) => sum + Math.round(day.count * day.rate / 100), 0);
+  const correctTotal = days.reduce((sum, day) => sum + day.correct, 0);
   const weeklyRate = Math.round(correctTotal / total * 100);
   summary.textContent = "خلال آخر ٧ أيام: " + total.toLocaleString("ar") +
     " إجابة، ونسبة صحة " + weeklyRate.toLocaleString("ar") + "٪.";
