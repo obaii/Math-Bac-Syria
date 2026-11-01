@@ -925,3 +925,35 @@ body.dark-mode .activity-calendar-day.level-2, body.dark-mode .activity-calendar
 body.dark-mode .activity-calendar-day.level-3, body.dark-mode .activity-calendar-legend .level-3 { background:#5687d8; border-color:#5687d8; color:#fff; }
 body.dark-mode .activity-calendar-day.level-4, body.dark-mode .activity-calendar-legend .level-4 { background:#83aaff; border-color:#83aaff; color:#10264c; }
 @media(max-width:600px){.activity-calendar-heading h3{font-size:16px}.activity-calendar-grid{gap:5px}.activity-calendar-day{border-radius:7px;font-size:11px}}
+
+/* إنجازات الطالب: شارات خفيفة تُحسب مباشرة من التقدم المحفوظ. */
+.achievement-section { margin:0 0 22px; padding:clamp(16px,2.5vw,22px); border:1px solid #e2e9f4; border-radius:18px; background:#fff; }
+.achievement-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:14px; }
+.achievement-heading h3 { margin:0 0 5px; font-size:18px; }
+.achievement-heading p:not(.eyebrow) { margin:0; color:#718096; font-size:12px; line-height:1.8; }
+.achievement-heading .eyebrow { margin:0 0 4px; }
+.achievement-heading > strong { flex:0 0 auto; color:#3154b5; font-size:12px; }
+.achievement-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin:16px 0 0; padding:0; list-style:none; }
+.achievement-card { display:flex; align-items:center; gap:10px; min-width:0; padding:11px; border:1px solid #e5eaf2; border-radius:13px; background:#f8faff; }
+.achievement-card.is-locked { opacity:.72; background:#f7f8fa; }
+.achievement-icon { display:grid; place-items:center; flex:0 0 38px; width:38px; height:38px; border-radius:11px; background:#e7efff; font-size:20px; }
+.achievement-copy { display:grid; gap:2px; min-width:0; flex:1; }
+.achievement-copy strong { color:#243653; font-size:12px; }
+.achievement-copy span { color:#64748b; font-size:10px; line-height:1.6; }
+.achievement-copy small { color:#3154b5; font-size:10px; font-weight:700; }
+.achievement-status { flex:0 0 auto; padding:4px 7px; border-radius:999px; background:#edf1f6; color:#64748b; font-size:9px; font-weight:800; }
+.achievement-card.is-unlocked { border-color:#cfe7d8; background:#f4fbf6; }
+.achievement-card.is-unlocked .achievement-icon { background:#e1f3e7; }
+.achievement-card.is-unlocked .achievement-status { background:#e2f4e8; color:#247447; }
+body.dark-mode .achievement-section { background:#182438; border-color:#34445d; }
+body.dark-mode .achievement-heading p:not(.eyebrow) { color:#a7b5ca; }
+body.dark-mode .achievement-heading > strong, body.dark-mode .achievement-copy small { color:#b8ccff; }
+body.dark-mode .achievement-card, body.dark-mode .achievement-card.is-locked { background:#202f46; border-color:#34445d; }
+body.dark-mode .achievement-card.is-unlocked { background:#1b3a32; border-color:#35614f; }
+body.dark-mode .achievement-copy strong { color:#e7edf8; }
+body.dark-mode .achievement-copy span { color:#a7b5ca; }
+body.dark-mode .achievement-icon { background:#2b4164; }
+body.dark-mode .achievement-card.is-unlocked .achievement-icon { background:#28513f; }
+body.dark-mode .achievement-status { background:#29384d; color:#b6c2d4; }
+body.dark-mode .achievement-card.is-unlocked .achievement-status { background:#28513f; color:#a9e4c3; }
+@media(max-width:600px){.achievement-heading{align-items:flex-start;flex-direction:column}.achievement-heading h3{font-size:16px}.achievement-list{grid-template-columns:1fr}.achievement-card{padding:10px}}
