@@ -40,7 +40,11 @@ const checks = [
   ["loaded progress counters reject negative or unsafe values", /const toCount = value => Number\.isSafeInteger\(value\) && value >= 0 \? value : 0/.test(app) && /correct: Math\.min\(toCount\(saved\.correct\), answered\)/.test(app)],
   ["loaded topic statistics are normalized and correct counts are clamped", /const topicStats = \{\}[\s\S]*?topicStats\[topic\] = \{ answered: topicAnswered, correct: Math\.min\(toCount\(stat\.correct\), topicAnswered\) \}/.test(app)],
   ["loaded attempts reject malformed records and invalid dates", /typeof attempt\.correct === "boolean"[\s\S]*?Number\.isFinite\(Date\.parse\(attempt\.date\)\)/.test(app)],
-  ["loaded unique-question map accepts only true markers", /if \(seen === true\) seenQuestions\[key\] = true/.test(app)]
+  ["loaded unique-question map accepts only true markers", /if \(seen === true\) seenQuestions\[key\] = true/.test(app)],
+  ["saved exam history rejects impossible scores and invalid dates", /const normalizeExamHistory = history => Array\.isArray\(history\)[\s\S]*?item\.correct <= item\.total[\s\S]*?Number\.isFinite\(Date\.parse\(item\.date\)\)/.test(enhancements)],
+  ["backup import uses the same normalized exam-history validator", /nextExtras\.examHistory = normalizeExamHistory\(sourceTools\.examHistory\)/.test(enhancements)],
+  ["saved review schedules reject invalid due dates and normalize stages", /const normalizeSchedule = schedule => \{[\s\S]*?if \(!Number\.isFinite\(due\) \|\| due <= 0\) continue;[\s\S]*?Math\.min\(intervalsDays\.length - 1, Math\.floor\(rawStage\)\)/.test(enhancements)],
+  ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
