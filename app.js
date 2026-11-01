@@ -425,7 +425,7 @@ $("next").addEventListener("click",()=>{
   if(index<quizQuestions.length-1){index++;showQuestion();}
   else showResults();
 });
-$("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});});
+$("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});});
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));
 $("to-home").addEventListener("click",()=>{$("results").classList.add("hidden");$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});});
 $("difficulty").addEventListener("change",renderTopics);
