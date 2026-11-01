@@ -70,6 +70,18 @@ const checks = [
   ["session result panel supports dark mode and narrow screens", /body\.dark-mode \.session-result-review/.test(css) && /@media\(max-width:600px\)\{\.session-result-review/.test(css)],
   ["application and stylesheet cache versions include session result and exam updates", /app\.js\?v=20261101-12/.test(html) && /style-overrides\.css\?v=20261101-13/.test(html)],
   ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)]
+
+  ["study plan uses a separate field inside existing student-tools storage", /studyPlan: normalizeStudyPlan\(x\.studyPlan\)/.test(enhancements) && /EXTRA_KEY = "mathBacSyriaStudentToolsV1"/.test(enhancements)],
+  ["study plan validates the exam date and daily question target", /function normalizeStudyPlan\(value\)/.test(enhancements) && /dailyTarget < 5 \|\| dailyTarget > 30/.test(enhancements) && /parseLocalDate\(value\.examDate\)/.test(enhancements)],
+  ["study plan prioritizes topics using real mistake counts and answer accuracy", /const getStudyPriorityTopics = \(\)/.test(enhancements) && /errorCount \* 3 \+ errorRate \* 5/.test(enhancements)],
+  ["study plan distributes daily practice across all available curriculum topics", /const priorities = getStudyPriorityTopics\(\)/.test(enhancements) && /priorities\[offset % priorities\.length\]\.topic/.test(enhancements)],
+  ["study plan includes mistake-review tasks when saved mistakes exist", /mistakeKeys\.length && offset % 2 === 0/.test(enhancements) && /مراجعة الأسئلة الخاطئة/.test(enhancements)],
+  ["study plan rebalances unfinished past tasks and retains completed tasks", /const rebalanceStudyPlan = plan =>/.test(enhancements) && /if \(task\.done\) retained\.push\(task\);[\s\S]*?else pending\.push\(task\)/.test(enhancements)],
+  ["study plan persists task completion and completed study days", /extras\.studyPlan\.completedStudyDays = extras\.studyPlan\.days/.test(enhancements) && /persistExtras\(\);[\s\S]*?renderStudyPlan\(\);/.test(enhancements)],
+  ["study plan remains hidden until the student opens its dedicated control", /study-plan-toggle/.test(enhancements) && /studyPanel\.hidden = true/.test(enhancements) && /section\.hidden = !section\.hidden/.test(enhancements)],
+  ["study plan backup import validates and restores saved plan data", /nextExtras\.studyPlan = normalizeStudyPlan\(sourceTools\.studyPlan\)/.test(enhancements) && /studyPlan: normalizeStudyPlan\(x\.studyPlan\)/.test(enhancements)],
+  ["study plan has mobile and dark-mode styling", /\.study-plan-metrics/.test(enhancements) && /body\.dark-mode \.study-plan/.test(enhancements) && /@media\(max-width:640px\)\{\.study-plan/.test(enhancements)],
+  ["study plan browser flow checks creation, persistence, and hidden-by-default behavior", /study-plan-toggle/.test(browser) && /study-plan-form/.test(browser) && /studyPlan/.test(browser) && /completed task should persist/.test(browser)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
