@@ -60,6 +60,13 @@ const checks = [
   ["saved exam history rejects impossible scores and invalid dates", /const normalizeExamHistory = history => Array\.isArray\(history\)[\s\S]*?item\.correct <= item\.total[\s\S]*?Number\.isFinite\(Date\.parse\(item\.date\)\)/.test(enhancements)],
   ["backup import uses the same normalized exam-history validator", /nextExtras\.examHistory = normalizeExamHistory\(sourceTools\.examHistory\)/.test(enhancements)],
   ["saved review schedules reject invalid due dates and normalize stages", /const normalizeSchedule = schedule => \{[\s\S]*?if \(!Number\.isFinite\(due\) \|\| due <= 0\) continue;[\s\S]*?Math\.min\(intervalsDays\.length - 1, Math\.floor\(rawStage\)\)/.test(enhancements)],
+  ["session mistakes are tracked once per question without changing saved progress structure", /sessionMistakes\.some\(item => questionKey\(item\) === questionKey\(q\)\)/.test(app) && /else if \(!sessionMistakes\.some/.test(app)],
+  ["session results show correct and incorrect totals and list missed questions", /const wrongCount=Math\.max\(0, total-correctCount\)/.test(app) && /session-result-review/.test(app) && /session-mistake-list/.test(app)],
+  ["session-only retry uses only mistakes from the current session", /function startSessionMistakeQuiz\(\)[\s\S]*?const retryQuestions = \[\.\.\.sessionMistakes\][\s\S]*?quizQuestions = \[\.\.\.retryQuestions\]/.test(app)],
+  ["session retry control is created only when at least one mistake exists", /if \(sessionMistakes\.length\)[\s\S]*?retry-session-mistakes/.test(app)],
+  ["session retry is tested for filtering and an empty error-free result", /retry should contain only this session/.test(browser) && /retry action should be absent when the session has no mistakes/.test(browser)],
+  ["session result panel supports dark mode and narrow screens", /body\.dark-mode \.session-result-review/.test(css) && /@media\(max-width:600px\)\{\.session-result-review/.test(css)],
+  ["application and stylesheet cache versions include session result updates", /app\.js\?v=20261101-12/.test(html) && /style-overrides\.css\?v=20261101-12/.test(html)],
   ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)]
 ];
 let failures = 0;
