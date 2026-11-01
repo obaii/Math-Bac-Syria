@@ -38,6 +38,7 @@
       schedule: normalizeSchedule(x.schedule),
       reviewQuestions: isRecord(x.reviewQuestions) ? x.reviewQuestions : {},
       examHistory: normalizeExamHistory(x.examHistory),
+      studyPlan: normalizeStudyPlan(x.studyPlan),
       darkMode: Boolean(x.darkMode)
     };
   };
@@ -54,6 +55,147 @@
     Promise.resolve(mathJax.startup?.promise)
       .then(() => mathJax.typesetPromise([target]))
       .catch(error => console.warn("تعذر تنسيق المعادلات في هذا القسم", error));
+  };
+  const localDateKey = date => {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    return [d.getFullYear(), String(d.getMonth()+1).padStart(2,"0"), String(d.getDate()).padStart(2,"0")].join("-");
+  };
+  const parseLocalDate = value => {
+    if (typeof value !== "string" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return null;
+    const [year, month, day] = value.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
+  };
+  const normalizeStudyPlan = value => {
+    if (!isRecord(value)) return null;
+    const examDate = parseLocalDate(value.examDate);
+    const dailyTarget = Number(value.dailyTarget);
+    if (!examDate || !Number.isInteger(dailyTarget) || dailyTarget < 5 || dailyTarget > 30) return null;
+    const allowedTopics = new Set(typeof topics !== "undefined" && Array.isArray(topics) ? topics : []);
+    const days = Array.isArray(value.days) ? value.days.slice(0, 366).filter(day => isRecord(day) && parseLocalDate(day.date)).map(day => ({
+      date: day.date,
+      tasks: (Array.isArray(day.tasks) ? day.tasks : []).slice(0, 3).filter(task => isRecord(task)
+        && typeof task.id === "string" && task.id.length <= 180
+        && ["practice", "mistakes"].includes(task.kind)
+        && (task.kind === "mistakes" || allowedTopics.has(task.topic))
+        && Number.isInteger(task.target) && task.target >= 1 && task.target <= 30)
+        .map(task => ({ id:task.id, kind:task.kind, topic:task.topic || "", title:String(task.title || "").slice(0,100),
+          target:task.target, done:task.done === true }))
+    })) : [];
+    return { examDate:localDateKey(examDate), dailyTarget, createdAt:typeof value.createdAt === "string" && Number.isFinite(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString(),
+      lastRebalancedDate:parseLocalDate(value.lastRebalancedDate) ? value.lastRebalancedDate : "", days,
+      completedStudyDays:Array.isArray(value.completedStudyDays) ? [...new Set(value.completedStudyDays.filter(d => parseLocalDate(d)))].slice(-366) : [] };
+  };
+  const getStudyPriorityTopics = () => {
+    const names = Array.isArray(topics) ? topics : [];
+    const stats = typeof progressData !== "undefined" && isRecord(progressData.topicStats) ? progressData.topicStats : {};
+    const mistakes = typeof progressData !== "undefined" && isRecord(progressData.mistakes) ? Object.values(progressData.mistakes) : [];
+    return names.map((topic, order) => {
+      const stat = isRecord(stats[topic]) ? stats[topic] : {};
+      const answered = Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+      const correct = Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+      const errorRate = answered ? (answered - correct) / answered : 0;
+      const errorCount = mistakes.filter(item => item && item.topic === topic).length;
+      return { topic, order, answered, errorCount, score: errorCount * 3 + errorRate * 5 + (answered ? 0 : 1) };
+    }).sort((a,b) => b.score - a.score || a.order - b.order);
+  };
+  const buildStudyPlan = (examDateValue, dailyTargetValue) => {
+    const examDate = parseLocalDate(examDateValue);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    if (!examDate || examDate < today) { alert("اختر تاريخاً اليوم أو في المستقبل."); return; }
+    const daysCount = Math.min(366, Math.floor((examDate - today) / 86400000) + 1);
+    const priorities = getStudyPriorityTopics();
+    if (!priorities.length) { alert("لم يتم العثور على أبحاث في بنك المنصة."); return; }
+    const dailyTarget = Math.max(5, Math.min(30, Math.round(Number(dailyTargetValue) || 10)));
+    const mistakeKeys = typeof progressData !== "undefined" && isRecord(progressData.mistakes)
+      ? Object.keys(progressData.mistakes).filter(key => byKey(key)) : [];
+    const days = [];
+    for (let offset=0; offset<daysCount; offset++) {
+      const date = new Date(today.getFullYear(), today.getMonth(), today.getDate()+offset);
+      const dateKey = localDateKey(date);
+      const topic = priorities[offset % priorities.length].topic;
+      const tasks = [{ id:"practice-"+dateKey+"-"+encodeURIComponent(topic), kind:"practice", topic,
+        title:"تدريب على بحث "+topic, target:dailyTarget, done:false }];
+      if (mistakeKeys.length && offset % 2 === 0) {
+        tasks.push({ id:"mistakes-"+dateKey, kind:"mistakes", topic:"",
+          title:"مراجعة الأسئلة الخاطئة", target:Math.min(5,mistakeKeys.length), done:false });
+      }
+      days.push({ date:dateKey, tasks });
+    }
+    extras.studyPlan = { examDate:localDateKey(examDate), dailyTarget, createdAt:new Date().toISOString(),
+      lastRebalancedDate:localDateKey(today), days, completedStudyDays:[] };
+    persistExtras();
+    renderStudyPlan();
+  };
+  const rebalanceStudyPlan = plan => {
+    if (!plan || !Array.isArray(plan.days)) return;
+    const today = localDateKey(new Date());
+    if (plan.lastRebalancedDate === today) return;
+    const pending = [];
+    for (const day of plan.days) {
+      if (day.date < today) {
+        const retained = [];
+        for (const task of day.tasks) {
+          if (task.done) retained.push(task);
+          else pending.push(task);
+        }
+        day.tasks = retained;
+      }
+    }
+    const future = plan.days.filter(day => day.date >= today);
+    pending.forEach((task, index) => {
+      if (!future.length) return;
+      future[index % future.length].tasks.push({ ...task, id:task.id+"-moved-"+today });
+    });
+    plan.lastRebalancedDate = today;
+    persistExtras();
+  };
+  const renderStudyPlan = () => {
+    const panel = document.getElementById("study-plan");
+    if (!panel) return;
+    const plan = extras.studyPlan;
+    const today = localDateKey(new Date());
+    if (!plan) {
+      panel.innerHTML = '<h3>خطة دراستي</h3><p>حدد موعد امتحانك والهدف اليومي، وسنوزّع الأبحاث تلقائياً مع إعطاء أولوية أكبر للأبحاث التي تحتاج إلى تدريب.</p><form id="study-plan-form" class="study-plan-form"><label>موعد الامتحان<input id="study-exam-date" type="date" min="'+today+'" required></label><label>عدد الأسئلة يومياً<input id="study-daily-target" type="number" min="5" max="30" step="5" value="10" required></label><button type="submit">إنشاء خطة دراستي</button></form><p class="study-plan-note">التاريخ تحدده أنت، والخطة محفوظة على هذا الجهاز فقط.</p>';
+    } else {
+      rebalanceStudyPlan(plan);
+      const allTasks = plan.days.flatMap(day => day.tasks);
+      const total = allTasks.length;
+      const done = allTasks.filter(task => task.done).length;
+      const percent = total ? Math.round(done/total*100) : 0;
+      const completedDays = plan.days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).length;
+      const remainingDays = Math.max(0, Math.ceil((parseLocalDate(plan.examDate)-new Date(new Date().setHours(0,0,0,0)))/86400000)+1);
+      const todayPlan = plan.days.find(day => day.date === today);
+      const upcoming = plan.days.filter(day => day.date > today).slice(0,3);
+      const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+' · '+escapeHtml(day.date)+'</h4><ul>'+day.tasks.map(task =>
+        '<li><label><input type="checkbox" data-study-task="'+escapeHtml(task.id)+'" '+(task.done?'checked':'')+'><span><strong>'+escapeHtml(task.title)+'</strong><small>'+(task.kind==="practice" ? task.target+" سؤالاً" : "حتى "+task.target+" أسئلة")+'</small></span></label></li>'
+      ).join("")+'</ul></section>';
+      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit">إعادة تنظيم الخطة</button></div><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها.</p>';
+      const edit = document.getElementById("study-plan-edit");
+      if (edit) edit.addEventListener("click", () => {
+        const nextDate = prompt("أدخل موعد الامتحان الجديد بصيغة YYYY-MM-DD", plan.examDate);
+        if (nextDate === null) return;
+        const nextTarget = prompt("كم سؤالاً تريد يومياً؟ (من 5 إلى 30)", String(plan.dailyTarget));
+        if (nextTarget === null) return;
+        buildStudyPlan(nextDate, nextTarget);
+      });
+    }
+    const form = document.getElementById("study-plan-form");
+    if (form) form.addEventListener("submit", event => {
+      event.preventDefault();
+      buildStudyPlan(document.getElementById("study-exam-date").value, document.getElementById("study-daily-target").value);
+    });
+    panel.querySelectorAll("[data-study-task]").forEach(input => input.addEventListener("change", () => {
+      const taskId = input.dataset.studyTask;
+      for (const day of extras.studyPlan.days) {
+        const task = day.tasks.find(item => item.id === taskId);
+        if (task) task.done = input.checked;
+      }
+      extras.studyPlan.completedStudyDays = extras.studyPlan.days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).map(day => day.date);
+      persistExtras();
+      renderStudyPlan();
+    }));
   };
   const addStyles = () => {
     const style = document.createElement("style");
@@ -84,6 +226,15 @@
       .progress-recommendation-empty{padding:12px;border:1px dashed var(--line);border-radius:9px;color:var(--muted);font-size:13px;line-height:1.8}
       body.dark-mode .progress-recommendation{background:var(--card-bg)}
       @media(max-width:640px){.progress-recommendation{align-items:stretch;flex-direction:column}.progress-recommendation-actions{display:grid;grid-template-columns:1fr 1fr}.progress-recommendation-actions button{min-height:40px}}
+      .study-plan{margin-top:12px;padding:15px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)}
+      .study-plan h3{margin:0 0 6px}.study-plan p{line-height:1.8}.study-plan-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end}
+      .study-plan-form label{display:grid;gap:6px;font-size:13px}.study-plan-form input{font:inherit;min-width:0;width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg,#fff);color:var(--ink);min-height:42px}
+      .study-plan button{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card-bg,white);color:var(--ink);cursor:pointer;min-height:42px}
+      .study-plan-heading,.study-plan-metrics{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.study-plan-metrics{margin:12px 0}.study-plan-metrics>div{display:grid;gap:3px;padding:10px;border:1px solid var(--line);border-radius:10px;min-width:100px}.study-plan-metrics strong{font-size:20px}.study-plan-metrics span,.study-plan-day small,.study-plan-note{font-size:12px;color:var(--muted)}
+      .study-plan-track{height:9px;border-radius:99px;overflow:hidden;background:var(--line);margin:12px 0 16px}.study-plan-track span{display:block;height:100%;background:var(--success,#2f9e72)}
+      .study-plan-day{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px}.study-plan-day h4{margin:0 0 8px}.study-plan-day ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}.study-plan-day li label{display:flex;align-items:flex-start;gap:9px;cursor:pointer}.study-plan-day input{margin-top:5px;flex:0 0 auto}.study-plan-day li span{display:grid;gap:3px}.study-plan-note{margin-top:12px}
+      body.dark-mode .study-plan{background:var(--card-bg);border-color:var(--line)}body.dark-mode .study-plan-form input{background:#101827;color:var(--ink);border-color:var(--line)}
+      @media(max-width:640px){.study-plan{padding:12px}.study-plan-heading{align-items:stretch;flex-direction:column}.study-plan-heading button{width:100%}.study-plan-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.study-plan-metrics>div{min-width:0;padding:8px}.study-plan-metrics strong{font-size:17px}}
       .review-plan{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:12px}
       .review-plan h4{margin:0 0 8px;font-size:15px}.review-plan>p{line-height:1.8}
       .review-plan-group{margin-top:12px}.review-plan-group h4{display:flex;justify-content:space-between;gap:8px}
@@ -195,6 +346,31 @@
       const smartButton = document.getElementById("smart-review");
       if (smartButton && smartButton.nextSibling) actions.insertBefore(planButton, smartButton.nextSibling);
       else actions.appendChild(planButton);
+    }
+    if (actions && !document.getElementById("study-plan-toggle")) {
+      const studyButton = document.createElement("button");
+      studyButton.type = "button"; studyButton.id = "study-plan-toggle";
+      studyButton.setAttribute("aria-expanded", "false"); studyButton.textContent = "خطة دراستي";
+      actions.appendChild(studyButton);
+    }
+    if (!document.getElementById("study-plan")) {
+      const studyPanel = document.createElement("section");
+      studyPanel.className = "study-plan"; studyPanel.id = "study-plan";
+      studyPanel.setAttribute("aria-live", "polite"); studyPanel.hidden = true;
+      const reviewPanel = document.getElementById("review-plan");
+      if (reviewPanel && reviewPanel.parentNode) reviewPanel.insertAdjacentElement("afterend", studyPanel);
+      else panel.appendChild(studyPanel);
+    }
+    const studyToggle = document.getElementById("study-plan-toggle");
+    if (studyToggle && studyToggle.dataset.enhancementBound !== "true") {
+      studyToggle.addEventListener("click", () => {
+        const section = document.getElementById("study-plan");
+        if (!section) return;
+        section.hidden = !section.hidden;
+        studyToggle.setAttribute("aria-expanded", String(!section.hidden));
+        if (!section.hidden) { renderStudyPlan(); section.scrollIntoView({behavior:"smooth",block:"nearest"}); }
+      });
+      studyToggle.dataset.enhancementBound = "true";
     }
     if (!document.getElementById("review-plan")) {
       const plan = document.createElement("section");
@@ -731,6 +907,7 @@
       const sourceTools = data.studentTools && typeof data.studentTools === "object" && !Array.isArray(data.studentTools) ? data.studentTools : {};
       nextExtras.darkMode = Boolean(sourceTools.darkMode);
       nextExtras.examHistory = normalizeExamHistory(sourceTools.examHistory);
+      nextExtras.studyPlan = normalizeStudyPlan(sourceTools.studyPlan);
       nextExtras.bookmarks = Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))] : [];
       const restoredSchedule = normalizeSchedule(sourceTools.schedule);
       for (const [key, item] of Object.entries(restoredSchedule)) {
@@ -1323,6 +1500,14 @@
   addExamStyles();
   addStyles();
   addHomeTools();
+  window.addEventListener("mathBacSyria:reset-progress", () => {
+    if (extras.studyPlan) {
+      extras.studyPlan = null;
+      persistExtras();
+      const panel = document.getElementById("study-plan");
+      if (panel && !panel.hidden) renderStudyPlan();
+    }
+  });
   ensureMistakeLog();
   // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
   ensureExamControls();
