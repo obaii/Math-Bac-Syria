@@ -581,3 +581,23 @@ body.dark-mode .solution-steps li::marker { color: #b8ccff; }
   .brand-symbol { flex: 0 0 34px; width: 34px; height: 34px; }
   .install-app-button { font-size: 12px; }
 }
+
+
+/* Compact mobile shortcuts: two primary paths, with review spanning the row. */
+@media (max-width: 600px) {
+  .quick-start {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+  .quick-start-card {
+    min-height: 76px;
+    padding: 10px 11px;
+    gap: 8px;
+  }
+  .quick-start-card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  .quick-start-card:nth-child(3) .quick-start-copy small {
+    font-size: 11px;
+  }
+}

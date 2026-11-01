@@ -227,6 +227,23 @@ const assert = require("node:assert/strict");
     assert.ok(mobileHeader.brandLeft >= -1 && mobileHeader.brandRight <= mobileHeader.viewport + 1, "brand should remain within the phone viewport");
     assert.ok(mobileHeader.installVisible && mobileHeader.installLeft >= -1 && mobileHeader.installRight <= mobileHeader.viewport + 1, "install action should remain visible and within the phone viewport");
 
+    const mobileShortcuts = await page.evaluate(() => {
+      const grid = document.querySelector(".quick-start");
+      const cards = [...grid.children];
+      const columns = getComputedStyle(grid).gridTemplateColumns.split(" ").length;
+      return {
+        columns,
+        reviewColumnStart: getComputedStyle(cards[2]).gridColumnStart,
+        reviewColumnEnd: getComputedStyle(cards[2]).gridColumnEnd,
+        pageWidth: document.documentElement.scrollWidth,
+        viewport: document.documentElement.clientWidth
+      };
+    });
+    assert.equal(mobileShortcuts.columns, 2, "mobile quick-start shortcuts should use a compact two-column layout");
+    assert.equal(mobileShortcuts.reviewColumnStart, "1", "review shortcut should start at the first mobile grid column");
+    assert.equal(mobileShortcuts.reviewColumnEnd, "-1", "review shortcut should span both mobile grid columns");
+    assert.ok(mobileShortcuts.pageWidth <= mobileShortcuts.viewport + 2, "mobile shortcuts should not create horizontal overflow");
+
     // Force a question that has a built-in diagram, then check SVG bounds on mobile.
     const diagramResult = await page.evaluate(() => {
       const q = questions.find(item => typeof getQuestionDiagram === "function" && getQuestionDiagram(item));
@@ -299,6 +316,24 @@ const assert = require("node:assert/strict");
     // Open the intentionally collapsed student-tools panel before testing its controls.
     await page.locator('[data-panel-toggle="student-tools"]').click();
     await page.locator("#student-tools").waitFor({ state: "visible" });
+    const mobileToolLayout = await page.evaluate(() => {
+      const actions = document.querySelector("#student-tools .tools-actions");
+      const buttons = [...actions.querySelectorAll("button")];
+      return {
+        columns: getComputedStyle(actions).gridTemplateColumns.split(" ").length,
+        buttonHeights: buttons.map(button => button.getBoundingClientRect().height),
+        buttonsWithinViewport: buttons.every(button => {
+          const rect = button.getBoundingClientRect();
+          return rect.left >= -1 && rect.right <= document.documentElement.clientWidth + 1;
+        }),
+        pageWidth: document.documentElement.scrollWidth,
+        viewport: document.documentElement.clientWidth
+      };
+    });
+    assert.equal(mobileToolLayout.columns, 2, "student review controls should form two columns on phones");
+    assert.ok(mobileToolLayout.buttonHeights.every(height => height >= 44), "mobile review controls should retain accessible touch heights");
+    assert.equal(mobileToolLayout.buttonsWithinViewport, true, "mobile review controls should stay within the viewport");
+    assert.ok(mobileToolLayout.pageWidth <= mobileToolLayout.viewport + 2, "student tools should not create horizontal overflow");
 
     // Importing a backup must discard malformed attempt records before they reach the progress report.
     const validBackupDate = new Date().toISOString();
