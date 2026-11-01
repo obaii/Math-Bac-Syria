@@ -66,7 +66,7 @@
     const date = new Date(year, month - 1, day);
     return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
   };
-  const normalizeStudyPlan = value => {
+  function normalizeStudyPlan(value) {
     if (!isRecord(value)) return null;
     const examDate = parseLocalDate(value.examDate);
     const dailyTarget = Number(value.dailyTarget);
@@ -85,7 +85,7 @@
     return { examDate:localDateKey(examDate), dailyTarget, createdAt:typeof value.createdAt === "string" && Number.isFinite(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString(),
       lastRebalancedDate:parseLocalDate(value.lastRebalancedDate) ? value.lastRebalancedDate : "", days,
       completedStudyDays:Array.isArray(value.completedStudyDays) ? [...new Set(value.completedStudyDays.filter(d => parseLocalDate(d)))].slice(-366) : [] };
-  };
+  }
   const getStudyPriorityTopics = () => {
     const names = Array.isArray(topics) ? topics : [];
     const stats = typeof progressData !== "undefined" && isRecord(progressData.topicStats) ? progressData.topicStats : {};
