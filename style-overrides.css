@@ -978,3 +978,18 @@ body.dark-mode .session-progress-summary > div { background:#202f46; border-colo
 body.dark-mode .session-progress-summary span { color:#a7b5ca; }
 body.dark-mode .session-progress-summary strong { color:#e7edf8; }
 @media(max-width:600px) { .session-progress-summary { gap:6px; } .session-progress-summary > div { flex-direction:column; align-items:flex-start; padding:9px; } .session-progress-summary span { font-size:10px; } .session-progress-summary strong { font-size:12px; } }
+
+
+/* ملخص نهاية الجلسة وإعادة تدريب أخطائها فقط. */
+.session-result-review { margin:18px 0; padding:16px; border:1px solid #e2e9f4; border-radius:14px; background:#f8faff; text-align:right; }
+.session-result-review h3 { margin:0 0 12px; color:#243653; font-size:16px; }
+.session-mistake-list { display:grid; gap:9px; margin:0 0 14px; padding-inline-start:24px; }
+.session-mistake-list li { padding:9px 11px; border:1px solid #e5eaf2; border-radius:10px; background:#fff; }
+.session-mistake-list li strong { display:block; color:#3154b5; font-size:12px; }
+.session-mistake-list li p { margin:5px 0 0; color:#52627a; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+#retry-session-mistakes { min-height:42px; }
+body.dark-mode .session-result-review { background:#182438; border-color:#34445d; }
+body.dark-mode .session-result-review h3 { color:#e7edf8; }
+body.dark-mode .session-mistake-list li { background:#202f46; border-color:#34445d; }
+body.dark-mode .session-mistake-list li p { color:#a7b5ca; }
+@media(max-width:600px){.session-result-review{padding:12px}.session-mistake-list{padding-inline-start:20px}#retry-session-mistakes{width:100%}}
