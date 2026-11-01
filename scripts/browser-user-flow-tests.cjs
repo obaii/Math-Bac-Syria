@@ -145,6 +145,13 @@ const assert = require("node:assert/strict");
     assert.equal(removedBookmarkState.listHidden, true, "the saved-question list should hide when its last item is removed");
     assert.equal(removedBookmarkState.pressed, "false", "the current-question bookmark control should return to its unsaved state");
 
+    // Return from the focused saved-question quiz to the home screen, then reopen
+    // the hidden student-tools panel before interacting with its report control.
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+    await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+
     // Seed a deterministic three-day practice streak and verify the progress report derives it.
     await page.evaluate(() => {
       const now = new Date();
