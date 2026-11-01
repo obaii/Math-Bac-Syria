@@ -673,3 +673,61 @@ body.dark-mode .resume-session p strong { color:#b8ccff; }
   .resume-session h3 { font-size:16px; }
   .resume-topic-button { width:100%; }
 }
+
+
+/* سجل آخر الأبحاث التي تدرب عليها الطالب. */
+.recent-activity {
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  border: 1px solid #d9e3f2;
+  border-radius: 16px;
+  background: #fff;
+  color: #172b4d;
+}
+.recent-activity[hidden] { display: none !important; }
+.recent-activity-heading h3 { margin: 0 0 5px; font-size: 18px; }
+.recent-activity-heading p:not(.eyebrow) { margin: 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+.recent-activity-heading .eyebrow { margin: 0 0 4px; }
+.recent-activity-list { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.recent-activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e5ebf4;
+  border-radius: 12px;
+  background: #f8faff;
+}
+.recent-activity-details { display: grid; gap: 3px; min-width: 0; }
+.recent-activity-details strong { color: #1e3558; font-size: 14px; }
+.recent-activity-details span,
+.recent-activity-details time { color: #64748b; font-size: 12px; }
+.recent-activity-button {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #cbd8f8;
+  border-radius: 10px;
+  background: #fff;
+  color: #3154b5;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.recent-activity-button:hover { background: #edf2ff; }
+.recent-activity-button:focus-visible { outline: 3px solid #8ca9ff; outline-offset: 2px; }
+body.dark-mode .recent-activity { border-color: #405579; background: #182438; color: #e7edf8; }
+body.dark-mode .recent-activity-heading p:not(.eyebrow),
+body.dark-mode .recent-activity-details span,
+body.dark-mode .recent-activity-details time { color: #a7b5ca; }
+body.dark-mode .recent-activity-item { border-color: #34445d; background: #202f47; }
+body.dark-mode .recent-activity-details strong { color: #e7edf8; }
+body.dark-mode .recent-activity-button { border-color: #52698d; background: #263958; color: #dbe7ff; }
+body.dark-mode .recent-activity-button:hover { background: #344b70; }
+@media(max-width:600px) {
+  .recent-activity { padding: 15px; }
+  .recent-activity-item { align-items: stretch; flex-direction: column; gap: 9px; }
+  .recent-activity-button { width: 100%; }
+}
