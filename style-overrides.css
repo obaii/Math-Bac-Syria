@@ -902,3 +902,26 @@ body.dark-mode .topic-mastery-status.practice { background: #49391f; color: #ffd
 body.dark-mode .topic-mastery-status.good { background: #263b61; color: #c1d2ff; }
 body.dark-mode .topic-mastery-status.mastered { background: #1f4939; color: #a9e4c3; }
 @media(max-width:600px) { .topic-mastery-status { font-size: 10px; } }
+
+/* تقويم النشاط الدراسي: عرض الأيام النشطة دون تعديل سجل التقدم الأصلي. */
+.activity-calendar { margin:0 0 22px; padding:clamp(16px,2.5vw,22px); border:1px solid #e2e9f4; border-radius:18px; background:linear-gradient(145deg,#fff,#f8faff); }
+.activity-calendar-heading h3 { margin:0 0 5px; font-size:18px; }
+.activity-calendar-heading p:not(.eyebrow) { margin:0; color:#718096; font-size:12px; line-height:1.8; }
+.activity-calendar-heading .eyebrow { margin:0 0 4px; }
+.activity-calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:7px; margin:16px 0 10px; padding:0; list-style:none; }
+.activity-calendar-day { display:grid; place-items:center; min-width:0; aspect-ratio:1; border:1px solid #e3e9f4; border-radius:9px; background:#f1f4f9; color:#748198; font-size:12px; font-weight:700; font-variant-numeric:tabular-nums; }
+.activity-calendar-day.level-1, .activity-calendar-legend .level-1 { background:#dce8ff; border-color:#c6d8ff; color:#315edb; }
+.activity-calendar-day.level-2, .activity-calendar-legend .level-2 { background:#a9c4ff; border-color:#9ab8fa; color:#173d91; }
+.activity-calendar-day.level-3, .activity-calendar-legend .level-3 { background:#638fe8; border-color:#638fe8; color:#fff; }
+.activity-calendar-day.level-4, .activity-calendar-legend .level-4 { background:#315edb; border-color:#315edb; color:#fff; }
+.activity-calendar-legend { display:flex; align-items:center; justify-content:flex-end; gap:5px; color:#718096; font-size:10px; }
+.activity-calendar-legend i { display:inline-block; width:13px; height:13px; border:1px solid #e3e9f4; border-radius:4px; background:#f1f4f9; }
+.activity-calendar-summary { margin:12px 0 0; color:#52627a; font-size:13px; font-weight:700; }
+body.dark-mode .activity-calendar { background:linear-gradient(145deg,#182438,#111d30); border-color:#34445d; }
+body.dark-mode .activity-calendar-heading p:not(.eyebrow), body.dark-mode .activity-calendar-summary, body.dark-mode .activity-calendar-legend { color:#a7b5ca; }
+body.dark-mode .activity-calendar-day.level-0, body.dark-mode .activity-calendar-legend .level-0 { background:#24324a; border-color:#34445d; color:#a7b5ca; }
+body.dark-mode .activity-calendar-day.level-1, body.dark-mode .activity-calendar-legend .level-1 { background:#294779; border-color:#355b96; color:#e7edf8; }
+body.dark-mode .activity-calendar-day.level-2, body.dark-mode .activity-calendar-legend .level-2 { background:#3768b7; border-color:#4778c8; color:#fff; }
+body.dark-mode .activity-calendar-day.level-3, body.dark-mode .activity-calendar-legend .level-3 { background:#5687d8; border-color:#5687d8; color:#fff; }
+body.dark-mode .activity-calendar-day.level-4, body.dark-mode .activity-calendar-legend .level-4 { background:#83aaff; border-color:#83aaff; color:#10264c; }
+@media(max-width:600px){.activity-calendar-heading h3{font-size:16px}.activity-calendar-grid{gap:5px}.activity-calendar-day{border-radius:7px;font-size:11px}}
