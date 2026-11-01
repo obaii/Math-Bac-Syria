@@ -471,12 +471,23 @@ function startQuiz(topic){
   showQuestion();
   window.scrollTo({top:0,behavior:"smooth"});
 }
+function updateQuizProgress(completed){
+  const total = quizQuestions.length;
+  const answeredCount = Math.min(Math.max(Number(completed) || 0, 0), total);
+  const percent = total ? Math.round(answeredCount / total * 100) : 0;
+  const bar = $("progress-bar");
+  const track = $("quiz-progress-track");
+  const label = $("progress-percent");
+  if (bar) bar.style.width = `${percent}%`;
+  if (track) track.setAttribute("aria-valuenow", String(percent));
+  if (label) label.textContent = `${percent.toLocaleString("ar")}٪ مكتمل`;
+}
 function showQuestion(){
   answered=false;
   const q=quizQuestions[index];
   $("question-number").textContent=`${index+1} من ${quizQuestions.length}`;
   $("progress").textContent=`السؤال ${index+1} / ${quizQuestions.length}`;
-  $("progress-bar").style.width=`${index/quizQuestions.length*100}%`;
+  updateQuizProgress(index);
   $("question-text").innerHTML=q.q;
   if (typeof getQuestionDiagram === "function") {
     const diagramMarkup = getQuestionDiagram(q);
@@ -523,6 +534,7 @@ function chooseAnswer(choice){
     if(i===q.answer)btn.classList.add("correct");
     if(i===choice && !isCorrect)btn.classList.add("wrong");
   });
+  updateQuizProgress(index + 1);
   const fb=$("feedback");
   fb.className=`feedback ${isCorrect?"good":"bad"}`;
   const escapeSolutionText = value => String(value ?? "")
