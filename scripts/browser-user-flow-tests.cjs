@@ -109,6 +109,7 @@ const assert = require("node:assert/strict");
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#options [data-option]").count(), 4, "each quiz question should show four options");
     assert.ok((await page.locator("#question-text").innerText()).trim().length > 0, "question text should be rendered");
+    await page.locator("#bookmark-current").scrollIntoViewIfNeeded();
     await page.locator("#bookmark-current").click();
     await page.getByRole("button", { name: /السؤال التالي|عرض النتيجة/ }).isEnabled();
     await page.locator("#options [data-option]").first().click();
