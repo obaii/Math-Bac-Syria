@@ -290,6 +290,17 @@ function topicIcon(topic){
   return "∑";
 }
 
+// تصنيف الإتقان يحتاج عينة كافية حتى لا يُضلّل الطالب بنتائج عدد قليل من الإجابات.
+function getTopicMastery(stat){
+  const answered = stat && Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+  const correct = stat && Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+  if (!answered) return { key: "not-started", label: "لم يبدأ بعد", answered, correct, rate: null };
+  const rate = Math.round(correct / answered * 100);
+  if (answered < 10 || rate < 60) return { key: "practice", label: "يحتاج إلى تدريب", answered, correct, rate };
+  if (rate >= 85) return { key: "mastered", label: "متقن", answered, correct, rate };
+  return { key: "good", label: "جيد", answered, correct, rate };
+}
+
 function renderTopics(){
   const level = $("difficulty").value;
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
@@ -306,12 +317,14 @@ function renderTopics(){
     const coverageRate = count ? Math.min(100, Math.round(seenCount/count*100)) : 0;
     const attempts = Number.isSafeInteger(topicStat.answered) && topicStat.answered > 0 ? topicStat.answered : 0;
     const correctAnswers = Number.isSafeInteger(topicStat.correct) && topicStat.correct > 0 ? Math.min(topicStat.correct, attempts) : 0;
+    const mastery = getTopicMastery(topicStat);
     const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
-    return `<button class="topic-card" data-topic="${topic}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" ${count===0?"disabled":""}>
+    return `<button class="topic-card" data-topic="${topic}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">ابدأ التدريب ←</span></span>
       <span class="topic-card-performance">${attempts ? `${attempts.toLocaleString("ar")} إجابة · ${correctAnswers.toLocaleString("ar")} صحيحة · ${successRate.toLocaleString("ar")}٪ دقة` : "لم تسجل إجابات بعد"}</span>
+      <span class="topic-mastery-status ${mastery.key}" title="${mastery.answered < 10 && mastery.answered > 0 ? "يحتاج تصنيف الإتقان إلى 10 إجابات على الأقل" : mastery.rate === null ? "لم تُسجّل إجابات لهذا البحث بعد" : mastery.rate.toLocaleString("ar") + "٪ من الإجابات صحيحة"}">${mastery.label}</span>
       <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}"><span style="width:${coverageRate}%"></span></span>
     </button>`;
   }).join("");
