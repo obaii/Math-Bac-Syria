@@ -195,6 +195,36 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /إيقاف الوضع الليلي/ }).click();
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), false, "night mode should toggle off");
 
+    // The personalized study plan is opt-in, generated from a user-selected exam date, and persisted locally.
+    const planInitiallyHidden = await page.locator("#study-plan").isVisible().catch(() => false);
+    assert.equal(planInitiallyHidden, false, "study plan should not appear before its dedicated button is opened");
+    await page.locator("#study-plan-toggle").click();
+    await page.locator("#study-plan").waitFor({ state: "visible" });
+    const planDate = await page.evaluate(() => {
+      const date = new Date();
+      date.setDate(date.getDate() + 5);
+      return [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+    });
+    await page.locator("#study-exam-date").fill(planDate);
+    await page.locator("#study-daily-target").fill("15");
+    await page.locator("#study-plan-form button[type=submit]").click();
+    await page.locator(".study-plan-day").first().waitFor({ state: "visible" });
+    const generatedPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
+    assert.equal(generatedPlan.examDate, planDate, "study plan should save the selected exam date");
+    assert.equal(generatedPlan.dailyTarget, 15, "study plan should save the daily question target");
+    assert.ok(generatedPlan.days.length >= 5, "study plan should distribute study tasks across the days before the exam");
+    const firstTask = page.locator("#study-plan [data-study-task]").first();
+    await firstTask.check();
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+    await page.locator("#study-plan-toggle").click();
+    await page.locator("#study-plan").waitFor({ state: "visible" });
+    const persistedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
+    assert.ok(persistedStudyPlan.days.some(day => day.tasks.some(task => task.done)), "completed task should persist after reloading the page");
+    assert.ok((await page.locator("#study-plan").innerText()).includes("إنجاز الخطة"), "study plan should render its completion summary");
+
     // Seed a deterministic three-day practice streak and verify the progress report derives it.
     await page.evaluate(() => {
       const now = new Date();
