@@ -141,6 +141,8 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /السؤال التالي|عرض النتيجة/ }).isEnabled();
     await page.locator("#options [data-option]").first().click();
     await page.locator("#feedback").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#feedback").getAttribute("aria-live"), "polite", "answer feedback should be announced without interrupting the current task");
+    assert.equal(await page.locator("#feedback").getAttribute("aria-atomic"), "true", "assistive technology should announce the complete answer feedback, including the solution");
     assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "answer feedback should include a solution");
     const savedProgress = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null"));
     assert.ok(savedProgress && savedProgress.answered === 1, "answer progress should persist to local storage");
