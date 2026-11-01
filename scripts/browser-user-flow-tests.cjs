@@ -108,7 +108,7 @@ const assert = require("node:assert/strict");
       progressData.attempts = [0, 1, 2].map((offset, index) => ({
         topic: "اختبار الانتظام",
         correct: index !== 1,
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 12).toISOString()
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 0, 0, 0, 0).toISOString()
       }));
     });
     await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
