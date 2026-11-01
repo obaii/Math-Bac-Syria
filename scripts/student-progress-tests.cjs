@@ -7,8 +7,8 @@ const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const checks = [
-  ["student tools reject arrays where saved maps are expected", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: isRecord\(x\.schedule\) \? x\.schedule : \{\}/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
-  ["saved exam history ignores malformed entries", /examHistory: Array\.isArray\(x\.examHistory\) \? x\.examHistory\.filter\(item => isRecord\(item\) && Number\.isFinite\(item\.correct\) && Number\.isFinite\(item\.total\) && item\.total > 0\)/.test(enhancements)],
+  ["student tools reject arrays and malformed values in saved maps", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: normalizeSchedule\(x\.schedule\)/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
+  ["saved exam history uses strict score and date validation", /examHistory: normalizeExamHistory\(x\.examHistory\)/.test(enhancements) && /item\.correct <= item\.total/.test(enhancements)],
   ["old saved progress defaults to an empty unique-question map", /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
   ["malformed array values cannot replace saved progress maps", /mistakes: isRecord\(saved\.mistakes\) \? saved\.mistakes : \{\}/.test(app) && /const topicStats = \{\};[\s\S]*?if \(isRecord\(saved\.topicStats\)\)/.test(app) && /const seenQuestions = \{\};[\s\S]*?if \(isRecord\(saved\.seenQuestions\)\)/.test(app)],
   ["each practice answer records its unique question key", /progressData\.seenQuestions\[questionKey\(q\)\] = true/.test(app)],
