@@ -1,4 +1,4 @@
-const CACHE_NAME = "math-bac-syria-v27";
+const CACHE_NAME = "math-bac-syria-v28";
 const CORE_FILES = [
   "./", "./index.html", "./style.css", "./style-overrides.css",
   "./app.js", "./questions.js", "./questions_vectors_additional.js", "./question-diagrams.js",
@@ -45,10 +45,25 @@ self.addEventListener("fetch", event => {
       }).catch(() => caches.match(request).then(cached => cached || caches.match("./index.html"))));
       return;
     }
-    event.respondWith(caches.match(request, { ignoreSearch: true }).then(cached => cached || fetch(request).then(response => {
-      if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(request, response.clone()));
-      return response;
-    })));
+
+    // Prefer the latest deployed asset whenever online, but retain a cached
+    // copy as an offline fallback. Ignore query strings for versioned assets.
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (response.ok) {
+          try {
+            const cache = await caches.open(CACHE_NAME);
+            await cache.put(request, response.clone());
+          } catch (_) {}
+        }
+        return response;
+      } catch (error) {
+        const cached = await caches.match(request, { ignoreSearch: true });
+        if (cached) return cached;
+        throw error;
+      }
+    })());
     return;
   }
   if (url.hostname === "cdn.jsdelivr.net" && url.pathname.includes("/mathjax@3/")) {

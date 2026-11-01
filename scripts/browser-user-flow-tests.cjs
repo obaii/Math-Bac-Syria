@@ -52,6 +52,17 @@ const assert = require("node:assert/strict");
       const registration = await navigator.serviceWorker.getRegistration();
       return Boolean(registration && registration.active);
     }, null, { timeout: 20000 });
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller), null, { timeout: 10000 });
+    // Core assets must remain available offline after the service worker controls the page.
+    await page.context().setOffline(true);
+    const offlineAsset = await page.evaluate(async () => {
+      const response = await fetch("./app.js?offline-fallback-check=1");
+      return { ok: response.ok, status: response.status, hasAppCode: (await response.text()).includes("function showQuestion") };
+    });
+    await page.context().setOffline(false);
+    assert.equal(offlineAsset.ok, true, "a cached core asset should remain available while offline");
+    assert.equal(offlineAsset.hasAppCode, true, "offline fallback should return the cached application code");
+
     const installButton = page.locator("#install-app-button");
     assert.equal(await installButton.count(), 1, "the install-app control should exist");
     assert.ok(await installButton.isVisible(), "the install-app control should be visible");
