@@ -63,6 +63,9 @@ if (!/solution-guides\.js\?v=20261029-1/.test(indexHtml)) {
 if (!/app\.js\?v=20261101-10/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
+if (!/enhancements\.js\?v=20261101-3/.test(indexHtml)) {
+  failures.push("index.html must use the refreshed cache version for the updated solution presentation.");
+}
 if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261101-10")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
@@ -76,6 +79,9 @@ if (!enhancements.includes('typesetMath(solution)')) {
 }
 if (!enhancements.includes("q.keyIdea")) {
   failures.push("The guided-solution renderer no longer displays the key idea.");
+}
+if (!enhancements.includes("solution-heading") || !enhancements.includes("solution-existing-content") || !enhancements.includes("solution-note")) {
+  failures.push("The solution renderer must provide a clear heading and a consistent layout for both guided and concise solutions.");
 }
 
 if (failures.length) {
