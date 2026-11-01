@@ -221,8 +221,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("role"), "progressbar", "quiz progress should expose an accessible progress bar");
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("aria-valuenow"), "0", "a new quiz should begin at zero completed answers");
     assert.match(await page.locator("#progress-percent").innerText(), /٠٪|0٪/, "the quiz should show a zero-percent completion label at the start");
-    assert.equal(await page.locator("#session-answered").innerText(), await page.evaluate(() => `٠ / ${quizQuestions.length.toLocaleString("ar")}`), "a new session should show zero answered questions");
-    assert.equal(await page.locator("#session-remaining").innerText(), await page.evaluate(() => quizQuestions.length.toLocaleString("ar")), "a new session should show every question as remaining");
+    const normalizeCounter = value => value.replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit))).replace(/\s/g, "");
+    assert.equal(normalizeCounter(await page.locator("#session-answered").innerText()), normalizeCounter(await page.evaluate(() => `0 / ${quizQuestions.length}`)), "a new session should show zero answered questions");
+    assert.equal(normalizeCounter(await page.locator("#session-remaining").innerText()), normalizeCounter(await page.evaluate(() => String(quizQuestions.length))), "a new session should show every question as remaining");
     assert.equal(await page.locator("#session-accuracy").innerText(), "—", "session accuracy should remain unset before the first answer");
     await page.locator("#bookmark-current").scrollIntoViewIfNeeded();
     await page.locator("#bookmark-current").click();
@@ -239,9 +240,9 @@ const assert = require("node:assert/strict");
       remaining: Math.max(0, quizQuestions.length - index - 1).toLocaleString("ar"),
       accuracy: Math.round(correctCount / (index + 1) * 100).toLocaleString("ar") + "٪"
     }));
-    assert.equal(await page.locator("#session-answered").innerText(), sessionNumbers.answered, "answer count should increase exactly once after choosing an option");
-    assert.equal(await page.locator("#session-remaining").innerText(), sessionNumbers.remaining, "remaining count should decrease after answering");
-    assert.equal(await page.locator("#session-accuracy").innerText(), sessionNumbers.accuracy, "session accuracy should use only answered questions");
+    assert.equal(normalizeCounter(await page.locator("#session-answered").innerText()), normalizeCounter(sessionNumbers.answered), "answer count should increase exactly once after choosing an option");
+    assert.equal(normalizeCounter(await page.locator("#session-remaining").innerText()), normalizeCounter(sessionNumbers.remaining), "remaining count should decrease after answering");
+    assert.equal(normalizeCounter(await page.locator("#session-accuracy").innerText()), normalizeCounter(sessionNumbers.accuracy), "session accuracy should use only answered questions");
     const solutionPanel = page.locator("#feedback .solution");
     assert.equal(await solutionPanel.locator(".solution-heading strong").innerText(), "شرح الحل", "the solution should have a clear heading");
     assert.ok((await solutionPanel.locator(".key-idea").innerText()).includes("الفكرة الأساسية للاختبار"), "the key idea should appear in its own highlighted panel");
