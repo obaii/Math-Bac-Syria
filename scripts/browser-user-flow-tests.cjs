@@ -137,6 +137,33 @@ const assert = require("node:assert/strict");
     await page.evaluate(() => { progressData.topicStats = {}; refreshDashboard(); });
     assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), false, "the suggestion should hide again when no topic has recorded results");
 
+    // Mastery labels require a meaningful sample and use accuracy thresholds independently of coverage.
+    const masteryFixture = await page.evaluate(() => {
+      const [untouched, tooFew, good, mastered, practice] = topics.slice(0, 5);
+      progressData.topicStats = {
+        [tooFew]: { answered: 9, correct: 9 },
+        [good]: { answered: 10, correct: 7 },
+        [mastered]: { answered: 10, correct: 9 },
+        [practice]: { answered: 10, correct: 5 }
+      };
+      renderTopics();
+      return { untouched, tooFew, good, mastered, practice };
+    });
+    for (const [topic, expected] of [
+      [masteryFixture.untouched, "not-started"],
+      [masteryFixture.tooFew, "practice"],
+      [masteryFixture.good, "good"],
+      [masteryFixture.mastered, "mastered"],
+      [masteryFixture.practice, "practice"]
+    ]) {
+      assert.equal(await page.locator(`#topic-grid [data-topic="${topic}"]`).getAttribute("data-mastery"), expected, `mastery state for ${topic} should be ${expected}`);
+    }
+    assert.equal(await page.locator(`#topic-grid [data-topic="${masteryFixture.tooFew}"] .topic-mastery-status`).innerText(), "يحتاج إلى تدريب", "a high score from fewer than ten answers should not be called mastered");
+    assert.equal(await page.locator(`#topic-grid [data-topic="${masteryFixture.good}"] .topic-mastery-status`).innerText(), "جيد", "70 percent after ten answers should be classified as good");
+    assert.equal(await page.locator(`#topic-grid [data-topic="${masteryFixture.mastered}"] .topic-mastery-status`).innerText(), "متقن", "90 percent after ten answers should be classified as mastered");
+    assert.equal(await page.locator(`#topic-grid [data-topic="${masteryFixture.practice}"] .topic-mastery-status`).innerText(), "يحتاج إلى تدريب", "accuracy below 60 percent should require more practice");
+    await page.evaluate(() => { progressData.topicStats = {}; renderTopics(); });
+
     assert.equal(await page.locator("#exam-tools").isVisible(), false, "exam setup should start hidden");
     for (const id of ["stat-answered", "stat-correct", "stat-mistakes", "stat-percent"]) {
       const live = await page.locator("#" + id).getAttribute("aria-live");
