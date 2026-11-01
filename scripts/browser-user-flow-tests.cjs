@@ -112,6 +112,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
     assert.equal(await page.locator("#resume-session").isVisible(), false, "resume card should stay hidden until a topic has been practiced");
     assert.equal(await page.locator("#recent-activity").isVisible(), false, "recent activity should stay hidden until an answer is recorded");
+    assert.equal(await page.locator("#performance-trend").isVisible(), false, "the performance chart should stay hidden until a recent answer is recorded");
     assert.equal(await page.locator("#exam-tools").isVisible(), false, "exam setup should start hidden");
     for (const id of ["stat-answered", "stat-correct", "stat-mistakes", "stat-percent"]) {
       const live = await page.locator("#" + id).getAttribute("aria-live");
@@ -175,6 +176,10 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#recent-activity").isVisible(), true, "recent activity should appear after an answer is recorded");
     assert.equal(await page.locator("#recent-activity-list li").count(), 1, "recent activity should show the latest practiced topic");
     assert.equal(await page.locator("#recent-activity-list li strong").innerText(), lastPracticedTopic, "recent activity should show the correct topic");
+    assert.equal(await page.locator("#performance-trend").isVisible(), true, "the seven-day performance chart should appear after an answer is recorded");
+    assert.equal(await page.locator("#performance-trend-chart .performance-trend-day").count(), 7, "the performance chart should show one column for each of the last seven days");
+    assert.match(await page.locator("#performance-trend-summary").innerText(), /نسبة صحة/, "the chart should summarize the weekly accuracy");
+    assert.equal(await page.locator("#performance-trend-chart [role=progressbar]").count(), 7, "each daily chart column should expose its accuracy accessibly");
     await page.locator("#recent-activity-list button").first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), lastPracticedTopic, "recent activity should reopen its selected topic");
