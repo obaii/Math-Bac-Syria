@@ -116,6 +116,27 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#resume-session").isVisible(), false, "resume card should stay hidden until a topic has been practiced");
     assert.equal(await page.locator("#recent-activity").isVisible(), false, "recent activity should stay hidden until an answer is recorded");
     assert.equal(await page.locator("#performance-trend").isVisible(), false, "the performance chart should stay hidden until a recent answer is recorded");
+    assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), false, "the weakest-topic suggestion should stay hidden before any topic has results");
+    const weakestTopicFixture = await page.evaluate(() => {
+      const [strongTopic, weakTopic] = topics.slice(0, 2);
+      progressData.topicStats = {
+        [strongTopic]: { answered: 2, correct: 2 },
+        [weakTopic]: { answered: 2, correct: 0 }
+      };
+      refreshDashboard();
+      return weakTopic;
+    });
+    assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), true, "the weakest-topic suggestion should appear after topic results exist");
+    assert.equal(await page.locator("#weak-topic-name").innerText(), weakestTopicFixture, "the suggestion should identify the topic with the lowest accuracy");
+    assert.equal(await page.locator("#weak-topic-rate").innerText(), "٠٪", "the suggestion should show the selected topic accuracy");
+    await page.locator("#weak-topic-button").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), weakestTopicFixture, "the suggestion action should open the selected topic");
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+    await page.evaluate(() => { progressData.topicStats = {}; refreshDashboard(); });
+    assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), false, "the suggestion should hide again when no topic has recorded results");
+
     assert.equal(await page.locator("#exam-tools").isVisible(), false, "exam setup should start hidden");
     for (const id of ["stat-answered", "stat-correct", "stat-mistakes", "stat-percent"]) {
       const live = await page.locator("#" + id).getAttribute("aria-live");
