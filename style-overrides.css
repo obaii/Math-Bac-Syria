@@ -879,3 +879,26 @@ body.dark-mode .weak-topic-action strong { color: #b8ccff; }
   .weak-topic-action { grid-template-columns: auto 1fr; justify-items: start; align-items: center; }
   .weak-topic-action button { grid-column: 1 / -1; width: 100%; min-height: 44px; }
 }
+
+
+/* مستوى إتقان البحث: مستقل عن مؤشر تغطية الأسئلة. */
+.topic-mastery-status {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 7px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.5;
+  background: #f1f4f8;
+  color: #64748b;
+}
+.topic-mastery-status.practice { background: #fff4df; color: #98600b; }
+.topic-mastery-status.good { background: #edf3ff; color: #3154b5; }
+.topic-mastery-status.mastered { background: #e9f7ef; color: #247447; }
+body.dark-mode .topic-mastery-status { background: #29384d; color: #b6c2d4; }
+body.dark-mode .topic-mastery-status.practice { background: #49391f; color: #ffd58a; }
+body.dark-mode .topic-mastery-status.good { background: #263b61; color: #c1d2ff; }
+body.dark-mode .topic-mastery-status.mastered { background: #1f4939; color: #a9e4c3; }
+@media(max-width:600px) { .topic-mastery-status { font-size: 10px; } }
