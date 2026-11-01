@@ -56,16 +56,16 @@
       .then(() => mathJax.typesetPromise([target]))
       .catch(error => console.warn("تعذر تنسيق المعادلات في هذا القسم", error));
   };
-  const localDateKey = date => {
+  function localDateKey(date) {
     const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     return [d.getFullYear(), String(d.getMonth()+1).padStart(2,"0"), String(d.getDate()).padStart(2,"0")].join("-");
-  };
-  const parseLocalDate = value => {
+  }
+  function parseLocalDate(value) {
     if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
     const [year, month, day] = value.split("-").map(Number);
     const date = new Date(year, month - 1, day);
     return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
-  };
+  }
   function normalizeStudyPlan(value) {
     if (!isRecord(value)) return null;
     const examDate = parseLocalDate(value.examDate);
