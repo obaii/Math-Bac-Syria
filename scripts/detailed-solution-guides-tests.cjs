@@ -66,7 +66,7 @@ if (!/app\.js\?v=20261101-11/.test(indexHtml)) {
 if (!/enhancements\.js\?v=20261101-3/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution presentation.");
 }
-if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261101-11")) {
+if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261101-12")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
 
