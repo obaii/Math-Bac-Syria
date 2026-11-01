@@ -121,8 +121,25 @@
       .mistake-log-item button{font:inherit;font-size:13px;min-height:38px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
       body.dark-mode .mistake-log-item{background:var(--card-bg);border-color:var(--line)}
       body.dark-mode .mistake-log-item button{background:var(--bg);color:var(--ink);border-color:var(--line)}
-      .key-idea{margin:10px 0;padding:10px 12px;border-right:4px solid #d5a32b;background:#fff8e6;border-radius:8px}
-      .solution-steps{padding-right:22px}.offline-status{font-size:12px;margin-top:10px;color:var(--muted)}
+      .solution{margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--card-bg,white);line-height:1.9}
+      .solution-heading{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+      .solution-heading>span{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:#eaf0ff;color:#3154b5;font-size:19px}
+      .solution-heading>div{display:grid;gap:1px}.solution-heading strong{font-size:15px}.solution-heading small{color:var(--muted);font-size:11px}
+      .key-idea{margin:0 0 13px;padding:12px 14px;border-right:4px solid #d5a32b;background:#fff8e6;border-radius:10px}
+      .key-idea strong{display:block;margin-bottom:4px;color:#795b13;font-size:12px}.key-idea p{margin:0;line-height:1.9}
+      .solution-steps{display:grid;gap:9px;list-style:none;counter-reset:solution-step;margin:12px 0 0;padding:0}
+      .solution-steps li{position:relative;counter-increment:solution-step;min-height:44px;padding:10px 48px 10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg,#f7f9fc);line-height:1.9;overflow-wrap:anywhere}
+      .solution-steps li::before{content:counter(solution-step,arabic-indic);position:absolute;right:10px;top:10px;display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#e7efff;color:#3154b5;font-size:12px;font-weight:800}
+      .solution-existing-content{padding:4px 2px;line-height:2;overflow-wrap:anywhere}
+      .solution-note{margin:10px 0 0;padding:9px 11px;border-radius:9px;background:var(--bg,#f7f9fc);color:var(--muted);font-size:11px;line-height:1.8}
+      body.dark-mode .solution{background:var(--card-bg);border-color:var(--line)}
+      body.dark-mode .solution-heading>span{background:#293d60;color:#c5d5ff}
+      body.dark-mode .key-idea{background:#3a321d;color:#f8e7b4;border-color:#b58a2b}
+      body.dark-mode .key-idea strong{color:#ffdf91}
+      body.dark-mode .solution-steps li,body.dark-mode .solution-note{background:#111d30;border-color:var(--line)}
+      body.dark-mode .solution-steps li::before{background:#293d60;color:#c5d5ff}
+      @media(max-width:640px){.solution{padding:12px}.solution-steps{gap:7px}.solution-steps li{padding:9px 44px 9px 9px}}
+      .offline-status{font-size:12px;margin-top:10px;color:var(--muted)}
       .footer-disclaimer{font-size:12px;color:var(--muted);max-width:800px;margin:8px auto}
       body.dark-mode{--ink:#e7edf8;--muted:#aab8cc;--line:#34445d;--bg:#101827;--card-bg:#182438;--cyan:#243657;background:var(--bg);color:var(--ink)}
       body.dark-mode .top,body.dark-mode .topic-card,body.dark-mode .question-card,body.dark-mode .result-card,body.dark-mode .student-tools,body.dark-mode .option,body.dark-mode .tools-actions button,body.dark-mode .bookmark-toggle{background:var(--card-bg);color:var(--ink);border-color:var(--line)}
@@ -794,16 +811,14 @@
       if (feedback && !feedback.classList.contains("hidden")) {
         const solution = feedback.querySelector(".solution");
         if (solution) {
-          if (Array.isArray(q.steps) && q.steps.length) {
-            const idea = q.keyIdea ? `<div class="key-idea"><strong>الفكرة الأساسية:</strong> ${escapeHtml(q.keyIdea)}</div>` : "";
-            solution.innerHTML = `<strong>خطوات الحل:</strong>${idea}<ol class="solution-steps">${q.steps.map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`;
+          const hasSteps = Array.isArray(q.steps) && q.steps.length > 0;
+          const idea = q.keyIdea || generalTopicHint(q);
+          const heading = `<div class="solution-heading"><span aria-hidden="true">✦</span><div><strong>شرح الحل</strong><small>${hasSteps ? "الفكرة الأساسية ثم خطوات الحل" : "الفكرة العامة والحل المتاح"}</small></div></div>`;
+          const ideaPanel = `<section class="key-idea" aria-label="الفكرة الأساسية"><strong>${q.keyIdea ? "الفكرة الأساسية" : "تذكير بالفكرة العامة"}</strong><p>${escapeHtml(idea)}</p></section>`;
+          if (hasSteps) {
+            solution.innerHTML = `${heading}${ideaPanel}<ol class="solution-steps" aria-label="خطوات الحل">${q.steps.map(step => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`;
           } else {
-            const idea = q.keyIdea || generalTopicHint(q);
-            solution.insertAdjacentHTML("afterbegin", `<div class="key-idea"><strong>${q.keyIdea ? "مفتاح الحل:" : "تذكير بالفكرة العامة:"}</strong> ${escapeHtml(idea)}</div>`);
-          }
-          if (!Array.isArray(q.steps) || !q.steps.length) {
-            const note = document.createElement("p"); note.className="muted"; note.textContent="الشرح التفصيلي لهذا السؤال يحتاج إلى مراجعة تعليمية إضافية؛ المعروض أدناه هو الحل المختصر المتاح حالياً.";
-            solution.appendChild(note);
+            solution.innerHTML = `${heading}${ideaPanel}<div class="solution-existing-content">${q.solution || ""}</div><p class="solution-note">الشرح التفصيلي لهذا السؤال يحتاج إلى مراجعة تعليمية إضافية؛ المعروض حالياً هو الحل المختصر المتاح.</p>`;
           }
           typesetMath(solution);
         }
