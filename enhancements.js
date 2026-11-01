@@ -1225,6 +1225,9 @@
           panel.setAttribute("tabindex", "-1");
           panel.focus({ preventScroll: true });
           panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          // Return focus to the shortcut when its panel is hidden.
+          link.focus({ preventScroll: true });
         }
       });
       link.dataset.panelToggleBound = "true";
