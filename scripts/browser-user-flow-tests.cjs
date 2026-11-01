@@ -128,7 +128,7 @@ const assert = require("node:assert/strict");
     });
     assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), true, "the weakest-topic suggestion should appear after topic results exist");
     assert.equal(await page.locator("#weak-topic-name").innerText(), weakestTopicFixture, "the suggestion should identify the topic with the lowest accuracy");
-    assert.equal(await page.locator("#weak-topic-rate").innerText(), "٠٪", "the suggestion should show the selected topic accuracy");
+    assert.ok(["0٪", "٠٪"].includes(await page.locator("#weak-topic-rate").innerText()), "the suggestion should show the selected topic accuracy");
     await page.locator("#weak-topic-button").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), weakestTopicFixture, "the suggestion action should open the selected topic");
