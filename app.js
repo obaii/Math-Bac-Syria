@@ -66,6 +66,69 @@ function questionKey(q){ return `${q.topic}::${q.q}`; }
 function countSeenQuestions(topic = "") {
   return questions.reduce((count, q) => count + ((!topic || q.topic === topic) && progressData.seenQuestions[questionKey(q)] ? 1 : 0), 0);
 }
+function renderPerformanceTrend(){
+  const section = $("performance-trend");
+  const chart = $("performance-trend-chart");
+  const summary = $("performance-trend-summary");
+  if (!section || !chart || !summary) return;
+  const validAttempts = (Array.isArray(progressData.attempts) ? progressData.attempts : [])
+    .filter(attempt => attempt && typeof attempt.topic === "string" &&
+      Array.isArray(topics) && topics.includes(attempt.topic) &&
+      typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
+  const now = new Date();
+  const days = [];
+  for (let offset = 6; offset >= 0; offset--) {
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset);
+    const key = [day.getFullYear(), String(day.getMonth() + 1).padStart(2, "0"), String(day.getDate()).padStart(2, "0")].join("-");
+    const attempts = validAttempts.filter(attempt => {
+      const date = new Date(attempt.date);
+      return date.getFullYear() === day.getFullYear() &&
+        date.getMonth() === day.getMonth() && date.getDate() === day.getDate();
+    });
+    const correct = attempts.filter(attempt => attempt.correct).length;
+    days.push({
+      key,
+      label: new Intl.DateTimeFormat("ar", { weekday: "short" }).format(day),
+      count: attempts.length,
+      rate: attempts.length ? Math.round(correct / attempts.length * 100) : 0
+    });
+  }
+  const total = days.reduce((sum, day) => sum + day.count, 0);
+  chart.replaceChildren();
+  section.hidden = total === 0;
+  if (!total) return;
+  for (const day of days) {
+    const item = document.createElement("li");
+    item.className = "performance-trend-day";
+    const rate = document.createElement("strong");
+    rate.className = "performance-trend-rate";
+    rate.textContent = day.count ? day.rate.toLocaleString("ar") + "٪" : "—";
+    const track = document.createElement("div");
+    track.className = "performance-trend-track";
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-label", day.label + ": نسبة الإجابات الصحيحة");
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    track.setAttribute("aria-valuenow", String(day.rate));
+    const fill = document.createElement("span");
+    fill.className = "performance-trend-fill";
+    fill.style.height = (day.count ? Math.max(day.rate, 4) : 0) + "%";
+    track.append(fill);
+    const label = document.createElement("span");
+    label.className = "performance-trend-label";
+    label.textContent = day.label;
+    const count = document.createElement("small");
+    count.className = "performance-trend-count";
+    count.textContent = day.count.toLocaleString("ar") + " إجابة";
+    item.append(rate, track, label, count);
+    chart.append(item);
+  }
+  const correctTotal = days.reduce((sum, day) => sum + Math.round(day.count * day.rate / 100), 0);
+  const weeklyRate = Math.round(correctTotal / total * 100);
+  summary.textContent = "خلال آخر ٧ أيام: " + total.toLocaleString("ar") +
+    " إجابة، ونسبة صحة " + weeklyRate.toLocaleString("ar") + "٪.";
+}
+
 function renderRecentActivity(){
   const section = $("recent-activity");
   const list = $("recent-activity-list");
@@ -179,6 +242,7 @@ function refreshDashboard(){
           : `جرّبت ${uniqueCount.toLocaleString("ar")} من ${bankCount.toLocaleString("ar")} سؤالاً مختلفاً (${questionPercent.toLocaleString("ar")}٪).`;
   }
   renderRecentActivity();
+  renderPerformanceTrend();
 }
 
 function topicIcon(topic){
