@@ -102,6 +102,22 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /إيقاف الوضع الليلي/ }).click();
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), false, "night mode should toggle off");
 
+    // Seed a deterministic three-day practice streak and verify the progress report derives it.
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [0, 1, 2].map((offset, index) => ({
+        topic: "اختبار الانتظام",
+        correct: index !== 1,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 0, 0, 0, 0).toISOString()
+      }));
+    });
+    await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
+    const rhythm = page.locator("#progress-report .study-rhythm");
+    await rhythm.waitFor({ state: "visible" });
+    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "3", "the report should count three active days in the last seven days");
+    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
+    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
+
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     assert.equal(await page.locator("#exam-tools").isVisible(), true, "exam setup should open from its shortcut");
     await page.getByRole("link", { name: /ابدأ التدريب/ }).click();
@@ -109,6 +125,7 @@ const assert = require("node:assert/strict");
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#options [data-option]").count(), 4, "each quiz question should show four options");
     assert.ok((await page.locator("#question-text").innerText()).trim().length > 0, "question text should be rendered");
+    await page.locator("#bookmark-current").scrollIntoViewIfNeeded();
     await page.locator("#bookmark-current").click();
     await page.getByRole("button", { name: /السؤال التالي|عرض النتيجة/ }).isEnabled();
     await page.locator("#options [data-option]").first().click();
@@ -125,23 +142,29 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /المسائل المحفوظة/ }).click();
     await page.waitForFunction(() => !document.querySelector("#bookmark-list").hidden);
     assert.ok(await page.locator("#bookmark-list li").count() > 0, "saved-question list should render a bookmarked question");
+    // Selecting a saved item opens its focused quiz; only then is the current-question
+    // bookmark control visible and available for removing the saved state.
+    await page.locator("#bookmark-list [data-bookmark-key]").first().click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    const currentBookmark = page.locator("#bookmark-current");
+    await currentBookmark.scrollIntoViewIfNeeded();
+    assert.equal(await currentBookmark.getAttribute("aria-pressed"), "true", "the opened saved question should show its saved state");
+    await currentBookmark.click();
+    const removedBookmarkState = await page.evaluate(() => ({
+      bookmarks: JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").bookmarks || [],
+      count: document.querySelector("#bookmark-count")?.textContent,
+      listHidden: document.querySelector("#bookmark-list")?.hidden,
+      pressed: document.querySelector("#bookmark-current")?.getAttribute("aria-pressed")
+    }));
+    assert.equal(removedBookmarkState.bookmarks.length, 0, "removing a bookmark should persist an empty saved-question list");
+    assert.ok(["0", "٠"].includes(removedBookmarkState.count), "the saved-question counter should update after removal");
+    assert.equal(removedBookmarkState.listHidden, true, "the saved-question list should hide when its last item is removed");
+    assert.equal(removedBookmarkState.pressed, "false", "the current-question bookmark control should return to its unsaved state");
 
-    // Seed a deterministic three-day practice streak and verify the progress report derives it.
-    await page.evaluate(() => {
-      const now = new Date();
-      progressData.attempts = [0, 1, 2].map((offset, index) => ({
-        topic: "اختبار الانتظام",
-        correct: index !== 1,
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 12).toISOString()
-      }));
-    });
-    await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
-    const rhythm = page.locator("#progress-report .study-rhythm");
-    await rhythm.waitFor({ state: "visible" });
-    assert.equal(await rhythm.locator("strong").nth(0).innerText(), "3", "the report should count three active days in the last seven days");
-    assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
-    assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
-
+    // Removing the last bookmark happens inside the focused quiz; return to the home
+    // screen before interacting with the home-page exam shortcut.
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
     await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
     await page.locator("#quiz").waitFor({ state: "visible" });
