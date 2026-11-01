@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, "..");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const browser = fs.readFileSync(path.join(root, "browser-user-flow-tests.cjs"), "utf8");
 const checks = [
   ["student tools reject arrays and malformed values in saved maps", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: normalizeSchedule\(x\.schedule\)/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
   ["saved exam history uses strict score and date validation", /examHistory: normalizeExamHistory\(x\.examHistory\)/.test(enhancements) && /item\.correct <= item\.total/.test(enhancements)],
