@@ -596,7 +596,7 @@ function showResults(){
       const topic = document.createElement("strong");
       topic.textContent = question.topic || currentTopic;
       const snippet = document.createElement("p");
-      snippet.textContent = String(question.q || "").replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim();
+      snippet.textContent = String(question.q || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
       item.append(topic, snippet);
       list.append(item);
     }
