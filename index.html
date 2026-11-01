@@ -40,7 +40,7 @@
     body.dark-mode #exam-tools select{background:#182438;color:#e7edf8;border-color:#34445d}
     body.dark-mode #student-tools{background:#182438;color:#e7edf8;border-color:#34445d}
     body.dark-mode #student-tools .tools-actions button{background:#182438;color:#e7edf8;border-color:#34445d}
-    @media(max-width:640px){#student-tools{padding:14px}#student-tools .tools-actions button{flex:1 1 145px}}
+    @media(max-width:640px){#student-tools{padding:14px}#student-tools .tools-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}#student-tools .tools-actions button{flex:none;width:100%;min-width:0;min-height:48px;padding:8px 9px;line-height:1.5;white-space:normal;overflow-wrap:anywhere}}
   </style>
   <script>
     window.MathJax = {
