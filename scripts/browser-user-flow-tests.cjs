@@ -98,6 +98,17 @@ const assert = require("node:assert/strict");
 
     const topicButtons = page.locator("#topic-grid [data-topic]");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
+    const topicSearch = page.locator("#topic-search");
+    const clearSearch = page.locator("#clear-topic-search");
+    assert.equal(await clearSearch.isVisible(), false, "the clear-search control should stay hidden when the search is empty");
+    await topicSearch.fill("اشتقاق");
+    assert.equal(await topicButtons.count(), 1, "topic search should filter the research cards");
+    assert.equal(await clearSearch.isVisible(), true, "the clear-search control should appear after entering a search term");
+    await clearSearch.click();
+    assert.equal(await topicSearch.inputValue(), "", "clearing the topic search should empty the search field");
+    assert.equal(await topicButtons.count(), 14, "clearing the topic search should restore all 14 research cards");
+    assert.equal(await clearSearch.isVisible(), false, "the clear-search control should hide again after clearing");
+    assert.equal(await topicSearch.evaluate(el => document.activeElement === el), true, "clearing the search should return keyboard focus to the search field");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
     assert.equal(await page.locator("#exam-tools").isVisible(), false, "exam setup should start hidden");
     for (const id of ["stat-answered", "stat-correct", "stat-mistakes", "stat-percent"]) {
