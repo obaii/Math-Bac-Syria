@@ -472,15 +472,24 @@ function startQuiz(topic){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function updateQuizProgress(completed){
-  const total = quizQuestions.length;
+  const total = Math.max(0, quizQuestions.length);
   const answeredCount = Math.min(Math.max(Number(completed) || 0, 0), total);
+  const correct = Math.min(Math.max(Number(correctCount) || 0, 0), answeredCount);
+  const remainingCount = Math.max(0, total - answeredCount);
   const percent = total ? Math.round(answeredCount / total * 100) : 0;
+  const accuracy = answeredCount ? Math.round(correct / answeredCount * 100) : 0;
   const bar = $("progress-bar");
   const track = $("quiz-progress-track");
   const label = $("progress-percent");
   if (bar) bar.style.width = `${percent}%`;
   if (track) track.setAttribute("aria-valuenow", String(percent));
   if (label) label.textContent = `${percent.toLocaleString("ar")}٪ مكتمل`;
+  const answeredNode = $("session-answered");
+  const remainingNode = $("session-remaining");
+  const accuracyNode = $("session-accuracy");
+  if (answeredNode) answeredNode.textContent = `${answeredCount.toLocaleString("ar")} / ${total.toLocaleString("ar")}`;
+  if (remainingNode) remainingNode.textContent = remainingCount.toLocaleString("ar");
+  if (accuracyNode) accuracyNode.textContent = answeredCount ? `${accuracy.toLocaleString("ar")}٪` : "—";
 }
 function showQuestion(){
   answered=false;
