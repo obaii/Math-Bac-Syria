@@ -1096,7 +1096,14 @@
 
   // محاكاة امتحان شاملة: اختيار متوازن من الأبحاث مع مؤقت ومراجعة بعد التسليم.
   const examState = { active:false, remaining:0, timer:null, answers:[], marked:[], resultVisible:false };
-  const shuffle = list => [...list].sort(() => Math.random() - 0.5);
+  const shuffle = list => {
+    const shuffled = [...list];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
   const buildBalancedExam = (count, difficulty = "الكل") => {
     const allQuestions = typeof questions !== "undefined" && Array.isArray(questions) ? questions.filter(q => typeof getQuestionType !== "function" || getQuestionType(q) === "mcq") : [];
     const bank = difficulty === "الكل" ? allQuestions : allQuestions.filter(q => q.level === difficulty);
