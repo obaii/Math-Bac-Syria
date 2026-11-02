@@ -171,7 +171,11 @@
       const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+' · '+escapeHtml(day.date)+'</h4><ul>'+day.tasks.map(task =>
         '<li><label><input type="checkbox" data-study-task="'+escapeHtml(task.id)+'" '+(task.done?'checked':'')+'><span><strong>'+escapeHtml(task.title)+'</strong><small>'+(task.kind==="practice" ? task.target+" سؤالاً" : "حتى "+task.target+" أسئلة")+'</small></span></label><button type="button" data-study-open="'+task.kind+'" data-study-topic="'+escapeHtml(task.topic || "")+'" data-study-target="'+task.target+'">'+(task.kind==="practice" ? "ابدأ التدريب" : "افتح المراجعة")+'</button></li>'
       ).join("")+'</ul></section>';
-      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit">إعادة تنظيم الخطة</button></div><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
+      const dueReviewCount = getScheduledReviews().filter(item => item.due <= Date.now()).length;
+      const dueReviewTask = dueReviewCount ? '<section class="study-plan-day study-plan-due-review"><h4>مراجعة ذكية مستحقة اليوم</h4><p>لديك '+dueReviewCount.toLocaleString("ar")+' سؤالاً حان موعد مراجعته. أُضيفت هذه المهمة تلقائياً من جدول المراجعة دون إنشاء مهام مكررة أو تغيير إنجازاتك السابقة.</p><button type="button" id="study-plan-due-review">ابدأ مراجعة الأسئلة المستحقة</button></section>' : '<p class="study-plan-note">لا توجد مراجعات متباعدة مستحقة اليوم.</p>';
+      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit">إعادة تنظيم الخطة</button></div><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+dueReviewTask+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
+      const dueReviewButton = document.getElementById("study-plan-due-review");
+      if (dueReviewButton) dueReviewButton.addEventListener("click", startSmartReview);
       const edit = document.getElementById("study-plan-edit");
       if (edit) edit.addEventListener("click", () => {
         const nextDate = prompt("أدخل موعد الامتحان الجديد بصيغة YYYY-MM-DD", plan.examDate);
@@ -253,7 +257,10 @@
       .review-plan-item{padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg,#f7f9fc)}
       .review-plan-item p{margin:5px 0;line-height:1.8;overflow-wrap:anywhere}
       .review-plan-item small,.review-plan-empty{color:var(--muted);font-size:12px}
+      .review-plan-summary{grid-template-columns:repeat(4,minmax(0,1fr));margin:12px 0}
+      .study-plan-due-review p{font-size:13px;line-height:1.8}
       body.dark-mode .review-plan-item{background:var(--card-bg);border-color:var(--line)}
+      @media(max-width:640px){.review-plan-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
       .progress-report h4{margin:0 0 10px;font-size:15px}.progress-report-list{display:grid;gap:8px;list-style:none;margin:0;padding:0}
       .progress-report-item{padding:10px;border-radius:9px;background:var(--bg,#f7f9fc)}.progress-report-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
       .topic-mastery-status{display:inline-flex;align-items:center;width:fit-content;margin-top:8px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line)}
@@ -830,6 +837,8 @@
     const due = items.filter(item => item.due <= now);
     const upcoming = items.filter(item => item.due > now && item.due <= week);
     const later = items.filter(item => item.due > week);
+    const mastered = items.filter(item => item.stage >= 3 && item.lastResult === "correct");
+    const struggling = items.filter(item => item.lastResult === "wrong");
     const fmt = value => new Date(value).toLocaleString("ar-SY", { dateStyle:"medium", timeStyle:"short" });
     const renderGroup = (title, list, emptyText) => `
       <div class="review-plan-group">
@@ -838,12 +847,18 @@
           <li class="review-plan-item">
             <strong>${escapeHtml(item.q.topic || "بحث غير محدد")}</strong>
             <p>${escapeHtml(String(item.q.q || "").slice(0, 180))}</p>
-            <small>${item.due <= now ? "مستحق الآن" : "موعد المراجعة: " + escapeHtml(fmt(item.due))}</small>
+            <small>${item.due <= now ? "مستحق الآن" : "موعد المراجعة: " + escapeHtml(fmt(item.due))} · ${item.lastResult === "wrong" ? "يحتاج إلى تثبيت" : item.stage >= 3 && item.lastResult === "correct" ? "متقن مبدئياً" : item.stage > 0 ? "قيد الإتقان" : "مراجعة أولى"}</small>
           </li>`).join("")}</ul>${list.length > 8 ? `<p class="muted">وتوجد ${(list.length - 8).toLocaleString("ar")} أسئلة أخرى في هذه الفئة.</p>` : ""}` : `<p class="review-plan-empty">${emptyText}</p>`}
       </div>`;
     panel.innerHTML = `
       <h4>خطة المراجعة المتباعدة</h4>
-      <p>تعتمد المواعيد على إجاباتك في المراجعة الذكية، وتُحفظ على هذا الجهاز. الأسئلة التي أخطأت بها ولم تُجدول بعد تظهر ضمن المستحق الآن.</p>
+      <p>تتدرج المواعيد من يوم إلى ٣٠ يوماً حسب إجاباتك. الخطأ يعيد السؤال إلى مراجعة أقرب، والإجابة الصحيحة في جلسة المراجعة توسّع الفاصل تدريجياً.</p>
+      <div class="study-rhythm review-plan-summary">
+        <div><strong>${due.length.toLocaleString("ar")}</strong><span>مستحق اليوم</span></div>
+        <div><strong>${upcoming.length.toLocaleString("ar")}</strong><span>خلال ٧ أيام</span></div>
+        <div><strong>${mastered.length.toLocaleString("ar")}</strong><span>متقن مبدئياً</span></div>
+        <div><strong>${struggling.length.toLocaleString("ar")}</strong><span>يحتاج تثبيتاً</span></div>
+      </div>
       ${renderGroup("مستحق اليوم", due, "لا توجد مراجعات مستحقة الآن. أحسنت!") }
       ${renderGroup("خلال الأيام السبعة القادمة", upcoming, "لا توجد مراجعات مجدولة خلال الأسبوع القادم.") }
       ${renderGroup("بعد أسبوع", later, "لا توجد مواعيد أبعد من أسبوع.") }`;
