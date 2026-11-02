@@ -2,7 +2,7 @@ name: Browser user-flow smoke tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feature/**"]
   pull_request:
   workflow_dispatch:
 

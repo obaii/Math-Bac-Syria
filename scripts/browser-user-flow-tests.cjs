@@ -88,11 +88,11 @@ const assert = require("node:assert/strict");
     await page.locator('[data-panel-toggle="formula-library"]').click();
     await page.locator("#formula-library").waitFor({ state: "visible" });
     assert.ok(await page.locator("#formula-list .formula-card").count() >= 30, "the formula library should show its curriculum references");
-    await page.locator("#formula-search").fill("فيثاغورس");
-    assert.equal(await page.locator("#formula-list .formula-card").count(), 1, "search should filter formulas by Arabic title");
+    await page.locator("#formula-search").fill("دي موافر");
+    assert.equal(await page.locator("#formula-list .formula-card").count(), 1, "search should filter formulas by a unique curriculum theorem title");
     await page.locator("#formula-search").fill("");
-    await page.locator("#formula-category").selectOption({ label: "المثلثات" });
-    assert.ok(await page.locator("#formula-list .formula-card").count() >= 3, "category selection should filter trigonometry formulas");
+    await page.locator("#formula-category").selectOption({ label: "أساسيات سابقة" });
+    assert.ok(await page.locator("#formula-list .formula-card").count() >= 3, "category selection should filter prerequisite review formulas");
     await page.locator("#formula-category").selectOption("all");
     await page.locator("#formula-list .formula-copy").first().click();
     assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
@@ -102,7 +102,9 @@ const assert = require("node:assert/strict");
     // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
     await page.locator('[data-panel-toggle="flashcards"]').click();
     await page.locator("#flashcards").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 33", "flashcards should start at the first formula card");
+    const flashcardTotal = await page.evaluate(() => window.MathFormulaLibraryData.length);
+    const analysisDeckTotal = await page.evaluate(() => window.MathFormulaLibraryData.filter(item => item.category === "التحليل").length);
+    assert.equal(await page.locator("#flashcard-counter").innerText(), `البطاقة 1 من ${flashcardTotal}`, "flashcards should start at the first formula card");
     await page.locator("#flashcard-flip").click();
     assert.equal(await page.locator("#flashcard-back").isVisible(), true, "flip control should reveal the answer");
     assert.ok((await page.locator("#flashcard-formula").innerText()).length > 0, "revealed flashcard should show its formula");
@@ -110,13 +112,13 @@ const assert = require("node:assert/strict");
     assert.ok((await page.locator("#flashcard-status").innerText()).includes("أعرفها"), "known rating should be announced");
     assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 1"), "known rating should update progress");
     await page.locator("#flashcard-next").click();
-    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 2 من 33", "next should advance the card counter");
+    assert.equal(await page.locator("#flashcard-counter").innerText(), `البطاقة 2 من ${flashcardTotal}`, "next should advance the card counter");
     await page.locator("#flashcard-review").click();
     assert.ok((await page.locator("#flashcard-progress").innerText()).includes("تحتاج مراجعة 1"), "review rating should update progress");
     await page.locator("#flashcard-deck").selectOption("التحليل");
-    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 8", "deck selection should filter to the selected category");
+    assert.equal(await page.locator("#flashcard-counter").innerText(), `البطاقة 1 من ${analysisDeckTotal}`, "deck selection should filter to the selected category");
     await page.locator("#flashcard-shuffle").click();
-    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 8", "shuffle should restart at the first position");
+    assert.equal(await page.locator("#flashcard-counter").innerText(), `البطاقة 1 من ${analysisDeckTotal}`, "shuffle should restart at the first position");
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.locator('[data-panel-toggle="flashcards"]').click();
     await page.locator("#flashcards").waitFor({ state: "visible" });
@@ -124,6 +126,30 @@ const assert = require("node:assert/strict");
     await page.locator("#flashcard-reset").click();
     assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 0"), "reset should clear stored ratings");
     await page.locator('[data-panel-toggle="flashcards"]').click();
+
+    // Exercise the expanded formula library and its curriculum-level/unit filters.
+    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await page.locator("#formula-library").waitFor({ state: "visible" });
+    const formulaTotals = await page.evaluate(() => ({
+      total: window.MathFormulaLibraryData.length,
+      bac: window.MathFormulaLibraryData.filter(item => item.level === "bac").length,
+      prior: window.MathFormulaLibraryData.filter(item => item.level === "prior").length,
+      supplement: window.MathFormulaLibraryData.filter(item => item.level === "supplement").length,
+      complex: window.MathFormulaLibraryData.filter(item => item.level === "bac" && item.unit === "الأعداد العقدية").length
+    }));
+    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");
+    await page.locator("#formula-stage").selectOption("bac");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
+    await page.locator("#formula-unit").selectOption("الأعداد العقدية");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.complex), "unit filter should show complex-number formulas only");
+    await page.locator("#formula-search").fill("دي موافر");
+    assert.ok((await page.locator("#formula-count").innerText()).startsWith("عدد المداخل: 1"), "search should find the De Moivre formula");
+    await page.locator("#formula-search").fill("");
+    await page.locator("#formula-stage").selectOption("prior");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.prior), "prerequisite filter should show earlier-grade review content");
+    await page.locator("#formula-stage").selectOption("supplement");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.supplement), "teacher-guide logic supplement should be separately classified");
+    await page.locator('[data-panel-toggle="formula-library"]').click();
 
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
