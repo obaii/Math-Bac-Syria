@@ -32,11 +32,11 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 50, "the library should render all 50 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 75, "the library should render all 75 solved examples");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 4, "topic filtering should show the four probability examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 7, "topic filtering should show the seven probability examples");
     await page.locator("#solved-example-topic").selectOption("");
-    await page.locator("#solved-example-search").fill("الأمل الرياضي");
+    await page.locator("#solved-example-search").fill("حادثتان متنافيتان");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 1, "text search should find the expected worked example");
     await page.locator("#solved-example-search").fill("");
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
