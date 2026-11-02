@@ -4,7 +4,7 @@
 #solved-examples-library .section-heading h3{margin:0 0 8px;font-size:20px}
 #solved-examples-library .section-heading p{margin:0;color:var(--muted,#64748b);font-size:13px;line-height:1.8}
 #solved-examples-count{white-space:nowrap;font-size:13px;color:var(--muted,#64748b)}
-.solved-examples-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin:16px 0}
+.solved-examples-controls{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:10px;margin:16px 0}
 .solved-examples-controls label{display:grid;gap:6px;font-size:13px;font-weight:700}
 .solved-examples-controls input,.solved-examples-controls select{width:100%;min-width:0;min-height:42px;padding:9px 11px;border:1px solid var(--line,#d9e1ed);border-radius:9px;background:var(--surface,#fff);color:inherit;font:inherit}
 .solved-examples-list{display:grid;gap:12px}
@@ -23,3 +23,5 @@ body.dark-mode #solved-examples-library{background:#182438;color:#e7edf8;border-
 body.dark-mode .solved-example-card{background:#101827;border-color:#34445d}
 body.dark-mode .solved-example-idea,body.dark-mode .solved-examples-controls input,body.dark-mode .solved-examples-controls select{background:#182438;color:#e7edf8;border-color:#34445d}
 @media(max-width:700px){#solved-examples-library{padding:13px}.solved-examples-controls{grid-template-columns:1fr}.solved-example-meta{display:grid;gap:3px}.solved-example-card{padding:12px}}
+
+.solved-example-source{margin:4px 0 10px;padding:7px 10px;border-right:3px solid var(--accent,#4b70c9);border-radius:7px;background:var(--surface,#fff);font-size:13px;font-weight:700;color:var(--muted,#64748b)}
