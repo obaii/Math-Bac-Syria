@@ -69,6 +69,7 @@
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261102-1"></script>
+  <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
 <body>
@@ -176,6 +177,7 @@
       <a class="quick-start-card" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#flashcards" data-panel-toggle="flashcards" aria-controls="flashcards" aria-expanded="false"><span class="quick-start-icon review-icon">▤</span><span class="quick-start-copy"><strong>البطاقات التعليمية</strong><small>اختبر حفظ القوانين والصيغ</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#formula-library" data-panel-toggle="formula-library" aria-controls="formula-library" aria-expanded="false"><span class="quick-start-icon review-icon">∑</span><span class="quick-start-copy"><strong>مكتبة القوانين</strong><small>ابحث عن الصيغ الرياضية</small></span><span class="quick-start-arrow">←</span></a>
     </nav>
     <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden>
@@ -268,6 +270,18 @@
       <div class="formula-filters"><label for="formula-search">ابحث عن قانون أو مفهوم</label><input id="formula-search" type="search" placeholder="مثال: المشتقة، فيثاغورس، الاحتمال..." autocomplete="off"><label for="formula-category">التصنيف</label><select id="formula-category"><option value="all">جميع التصنيفات</option></select></div>
       <p id="formula-status" class="formula-status" role="status" aria-live="polite"></p>
       <div id="formula-list" class="formula-list" aria-live="polite"></div>
+    </section>
+    <section id="flashcards" class="flashcards" aria-labelledby="flashcards-title" hidden>
+      <div class="flashcards-heading"><div><p class="eyebrow">تعلّم بالتذكّر النشط</p><h3 id="flashcards-title">البطاقات التعليمية التفاعلية</h3><p>اختر موضوعاً، حاول تذكّر القانون، ثم اكشف الإجابة وسجّل مدى إتقانك. يُحفظ تقدمك على هذا الجهاز.</p></div></div>
+      <div class="flashcards-controls"><label for="flashcard-deck">موضوع البطاقات</label><select id="flashcard-deck"><option value="all">جميع الموضوعات</option></select><span id="flashcard-counter" aria-live="polite"></span></div>
+      <article id="flashcard" class="flashcard" tabindex="0" role="button" aria-label="بطاقة تعليمية؛ اضغط لإظهار الإجابة" aria-expanded="false">
+        <div id="flashcard-front" class="flashcard-face"><span class="flashcard-kicker">السؤال / تذكّر القانون</span><h4 id="flashcard-title"></h4><span class="flashcard-hint">حاول استحضار الصيغة قبل كشف الإجابة</span></div>
+        <div id="flashcard-back" class="flashcard-face" hidden><span class="flashcard-kicker">الإجابة / القانون</span><span id="flashcard-category" class="flashcard-category"></span><div id="flashcard-formula" class="flashcard-formula" dir="ltr"></div><p id="flashcard-note"></p></div>
+      </article>
+      <div class="flashcard-actions"><button type="button" id="flashcard-flip" aria-expanded="false">اكشف الإجابة</button><button type="button" id="flashcard-known" aria-pressed="false">أعرفها ✓</button><button type="button" id="flashcard-review" aria-pressed="false">أحتاج مراجعة ↻</button></div>
+      <div class="flashcard-navigation"><button type="button" id="flashcard-previous" disabled>→ السابقة</button><button type="button" id="flashcard-shuffle">ترتيب عشوائي</button><button type="button" id="flashcard-next">التالية ←</button></div>
+      <p id="flashcard-progress" class="flashcard-progress" aria-live="polite"></p><p id="flashcard-status" class="flashcard-status" role="status" aria-live="polite"></p>
+      <button type="button" id="flashcard-reset" class="flashcard-reset">إعادة ضبط تقدم البطاقات</button>
     </section>
     <section id="exam-tools" class="exam-tools" hidden>
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
