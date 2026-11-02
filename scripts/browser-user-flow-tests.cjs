@@ -26,7 +26,7 @@ const assert = require("node:assert/strict");
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
     assert.equal(await quickStart.locator("a").count(), 8, "the home dashboard should expose eight primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#formula-library", "#flashcards"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise scientific calculator functions through the visible interface.
