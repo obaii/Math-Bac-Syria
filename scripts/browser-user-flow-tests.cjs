@@ -34,7 +34,7 @@ const assert = require("node:assert/strict");
     await page.locator("#scientific-calculator").waitFor({ state: "visible" });
     await page.locator("#calculator-expression").fill("sin(30)+sqrt(16)");
     await page.locator('[data-calc="equals"]').click();
-    assert.equal(await page.locator("#calculator-result").innerText(), "2.5", "the calculator should evaluate trigonometry and square roots in degree mode");
+    assert.equal(await page.locator("#calculator-result").innerText(), "4.5", "the calculator should evaluate trigonometry and square roots in degree mode");
     await page.locator("#calculator-angle").click();
     await page.locator("#calculator-expression").fill("sin(pi/2)");
     await page.locator("#calculator-expression").press("Enter");
