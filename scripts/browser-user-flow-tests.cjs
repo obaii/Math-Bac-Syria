@@ -627,6 +627,9 @@ const assert = require("node:assert/strict");
     assert.ok(reviewBuckets[0].heading.includes("مستحق اليوم") && ["1", "١"].includes(reviewBuckets[0].count), "an unscheduled mistake should be listed as due today");
     assert.ok(reviewBuckets[1].heading.includes("خلال الأيام السبعة القادمة") && ["1", "١"].includes(reviewBuckets[1].count), "a review scheduled within seven days should be listed as upcoming");
     assert.ok(reviewBuckets[2].heading.includes("بعد أسبوع") && ["1", "١"].includes(reviewBuckets[2].count), "a review scheduled beyond seven days should be listed later");
+    const reviewSummary = await page.locator("#review-plan .review-plan-summary").innerText();
+    assert.ok(reviewSummary.includes("مستحق اليوم") && reviewSummary.includes("خلال ٧ أيام") && reviewSummary.includes("متقن مبدئياً") && reviewSummary.includes("يحتاج تثبيتاً"), "the spaced-review summary should expose due, upcoming, mastered, and struggling counts");
+    assert.ok((await page.locator("#review-plan").innerText()).includes("مراجعة أولى"), "newly due questions should have an understandable first-review status");
 
     // The mistake log should list valid missed questions and launch focused practice.
     const mistakeLogButton = page.locator("#mistake-log-toggle");
