@@ -19,7 +19,7 @@
   <meta name="twitter:description" content="تدرّب على رياضيات البكالوريا العلمي السوريّة مع التصحيح الفوري والحلول المفصلة.">
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="style-overrides.css?v=20261102-1">
+   <link rel="stylesheet" href="style-overrides.css?v=20261102-2">
   <style>
     .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
     body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
@@ -64,7 +64,8 @@
   <script defer src="solution-guides.js?v=20261102-1"></script>
   <script defer src="question-diagrams.js?v=20261029-1"></script>
   <script defer src="app.js?v=20261102-2"></script>
-  <script defer src="enhancements.js?v=20261102-5"></script>
+  <script defer src="enhancements.js?v=20261102-6"></script>
+  <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
 <body>
@@ -169,6 +170,7 @@
       <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
     </nav>
     <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden>
       <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
@@ -187,6 +189,29 @@
       <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
       <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
       <ul class="bookmark-list" id="bookmark-list" hidden></ul>
+    </section>
+    <section id="scientific-calculator" class="scientific-calculator" aria-labelledby="scientific-calculator-title" hidden>
+      <div class="calculator-heading">
+        <div><p class="eyebrow">أداة رياضية</p><h3 id="scientific-calculator-title">الآلة الحاسبة العلمية</h3>
+        <p>عمليات حسابية ودوال مثلثية ولوغاريتمية مع اختيار وحدة الزوايا.</p></div>
+        <button type="button" id="calculator-angle" data-calc="angle" aria-label="تبديل وحدة قياس الزوايا">الزوايا: درجات</button>
+      </div>
+      <label class="calculator-display-label" for="calculator-expression">التعبير الرياضي</label>
+      <input id="calculator-expression" class="calculator-display" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calculator-help calculator-message" placeholder="مثال: sin(30) + sqrt(16)">
+      <p id="calculator-help" class="calculator-help">استخدم الأسماء الإنجليزية للدوال: sin وcos وtan وsqrt وln وlog وabs وexp، والثابتين pi وe.</p>
+      <div class="calculator-output" aria-live="polite"><span>الناتج</span><strong id="calculator-result">—</strong></div>
+      <p id="calculator-message" class="calculator-message" role="status" aria-live="polite"></p>
+      <div class="calculator-keys" aria-label="أزرار الآلة الحاسبة">
+        <button type="button" data-calc="clear" class="calculator-clear">مسح الكل</button><button type="button" data-calc="delete">حذف</button><button type="button" data-calc="value" data-value="(">(</button><button type="button" data-calc="value" data-value=")">)</button>
+        <button type="button" data-calc="value" data-value="sin(">sin</button><button type="button" data-calc="value" data-value="cos(">cos</button><button type="button" data-calc="value" data-value="tan(">tan</button><button type="button" data-calc="value" data-value="sqrt(">√</button>
+        <button type="button" data-calc="value" data-value="ln(">ln</button><button type="button" data-calc="value" data-value="log(">log</button><button type="button" data-calc="value" data-value="pi">π</button><button type="button" data-calc="value" data-value="e">e</button>
+        <button type="button" data-calc="value" data-value="7">7</button><button type="button" data-calc="value" data-value="8">8</button><button type="button" data-calc="value" data-value="9">9</button><button type="button" data-calc="value" data-value="/">÷</button>
+        <button type="button" data-calc="value" data-value="4">4</button><button type="button" data-calc="value" data-value="5">5</button><button type="button" data-calc="value" data-value="6">6</button><button type="button" data-calc="value" data-value="*">×</button>
+        <button type="button" data-calc="value" data-value="1">1</button><button type="button" data-calc="value" data-value="2">2</button><button type="button" data-calc="value" data-value="3">3</button><button type="button" data-calc="value" data-value="-">−</button>
+        <button type="button" data-calc="value" data-value="0">0</button><button type="button" data-calc="value" data-value=".">.</button><button type="button" data-calc="value" data-value="^">xʸ</button><button type="button" data-calc="value" data-value="+">+</button>
+        <button type="button" data-calc="equals" class="calculator-equals">احسب =</button>
+      </div>
+      <div class="calculator-history-wrap"><h4>آخر العمليات</h4><ol id="calculator-history" class="calculator-history"></ol></div>
     </section>
       <section id="exam-tools" class="exam-tools" hidden>
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
