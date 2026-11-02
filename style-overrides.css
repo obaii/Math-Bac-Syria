@@ -1025,3 +1025,41 @@ body.dark-mode .exam-answer-skipped { color:#ffd58a; }
   .exam-nav-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
   .exam-nav-number { min-height:42px; }
 }
+
+
+/* حقول الإجابة للأسئلة الرقمية والنصية */
+.typed-answer-form {
+  display: grid;
+  gap: 10px;
+  max-width: 520px;
+  margin: 12px auto;
+  text-align: right;
+}
+.typed-answer-form label {
+  font-weight: 700;
+  color: inherit;
+}
+.typed-answer-form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #17243b;
+  font: inherit;
+  font-size: 16px;
+}
+.typed-answer-form input:disabled {
+  opacity: .75;
+  cursor: not-allowed;
+}
+.typed-answer-submit {
+  justify-self: start;
+  min-height: 44px;
+}
+body.dark-mode .typed-answer-form input {
+  border-color: #40516b;
+  background: #182438;
+  color: #e7edf8;
+}

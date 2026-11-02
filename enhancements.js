@@ -208,7 +208,7 @@
         return;
       }
       const mistakeMap = typeof progressData !== "undefined" && isRecord(progressData.mistakes) ? progressData.mistakes : {};
-      const missed = Object.keys(mistakeMap).map(byKey).filter(q => q && Array.isArray(q.options) && q.options.length === 4).slice(0, Math.max(1, Number(button.dataset.studyTarget) || 5));
+      const missed = Object.keys(mistakeMap).map(byKey).filter(q => typeof isSupportedQuestion === "function" ? isSupportedQuestion(q) : q && Array.isArray(q.options) && q.options.length === 4).slice(0, Math.max(1, Number(button.dataset.studyTarget) || 5));
       if (missed.length && typeof startTargetedQuiz === "function") startTargetedQuiz(missed, "مراجعة أخطاء الخطة");
       else alert("لا توجد أخطاء محفوظة للمراجعة حالياً. واصل التدريب لتحديث هذه المهمة.");
     }));
@@ -595,7 +595,7 @@
     report.querySelectorAll("[data-review-topic], [data-recommend-review]").forEach(button => {
       button.addEventListener("click", () => {
         const topic = button.dataset.reviewTopic || button.dataset.recommendReview;
-        const qs = mistakeValues.filter(q => q && q.topic === topic && q.q && Array.isArray(q.options));
+        const qs = mistakeValues.filter(q => q && q.topic === topic && q.q && (typeof isSupportedQuestion === "function" ? isSupportedQuestion(q) : Array.isArray(q.options)));
         if (qs.length) startTargetedQuiz(qs, "مراجعة أخطاء — " + topic);
       });
     });
@@ -646,7 +646,7 @@
     const mistakes = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
     const rows = Object.keys(mistakes).map(key => {
       const q = byKey(key);
-      if (!q || typeof q.q !== "string" || !Array.isArray(q.options) || q.options.length !== 4) return null;
+      if (!q || typeof q.q !== "string" || !(typeof isSupportedQuestion === "function" ? isSupportedQuestion(q) : Array.isArray(q.options) && q.options.length === 4)) return null;
       return { key, q };
     }).filter(Boolean).sort((a,b) => String(a.q.topic || "").localeCompare(String(b.q.topic || ""), "ar"));
     if (button) {
@@ -1098,7 +1098,7 @@
   const examState = { active:false, remaining:0, timer:null, answers:[], marked:[], resultVisible:false };
   const shuffle = list => [...list].sort(() => Math.random() - 0.5);
   const buildBalancedExam = (count, difficulty = "الكل") => {
-    const allQuestions = typeof questions !== "undefined" && Array.isArray(questions) ? questions : [];
+    const allQuestions = typeof questions !== "undefined" && Array.isArray(questions) ? questions.filter(q => typeof getQuestionType !== "function" || getQuestionType(q) === "mcq") : [];
     const bank = difficulty === "الكل" ? allQuestions : allQuestions.filter(q => q.level === difficulty);
     const names = typeof topics !== "undefined" && Array.isArray(topics) ? topics : [...new Set(bank.map(q => q.topic))];
     const pools = names.map(topic => shuffle(bank.filter(q => q.topic === topic)));

@@ -28,6 +28,47 @@ const assert = require("node:assert/strict");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
       ["#topic-section", "#exam-tools", "#student-tools"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
+    
+    // Exercise additional answer formats with isolated in-memory fixtures.
+    await page.evaluate(() => {
+      window.__typedQuestionTestState = {
+        quizQuestions, index, correctCount, answered, reviewMode, sessionMistakes,
+        homeHidden: document.querySelector("#home").classList.contains("hidden"),
+        quizHidden: document.querySelector("#quiz").classList.contains("hidden")
+      };
+      quizQuestions = [
+        { topic: "اختبار الأنماط", type: "true-false", q: "العدد ٢ عدد زوجي؟", answer: true, solution: "كل عدد يقبل القسمة على ٢ دون باقٍ هو عدد زوجي." },
+        { topic: "اختبار الأنماط", type: "numeric", q: "احسب حاصل ضرب ٣ في ٤.", answer: 12, solution: "٣ × ٤ = ١٢." },
+        { topic: "اختبار الأنماط", type: "short-text", q: "ما اسم نتيجة عملية الجمع؟", answer: "المجموع", acceptedAnswers: ["الناتج"], solution: "تسمى نتيجة الجمع المجموع." }
+      ];
+      index = 0; correctCount = 0; answered = false; reviewMode = true; sessionMistakes = [];
+      document.querySelector("#home").classList.add("hidden");
+      document.querySelector("#results").classList.add("hidden");
+      document.querySelector("#quiz").classList.remove("hidden");
+      showQuestion();
+    });
+    await page.locator('#options [data-boolean-answer="true"]').click();
+    assert.ok((await page.locator("#feedback").innerText()).includes("إجابة صحيحة"), "true/false answers should be checked");
+    await page.locator("#next").click();
+    await page.locator("#typed-answer-input").fill("١٢");
+    await page.locator(".typed-answer-submit").click();
+    assert.ok((await page.locator("#feedback").innerText()).includes("إجابة صحيحة"), "numeric answers should accept Arabic-Indic digits");
+    await page.locator("#next").click();
+    await page.locator("#typed-answer-input").fill("الناتج");
+    await page.locator(".typed-answer-submit").click();
+    assert.ok((await page.locator("#feedback").innerText()).includes("إجابة صحيحة"), "short-text answers should accept configured alternatives");
+    await page.evaluate(() => {
+      const previous = window.__typedQuestionTestState;
+      quizQuestions = previous.quizQuestions; index = previous.index;
+      correctCount = previous.correctCount; answered = previous.answered;
+      reviewMode = previous.reviewMode; sessionMistakes = previous.sessionMistakes;
+      document.querySelector("#quiz").classList.toggle("hidden", previous.quizHidden);
+      document.querySelector("#home").classList.toggle("hidden", previous.homeHidden);
+      document.querySelector("#results").classList.add("hidden");
+      delete window.__typedQuestionTestState;
+      renderTopics();
+    });
+
 
     // Verify PWA metadata and service-worker activation on the local test origin.
     const manifestResult = await page.evaluate(async () => {
