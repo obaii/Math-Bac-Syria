@@ -54,7 +54,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 200, "the authored-example filter should show all 200 current examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 29, "topic filtering should show all twenty-nine probability examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 32, "topic filtering should show all thirty-two probability examples");
     await page.locator("#solved-example-topic").selectOption("");
     await page.locator("#solved-example-search").fill("استقلال حادثتين");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 1, "text search should find the expected worked example");
