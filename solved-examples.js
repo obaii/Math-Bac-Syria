@@ -29,6 +29,8 @@
 
   ];
 
+  window.solvedExamplesLibrary = Object.freeze({count:examples.length,topics:[...new Set(examples.map(item=>item.topic))],examples});
+
   const root = document.getElementById("formula-library");
   if (!root || document.getElementById("solved-examples-library")) return;
   const section = document.createElement("section");
@@ -98,5 +100,4 @@
   [searchInput,topicSelect,levelSelect].forEach(control => control.addEventListener("input",render));
   [topicSelect,levelSelect].forEach(control => control.addEventListener("change",render));
   render();
-  window.solvedExamplesLibrary = Object.freeze({count:examples.length,topics:[...new Set(examples.map(item=>item.topic))]});
 })();
