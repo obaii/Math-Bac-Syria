@@ -32,7 +32,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 246, "the library should render all 246 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 248, "the library should render all 248 solved examples");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 46, "the exam-source filter should show the 46 sourced adaptations");
     await page.locator("#solved-example-year").selectOption("2017");
@@ -40,6 +40,8 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-year").selectOption("2019");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 21, "the 2019 source filter should show 21 adaptations");
     await page.locator("#solved-example-year").selectOption("");
+    await page.locator("#solved-example-source").selectOption("نموذج وزاري");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 2, "the ministerial-model filter should show the two verified 2019 examples");
     await page.locator("#solved-example-source").selectOption("تدريبي مؤلف");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 200, "the authored-example filter should show all 200 current examples");
     await page.locator("#solved-example-source").selectOption("");
