@@ -492,29 +492,136 @@ function updateQuizProgress(completed){
   if (remainingNode) remainingNode.textContent = remainingCount.toLocaleString("ar");
   if (accuracyNode) accuracyNode.textContent = answeredCount ? `${accuracy.toLocaleString("ar")}٪` : "—";
 }
+function getQuestionType(q){
+  return ["true-false", "numeric", "short-text"].includes(q?.type) ? q.type : "mcq";
+}
+function isSupportedQuestion(q){
+  if (!q || typeof q.q !== "string" || !q.q.trim() || !String(q.solution ?? "").trim()) return false;
+  const type = getQuestionType(q);
+  if (type === "mcq") return Array.isArray(q.options) && q.options.length === 4 &&
+    Number.isInteger(q.answer) && q.answer >= 0 && q.answer < 4;
+  if (type === "true-false") return typeof q.answer === "boolean";
+  if (type === "numeric") return String(q.answer).trim() !== "" && Number.isFinite(Number(q.answer)) &&
+    (q.tolerance === undefined || (Number.isFinite(q.tolerance) && q.tolerance >= 0));
+  return (typeof q.answer === "string" && q.answer.trim().length > 0) ||
+    (Array.isArray(q.acceptedAnswers) && q.acceptedAnswers.some(value => typeof value === "string" && value.trim()));
+}
+function normalizeNumericAnswer(value){
+  const arabicDigits = "٠١٢٣٤٥٦٧٨٩";
+  const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+  let text = String(value ?? "").trim();
+  text = [...text].map(char => {
+    const arabicIndex = arabicDigits.indexOf(char);
+    if (arabicIndex >= 0) return String(arabicIndex);
+    const persianIndex = persianDigits.indexOf(char);
+    return persianIndex >= 0 ? String(persianIndex) : char;
+  }).join("");
+  text = text.replace(/[٫]/g, ".").replace(/[٬،]/g, "");
+  if (!text.includes(".") && (text.match(/,/g) || []).length === 1) text = text.replace(",", ".");
+  text = text.replace(/\s+/g, "");
+  if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(text)) return NaN;
+  return Number(text);
+}
+function normalizeShortAnswer(value){
+  return String(value ?? "").normalize("NFKC").toLocaleLowerCase("ar")
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+    .replace(/[،؛؟.,!?:()[\]{}]/g, " ")
+    .replace(/\s+/g, " ").trim();
+}
+function evaluateQuestionAnswer(q, response){
+  const type = getQuestionType(q);
+  if (type === "mcq" || type === "true-false") return response === q.answer;
+  if (type === "numeric") {
+    const actual = normalizeNumericAnswer(response);
+    const expected = normalizeNumericAnswer(q.answer);
+    const tolerance = Number.isFinite(q.tolerance) ? q.tolerance : 1e-9;
+    return Number.isFinite(actual) && Number.isFinite(expected) &&
+      Math.abs(actual - expected) <= tolerance * Math.max(1, Math.abs(expected));
+  }
+  const accepted = [q.answer, ...(Array.isArray(q.acceptedAnswers) ? q.acceptedAnswers : [])]
+    .filter(value => typeof value === "string" && value.trim());
+  const normalized = normalizeShortAnswer(response);
+  return normalized.length > 0 && accepted.some(value => normalizeShortAnswer(value) === normalized);
+}
+function formatExpectedAnswer(q){
+  const type = getQuestionType(q);
+  if (type === "true-false") return q.answer ? "صح" : "خطأ";
+  if (type === "short-text") return [q.answer, ...(Array.isArray(q.acceptedAnswers) ? q.acceptedAnswers : [])]
+    .filter(value => typeof value === "string" && value.trim()).join(" أو ");
+  return String(q.answer ?? "");
+}
 function showQuestion(){
   answered=false;
   const q=quizQuestions[index];
-  $("question-number").textContent=`${index+1} من ${quizQuestions.length}`;
-  $("progress").textContent=`السؤال ${index+1} / ${quizQuestions.length}`;
+  const type=getQuestionType(q);
+  $("question-number").textContent=(index+1).toLocaleString("ar") + " من " + quizQuestions.length.toLocaleString("ar");
+  $("progress").textContent="السؤال " + (index+1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar");
   updateQuizProgress(index);
   $("question-text").innerHTML=q.q;
   if (typeof getQuestionDiagram === "function") {
     const diagramMarkup = getQuestionDiagram(q);
     if (diagramMarkup) $("question-text").insertAdjacentHTML("beforeend", diagramMarkup);
   }
-  $("options").innerHTML=q.options.map((option,i)=>`<button class="option" data-option="${i}"><span class="letter">${letters[i]}</span><span>${option}</span></button>`).join("");
-  document.querySelectorAll("[data-option]").forEach(btn=>btn.addEventListener("click",()=>chooseAnswer(Number(btn.dataset.option))));
-  $("feedback").className="feedback hidden"; $("feedback").innerHTML="";
+  const options = $("options");
+  options.replaceChildren();
+  if (type === "mcq") {
+    options.innerHTML=q.options.map((option,i)=>'<button class="option" data-option="' + i + '" type="button"><span class="letter">' + letters[i] + '</span><span>' + option + '</span></button>').join("");
+    options.querySelectorAll("[data-option]").forEach(btn=>btn.addEventListener("click",()=>chooseAnswer(Number(btn.dataset.option))));
+  } else if (type === "true-false") {
+    for (const [value, label] of [[true, "صح"], [false, "خطأ"]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "option typed-choice";
+      button.dataset.booleanAnswer = String(value);
+      button.textContent = label;
+      button.addEventListener("click", () => submitQuestionAnswer(value));
+      options.append(button);
+    }
+  } else {
+    const form = document.createElement("form");
+    form.className = "typed-answer-form";
+    const label = document.createElement("label");
+    label.htmlFor = "typed-answer-input";
+    label.textContent = type === "numeric" ? "اكتب القيمة العددية:" : "اكتب إجابتك:";
+    const input = document.createElement("input");
+    input.id = "typed-answer-input";
+    input.name = "answer";
+    input.type = "text";
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    input.inputMode = type === "numeric" ? "decimal" : "text";
+    input.placeholder = q.placeholder || (type === "numeric" ? "مثال: 2.5" : "اكتب الإجابة هنا");
+    input.required = true;
+    const submit = document.createElement("button");
+    submit.type = "submit";
+    submit.className = "primary typed-answer-submit";
+    submit.textContent = "تحقق من الإجابة";
+    form.append(label, input, submit);
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      submitQuestionAnswer(input.value);
+    });
+    options.append(form);
+  }
+  $("feedback").className="feedback hidden";
+  $("feedback").innerHTML="";
   $("next").disabled=true;
   $("next").textContent=index===quizQuestions.length-1?"عرض النتيجة ←":"السؤال التالي ←";
   typeset();
 }
 function chooseAnswer(choice){
+  submitQuestionAnswer(choice);
+}
+function submitQuestionAnswer(response){
   if(answered)return;
-  answered=true;
   const q=quizQuestions[index];
-  const isCorrect=choice===q.answer;
+  const type=getQuestionType(q);
+  if (type !== "mcq" && type !== "true-false" && !String(response ?? "").trim()) {
+    $("typed-answer-input")?.focus();
+    return;
+  }
+  answered=true;
+  const isCorrect=evaluateQuestionAnswer(q,response);
   if(isCorrect)correctCount++;
   else if (!sessionMistakes.some(item => questionKey(item) === questionKey(q))) sessionMistakes.push(q);
   if (!reviewMode) {
@@ -525,7 +632,7 @@ function chooseAnswer(choice){
       progressData.correct += 1;
       delete progressData.mistakes[questionKey(q)];
     } else {
-      progressData.mistakes[questionKey(q)] = { topic: q.topic, q: q.q, options: q.options, answer: q.answer, solution: q.solution, level: q.level };
+      progressData.mistakes[questionKey(q)] = { topic: q.topic, q: q.q, options: q.options, answer: q.answer, solution: q.solution, level: q.level, type: q.type, acceptedAnswers: q.acceptedAnswers, tolerance: q.tolerance };
     }
     const ts = progressData.topicStats[q.topic] || { answered: 0, correct: 0 };
     ts.answered += 1;
@@ -540,14 +647,22 @@ function chooseAnswer(choice){
     saveProgress();
     refreshDashboard();
   }
-  document.querySelectorAll("[data-option]").forEach((btn,i)=>{
-    btn.disabled=true;
-    if(i===q.answer)btn.classList.add("correct");
-    if(i===choice && !isCorrect)btn.classList.add("wrong");
-  });
+  $("options").querySelectorAll("button, input").forEach(control => { control.disabled = true; });
+  if (type === "mcq") {
+    $("options").querySelectorAll("[data-option]").forEach((btn,i)=>{
+      if(i===q.answer)btn.classList.add("correct");
+      if(i===response && !isCorrect)btn.classList.add("wrong");
+    });
+  } else if (type === "true-false") {
+    $("options").querySelectorAll("[data-boolean-answer]").forEach(btn => {
+      const value = btn.dataset.booleanAnswer === "true";
+      if (value === q.answer) btn.classList.add("correct");
+      if (value === response && !isCorrect) btn.classList.add("wrong");
+    });
+  }
   updateQuizProgress(index + 1);
   const fb=$("feedback");
-  fb.className=`feedback ${isCorrect?"good":"bad"}`;
+  fb.className="feedback " + (isCorrect?"good":"bad");
   const escapeSolutionText = value => String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -558,14 +673,15 @@ function chooseAnswer(choice){
     Array.isArray(q.steps) && q.steps.length > 0 &&
     q.steps.every(step => typeof step === "string" && step.trim());
   const solutionContent = hasGuidedSteps
-    ? `<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>${escapeSolutionText(q.keyIdea)}</div></div>
-       <ol class="solution-steps">${q.steps.map(step => `<li>${escapeSolutionText(step)}</li>`).join("")}</ol>`
-    : `<div>${q.solution}</div>`;
-  fb.innerHTML=`<strong>${isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة"}</strong>
-    <div>${isCorrect?"اختيارك صحيح.":"الإجابة الصحيحة هي: "+letters[q.answer]+" — "+q.options[q.answer]}</div>
-    <div class="solution"><strong>الحل:</strong>${solutionContent}</div>`;
+    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + escapeSolutionText(q.keyIdea) + '</div></div><ol class="solution-steps">' + q.steps.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol>'
+    : '<div>' + q.solution + '</div>';
+  const answerSummary = type === "mcq"
+    ? (isCorrect ? "اختيارك صحيح." : "الإجابة الصحيحة هي: " + letters[q.answer] + " — " + q.options[q.answer])
+    : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeSolutionText(formatExpectedAnswer(q)));
+  const submittedSummary = type === "mcq" ? "" : '<div>إجابتك: ' + escapeSolutionText(type === "true-false" ? (response ? "صح" : "خطأ") : response) + '</div>';
+  fb.innerHTML='<strong>' + (isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة") + '</strong><div>' + answerSummary + '</div>' + submittedSummary + '<div class="solution"><strong>الحل:</strong>' + solutionContent + '</div>';
   $("next").disabled=false;
-  $("progress-bar").style.width=`${(index+1)/quizQuestions.length*100}%`;
+  $("progress-bar").style.width=((index+1)/quizQuestions.length*100) + "%";
   typeset();
 }
 function showResults(){
@@ -659,7 +775,7 @@ function startReviewQuiz(){
   // Rebuild review questions from the current bank so obsolete backup entries cannot break the quiz.
   reviewQuestions = Object.keys(mistakeMap)
     .map(key => questions.find(q => questionKey(q) === key))
-    .filter(q => q && typeof q.q === "string" && Array.isArray(q.options) && q.options.length === 4);
+    .filter(isSupportedQuestion);
   if (!reviewQuestions.length) { alert("لا توجد أسئلة خاطئة صالحة للمراجعة حالياً. قد تكون العلامات المتبقية من نسخة قديمة من بنك الأسئلة."); refreshDashboard(); return; }
   reviewMode = true;
   sessionMistakes = [];
