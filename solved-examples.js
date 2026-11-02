@@ -57,6 +57,25 @@
     card.setAttribute("aria-controls", "solved-examples-library");
     card.setAttribute("aria-expanded", "false");
     card.innerHTML = '<span class="quick-start-icon review-icon">✎</span><span class="quick-start-copy"><strong>الأمثلة المحلولة</strong><small>تعلّم الحل خطوة بخطوة</small></span><span class="quick-start-arrow">←</span>';
+    card.addEventListener("click", event => {
+      event.preventDefault();
+      const opening = section.hidden;
+      ["student-tools", "exam-tools", "scientific-calculator"].forEach(id => {
+        const other = document.getElementById(id);
+        if (other) other.hidden = true;
+      });
+      document.querySelectorAll("[data-panel-toggle]").forEach(item => {
+        item.setAttribute("aria-expanded", String(item === card && opening));
+      });
+      section.hidden = !opening;
+      if (opening) {
+        section.setAttribute("tabindex", "-1");
+        section.focus({ preventScroll: true });
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        card.focus({ preventScroll: true });
+      }
+    });
     nav.appendChild(card);
   }
 
