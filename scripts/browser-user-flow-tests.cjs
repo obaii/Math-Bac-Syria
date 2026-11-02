@@ -34,7 +34,7 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 150, "the library should render all 150 solved examples");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 14, "topic filtering should show the fourteen probability examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 16, "topic filtering should show the sixteen probability examples");
     await page.locator("#solved-example-topic").selectOption("");
     await page.locator("#solved-example-search").fill("استقلال حادثتين");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 1, "text search should find the expected worked example");
