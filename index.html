@@ -66,6 +66,7 @@
   <script defer src="app.js?v=20261102-2"></script>
   <script defer src="enhancements.js?v=20261102-6"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
+  <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
 <body>
@@ -171,6 +172,7 @@
       <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
     </nav>
     <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden>
       <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
@@ -212,6 +214,25 @@
         <button type="button" data-calc="equals" class="calculator-equals">احسب =</button>
       </div>
       <div class="calculator-history-wrap"><h4>آخر العمليات</h4><ol id="calculator-history" class="calculator-history"></ol></div>
+    </section>
+    <section id="function-plotter" class="function-plotter" aria-labelledby="function-plotter-title" hidden>
+      <div class="plotter-heading">
+        <div><p class="eyebrow">أداة رياضية تفاعلية</p><h3 id="function-plotter-title">راسم الدوال البيانية</h3>
+        <p>أدخل دالة بدلالة x، وحدد المجال، ثم شاهد منحناها. الدوال المثلثية تستخدم الراديان افتراضياً.</p></div>
+      </div>
+      <div class="plotter-controls">
+        <label class="plotter-expression-label" for="plotter-expression">الدالة الرياضية</label>
+        <input id="plotter-expression" type="text" value="x^2" dir="ltr" autocomplete="off" spellcheck="false" aria-describedby="plotter-help plotter-message">
+        <label for="plotter-x-min">من x</label><input id="plotter-x-min" type="number" value="-10" step="any">
+        <label for="plotter-x-max">إلى x</label><input id="plotter-x-max" type="number" value="10" step="any">
+        <label for="plotter-angle">الزوايا</label><select id="plotter-angle"><option value="rad" selected>راديان</option><option value="deg">درجات</option></select>
+        <button type="button" id="plotter-draw">ارسم المنحنى</button>
+      </div>
+      <p id="plotter-help" class="plotter-help">أمثلة: x^2 ، sin(x) ، cos(x) ، sqrt(x) ، ln(x) ، (x+1)/(x-2). استخدم * للضرب و ^ للأسس.</p>
+      <div class="plotter-graph-wrap">
+        <svg id="function-plotter-graph" viewBox="0 0 720 400" role="img" aria-label="الرسم البياني للدالة" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <p id="plotter-message" class="plotter-message" role="status" aria-live="polite"></p>
     </section>
       <section id="exam-tools" class="exam-tools" hidden>
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
