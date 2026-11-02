@@ -1197,3 +1197,16 @@ body.dark-mode .geometry-tools,body.dark-mode .geometry-input-panel,body.dark-mo
 body.dark-mode .flashcards{background:#182438;border-color:#405579;color:#e7edf8}body.dark-mode .flashcards-controls select,body.dark-mode .flashcard,body.dark-mode .flashcard-actions button,body.dark-mode .flashcard-navigation button,body.dark-mode .flashcard-reset{background:#101827;border-color:#405579;color:#e7edf8}body.dark-mode .flashcard-category{background:#293a55}
 @media(max-width:600px){.flashcards{padding:14px}.flashcards-controls{display:grid;grid-template-columns:1fr}.flashcards-controls select{width:100%}.flashcards-controls span{margin:0}.flashcard{min-height:200px;padding:18px}.flashcard-actions,.flashcard-navigation{display:grid;grid-template-columns:1fr 1fr}.flashcard-actions button:first-child{grid-column:1/-1}.flashcard-actions button,.flashcard-navigation button{min-width:0;width:100%;min-height:46px}}
 @media(prefers-reduced-motion:reduce){.flashcard{scroll-behavior:auto}}
+
+/* توسيع مكتبة القوانين: مرشحات المستوى والوحدة وبيانات المصدر */
+.formula-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px;align-items:end}
+.formula-filters label{display:grid;gap:5px;font-size:13px;font-weight:700}
+.formula-filters input,.formula-filters select{width:100%;min-height:44px;padding:9px 11px;border:1px solid var(--border,#d9e1ed);border-radius:9px;background:var(--input-bg,#fff);color:inherit;font:inherit}
+.formula-meta{margin:4px 0 10px;color:var(--muted,#64748b);font-size:11px;line-height:1.7}
+.formula-conditions,.formula-example,.formula-source{margin:8px 0;color:var(--muted,#64748b);font-size:12px;line-height:1.8}
+.formula-conditions{padding:8px 10px;border-inline-start:3px solid var(--primary,#315edb);background:var(--surface,#f8fafc);border-radius:6px}
+.formula-example{color:var(--text,#334155)}
+.formula-source{font-size:10px;opacity:.85}
+body.dark-mode .formula-filters input,body.dark-mode .formula-filters select{background:#101827;border-color:#405579;color:#e7edf8}
+body.dark-mode .formula-conditions{background:#101827;color:#d5dfef}
+@media(max-width:600px){.formula-filters{grid-template-columns:1fr}.formula-filters input,.formula-filters select{min-height:46px}}
