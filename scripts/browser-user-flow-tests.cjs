@@ -24,9 +24,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 7, "the home dashboard should expose seven primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 8, "the home dashboard should expose eight primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#formula-library"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise scientific calculator functions through the visible interface.
@@ -98,6 +98,32 @@ const assert = require("node:assert/strict");
     assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
     await page.locator('[data-panel-toggle="formula-library"]').click();
     await page.locator("#formula-library").waitFor({ state: "hidden" });
+
+    // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
+    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await page.locator("#flashcards").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 33", "flashcards should start at the first formula card");
+    await page.locator("#flashcard-flip").click();
+    assert.equal(await page.locator("#flashcard-back").isVisible(), true, "flip control should reveal the answer");
+    assert.ok((await page.locator("#flashcard-formula").innerText()).length > 0, "revealed flashcard should show its formula");
+    await page.locator("#flashcard-known").click();
+    assert.ok((await page.locator("#flashcard-status").innerText()).includes("أعرفها"), "known rating should be announced");
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 1"), "known rating should update progress");
+    await page.locator("#flashcard-next").click();
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 2 من 33", "next should advance the card counter");
+    await page.locator("#flashcard-review").click();
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("تحتاج مراجعة 1"), "review rating should update progress");
+    await page.locator("#flashcard-deck").selectOption("التحليل");
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 8", "deck selection should filter to the selected category");
+    await page.locator("#flashcard-shuffle").click();
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 8", "shuffle should restart at the first position");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await page.locator("#flashcards").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 1"), "flashcard ratings should persist after reload");
+    await page.locator("#flashcard-reset").click();
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 0"), "reset should clear stored ratings");
+    await page.locator('[data-panel-toggle="flashcards"]').click();
 
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {

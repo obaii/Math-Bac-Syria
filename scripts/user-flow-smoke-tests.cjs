@@ -6,6 +6,7 @@ const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
+const flashcards = fs.readFileSync(path.join(root, "flashcards.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const questionsSource = fs.readFileSync(path.join(root, "questions.js"), "utf8");
 const typedQuestionsSource = fs.readFileSync(path.join(root, "questions_typed_additional.js"), "utf8");
@@ -59,6 +60,8 @@ const checks = [
   ["geometry script is cached offline", fs.readFileSync(path.join(root, "sw.js"), "utf8").includes("geometry-tools.js")],
   ["formula library exposes search, categories, formula cards, and status", ["formula-library", "formula-search", "formula-category", "formula-list", "formula-count", "formula-status"].every(id => ids.includes(id)) && has("formula-library.js?v=20261102-1") && has('data-panel-toggle="formula-library"')],
   ["formula library script is cached offline", fs.readFileSync(path.join(root, "sw.js"), "utf8").includes("formula-library.js")],
+  ["flashcards expose deck selection, reveal, rating, navigation, progress, and reset", ["flashcards","flashcard-deck","flashcard","flashcard-front","flashcard-back","flashcard-title","flashcard-formula","flashcard-known","flashcard-review","flashcard-previous","flashcard-next","flashcard-shuffle","flashcard-progress","flashcard-reset"].every(id => ids.includes(id)) && has("flashcards.js?v=20261102-1") && has('data-panel-toggle="flashcards"') && flashcards.includes("mathBacSyriaFlashcardsV1") && flashcards.includes("MathFormulaLibraryData")],
+  ["flashcards are cached for offline study", fs.readFileSync(path.join(root, "sw.js"), "utf8").includes('"./flashcards.js"')],
   ["exam setup exposes start, question count, difficulty, and duration", ["start-exam", "exam-question-count", "exam-difficulty", "exam-duration"].every(id => ids.includes(id))],
   ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("questions_typed_additional.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
   ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && app.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
