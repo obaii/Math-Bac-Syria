@@ -363,10 +363,10 @@
   section.hidden = true;
   section.setAttribute("aria-labelledby", "solved-examples-title");
   section.innerHTML = `
-    <div class="section-heading"><div><p class="eyebrow">تعلّم طريقة التفكير</p><h3 id="solved-examples-title">مكتبة الأمثلة المحلولة</h3><p>أمثلة تدريبية أصلية مرتبة بحسب أبحاث المنهاج ومستوى الصعوبة، مع خطوات الحل والتحقق من النتيجة.</p></div><strong id="solved-examples-count" aria-live="polite"></strong></div>
+    <div class="section-heading"><div><p class="eyebrow">تعلّم طريقة التفكير</p><h3 id="solved-examples-title">مكتبة الأمثلة المحلولة</h3><p>أمثلة تدريبية أصلية مرتبة بحسب أبواب المنهاج ومستوى الصعوبة، مع خطوات الحل والتحقق من النتيجة.</p></div><strong id="solved-examples-count" aria-live="polite"></strong></div>
     <div class="solved-examples-controls">
       <label>ابحث في الأمثلة <input id="solved-example-search" type="search" placeholder="اكتب فكرة أو كلمة من السؤال"></label>
-      <label>البحث <select id="solved-example-topic"><option value="">جميع الأبحاث</option></select></label>
+      <label>الموضوع <select id="solved-example-topic"><option value="">جميع الأبحاث</option></select></label>
       <label>المستوى <select id="solved-example-level"><option value="">جميع المستويات</option><option>أساسي</option><option>متوسط</option><option>متقدم</option></select></label>
       <label>نوع المصدر <select id="solved-example-source"><option value="">كل أنواع المصادر</option><option value="تدريبي مؤلف">أمثلة تدريبية مؤلفة</option><option value="دورة امتحانية">دورات امتحانية</option><option value="نموذج وزاري">نماذج وزارية</option></select></label>
       <label>سنة المصدر <select id="solved-example-year"><option value="">كل السنوات</option></select></label>
