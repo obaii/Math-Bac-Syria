@@ -32,7 +32,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 125, "the library should render all 125 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 150, "the library should render all 150 solved examples");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 14, "topic filtering should show the fourteen probability examples");
     await page.locator("#solved-example-topic").selectOption("");
