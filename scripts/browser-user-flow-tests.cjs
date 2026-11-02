@@ -127,6 +127,30 @@ const assert = require("node:assert/strict");
     assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 0"), "reset should clear stored ratings");
     await page.locator('[data-panel-toggle="flashcards"]').click();
 
+    // Exercise the expanded formula library and its curriculum-level/unit filters.
+    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await page.locator("#formula-library").waitFor({ state: "visible" });
+    const formulaTotals = await page.evaluate(() => ({
+      total: window.MathFormulaLibraryData.length,
+      bac: window.MathFormulaLibraryData.filter(item => item.level === "bac").length,
+      prior: window.MathFormulaLibraryData.filter(item => item.level === "prior").length,
+      supplement: window.MathFormulaLibraryData.filter(item => item.level === "supplement").length,
+      complex: window.MathFormulaLibraryData.filter(item => item.level === "bac" && item.unit === "الأعداد العقدية").length
+    }));
+    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");
+    await page.locator("#formula-stage").selectOption("bac");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
+    await page.locator("#formula-unit").selectOption("الأعداد العقدية");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.complex), "unit filter should show complex-number formulas only");
+    await page.locator("#formula-search").fill("دي موافر");
+    assert.ok((await page.locator("#formula-count").innerText()).startsWith("عدد المداخل: 1"), "search should find the De Moivre formula");
+    await page.locator("#formula-search").fill("");
+    await page.locator("#formula-stage").selectOption("prior");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.prior), "prerequisite filter should show earlier-grade review content");
+    await page.locator("#formula-stage").selectOption("supplement");
+    assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.supplement), "teacher-guide logic supplement should be separately classified");
+    await page.locator('[data-panel-toggle="formula-library"]').click();
+
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
       window.__typedQuestionTestState = {
