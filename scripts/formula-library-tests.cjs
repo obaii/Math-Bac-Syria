@@ -16,5 +16,13 @@ for(const unit of ["تذكرة بالمتتاليات والإثبات بالت�
 for(const id of ["quad","delta","vieta","derivative-power","chain","integral-power","trig-pyth","pythagoras","circle-area","dot","prob-union","conditional","induction","sequence-adjacent","ivt","ln-limit","simple-differential","distance-3d","plane-point-normal","complex-exp-form","complex-rotation","binomial-theorem","binomial-distribution"]) assert.ok(data.some(x=>x.id===id),"missing required reference: "+id);
 const missingConditions=data.filter(x=>!x.conditions && ["delta","quad","conditional","complex-roots","plane-distance","prob-conditional-bac"].includes(x.id));
 assert.equal(missingConditions.length,0,"key formula entries should document their conditions");
+for(const line of source.split(/\r?\n/).filter(line=>/^\s*f\(/.test(line))){
+ const fields=[...line.matchAll(/"((?:\\.|[^"\\])*)"/g)].map(match=>match[1]);
+ if(fields.length>=7){
+  const arabicOutsideText=fields[6].replace(/\\text\{[^{}]*\}/g,"");
+  assert.ok(!/[\u0600-\u06FF]/.test(arabicOutsideText),"Arabic words in TeX must use \\text{} so letters stay connected: "+fields[0]);
+ }
+}
+assert.ok(data.find(x=>x.id==="trig-ratios").tex.includes("\\text{المقابل}"),"Arabic trig labels must be rendered as text, not math symbols");
 assert.ok(!/eval\s*\(|new Function/.test(source),"formula library must not evaluate dynamic code");
 console.log("PASS: "+data.length+" formula and concept entries; "+bac.length+" baccalaureate entries; "+prior.length+" prerequisite entries; all 14 textbook units represented");
