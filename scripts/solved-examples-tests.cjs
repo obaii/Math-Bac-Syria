@@ -53,7 +53,7 @@ if (!library || !Array.isArray(library.examples)) {
 }
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solved-examples\.js\?v=20261102-8/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
+if (!/solved-examples\.js\?v=20261102-9/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
 if (!/solved-examples\.css\?v=20261102-1/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
 if (index.indexOf("solved-examples.js") < index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
 
@@ -64,7 +64,7 @@ if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')
 if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
-if (!source.includes('source.textContent = "المصدر: "')) failures.push("Sourced examples must display their attribution.");
+if (!source.includes('source.textContent = "المصدر: "') || !source.includes('link.href = item.sourceReference')) failures.push("Sourced examples must display their attribution and source link.");
 
 if (failures.length) {
   console.error("Solved examples library checks failed:");
