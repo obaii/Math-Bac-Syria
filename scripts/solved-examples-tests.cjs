@@ -40,10 +40,12 @@ if (!library || !Array.isArray(library.examples)) {
 
   for (const [index, item] of examples.entries()) {
     const label = `Example #${index + 1} (${item.id || "no ID"})`;
-    for (const field of ["topic", "unit", "lesson", "level", "question", "keyIdea", "answer", "check"]) {
+    for (const field of ["topic", "unit", "lesson", "level", "question", "keyIdea", "answer", "check", "sourceType"]) {
       if (typeof item[field] !== "string" || !item[field].trim()) failures.push(`${label}: missing ${field}.`);
     }
-    if (!["أساسي", "متوسط", "متقدم"].includes(item.level)) failures.push(`${label}: invalid difficulty level.`);
+    if (!["أساسي", "متوسط", "متقدم"].includes(item.level)) failures.push(label + ": invalid difficulty level.");
+    if (!["تدريبي مؤلف", "دورة امتحانية", "نموذج وزاري"].includes(item.sourceType)) failures.push(label + ": invalid source type.");
+    if (item.sourceType !== "تدريبي مؤلف" && (!Number.isInteger(item.sourceYear) || item.sourceYear < 2017 || !item.sourceLabel || !item.sourceReference)) failures.push(label + ": sourced examples need a verified year, label, and reference.");
     if (!Array.isArray(item.steps) || item.steps.length < 2 || item.steps.some(step => typeof step !== "string" || !step.trim())) {
       failures.push(`${label}: expected at least two non-empty solution steps.`);
     }
@@ -61,6 +63,8 @@ if (!source.includes('id = "solved-examples-library"') && !source.includes('sect
 if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')) failures.push("The solved examples panel needs an accessible label.");
 if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
+if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
+if (!source.includes('source.textContent = "المصدر: "')) failures.push("Sourced examples must display their attribution.");
 
 if (failures.length) {
   console.error("Solved examples library checks failed:");
