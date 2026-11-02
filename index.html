@@ -67,6 +67,7 @@
   <script defer src="enhancements.js?v=20261102-6"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
+  <script defer src="geometry-tools.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
 <body>
@@ -173,6 +174,7 @@
       <a class="quick-start-card" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
     </nav>
     <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden>
       <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
@@ -234,7 +236,13 @@
       </div>
       <p id="plotter-message" class="plotter-message" role="status" aria-live="polite"></p>
     </section>
-      <section id="exam-tools" class="exam-tools" hidden>
+      <section id="geometry-tools" class="geometry-tools" aria-labelledby="geometry-tools-title" hidden>
+      <h3 id="geometry-tools-title">لوحة الهندسة التفاعلية</h3><p>اختر شكلاً واسحب نقاطه لتغيير أبعاده ومشاهدة القياسات مباشرة.</p>
+      <div class="geometry-controls"><label for="geometry-shape">الشكل الهندسي</label><select id="geometry-shape"><option value="triangle">مثلث</option><option value="circle">دائرة</option><option value="segment">قطعة مستقيمة</option></select><button type="button" id="geometry-reset">إعادة ضبط الشكل</button></div>
+      <div class="geometry-board-wrap"><svg id="geometry-board" viewBox="0 0 640 360" role="group" aria-label="لوحة هندسية تفاعلية؛ اسحب النقاط لتغيير الشكل"></svg></div>
+      <p id="geometry-metrics" class="geometry-metrics" role="status" aria-live="polite"></p><p id="geometry-message" class="geometry-message">اسحب النقاط لتغيير الشكل ومشاهدة القياسات مباشرة.</p>
+    </section>
+    <section id="exam-tools" class="exam-tools" hidden>
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>
         <div class="exam-config">
           <label>عدد الأسئلة<select id="exam-question-count"><option value="20">20 سؤالاً</option><option value="30" selected>30 سؤالاً</option><option value="50">50 سؤالاً</option></select></label>
