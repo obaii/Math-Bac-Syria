@@ -1,0 +1,17 @@
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs"),vm=require("node:vm");
+const source=fs.readFileSync(require("node:path").join(__dirname,"..","geometry-tools.js"),"utf8");
+const context={window:{},document:{getElementById:()=>null}};
+vm.runInNewContext(source,context);
+const g=context.window.GeometryToolsMath;
+assert.ok(g);
+assert.equal(g.distance({x:0,y:0},{x:3,y:4}),5);
+const t=g.triangleMetrics([{x:0,y:0},{x:4,y:0},{x:0,y:3}]);
+assert.deepEqual(Array.from(t.sides),[4,5,3]);
+assert.equal(t.perimeter,12);assert.equal(t.area,6);
+const c=g.circleMetrics(2);assert.equal(c.radius,2);assert.ok(Math.abs(c.circumference-4*Math.PI)<1e-10);assert.ok(Math.abs(c.area-4*Math.PI)<1e-10);
+assert.equal(g.segmentMetrics({x:1,y:1},{x:4,y:5}).length,5);
+assert.throws(()=>g.circleMetrics(-1),RangeError);
+assert.throws(()=>g.triangleMetrics([]),TypeError);
+console.log("PASS: geometry distance, triangle, circle, segment, and invalid-input checks");
