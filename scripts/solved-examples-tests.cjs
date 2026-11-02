@@ -31,7 +31,7 @@ if (!library || !Array.isArray(library.examples)) {
 } else {
   const examples = library.examples;
   const examExamples = examples.filter(item => item.sourceType === "دورة امتحانية");
-  if (examExamples.length !== 91) failures.push(`Expected 91 source-attributed exam adaptations, found ${examExamples.length}.`);
+  if (examExamples.length !== 92) failures.push(`Expected 92 source-attributed exam adaptations, found ${examExamples.length}.`);
   if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2018).length !== 10) failures.push("The 2018 first-session source batch should contain 10 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2019).length !== 21) failures.push("The 2019 first-session source batch should contain 21 adaptations.");
@@ -40,8 +40,8 @@ if (!library || !Array.isArray(library.examples)) {
   if (examExamples.filter(item => item.sourceYear === 2022).length !== 35) failures.push("The 2022 first-session source batch should contain 35 adaptations.");
   const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
   if (ministerialExamples.length !== 19 || ministerialExamples.some(item => item.sourceYear !== 2017)) failures.push("Expected nineteen adaptations from verified 2017 ministerial models.");
-  if (examples.length !== 310) failures.push(`Expected exactly 310 current examples, found ${examples.length}.`);
-  if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 8) failures.push("The 2024 second-session source batch should contain eight verified adaptations.");
+  if (examples.length !== 311) failures.push(`Expected exactly 311 current examples, found ${examples.length}.`);
+  if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain eight verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
   const rationalExample = examples.find(item => item.id === "exam21-rational-001");
   if (!rationalExample || !rationalExample.steps.join(" ").includes("2a-b=0") || rationalExample.steps.join(" ").includes("3a-b-1=0")) failures.push("The 2021 rational-function extremum example must use the correct derivative condition 2a-b=0.");
