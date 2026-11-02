@@ -1210,3 +1210,7 @@ body.dark-mode .flashcards{background:#182438;border-color:#405579;color:#e7edf8
 body.dark-mode .formula-filters input,body.dark-mode .formula-filters select{background:#101827;border-color:#405579;color:#e7edf8}
 body.dark-mode .formula-conditions{background:#101827;color:#d5dfef}
 @media(max-width:600px){.formula-filters{grid-template-columns:1fr}.formula-filters input,.formula-filters select{min-height:46px}}
+
+.formula-library-sources{margin:10px 0 14px;padding:10px 12px;border:1px solid var(--border,#d9e1ed);border-radius:9px;color:var(--muted,#64748b);font-size:11px;line-height:1.9}
+.formula-library-sources a{color:var(--primary,#315edb);text-decoration:underline;text-underline-offset:2px}
+body.dark-mode .formula-library-sources{border-color:#405579;color:#c1cde0}
