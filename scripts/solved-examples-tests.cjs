@@ -30,7 +30,7 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
-  if (examples.length < 50) failures.push(`Expected at least 50 reviewed examples, found ${examples.length}.`);
+  if (examples.length < 75) failures.push(`Expected at least 75 reviewed examples, found ${examples.length}.`);
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
