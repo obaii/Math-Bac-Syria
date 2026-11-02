@@ -81,7 +81,12 @@ const checks = [
   ["study plan remains hidden until the student opens its dedicated control", /study-plan-toggle/.test(enhancements) && /studyPanel\.hidden = true/.test(enhancements) && /section\.hidden = !section\.hidden/.test(enhancements)],
   ["study plan backup import validates and restores saved plan data", /nextExtras\.studyPlan = normalizeStudyPlan\(sourceTools\.studyPlan\)/.test(enhancements) && /studyPlan: normalizeStudyPlan\(x\.studyPlan\)/.test(enhancements)],
   ["study plan has mobile and dark-mode styling", /\.study-plan-metrics/.test(enhancements) && /body\.dark-mode \.study-plan/.test(enhancements) && /@media\(max-width:640px\)\{\.study-plan/.test(enhancements)],
-  ["study plan browser flow checks creation, persistence, and hidden-by-default behavior", /study-plan-toggle/.test(browser) && /study-plan-form/.test(browser) && /studyPlan/.test(browser) && /completed task should persist/.test(browser)]
+  ["study plan browser flow checks creation, persistence, and hidden-by-default behavior", /study-plan-toggle/.test(browser) && /study-plan-form/.test(browser) && /studyPlan/.test(browser) && /completed task should persist/.test(browser)],
+  ["spaced review summary reports due, upcoming, mastered, and struggling questions", /const mastered = items\.filter\(item => item\.stage >= 3 && item\.lastResult === "correct"\)/.test(enhancements) && /const struggling = items\.filter\(item => item\.lastResult === "wrong"\)/.test(enhancements) && /review-plan-summary/.test(enhancements)],
+  ["review questions expose understandable mastery stages and reset closer after mistakes", /يحتاج إلى تثبيت/.test(enhancements) && /متقن مبدئياً/.test(enhancements) && /قيد الإتقان/.test(enhancements) && /stage:0, due:addDays\(1\), lastResult:"wrong"/.test(enhancements)],
+  ["study plan dynamically includes due spaced reviews without persisting duplicate tasks", /const dueReviewCount = getScheduledReviews\(\)\.filter\(item => item\.due <= Date\.now\(\)\)\.length/.test(enhancements) && /study-plan-due-review/.test(enhancements) && /addEventListener\("click", startSmartReview\)/.test(enhancements)],
+  ["review summary is responsive and supports dark mode through shared student-tool styles", /review-plan-summary/.test(enhancements) && /@media\(max-width:640px\)\{\.review-plan-summary/.test(enhancements) && /body\.dark-mode \.review-plan-item/.test(enhancements)],
+  ["browser flow verifies the spaced-review summary metrics", /review-plan-summary/.test(browser) && /متقن مبدئياً/.test(browser)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
