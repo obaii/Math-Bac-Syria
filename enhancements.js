@@ -1125,12 +1125,12 @@
   const renderExamHistory = () => {
     const panel = document.getElementById("exam-history");
     if (!panel) return;
-    const history = Array.isArray(extras.examHistory) ? extras.examHistory.slice(0, 5) : [];
-    if (!history.length) {
-      panel.innerHTML = "<h4>سجل المحاكاة السابقة</h4><p>ستظهر هنا نتائج آخر المحاكاة بعد إنهاء أول امتحان تجريبي. يُحفظ السجل على هذا الجهاز فقط.</p>";
+    const allHistory = Array.isArray(extras.examHistory) ? extras.examHistory.slice(0, 20) : [];
+    if (!allHistory.length) {
+      panel.innerHTML = "<h4>أرشيف المحاكاة</h4><p>ستظهر هنا نتائج المحاكاة بعد إنهاء أول امتحان تجريبي. يُحفظ الأرشيف على هذا الجهاز فقط.</p>";
       return;
     }
-    const rows = history.map((entry, index) => {
+    const renderRows = (entries, offset = 0) => entries.map((entry, index) => {
       const total = Math.max(0, Number(entry.total) || 0);
       const correct = Math.min(total, Math.max(0, Number(entry.correct) || 0));
       const rate = total ? Math.round(correct / total * 100) : 0;
@@ -1145,14 +1145,20 @@
       const weakLabel = weakest
         ? `أولوية المراجعة: ${escapeHtml(weakest[0])} (${Math.round(Math.max(0, Number(weakest[1].correct) || 0) / Number(weakest[1].total) * 100).toLocaleString("ar")}٪)`
         : "لا يتوفر تفصيل حسب البحث لهذه المحاولة.";
+      const attemptNumber = offset + index;
+      const title = attemptNumber === 0 ? "أحدث محاكاة" : `محاكاة سابقة ${attemptNumber.toLocaleString("ar")}`;
       return `<li class="exam-history-item">
-        <div><strong>${index === 0 ? "أحدث محاكاة" : `محاكاة سابقة ${index.toLocaleString("ar")}`}</strong><span>${rate.toLocaleString("ar")}٪</span></div>
+        <div><strong>${title}</strong><span>${rate.toLocaleString("ar")}٪</span></div>
         <p>${correct.toLocaleString("ar")} صحيحة من ${total.toLocaleString("ar")}</p>
         <small>${escapeHtml(dateLabel)}</small>
         <p>${weakLabel}</p>
       </li>`;
     }).join("");
-    panel.innerHTML = `<h4>سجل المحاكاة السابقة</h4><p>آخر خمس محاكاة محفوظة على هذا الجهاز، مع اقتراح البحث الذي يستحق المراجعة أولاً.</p><ol class="exam-history-list">${rows}</ol>`;
+    const recentHistory = allHistory.slice(0, 5);
+    const olderHistory = allHistory.slice(5);
+    const recentRows = renderRows(recentHistory);
+    const archiveRows = renderRows(olderHistory, 5);
+    panel.innerHTML = `<h4>أرشيف المحاكاة</h4><p>آخر ${allHistory.length.toLocaleString("ar")} محاكاة محفوظة محلياً، مع إبراز أحدث خمس نتائج وإتاحة بقية السجل عند الطلب.</p><ol class="exam-history-list">${recentRows}</ol>${olderHistory.length ? `<details class="exam-history-archive"><summary>عرض بقية الأرشيف (${olderHistory.length.toLocaleString("ar")} محاكاة)</summary><ol class="exam-history-list">${archiveRows}</ol></details>` : ""}`;
   };
   const ensureExamControls = () => {
     const panel = document.querySelector(".student-tools");
