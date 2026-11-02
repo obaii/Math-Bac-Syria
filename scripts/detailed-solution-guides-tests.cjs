@@ -60,10 +60,10 @@ const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
 if (!/solution-guides\.js\?v=20261029-1/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
-if (!/app\\.js\\?v=20261102-1/.test(indexHtml)) {
+if (!/app\.js\?v=20261102-1/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
-if (!/enhancements\\.js\\?v=20261102-2/.test(indexHtml)) {
+if (!/enhancements\.js\?v=20261102-2/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
 if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261102-1")) {
