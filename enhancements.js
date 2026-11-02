@@ -39,7 +39,9 @@
       reviewQuestions: isRecord(x.reviewQuestions) ? x.reviewQuestions : {},
       examHistory: normalizeExamHistory(x.examHistory),
       studyPlan: normalizeStudyPlan(x.studyPlan),
-      darkMode: Boolean(x.darkMode)
+      darkMode: Boolean(x.darkMode),
+      textScale: Number.isFinite(x.textScale) ? Math.min(130, Math.max(80, Math.round(x.textScale / 10) * 10)) : 100,
+      mathScale: Number.isFinite(x.mathScale) ? Math.min(140, Math.max(80, Math.round(x.mathScale / 10) * 10)) : 100
     };
   };
   // Load the student-tool state before any setup function can render or read it.
@@ -316,6 +318,22 @@
       body.dark-mode footer{background:#0c1320;color:var(--muted)}
       @media(max-width:640px){.student-tools{padding:14px}.tools-actions button{flex:1 1 145px}.bookmark-toggle{width:100%}.question-text{overflow-wrap:anywhere}.options .option{min-height:52px}.actions button{min-height:46px}}
       @media(max-width:640px){.student-tools{padding:14px}.tools-actions button{flex:1 1 145px}.bookmark-toggle{width:100%}.guided-list{grid-template-columns:1fr}.question-text{overflow-wrap:anywhere}.options .option{min-height:52px}.actions button{min-height:46px}}
+      .reading-settings{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg,#f7f9fc)}
+      .reading-settings h4{margin:0 0 10px;font-size:15px}
+      .reading-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+      .reading-control{display:grid;gap:7px;min-width:0}
+      .reading-control label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;font-weight:700}
+      .reading-control output{color:var(--primary,#315edb);font-variant-numeric:tabular-nums}
+      .reading-control input{width:100%;min-height:32px;accent-color:var(--primary,#315edb);cursor:pointer}
+      .reading-settings>p{margin:8px 0 0!important;font-size:12px!important}
+      body{font-size:calc(16px * var(--reading-scale,1))}
+      .question-text{font-size:calc(18px * var(--reading-scale,1))!important}
+      .options .option{font-size:calc(15px * var(--reading-scale,1))!important}
+      .feedback,.solution,.key-idea,.notice{font-size:calc(14px * var(--reading-scale,1))!important}
+      .topic-card{font-size:calc(14px * var(--reading-scale,1))}
+      .dashboard-intro p,.learning-progress p,.quick-start-copy small,.stat-label{font-size:calc(13px * var(--reading-scale,1))}
+      mjx-container{font-size:calc(100% * var(--math-scale,1))!important}
+      @media(max-width:640px){.reading-settings-grid{grid-template-columns:1fr}.reading-control input{min-height:40px}}
       @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
     `;
     document.head.appendChild(style);
@@ -354,6 +372,18 @@
     // Existing HTML may already contain the panel but omit newer controls.
     // Ensure required nodes exist before binding; a missing node must never abort all tools.
     const actions = panel.querySelector(".tools-actions");
+    if (actions && !document.getElementById("reading-settings")) {
+      const settings = document.createElement("section");
+      settings.id = "reading-settings";
+      settings.className = "reading-settings";
+      settings.setAttribute("aria-labelledby", "reading-settings-title");
+      settings.innerHTML = "<h4 id='reading-settings-title'>إعدادات القراءة</h4>" +
+        "<div class='reading-settings-grid'>" +
+        "<div class='reading-control'><label for='text-scale'>حجم النص <output id='text-scale-value' for='text-scale'>100٪</output></label><input id='text-scale' type='range' min='80' max='130' step='10' value='100' aria-describedby='reading-settings-help'></div>" +
+        "<div class='reading-control'><label for='math-scale'>حجم المعادلات <output id='math-scale-value' for='math-scale'>100٪</output></label><input id='math-scale' type='range' min='80' max='140' step='10' value='100' aria-describedby='reading-settings-help'></div>" +
+        "</div><p id='reading-settings-help'>يمكنك تكبير النصوص والمعادلات أو تصغيرها بشكل مستقل. يُحفظ اختيارك على هذا الجهاز.</p>";
+      actions.insertAdjacentElement("afterend", settings);
+    }
     if (actions && !document.getElementById("review-plan-toggle")) {
       const planButton = document.createElement("button");
       planButton.type = "button";
@@ -416,6 +446,7 @@
       importFile.dataset.enhancementBound = "true";
     }
     bindClick("toggle-dark-mode", toggleDarkMode);
+    bindReadingSettings();
     updateBookmarkUI();
     updateGuidedQuestionList();
     applyDarkMode();
@@ -665,6 +696,33 @@
     if (btn) { btn.textContent = extras.darkMode ? "إيقاف الوضع الليلي" : "تفعيل الوضع الليلي"; btn.setAttribute("aria-pressed", String(extras.darkMode)); }
   };
   const toggleDarkMode = () => { extras.darkMode = !extras.darkMode; persistExtras(); applyDarkMode(); };
+  const applyReadingSettings = () => {
+    document.documentElement.style.setProperty("--reading-scale", String(extras.textScale / 100));
+    document.documentElement.style.setProperty("--math-scale", String(extras.mathScale / 100));
+    const textInput = document.getElementById("text-scale");
+    const mathInput = document.getElementById("math-scale");
+    const textOutput = document.getElementById("text-scale-value");
+    const mathOutput = document.getElementById("math-scale-value");
+    if (textInput) textInput.value = String(extras.textScale);
+    if (mathInput) mathInput.value = String(extras.mathScale);
+    if (textOutput) textOutput.textContent = extras.textScale.toLocaleString("ar") + "٪";
+    if (mathOutput) mathOutput.textContent = extras.mathScale.toLocaleString("ar") + "٪";
+  };
+  const bindReadingSettings = () => {
+    [["text-scale", "textScale"], ["math-scale", "mathScale"]].forEach(([id, key]) => {
+      const input = document.getElementById(id);
+      if (!input || input.dataset.enhancementBound === "true") return;
+      input.addEventListener("input", () => {
+        const value = Number(input.value);
+        if (!Number.isFinite(value)) return;
+        extras[key] = Math.min(Number(input.max), Math.max(Number(input.min), value));
+        persistExtras();
+        applyReadingSettings();
+      });
+      input.dataset.enhancementBound = "true";
+    });
+    applyReadingSettings();
+  };
   window.addEventListener("mathBacSyria:reset-progress", () => {
     extras.bookmarks = [];
     extras.schedule = {};
