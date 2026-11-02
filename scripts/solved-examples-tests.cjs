@@ -35,7 +35,9 @@ if (!library || !Array.isArray(library.examples)) {
   if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2018).length !== 10) failures.push("The 2018 first-session source batch should contain 10 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2019).length !== 21) failures.push("The 2019 first-session source batch should contain 21 adaptations.");
-  if (examples.length !== 246) failures.push(`Expected exactly 246 current examples, found ${examples.length}.`);
+  const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
+  if (ministerialExamples.length !== 2 || ministerialExamples.some(item => item.sourceYear !== 2019)) failures.push("Expected two verified 2019 ministerial-model adaptations.");
+  if (examples.length !== 248) failures.push(`Expected exactly 248 current examples, found ${examples.length}.`);
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
