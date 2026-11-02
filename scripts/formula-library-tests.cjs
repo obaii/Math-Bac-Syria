@@ -1,0 +1,12 @@
+"use strict";
+const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
+const source=fs.readFileSync(path.join(__dirname,"..","formula-library.js"),"utf8");
+const context={window:{},document:{getElementById:()=>null}};
+vm.runInNewContext(source,context);
+const data=context.window.MathFormulaLibraryData;
+assert.ok(Array.isArray(data)&&data.length>=30,"the library should contain at least 30 formulas");
+assert.equal(new Set(data.map(x=>x.id)).size,data.length,"formula IDs should be unique");
+assert.ok(data.every(x=>x.title&&x.category&&x.tex&&x.note),"each formula should have a title, category, TeX expression, and explanation");
+for(const category of ["الجبر","التحليل","المثلثات","الهندسة","المتجهات","الاحتمالات"]) assert.ok(data.some(x=>x.category===category),"missing category "+category);
+for(const id of ["quad","delta","derivative-power","chain","integral-power","trig-pyth","pythagoras","circle-area","dot","prob-union","conditional"]) assert.ok(data.some(x=>x.id===id),"missing key formula "+id);
+console.log("PASS: formula library entries, categories, unique IDs, and core curriculum coverage");
