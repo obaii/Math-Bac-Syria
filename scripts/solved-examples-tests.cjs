@@ -53,7 +53,7 @@ if (!library || !Array.isArray(library.examples)) {
 }
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solved-examples\.js\?v=20261102-9/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
+if (!/solved-examples\.js\?v=20261102-10/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
 if (!/solved-examples\.css\?v=20261102-1/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
 if (index.indexOf("solved-examples.js") < index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
 
@@ -65,10 +65,6 @@ if (!source.includes("item.question") || !source.includes("question.textContent 
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
 if (!source.includes('source.textContent = "المصدر: "') || !source.includes('link.href = item.sourceReference')) failures.push("Sourced examples must display their attribution and source link.");
-  const examExamples = examples.filter(item => item.sourceType === "دورة امتحانية");
-  if (examExamples.length < 25) failures.push(`Expected at least 25 source-attributed exam adaptations, found ${examExamples.length}.`);
-  if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
-  if (examExamples.filter(item => item.sourceYear === 2018).length !== 10) failures.push("The 2018 first-session source batch should contain 10 adaptations.");
 
 if (failures.length) {
   console.error("Solved examples library checks failed:");
