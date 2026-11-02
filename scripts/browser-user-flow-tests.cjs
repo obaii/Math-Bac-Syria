@@ -32,9 +32,9 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 316, "the library should render all 316 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 327, "the library should render all 327 solved examples");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 97, "the exam-source filter should show the 97 sourced adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 108, "the exam-source filter should show the 108 sourced adaptations");
     await page.locator("#solved-example-year").selectOption("2017");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "the 2017 source filter should show 15 adaptations");
     await page.locator("#solved-example-year").selectOption("2019");
