@@ -30,6 +30,7 @@ for (const file of [
   );
 }
 
+vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const { questions, topics } = vm.runInContext("({ questions, topics })", context);
 const guided = questions.filter((q) => Array.isArray(q.steps) && q.steps.length > 0);
 const failures = [];
