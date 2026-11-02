@@ -24,10 +24,27 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 3, "the home dashboard should expose three primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 4, "the home dashboard should expose four primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
+
+    // Exercise scientific calculator functions through the visible interface.
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#scientific-calculator").waitFor({ state: "visible" });
+    await page.locator("#calculator-expression").fill("sin(30)+sqrt(16)");
+    await page.locator('[data-calc="equals"]').click();
+    assert.equal(await page.locator("#calculator-result").innerText(), "2.5", "the calculator should evaluate trigonometry and square roots in degree mode");
+    await page.locator("#calculator-angle").click();
+    await page.locator("#calculator-expression").fill("sin(pi/2)");
+    await page.locator("#calculator-expression").press("Enter");
+    assert.equal(await page.locator("#calculator-result").innerText(), "1", "the calculator should support radian mode and keyboard submission");
+    assert.equal(await page.locator("#calculator-history li").count(), 2, "the calculator should retain a short local operation history");
+    await page.locator('[data-calc="clear"]').click();
+    assert.equal(await page.locator("#calculator-expression").inputValue(), "", "clear should reset the expression");
+    assert.equal(await page.locator("#calculator-result").innerText(), "—", "clear should reset the displayed result");
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
     
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
