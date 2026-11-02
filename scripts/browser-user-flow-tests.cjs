@@ -99,6 +99,32 @@ const assert = require("node:assert/strict");
     await page.locator('[data-panel-toggle="formula-library"]').click();
     await page.locator("#formula-library").waitFor({ state: "hidden" });
 
+    // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
+    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await page.locator("#flashcards").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 33", "flashcards should start at the first formula card");
+    await page.locator("#flashcard-flip").click();
+    assert.equal(await page.locator("#flashcard-back").isVisible(), true, "flip control should reveal the answer");
+    assert.ok((await page.locator("#flashcard-formula").innerText()).length > 0, "revealed flashcard should show its formula");
+    await page.locator("#flashcard-known").click();
+    assert.ok((await page.locator("#flashcard-status").innerText()).includes("أعرفها"), "known rating should be announced");
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 1"), "known rating should update progress");
+    await page.locator("#flashcard-next").click();
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 2 من 33", "next should advance the card counter");
+    await page.locator("#flashcard-review").click();
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("تحتاج مراجعة 1"), "review rating should update progress");
+    await page.locator("#flashcard-deck").selectOption("التحليل");
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 8", "deck selection should filter to the selected category");
+    await page.locator("#flashcard-shuffle").click();
+    assert.equal(await page.locator("#flashcard-counter").innerText(), "البطاقة 1 من 8", "shuffle should restart at the first position");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await page.locator("#flashcards").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 1"), "flashcard ratings should persist after reload");
+    await page.locator("#flashcard-reset").click();
+    assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 0"), "reset should clear stored ratings");
+    await page.locator('[data-panel-toggle="flashcards"]').click();
+
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
       window.__typedQuestionTestState = {
