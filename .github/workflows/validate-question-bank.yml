@@ -35,6 +35,7 @@ jobs:
           node --check scripts/solution-rendering-safety-tests.cjs
           node --check scripts/student-progress-tests.cjs
           node --check scripts/random-exam-generation-tests.cjs
+          node --check scripts/exam-history-archive-tests.cjs
           node --check scripts/exam-config-tests.cjs
           node --check scripts/exam-review-navigation-tests.cjs
           node --check scripts/exam-result-summary-tests.cjs
@@ -55,6 +56,8 @@ jobs:
         run: node scripts/student-progress-tests.cjs
       - name: Check random exam generation and balanced selection
         run: node scripts/random-exam-generation-tests.cjs
+      - name: Check expandable exam history archive
+        run: node scripts/exam-history-archive-tests.cjs
       - name: Check exam difficulty configuration
         run: node scripts/exam-config-tests.cjs
       - name: Check exam review navigation
