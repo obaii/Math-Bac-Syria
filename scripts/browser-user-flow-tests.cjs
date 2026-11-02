@@ -24,9 +24,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 4, "the home dashboard should expose four primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 5, "the home dashboard should expose five primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise scientific calculator functions through the visible interface.
@@ -45,6 +45,26 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#calculator-result").innerText(), "—", "clear should reset the displayed result");
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
+
+    // Exercise the interactive function plotter using the visible graph controls.
+    await page.locator('[data-panel-toggle="function-plotter"]').click();
+    await page.locator("#function-plotter").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#function-plotter-graph path.plotter-function-line").getAttribute("d")).includes("M"), "the default x squared function should render a graph path");
+    await page.locator("#plotter-expression").fill("sin(x)");
+    await page.locator("#plotter-x-min").fill("-6.28");
+    await page.locator("#plotter-x-max").fill("6.28");
+    await page.locator("#plotter-draw").click();
+    assert.ok((await page.locator("#function-plotter-graph path.plotter-function-line").getAttribute("d")).includes("L"), "the sine function should render a continuous curve");
+    await page.locator("#plotter-angle").selectOption("deg");
+    assert.ok((await page.locator("#plotter-message").innerText()).includes("تم رسم"), "changing angle mode should redraw the graph");
+    await page.locator("#plotter-expression").fill("sqrt(-x)");
+    await page.locator("#plotter-draw").click();
+    assert.ok((await page.locator("#function-plotter-graph path.plotter-function-line").getAttribute("d")).length > 0, "functions with a restricted domain should draw only their valid interval");
+    await page.locator("#plotter-x-max").fill("-20");
+    await page.locator("#plotter-draw").click();
+    assert.ok((await page.locator("#plotter-message").innerText()).includes("مجالاً صحيحاً"), "invalid graph ranges should show an accessible validation message");
+    await page.locator('[data-panel-toggle="function-plotter"]').click();
+    await page.locator("#function-plotter").waitFor({ state: "hidden" });
     
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
