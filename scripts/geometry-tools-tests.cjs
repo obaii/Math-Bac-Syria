@@ -12,6 +12,6 @@ assert.deepEqual(Array.from(t.sides),[4,5,3]);
 assert.equal(t.perimeter,12);assert.equal(t.area,6);
 const c=g.circleMetrics(2);assert.equal(c.radius,2);assert.ok(Math.abs(c.circumference-4*Math.PI)<1e-10);assert.ok(Math.abs(c.area-4*Math.PI)<1e-10);
 assert.equal(g.segmentMetrics({x:1,y:1},{x:4,y:5}).length,5);
-assert.throws(()=>g.circleMetrics(-1),RangeError);
-assert.throws(()=>g.triangleMetrics([]),TypeError);
+assert.throws(()=>g.circleMetrics(-1), e => e.name === "RangeError");
+assert.throws(()=>g.triangleMetrics([]), e => e.name === "TypeError");
 console.log("PASS: geometry distance, triangle, circle, segment, and invalid-input checks");
