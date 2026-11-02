@@ -94,15 +94,6 @@
   }
   [searchInput,topicSelect,levelSelect].forEach(control => control.addEventListener("input",render));
   [topicSelect,levelSelect].forEach(control => control.addEventListener("change",render));
-  document.addEventListener("click",event => {
-    const trigger = event.target.closest('[data-panel-toggle="solved-examples-library"]');
-    if (!trigger) return;
-    event.preventDefault();
-    const opening = section.hidden;
-    section.hidden = !opening;
-    trigger.setAttribute("aria-expanded", String(opening));
-    if (opening) { section.scrollIntoView({behavior:"smooth",block:"start"}); searchInput.focus({preventScroll:true}); }
-  });
   render();
   window.solvedExamplesLibrary = Object.freeze({count:examples.length,topics:[...new Set(examples.map(item=>item.topic))]});
 })();
