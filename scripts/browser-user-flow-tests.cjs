@@ -24,9 +24,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 5, "the home dashboard should expose five primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 6, "the home dashboard should expose six primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise scientific calculator functions through the visible interface.
@@ -66,6 +66,16 @@ const assert = require("node:assert/strict");
     await page.locator('[data-panel-toggle="function-plotter"]').click();
     await page.locator("#function-plotter").waitFor({ state: "hidden" });
     
+    await page.locator('[data-panel-toggle="geometry-tools"]').click();
+    await page.locator("#geometry-tools").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#geometry-metrics").innerText()).includes("المحيط"), "triangle mode should show perimeter and area");
+    await page.locator("#geometry-shape").selectOption("circle");
+    assert.ok((await page.locator("#geometry-metrics").innerText()).includes("نصف القطر"), "circle mode should show radius and circumference");
+    await page.locator("#geometry-shape").selectOption("segment");
+    assert.ok((await page.locator("#geometry-metrics").innerText()).includes("طول القطعة"), "segment mode should show its length");
+    await page.locator("#geometry-reset").click();
+    await page.locator('[data-panel-toggle="geometry-tools"]').click();
+    await page.locator("#geometry-tools").waitFor({ state: "hidden" });
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
       window.__typedQuestionTestState = {
