@@ -30,7 +30,7 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
-  if (examples.length < 200) failures.push(`Expected at least 200 reviewed examples, found ${examples.length}.`);
+  if (examples.length < 225) failures.push(`Expected at least 225 reviewed examples, found ${examples.length}.`);
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
@@ -65,6 +65,10 @@ if (!source.includes("item.question") || !source.includes("question.textContent 
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
 if (!source.includes('source.textContent = "المصدر: "') || !source.includes('link.href = item.sourceReference')) failures.push("Sourced examples must display their attribution and source link.");
+  const examExamples = examples.filter(item => item.sourceType === "دورة امتحانية");
+  if (examExamples.length < 25) failures.push(`Expected at least 25 source-attributed exam adaptations, found ${examExamples.length}.`);
+  if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
+  if (examExamples.filter(item => item.sourceYear === 2018).length !== 10) failures.push("The 2018 first-session source batch should contain 10 adaptations.");
 
 if (failures.length) {
   console.error("Solved examples library checks failed:");
