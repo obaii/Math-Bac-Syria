@@ -30,7 +30,7 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
-  if (examples.length < 75) failures.push(`Expected at least 75 reviewed examples, found ${examples.length}.`);
+  if (examples.length < 100) failures.push(`Expected at least 100 reviewed examples, found ${examples.length}.`);
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
@@ -51,7 +51,7 @@ if (!library || !Array.isArray(library.examples)) {
 }
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solved-examples\.js\?v=20261102-3/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
+if (!/solved-examples\.js\?v=20261102-4/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
 if (!/solved-examples\.css\?v=20261102-1/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
 if (index.indexOf("solved-examples.js") < index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
 
