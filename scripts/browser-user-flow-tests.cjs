@@ -14,6 +14,21 @@ const assert = require("node:assert/strict");
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
 
+    // Verify the primary navigation landmarks and keyboard skip link.
+    const skipLink = page.getByRole("link", { name: "تجاوز إلى المحتوى الرئيسي" });
+    assert.equal(await skipLink.getAttribute("href"), "#main-content", "the skip link should target the main content");
+    assert.equal(await page.locator("#main-content").getAttribute("tabindex"), "-1", "main content should be programmatically focusable");
+    await skipLink.focus();
+    assert.equal(await skipLink.evaluate(el => document.activeElement === el), true, "the skip link should be reachable by keyboard focus");
+    await skipLink.press("Enter");
+    assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
+
+    const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
+    assert.equal(await quickStart.locator("a").count(), 3, "the home dashboard should expose three primary quick-start links");
+    assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
+      ["#topic-section", "#exam-tools", "#student-tools"], "quick-start links should point to their matching sections");
+    assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
+
     // Verify PWA metadata and service-worker activation on the local test origin.
     const manifestResult = await page.evaluate(async () => {
       const link = document.querySelector('link[rel="manifest"]');
