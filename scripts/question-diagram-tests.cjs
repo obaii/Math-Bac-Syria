@@ -4,9 +4,10 @@ const path = require("node:path");
 const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const context = vm.createContext({ console });
-for (const file of ["questions.js", "questions_vectors_additional.js", "merge-questions.js", "question-diagrams.js"]) {
+for (const file of ["questions.js", "questions_vectors_additional.js", "merge-questions.js", "questions_typed_additional.js", "question-diagrams.js"]) {
   vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context, { filename: file, timeout: 5000 });
 }
+vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const loaded = vm.runInContext("({ questions, getQuestionDiagram })", context);
 const questions = loaded.questions;
 const getDiagram = loaded.getQuestionDiagram;
