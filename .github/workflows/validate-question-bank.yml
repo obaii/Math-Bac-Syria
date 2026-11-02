@@ -41,6 +41,8 @@ jobs:
           node --check scripts/exam-result-summary-tests.cjs
           node --check scripts/user-flow-smoke-tests.cjs
           node --check scientific-calculator.js
+          node --check function-plotter.js
+          node --check scripts/function-plotter-tests.cjs
           node --check scripts/scientific-calculator-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
@@ -68,5 +70,7 @@ jobs:
         run: node scripts/exam-result-summary-tests.cjs
       - name: Check scientific calculator parsing and mathematical functions
         run: node scripts/scientific-calculator-tests.cjs
+      - name: Check safe function plotter parsing and math functions
+        run: node scripts/function-plotter-tests.cjs
       - name: Smoke-test key student user flows
         run: node scripts/user-flow-smoke-tests.cjs

@@ -1,8 +1,8 @@
-const CACHE_NAME = "math-bac-syria-v34";
+const CACHE_NAME = "math-bac-syria-v35";
 const CORE_FILES = [
   "./", "./index.html", "./style.css", "./style-overrides.css",
   "./app.js", "./questions.js", "./questions_vectors_additional.js", "./questions_typed_additional.js", "./question-diagrams.js",
-  "./merge-questions.js", "./solution-guides.js", "./enhancements.js", "./scientific-calculator.js",
+  "./merge-questions.js", "./solution-guides.js", "./enhancements.js", "./scientific-calculator.js", "./function-plotter.js",
   "./manifest.webmanifest", "./pwa-install.js", "./assets/icon.svg", "./assets/icon-192.png", "./assets/icon-512.png"
 ];
 const MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
