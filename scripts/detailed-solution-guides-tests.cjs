@@ -40,8 +40,15 @@ for (const topic of topics) {
   }
 }
 
-if (guided.length < 12) {
-  failures.push(`Expected at least 12 guided questions, found ${guided.length}.`);
+if (guided.length < 30) {
+  failures.push(`Expected at least 30 guided questions after the curriculum expansion, found ${guided.length}.`);
+}
+const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
+if (new Set(guideKeys).size !== guideKeys.length) {
+  failures.push("Duplicate detailed solution guides were found for the same question.");
+}
+if (guided.length !== 33) {
+  failures.push(`Expected exactly 33 curated guides (19 existing plus 14 new), found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
