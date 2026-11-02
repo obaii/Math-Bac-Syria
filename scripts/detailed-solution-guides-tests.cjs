@@ -40,8 +40,15 @@ for (const topic of topics) {
   }
 }
 
-if (guided.length < 12) {
-  failures.push(`Expected at least 12 guided questions, found ${guided.length}.`);
+if (guided.length < 30) {
+  failures.push(`Expected at least 30 guided questions after the curriculum expansion, found ${guided.length}.`);
+}
+const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
+if (new Set(guideKeys).size !== guideKeys.length) {
+  failures.push("Duplicate detailed solution guides were found for the same question.");
+}
+if (guided.length !== 33) {
+  failures.push(`Expected exactly 33 curated guides (19 existing plus 14 new), found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
@@ -59,7 +66,7 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261029-1/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261102-1/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 if (!/app\.js\?v=20261102-2/.test(indexHtml)) {
@@ -68,7 +75,7 @@ if (!/app\.js\?v=20261102-2/.test(indexHtml)) {
 if (!/enhancements\.js\?v=20261102-3/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-if (indexHtml.indexOf("solution-guides.js?v=20261029-1") > indexHtml.indexOf("app.js?v=20261102-2")) {
+if (indexHtml.indexOf("solution-guides.js?v=20261102-1") > indexHtml.indexOf("app.js?v=20261102-2")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
 
