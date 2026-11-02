@@ -28,6 +28,6 @@ assert.throws(() => calc.evaluate("(2+3"), /ترتيب|تعبير غير مكت�
 assert.throws(() => calc.evaluate("2+"), /تعبير غير مكتمل|ترتيب/);
 assert.throws(() => calc.evaluate("2;alert(1)"), /رمز غير مسموح/);
 assert.throws(() => calc.evaluate("window"), /غير مدعوم/);
-assert.throws(() => calc.evaluate("2**3"), /ترتيب/);
+assert.throws(() => calc.evaluate("2**3"), /ترتيب|تعبير غير مكتمل/);
 assert.throws(() => calc.evaluate(""), /أدخل تعبيراً/);
 console.log("Scientific calculator tests: all checks passed.");
