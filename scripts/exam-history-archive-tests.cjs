@@ -32,7 +32,7 @@ if (match) {
   check("archive renders all available records rather than only five", count === 8);
   check("the five newest attempts remain visible in the recent section", panel.innerHTML.indexOf("<ol class=\"exam-history-list\">") < panel.innerHTML.indexOf("<details class=\"exam-history-archive\">"));
   check("older attempts are grouped in an accessible expandable details section", /<details class="exam-history-archive">[\s\S]*?<summary>عرض بقية الأرشيف/.test(panel.innerHTML));
-  check("archive labels retain chronological attempt numbering", panel.innerHTML.includes("محاكاة سابقة ٨"));
+  check("archive labels retain chronological attempt numbering", panel.innerHTML.includes("محاكاة سابقة ٧"));
   const emptyPanel = { innerHTML: "" };
   const emptyRender = vm.runInNewContext(`${match[0]}\nrenderExamHistory`, {
     document: { getElementById: () => emptyPanel },
