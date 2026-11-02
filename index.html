@@ -68,6 +68,7 @@
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-1"></script>
+  <script defer src="formula-library.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
 <body>
@@ -175,6 +176,7 @@
       <a class="quick-start-card" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card" href="#formula-library" data-panel-toggle="formula-library" aria-controls="formula-library" aria-expanded="false"><span class="quick-start-icon review-icon">∑</span><span class="quick-start-copy"><strong>مكتبة القوانين</strong><small>ابحث عن الصيغ الرياضية</small></span><span class="quick-start-arrow">←</span></a>
     </nav>
     <section id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden>
       <h3 id="student-tools-title">أدوات المراجعة والحفظ</h3>
@@ -241,6 +243,12 @@
       <div class="geometry-controls"><label for="geometry-shape">الشكل الهندسي</label><select id="geometry-shape"><option value="triangle">مثلث</option><option value="circle">دائرة</option><option value="segment">قطعة مستقيمة</option></select><button type="button" id="geometry-reset">إعادة ضبط الشكل</button></div>
       <div class="geometry-board-wrap"><svg id="geometry-board" viewBox="0 0 640 360" role="group" aria-label="لوحة هندسية تفاعلية؛ اسحب النقاط لتغيير الشكل"></svg></div>
       <p id="geometry-metrics" class="geometry-metrics" role="status" aria-live="polite"></p><p id="geometry-message" class="geometry-message">اسحب النقاط لتغيير الشكل ومشاهدة القياسات مباشرة.</p>
+    </section>
+    <section id="formula-library" class="formula-library" aria-labelledby="formula-library-title" hidden>
+      <div class="formula-library-heading"><div><p class="eyebrow">مرجع رياضي سريع</p><h3 id="formula-library-title">مكتبة القوانين والصيغ</h3><p>قوانين أساسية مرتبة حسب الموضوع، مع شرح مختصر وإمكانية نسخ الصيغة.</p></div><strong id="formula-count" class="formula-count" aria-live="polite"></strong></div>
+      <div class="formula-filters"><label for="formula-search">ابحث عن قانون أو مفهوم</label><input id="formula-search" type="search" placeholder="مثال: المشتقة، فيثاغورس، الاحتمال..." autocomplete="off"><label for="formula-category">التصنيف</label><select id="formula-category"><option value="all">جميع التصنيفات</option></select></div>
+      <p id="formula-status" class="formula-status" role="status" aria-live="polite"></p>
+      <div id="formula-list" class="formula-list" aria-live="polite"></div>
     </section>
     <section id="exam-tools" class="exam-tools" hidden>
         <div class="exam-tools-heading"><p class="eyebrow">تدريب قريب من أجواء الامتحان</p><h3>محاكاة امتحان البكالوريا</h3><p class="muted">أسئلة متنوعة من أبحاث المنهاج، مع توقيت ونتيجة ومراجعة الحلول بعد التسليم.</p></div>

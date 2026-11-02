@@ -24,9 +24,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 6, "the home dashboard should expose six primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 7, "the home dashboard should expose seven primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#formula-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise scientific calculator functions through the visible interface.
@@ -76,6 +76,21 @@ const assert = require("node:assert/strict");
     await page.locator("#geometry-reset").click();
     await page.locator('[data-panel-toggle="geometry-tools"]').click();
     await page.locator("#geometry-tools").waitFor({ state: "hidden" });
+    // Exercise formula search, category filtering, and accessible copy feedback.
+    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await page.locator("#formula-library").waitFor({ state: "visible" });
+    assert.ok(await page.locator("#formula-list .formula-card").count() >= 30, "the formula library should show its curriculum references");
+    await page.locator("#formula-search").fill("فيثاغورس");
+    assert.equal(await page.locator("#formula-list .formula-card").count(), 1, "search should filter formulas by Arabic title");
+    await page.locator("#formula-search").fill("");
+    await page.locator("#formula-category").selectOption({ label: "المثلثات" });
+    assert.ok(await page.locator("#formula-list .formula-card").count() >= 3, "category selection should filter trigonometry formulas");
+    await page.locator("#formula-category").selectOption("all");
+    await page.locator("#formula-list .formula-copy").first().click();
+    assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
+    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await page.locator("#formula-library").waitFor({ state: "hidden" });
+
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
       window.__typedQuestionTestState = {
