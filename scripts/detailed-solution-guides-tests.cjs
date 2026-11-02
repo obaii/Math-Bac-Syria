@@ -20,6 +20,7 @@ for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
   "merge-questions.js",
+  "questions_typed_additional.js",
   "solution-guides.js"
 ]) {
   vm.runInContext(
