@@ -197,8 +197,8 @@ const assert = require("node:assert/strict");
 
     // Reading preferences scale text and mathematical notation independently and persist locally.
     assert.equal(await page.locator("#reading-settings").isVisible(), true, "reading settings should be available in student tools");
-    await page.locator("#text-scale").fill("120");
-    await page.locator("#math-scale").fill("130");
+    await page.locator("#text-scale").evaluate(el => { el.value = "120"; el.dispatchEvent(new Event("input", { bubbles: true })); });
+    await page.locator("#math-scale").evaluate(el => { el.value = "130"; el.dispatchEvent(new Event("input", { bubbles: true })); });
     const readingPreferences = await page.evaluate(() => ({
       textScale: document.documentElement.style.getPropertyValue("--reading-scale"),
       mathScale: document.documentElement.style.getPropertyValue("--math-scale"),
@@ -208,8 +208,8 @@ const assert = require("node:assert/strict");
     assert.equal(readingPreferences.mathScale, "1.3", "math scale should update independently");
     assert.equal(readingPreferences.saved.textScale, 120, "text scale should be saved locally");
     assert.equal(readingPreferences.saved.mathScale, 130, "math scale should be saved locally");
-    await page.locator("#text-scale").fill("100");
-    await page.locator("#math-scale").fill("100");
+    await page.locator("#text-scale").evaluate(el => { el.value = "100"; el.dispatchEvent(new Event("input", { bubbles: true })); });
+    await page.locator("#math-scale").evaluate(el => { el.value = "100"; el.dispatchEvent(new Event("input", { bubbles: true })); });
 
     // The personalized study plan is opt-in, generated from a user-selected exam date, and persisted locally.
     const planInitiallyHidden = await page.locator("#study-plan").isVisible().catch(() => false);
