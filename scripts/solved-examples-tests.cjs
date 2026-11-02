@@ -31,10 +31,11 @@ if (!library || !Array.isArray(library.examples)) {
 } else {
   const examples = library.examples;
   const examExamples = examples.filter(item => item.sourceType === "دورة امتحانية");
-  if (examExamples.length < 25) failures.push(`Expected at least 25 source-attributed exam adaptations, found ${examExamples.length}.`);
+  if (examExamples.length !== 46) failures.push(`Expected 46 source-attributed exam adaptations, found ${examExamples.length}.`);
   if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2018).length !== 10) failures.push("The 2018 first-session source batch should contain 10 adaptations.");
-  if (examples.length < 225) failures.push(`Expected at least 225 reviewed examples, found ${examples.length}.`);
+  if (examExamples.filter(item => item.sourceYear === 2019).length !== 21) failures.push("The 2019 first-session source batch should contain 21 adaptations.");
+  if (examples.length !== 246) failures.push(`Expected exactly 246 current examples, found ${examples.length}.`);
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
