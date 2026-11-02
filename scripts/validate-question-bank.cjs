@@ -148,7 +148,8 @@ try {
     const fields = [
       ["نص السؤال", q.q],
       ["الحل", q.solution],
-      ...((q.options || []).map((option, i) => [`الخيار ${i + 1}`, option]))
+      ...((q.options || []).map((option, i) => [`الخيار ${i + 1}`, option])),
+      ...((q.acceptedAnswers || []).map((answer, i) => [`صيغة إجابة بديلة ${i + 1}`, answer]))
     ];
     for (const [field, value] of fields) {
       const text = String(value ?? "");
@@ -192,7 +193,9 @@ try {
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
-  console.log(`مدخلات الملف الإضافي: ${rawAdditional}`);
+  console.log(`مدخلات ملف الأسئلة الإضافية: ${rawAdditional}`);
+  console.log(`مدخلات الأسئلة ذات الأنماط الجديدة: ${rawTypedAdditional}`);
+  console.log("توزيع الأنماط: " + [...typeCounts].map(([type, count]) => type + ": " + count).join("، "));
   console.log("\nتوزيع الأسئلة حسب البحث:");
   for (const [topic, bucket] of counts) {
     console.log(`- ${topic}: ${bucket.total} (${Object.entries(bucket.levels).map(([level, n]) => `${level}: ${n}`).join("، ") || "لا توجد أسئلة"})`);
