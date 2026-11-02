@@ -59,6 +59,7 @@
       const note=document.createElement("p");note.className="formula-note";note.textContent=item.note;
       const copy=document.createElement("button");copy.type="button";copy.className="formula-copy";copy.textContent="نسخ الصيغة";
       copy.addEventListener("click",async()=>{
+        status.textContent="جارٍ نسخ الصيغة...";
         try{await navigator.clipboard.writeText(item.tex);status.textContent="تم نسخ الصيغة: "+item.title;}
         catch(_){status.textContent="تعذر النسخ التلقائي في هذا المتصفح؛ الصيغة: "+item.tex;}
       });
