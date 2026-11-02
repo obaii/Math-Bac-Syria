@@ -43,8 +43,10 @@ jobs:
           node --check scientific-calculator.js
           node --check function-plotter.js
           node --check geometry-tools.js
+          node --check formula-library.js
           node --check scripts/function-plotter-tests.cjs
           node --check scripts/geometry-tools-tests.cjs
+          node --check scripts/formula-library-tests.cjs
           node --check scripts/scientific-calculator-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
@@ -76,5 +78,7 @@ jobs:
         run: node scripts/function-plotter-tests.cjs
       - name: Check interactive geometry calculations
         run: node scripts/geometry-tools-tests.cjs
+      - name: Check mathematics formula library content
+        run: node scripts/formula-library-tests.cjs
       - name: Smoke-test key student user flows
         run: node scripts/user-flow-smoke-tests.cjs
