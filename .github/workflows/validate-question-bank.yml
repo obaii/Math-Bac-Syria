@@ -23,6 +23,7 @@ jobs:
           node --check enhancements.js
           node --check questions.js
           node --check questions_vectors_additional.js
+          node --check questions_typed_additional.js
           node --check merge-questions.js
           node --check solution-guides.js
           node --check pwa-install.js

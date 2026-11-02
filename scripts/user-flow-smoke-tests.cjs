@@ -2,11 +2,16 @@
 "use strict";
 const fs = require("node:fs");
 const path = require("node:path");
+const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const questionsSource = fs.readFileSync(path.join(root, "questions.js"), "utf8");
+const typedQuestionsSource = fs.readFileSync(path.join(root, "questions_typed_additional.js"), "utf8");
+const typedContext = vm.createContext({ console });
+vm.runInContext(typedQuestionsSource, typedContext, { filename: "questions_typed_additional.js", timeout: 5000 });
+const typedQuestions = vm.runInContext("typedQuestionsAdditional", typedContext);
 
 function readJsonDeclaration(source, declaration) {
   const start = source.indexOf(declaration);
@@ -39,15 +44,17 @@ const has = value => html.includes(value);
 const checks = [
   ["the curriculum exposes exactly 14 named topics", topics.length === 14 && topics.every(topic => typeof topic === "string" && topic.trim())],
   ["every named topic has at least one primary-bank question", topics.every(topic => questions.some(question => question.topic === topic))],
-  ["every primary-bank question has four choices and a valid answer index", questions.length > 0 && questions.every(question => Array.isArray(question.options) && question.options.length === 4 && Number.isInteger(question.answer) && question.answer >= 0 && question.answer < 4)],
+  ["legacy primary-bank questions remain multiple choice with four valid options", questions.length > 0 && questions.every(question => Array.isArray(question.options) && question.options.length === 4 && Number.isInteger(question.answer) && question.answer >= 0 && question.answer < 4)],
+  ["typed question additions include true-false, numeric, and short-text examples", Array.isArray(typedQuestions) && typedQuestions.length === 3 && new Set(typedQuestions.map(question => question.type)).size === 3 && ["true-false", "numeric", "short-text"].every(type => typedQuestions.some(question => question.type === type))],
+  ["typed question examples have type-appropriate answer data", typedQuestions.every(question => question.topic && question.q && question.solution && question.level && (question.type === "true-false" ? typeof question.answer === "boolean" : question.type === "numeric" ? typeof question.answer === "number" && Number.isFinite(question.answer) : typeof question.answer === "string" && question.answer.trim()))],
   ["HTML element IDs are unique", duplicateIds.length === 0],
   ["topic search, difficulty filter, and topic grid are present", ["topic-search", "difficulty", "topic-grid", "no-topics"].every(id => ids.includes(id))],
   ["quiz question, choices, feedback, next, and result controls are present", ["quiz", "question-text", "options", "feedback", "next", "results", "score", "retry", "to-home"].every(id => ids.includes(id))],
   ["review and exam panels start hidden and have explicit entry controls", has('id="student-tools"') && has('id="exam-tools"') && has('id="student-tools" class="student-tools" aria-labelledby="student-tools-title" hidden') && has('id="exam-tools" class="exam-tools" hidden') && has('data-panel-toggle="student-tools"') && has('data-panel-toggle="exam-tools"')],
   ["student tools expose bookmark, review, progress, backup, and night-mode controls", ["smart-review", "bookmark-review", "guided-review", "progress-report-toggle", "export-progress", "import-progress-button", "toggle-dark-mode"].every(id => ids.includes(id))],
   ["exam setup exposes start, question count, difficulty, and duration", ["start-exam", "exam-question-count", "exam-difficulty", "exam-duration"].every(id => ids.includes(id))],
-  ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
-  ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
+  ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("questions_typed_additional.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
+  ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && app.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
   ["answer feedback, solution rendering, and progress persistence are wired", app.includes("function chooseAnswer(") && app.includes('$("feedback").innerHTML') && app.includes("function saveProgress(") && app.includes("progressData.seenQuestions[questionKey(q)] = true")],
   ["exam and student-tool click handlers exist", enhancements.includes("startButton.onclick = () =>") && enhancements.includes("startExam();") && enhancements.includes('bindClick("bookmark-review", toggleBookmarkList)') && enhancements.includes('bindClick("toggle-dark-mode", toggleDarkMode)')],
   ["mathematics rendering and supplemental diagrams are connected", has("tex-mml-chtml.js") && app.includes("getQuestionDiagram(q)") && has("question-diagrams.js")],

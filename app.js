@@ -17,6 +17,15 @@ if (typeof vectorQuestionsAdditional !== "undefined" && Array.isArray(vectorQues
     if (!knownQuestionKeys.has(key)) { questions.push(q); knownQuestionKeys.add(key); }
   }
 }
+
+// Add the new answer formats without rewriting any legacy question records.
+if (typeof typedQuestionsAdditional !== "undefined" && Array.isArray(typedQuestionsAdditional)) {
+  const knownQuestionKeys = new Set(questions.map(q => `${q.topic}::${q.q}`));
+  for (const q of typedQuestionsAdditional) {
+    const key = `${q.topic}::${q.q}`;
+    if (!knownQuestionKeys.has(key)) { questions.push(q); knownQuestionKeys.add(key); }
+  }
+}
 const letters = ["أ","ب","ج","د"];
 const emptyProgress = () => ({ answered: 0, correct: 0, mistakes: {}, topicStats: {}, attempts: [], seenQuestions: {} });
 const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);

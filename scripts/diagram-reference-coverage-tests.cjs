@@ -13,6 +13,7 @@ for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
   "merge-questions.js",
+  "questions_typed_additional.js",
   "question-diagrams.js"
 ]) {
   vm.runInContext(
@@ -22,6 +23,7 @@ for (const file of [
   );
 }
 
+vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const { questions, getQuestionDiagram } = vm.runInContext(
   "({ questions, getQuestionDiagram })",
   context
