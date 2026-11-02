@@ -39,11 +39,11 @@ if (!library || !Array.isArray(library.examples)) {
   if (examExamples.filter(item => item.sourceYear === 2021).length !== 9) failures.push("The 2021 first-session source batch should contain 9 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2022).length !== 35) failures.push("The 2022 first-session source batch should contain 35 adaptations.");
   const authoredExamples = examples.filter(item => item.sourceType === "تدريبي مؤلف");
-  if (authoredExamples.length !== 206) failures.push(`Expected 206 authored practice examples, found ${authoredExamples.length}.`);
+  if (authoredExamples.length !== 210) failures.push(`Expected 210 authored practice examples, found ${authoredExamples.length}.`);
   if (examples.filter(item => item.topic === "مصطلحات المنطق الرياضي").length !== 6) failures.push("Expected six authored examples covering mathematical logic and induction foundations.");
   const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
   if (ministerialExamples.length !== 19 || ministerialExamples.some(item => item.sourceYear !== 2017)) failures.push("Expected nineteen adaptations from verified 2017 ministerial models.");
-  if (examples.length !== 343) failures.push(`Expected exactly 343 current examples, found ${examples.length}.`);
+  if (examples.length !== 347) failures.push(`Expected exactly 347 current examples, found ${examples.length}.`);
   if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain nine verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2025 && item.sourceSession === "الدورة الأولى").length !== 10) failures.push("The 2025 first-session source batch should contain ten verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
@@ -71,7 +71,7 @@ if (!library || !Array.isArray(library.examples)) {
 }
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solved-examples\.js\?v=20261102-20/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
+if (!/solved-examples\.js\?v=20261102-21/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
 if (!/solved-examples\.css\?v=20261102-1/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
 if (index.indexOf("solved-examples.js") < index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
 
