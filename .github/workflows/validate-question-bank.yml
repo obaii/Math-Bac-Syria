@@ -26,6 +26,8 @@ jobs:
           node --check questions_typed_additional.js
           node --check merge-questions.js
           node --check solution-guides.js
+          node --check solved-examples.js
+          node --check scripts/solved-examples-tests.cjs
           node --check pwa-install.js
           node --check scripts/validate-question-bank.cjs
           node --check scripts/answer-regression-tests.cjs
@@ -50,6 +52,8 @@ jobs:
           node --check scripts/formula-library-tests.cjs
           node --check scripts/flashcards-tests.cjs
           node --check scripts/scientific-calculator-tests.cjs
+      - name: Check solved examples curriculum coverage and structure
+        run: node scripts/solved-examples-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
       - name: Run verified answer regression checks

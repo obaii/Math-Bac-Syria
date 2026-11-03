@@ -23,6 +23,6 @@ for(const line of source.split(/\r?\n/).filter(line=>/^\s*f\(/.test(line))){
   assert.ok(!/[\u0600-\u06FF]/.test(arabicOutsideText),"Arabic words in TeX must use \\text{} so letters stay connected: "+fields[0]);
  }
 }
-assert.ok(data.find(x=>x.id==="trig-ratios").tex.includes("\\text{المقابل}"),"Arabic trig labels must be rendered as text, not math symbols");
+assert.ok(data.find(x=>x.id==="trig-ratios").tex.includes("a}{c") && data.find(x=>x.id==="trig-ratios").note.includes("المقابل") && data.find(x=>x.id==="trig-ratios").note.includes("المجاور"),"right-triangle labels must use mathematical ratios and connected Arabic explanation text");
 assert.ok(!/eval\s*\(|new Function/.test(source),"formula library must not evaluate dynamic code");
 console.log("PASS: "+data.length+" formula and concept entries; "+bac.length+" baccalaureate entries; "+prior.length+" prerequisite entries; all 14 textbook units represented");

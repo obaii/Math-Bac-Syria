@@ -26,3 +26,7 @@ jobs:
           echo $! > /tmp/math-bac-http.pid
       - name: Run browser smoke tests
         run: node scripts/browser-user-flow-tests.cjs
+      - name: Run accessibility and keyboard navigation tests
+        run: node scripts/accessibility-navigation-tests.cjs
+      - name: Run responsive mobile layout tests
+        run: node scripts/responsive-layout-tests.cjs

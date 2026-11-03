@@ -24,10 +24,49 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 8, "the home dashboard should expose eight primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 9, "the home dashboard should expose nine primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#solved-examples-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
+
+    // Exercise the new solved examples panel, filters, and lesson coverage.
+    await page.locator('[data-panel-toggle="solved-examples-library"]').click();
+    await page.locator("#solved-examples-library").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 351, "the library should render all 351 solved examples");
+    await page.locator("#solved-example-source").selectOption("دورة امتحانية");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
+    await page.locator("#solved-example-year").selectOption("2017");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "the 2017 source filter should show 15 adaptations");
+    await page.locator("#solved-example-year").selectOption("2019");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 21, "the 2019 source filter should show 21 adaptations");
+    await page.locator("#solved-example-year").selectOption("2020");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 7, "the 2020 source filter should show seven adaptations");
+    await page.locator("#solved-example-year").selectOption("2021");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 9, "the 2021 source filter should show nine adaptations");
+    await page.locator("#solved-example-year").selectOption("2022");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 35, "the 2022 source filter should show 35 adaptations");
+    await page.locator("#solved-example-year").selectOption("2025");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 10, "the 2025 source filter should show ten adaptations");
+    await page.locator("#solved-example-year").selectOption("");
+    await page.locator("#solved-example-source").selectOption("نموذج وزاري");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 19, "the ministerial-model filter should show nineteen verified 2017 examples");
+    await page.locator("#solved-example-source").selectOption("تدريبي مؤلف");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 214, "the authored-example filter should show all 214 current examples");
+    await page.locator("#solved-example-source").selectOption("");
+    await page.locator("#solved-example-topic").selectOption("الاحتمالات");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 32, "topic filtering should show all thirty-two probability examples");
+    await page.locator("#solved-example-topic").selectOption("مصطلحات المنطق الرياضي");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "the mathematical logic topic should show its six new examples");
+    await page.locator("#solved-example-topic").selectOption("نهاية متتالية");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 16, "the sequence-limit topic should show all sixteen examples");
+    await page.locator("#solved-example-topic").selectOption("تطبيقات الأعداد العقدية");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 14, "complex geometry topic should show all fourteen examples");
+    await page.locator("#solved-example-topic").selectOption("");
+    await page.locator("#solved-example-search").fill("استقلال حادثتين");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 1, "text search should find the expected worked example");
+    await page.locator("#solved-example-search").fill("");
+    await page.locator('[data-panel-toggle="solved-examples-library"]').click();
+    await page.locator("#solved-examples-library").waitFor({ state: "hidden" });
 
     // Exercise scientific calculator functions through the visible interface.
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();
