@@ -42,6 +42,7 @@ jobs:
           node --check pwa-install.js
           node --check scripts/service-worker-tests.cjs
           node --check scripts/html-anchor-integrity-tests.cjs
+          node --check scripts/html-local-asset-integrity-tests.cjs
           node --check scripts/validate-question-bank.cjs
           node --check scripts/answer-regression-tests.cjs
           node --check scripts/question-diagram-tests.cjs
@@ -71,6 +72,8 @@ jobs:
         run: node scripts/service-worker-tests.cjs
       - name: Check HTML id uniqueness and internal anchor targets
         run: node scripts/html-anchor-integrity-tests.cjs
+      - name: Check local HTML asset references
+        run: node scripts/html-local-asset-integrity-tests.cjs
       - name: Test safe endpoint and external URL validation
         run: node scripts/security-utils-tests.cjs
       - name: Test Arabic-aware search normalization
