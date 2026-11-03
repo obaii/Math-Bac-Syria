@@ -300,7 +300,7 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
       ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
   }
-  if (prompt.includes("مركز") && prompt.includes("جدول تغيرات التابع") && prompt.includes("يقطع محور الفواصل في نقطتين")) {
+  if (prompt.includes("جدول تغيرات التابع") && prompt.includes("يقطع محور الفواصل في نقطتين")) {
     return `<figure class="question-diagram" aria-label="مخطط يوضح تقاطع منحنى التابع مع محور الفواصل في نقطتين">
       <figcaption>مخطط توضيحي: يقطع المنحنى محور الفواصل مرتين كما يذكر السؤال؛ مواضع الجذور الدقيقة غير معطاة هنا.</figcaption>
       <svg viewBox="0 0 340 205" role="img" aria-label="منحنى يقطع محور الفواصل في نقطتين">
