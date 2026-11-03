@@ -19,8 +19,8 @@ const context = vm.createContext({
 for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
-  "merge-questions.js",
   "questions_typed_additional.js",
+  "merge-questions.js",
   "solution-guides.js"
 ]) {
   vm.runInContext(
@@ -78,7 +78,7 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261103-3/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261103-4/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 if (!/app\.js\?v=20261103-3/.test(indexHtml)) {
