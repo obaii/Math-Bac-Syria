@@ -1246,6 +1246,7 @@
       extras = nextExtras;
       if (typeof refreshDashboard === "function") refreshDashboard();
       if (typeof renderTopics === "function") renderTopics();
+      applyReadingSettings();
       updateBookmarkUI();
       updateGuidedQuestionList();
       applyDarkMode();
