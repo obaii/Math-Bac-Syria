@@ -974,7 +974,7 @@
     lines.push("", "جلسة مقترحة مدتها ٣٠ دقيقة:", "• ٥ دقائق: استرجاع القوانين من الذاكرة.", "• ١٥ دقيقة: حل أسئلة الأولوية دون النظر إلى الحل.", "• ١٠ دقائق: تصحيح الحل وتسجيل الفكرة التي تحتاج إلى تثبيت.");
     return lines.join("\n");
   };
-  const runReviewAssistant = async () => {
+  const runReviewAssistant = () => {
     const panel = document.getElementById("review-assistant-panel");
     const status = document.getElementById("review-assistant-status");
     const output = document.getElementById("review-assistant-output");
@@ -985,39 +985,12 @@
     button.disabled = true;
     const snapshot = buildReviewAssistantSnapshot();
     output.textContent = buildLocalReviewAssistantPlan(snapshot);
-    const apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim().replace(/\/+$/, "");
-    if (!snapshot.overall.answered || !apiBase) {
-      status.textContent = !snapshot.overall.answered
-        ? "ابدأ التدريب أولاً؛ ستُبنى الخطة من نتائجك الفعلية."
-        : "هذه خطة محلية مبنية على تقدمك. يمكن إضافة اقتراحات النموذج الذكي عند تفعيل الخدمة.";
-      panel.removeAttribute("aria-busy");
-      button.disabled = false;
-      panel.scrollIntoView({behavior:"smooth",block:"nearest"});
-      return;
-    }
-    status.textContent = "يراجع المساعد ملخص أدائك ويعد خطة مراجعة مناسبة…";
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
-      let response;
-      try {
-        response = await fetch(apiBase + "/api/ask", {
-          method:"POST", headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({mode:"review",question:"أنشئ خطة مراجعة رياضيات شخصية لمدة سبعة أيام، مرتبة حسب الأولوية، مع وقت مقترح لكل جلسة وطريقة للتحقق من التحسن.",context:JSON.stringify(snapshot)}),
-          signal:controller.signal
-        });
-      } finally { clearTimeout(timeout); }
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok || typeof payload.answer !== "string" || !payload.answer.trim()) throw new Error("review_unavailable");
-      output.textContent = payload.answer.trim();
-      status.textContent = "اكتملت الخطة الذكية اعتماداً على ملخص أدائك الحالي.";
-    } catch (_) {
-      status.textContent = "تعذر الوصول إلى النموذج الآن؛ أبقينا الخطة المحلية ظاهرة حتى لا تتوقف مراجعتك.";
-    } finally {
-      panel.removeAttribute("aria-busy");
-      button.disabled = false;
-      panel.scrollIntoView({behavior:"smooth",block:"nearest"});
-    }
+    status.textContent = snapshot.overall.answered
+      ? "هذه خطة مراجعة محلية مبنية على تقدمك المحفوظ على هذا الجهاز؛ لا تُرسل بياناتك إلى أي خادم."
+      : "ابدأ التدريب أولاً؛ ستُبنى الخطة من نتائجك الفعلية.";
+    panel.removeAttribute("aria-busy");
+    button.disabled = false;
+    panel.scrollIntoView({behavior:"smooth",block:"nearest"});
   };
   const startIntensiveTraining = () => {
     const focus = document.getElementById("intensive-training-focus")?.value || "all";
