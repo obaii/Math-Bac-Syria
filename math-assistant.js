@@ -8,6 +8,7 @@
   const clear = document.getElementById("math-assistant-clear");
   const explain = document.getElementById("math-assistant-explain");
   const simplify = document.getElementById("math-assistant-simplify");
+  const diagnose = document.getElementById("math-assistant-diagnose");
   let aiMode = "steps";
   const aiStatus = document.getElementById("math-assistant-ai-status");
   let apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim();
@@ -15,6 +16,7 @@
   const aiEnabled = apiBase.startsWith("https://") || apiBase.startsWith("http://localhost") || apiBase.startsWith("http://127.0.0.1");
   if (explain) explain.disabled = !aiEnabled || !input.value.trim();
   if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
+  if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
   if (aiStatus && aiEnabled) aiStatus.textContent = "الاتصال بالمساعد الذكي مهيأ. لا تكتب معلومات شخصية في الأسئلة.";
   if (!form || !input || !response) return;
 
@@ -113,6 +115,7 @@
     const mode = aiMode;
     aiMode = "steps";
     if (simplify) simplify.disabled = true;
+    if (diagnose) diagnose.disabled = true;
     const question = input.value.trim();
     if (!question || !aiEnabled) return;
     search(question);
@@ -123,12 +126,12 @@
     explain.disabled = true;
     if (aiStatus) aiStatus.textContent = mode === "simplify"
       ? "جارٍ تبسيط المفهوم وشرح فكرته بلغة سهلة…"
-      : "جارٍ إعداد شرح الحل خطوة بخطوة…";
+      : mode === "diagnose" ? "جارٍ مراجعة محاولتك وتحديد موضع الالتباس…" : "جارٍ إعداد شرح الحل خطوة بخطوة…";
     const result = make("article","math-assistant-card math-assistant-ai-answer");
-    result.append(make("span","math-assistant-kind",mode === "simplify" ? "تبسيط المفهوم" : "شرح ذكي"));
+    result.append(make("span","math-assistant-kind",mode === "simplify" ? "تبسيط المفهوم" : mode === "diagnose" ? "مراجعة محاولة الحل" : "شرح ذكي"));
     result.append(make("p","math-assistant-ai-loading",mode === "simplify"
       ? "يبحث المساعد عن طريقة سهلة لتوضيح الفكرة."
-      : "يعمل المساعد على تحليل السؤال."));
+      : mode === "diagnose" ? "يراجع المساعد خطوات محاولتك دون افتراض موضع الخطأ مسبقاً." : "يعمل المساعد على تحليل السؤال."));
     response.append(result);
     try {
       const controller = new AbortController();
@@ -157,7 +160,8 @@
       result.append(make("p","math-assistant-ai-text",payload.answer));
       if (aiStatus) aiStatus.textContent = mode === "simplify"
         ? "اكتمل تبسيط المفهوم. قارن الشرح بالقانون والأمثلة المرتبطة."
-        : "اكتمل الشرح. راجع الخطوات وتحقق من النتائج قبل اعتمادها.";
+        : mode === "diagnose" ? "اكتملت مراجعة المحاولة. قارن الملاحظات بخطواتك وأعد المحاولة."
+          : "اكتمل الشرح. راجع الخطوات وتحقق من النتائج قبل اعتمادها.";
       appendMath(result);
     } catch (error) {
       result.remove();
@@ -167,6 +171,7 @@
     } finally {
       explain.disabled = !aiEnabled || !input.value.trim();
       if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
+      if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
     }
   });
 
@@ -186,6 +191,12 @@
     if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠";
     if (explain) explain.disabled = !aiEnabled || !input.value.trim();
     if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
+    if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
+  });
+  diagnose?.addEventListener("click", () => {
+    if (!aiEnabled || !input.value.trim() || explain?.disabled) return;
+    aiMode = "diagnose";
+    explain?.click();
   });
   document.querySelectorAll("[data-assistant-prompt]").forEach(button => button.addEventListener("click",() => {
     input.value = button.dataset.assistantPrompt || "";
