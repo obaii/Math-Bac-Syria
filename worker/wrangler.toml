@@ -4,3 +4,9 @@ compatibility_date = "2026-11-03"
 
 [ai]
 binding = "AI"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "math-bac-syria-students"
+database_id = "e58d6c39-a444-4cfd-ac69-6bd7b24f59e5"
+migrations_dir = "migrations"
