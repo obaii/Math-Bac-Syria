@@ -10,6 +10,11 @@ const assert = require("node:assert/strict");
   const pageErrors = [];
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("dialog", dialog => dialog.accept());
+  const openPanel = async id => {
+    const menu = page.locator("#section-menu");
+    if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    await page.locator('[data-panel-toggle="' + id + '"]').click();
+  };
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
@@ -35,7 +40,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
-    await page.locator('[data-panel-toggle="solved-examples-library"]').click();
+    await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 351, "the library should render all 351 solved examples");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
@@ -70,11 +75,11 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-search").fill("اِسْتِقْلال حادثتين");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 4, "normalized multiword search should find all four relevant worked examples despite Arabic diacritics");
     await page.locator("#solved-example-search").fill("");
-    await page.locator('[data-panel-toggle="solved-examples-library"]').click();
+    await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "hidden" });
 
     // Exercise scientific calculator functions through the visible interface.
-    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await openPanel("scientific-calculator");
     await page.locator("#scientific-calculator").waitFor({ state: "visible" });
     await page.locator("#calculator-expression").fill("sin(30)+sqrt(16)");
     await page.locator('[data-calc="equals"]').click();
@@ -87,11 +92,11 @@ const assert = require("node:assert/strict");
     await page.locator('[data-calc="clear"]').click();
     assert.equal(await page.locator("#calculator-expression").inputValue(), "", "clear should reset the expression");
     assert.equal(await page.locator("#calculator-result").innerText(), "—", "clear should reset the displayed result");
-    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await openPanel("scientific-calculator");
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
 
     // Exercise the interactive function plotter using the visible graph controls.
-    await page.locator('[data-panel-toggle="function-plotter"]').click();
+    await openPanel("function-plotter");
     await page.locator("#function-plotter").waitFor({ state: "visible" });
     assert.ok((await page.locator("#function-plotter-graph path.plotter-function-line").getAttribute("d")).includes("M"), "the default x squared function should render a graph path");
     await page.locator("#plotter-expression").fill("sin(x)");
@@ -107,10 +112,10 @@ const assert = require("node:assert/strict");
     await page.locator("#plotter-x-max").fill("-20");
     await page.locator("#plotter-draw").click();
     assert.ok((await page.locator("#plotter-message").innerText()).includes("مجالاً صحيحاً"), "invalid graph ranges should show an accessible validation message");
-    await page.locator('[data-panel-toggle="function-plotter"]').click();
+    await openPanel("function-plotter");
     await page.locator("#function-plotter").waitFor({ state: "hidden" });
     
-    await page.locator('[data-panel-toggle="geometry-tools"]').click();
+    await openPanel("geometry-tools");
     await page.locator("#geometry-tools").waitFor({ state: "visible" });
     assert.equal(await page.locator("#geometry-shape option").count(), 13, "all requested geometry shapes and solids should be selectable");
     assert.ok((await page.locator("#geometry-metrics").innerText()).includes("المساحة"), "triangle should calculate area");
@@ -126,10 +131,10 @@ const assert = require("node:assert/strict");
     await page.locator("#geometry-shape").selectOption("cone");
     assert.ok((await page.locator("#geometry-board").getAttribute("aria-label")).includes("مخروط"), "the SVG drawing should match the selected solid");
     await page.locator("#geometry-reset").click();
-    await page.locator('[data-panel-toggle="geometry-tools"]').click();
+    await openPanel("geometry-tools");
     await page.locator("#geometry-tools").waitFor({ state: "hidden" });
     // Exercise formula search, category filtering, and accessible copy feedback.
-    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await openPanel("formula-library");
     await page.locator("#formula-library").waitFor({ state: "visible" });
     assert.ok(await page.locator("#formula-list .formula-card").count() >= 30, "the formula library should show its curriculum references");
     await page.locator("#formula-search").fill("مُبرهنة دي موافر");
@@ -140,11 +145,11 @@ const assert = require("node:assert/strict");
     await page.locator("#formula-category").selectOption("all");
     await page.locator("#formula-list .formula-copy").first().click();
     assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
-    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await openPanel("formula-library");
     await page.locator("#formula-library").waitFor({ state: "hidden" });
 
     // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
-    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await openPanel("flashcards");
     await page.locator("#flashcards").waitFor({ state: "visible" });
     const flashcardTotal = await page.evaluate(() => window.MathFormulaLibraryData.length);
     const analysisDeckTotal = await page.evaluate(() => window.MathFormulaLibraryData.filter(item => item.category === "التحليل").length);
@@ -164,15 +169,15 @@ const assert = require("node:assert/strict");
     await page.locator("#flashcard-shuffle").click();
     assert.equal(await page.locator("#flashcard-counter").innerText(), `البطاقة 1 من ${analysisDeckTotal}`, "shuffle should restart at the first position");
     await page.reload({ waitUntil: "domcontentloaded" });
-    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await openPanel("flashcards");
     await page.locator("#flashcards").waitFor({ state: "visible" });
     assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 1"), "flashcard ratings should persist after reload");
     await page.locator("#flashcard-reset").click();
     assert.ok((await page.locator("#flashcard-progress").innerText()).includes("أتقنت 0"), "reset should clear stored ratings");
-    await page.locator('[data-panel-toggle="flashcards"]').click();
+    await openPanel("flashcards");
 
     // Exercise the expanded formula library and its curriculum-level/unit filters.
-    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await openPanel("formula-library");
     await page.locator("#formula-library").waitFor({ state: "visible" });
     const formulaTotals = await page.evaluate(() => ({
       total: window.MathFormulaLibraryData.length,
@@ -193,7 +198,7 @@ const assert = require("node:assert/strict");
     assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.prior), "prerequisite filter should show earlier-grade review content");
     await page.locator("#formula-stage").selectOption("supplement");
     assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.supplement), "teacher-guide logic supplement should be separately classified");
-    await page.locator('[data-panel-toggle="formula-library"]').click();
+    await openPanel("formula-library");
 
     // Exercise the actual typed question examples loaded by the application.
     await page.evaluate(() => {
@@ -795,7 +800,7 @@ const assert = require("node:assert/strict");
     assert.ok(phone390.searchRight <= phone390.viewport + 1, "topic search should fit within a 390px viewport");
 
     // Open the intentionally collapsed student-tools panel before testing its controls.
-    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await openPanel("student-tools");
     await page.locator("#student-tools").waitFor({ state: "visible" });
     const mobileToolLayout = await page.evaluate(() => {
       const actions = document.querySelector("#student-tools .tools-actions");
@@ -955,7 +960,7 @@ const assert = require("node:assert/strict");
     });
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
-    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await openPanel("student-tools");
     await page.locator("#student-tools").waitFor({ state: "visible" });
     await page.locator("#review-plan-toggle").click();
     await page.locator("#review-plan").waitFor({ state: "visible" });
@@ -983,7 +988,7 @@ const assert = require("node:assert/strict");
     // Reload to return to the home screen; focused practice has no in-quiz back control.
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
-    await page.locator('[data-panel-toggle="student-tools"]').click();
+    await openPanel("student-tools");
     await page.locator("#student-tools").waitFor({ state: "visible" });
     await page.locator("#smart-review").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
