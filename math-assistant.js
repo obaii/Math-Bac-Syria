@@ -62,12 +62,13 @@
     card.append(make("p","math-assistant-question",item.question));
     if (item.keyIdea) card.append(make("p","math-assistant-idea","الفكرة الأساسية: " + item.keyIdea));
     if (Array.isArray(item.steps) && item.steps.length) {
-      const title = make("strong","","خطوات الحل");
+      const title = make("strong","","شرح الحل خطوة بخطوة");
       const list = make("ol","math-assistant-steps");
-      item.steps.slice(0,5).forEach(step => list.append(make("li","",step)));
+      item.steps.forEach(step => list.append(make("li","",step)));
       card.append(title,list);
     }
     if (item.answer) card.append(make("p","math-assistant-answer","النتيجة: " + item.answer));
+    if (item.check) card.append(make("p","math-assistant-check","التحقق: " + item.check));
     card.append(make("small","math-assistant-source",(item.sourceType || "مثال") + (item.sourceYear ? " · " + item.sourceYear : "")));
     return card;
   }
