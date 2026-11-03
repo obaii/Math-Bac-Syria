@@ -1827,7 +1827,6 @@
         const panelId = link.dataset.panelToggle;
         const panel = document.getElementById(panelId);
         if (!panel) return;
-        const opening = panel.hidden;
         const panelIds = [...document.querySelectorAll("[data-panel-toggle]")]
           .map(item => item.dataset.panelToggle)
           .filter(Boolean);
@@ -1836,18 +1835,14 @@
           if (other && other !== panel) other.hidden = true;
         }
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
-          item.setAttribute("aria-expanded", String(item === link && opening));
+          item.setAttribute("aria-expanded", String(item === link));
         });
-        panel.hidden = !opening;
+        panel.hidden = false;
         if (menu) menu.hidden = true;
         if (menuButton) menuButton.setAttribute("aria-expanded", "false");
-        if (opening) {
-          panel.setAttribute("tabindex", "-1");
-          panel.focus({ preventScroll: true });
-          panel.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          link.focus({ preventScroll: true });
-        }
+        panel.setAttribute("tabindex", "-1");
+        panel.focus({ preventScroll: true });
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
       });
       link.dataset.panelToggleBound = "true";
     });
