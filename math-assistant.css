@@ -42,3 +42,12 @@ body.dark-mode .math-assistant-suggestions button,body.dark-mode .math-assistant
 .math-assistant-ai-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:2}
 .math-assistant-ai-answer{border-color:var(--primary,#315edb)}
 body.dark-mode .math-assistant-explain{background:var(--primary,#557ee8);border-color:var(--primary,#557ee8);color:#fff}
+
+
+/* Two distinct AI learning modes: detailed solution and simplified concept. */
+.math-assistant-ai-actions{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0}
+.math-assistant-ai-actions button{flex:1 1 220px;min-height:44px}
+.math-assistant-simplify{padding:10px 14px;border:1px solid var(--primary,#315edb);border-radius:9px;background:transparent;color:var(--primary,#315edb);font:inherit;font-weight:700;cursor:pointer}
+.math-assistant-simplify:disabled{opacity:.55;cursor:not-allowed}
+body.dark-mode .math-assistant-simplify{color:#b8ccff;border-color:#7898ef}
+@media(max-width:600px){.math-assistant-ai-actions{display:grid}.math-assistant-ai-actions button{width:100%}}
