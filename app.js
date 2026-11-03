@@ -669,10 +669,18 @@ function showQuestion(){
   $("question-number").textContent=(index+1).toLocaleString("ar") + " من " + quizQuestions.length.toLocaleString("ar");
   $("progress").textContent="السؤال " + (index+1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar");
   updateQuizProgress(index);
-  $("question-text").innerHTML=q.q;
+  const questionHost = $("question-text");
+  const promptCopy = document.createElement("div");
+  promptCopy.className = "question-prompt-copy";
+  promptCopy.innerHTML = q.q;
+  questionHost.replaceChildren(promptCopy);
+  questionHost.classList.remove("question-has-diagram");
   if (typeof getQuestionDiagram === "function") {
     const diagramMarkup = getQuestionDiagram(q);
-    if (diagramMarkup) $("question-text").insertAdjacentHTML("beforeend", diagramMarkup);
+    if (diagramMarkup) {
+      questionHost.insertAdjacentHTML("beforeend", diagramMarkup);
+      questionHost.classList.add("question-has-diagram");
+    }
   }
   const options = $("options");
   options.replaceChildren();
