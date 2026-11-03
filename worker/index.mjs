@@ -181,6 +181,12 @@ function withinAuthRateLimit(request, action) {
   return true;
 }
 
+function logAuthFailure(stage, error) {
+  // Never log credentials, request bodies, cookies, tokens, or database values.
+  const errorName = error instanceof Error ? error.name : "UnknownError";
+  console.error("auth_registration_diagnostic", { stage, errorName });
+}
+
 async function handleAuth(request, env, url, origin) {
   if (request.method === "OPTIONS") return json({}, 204, origin);
   if (request.method === "GET" && url.pathname === "/api/auth/me") {
@@ -204,15 +210,28 @@ async function handleAuth(request, env, url, origin) {
     if (url.pathname === "/api/auth/register") {
       const accountId = crypto.randomUUID();
       const now = Math.floor(Date.now() / 1000);
-      const passwordHash = await hashPassword(password);
+      let passwordHash;
+      try {
+        passwordHash = await hashPassword(password);
+      } catch (error) {
+        logAuthFailure("password_hash", error);
+        return json({ error: "auth_service_unavailable" }, 503, origin);
+      }
       try {
         await env.DB.prepare(
           "INSERT INTO student_accounts (id, username, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?)"
         ).bind(accountId, username, passwordHash, now, now).run();
-      } catch {
+      } catch (error) {
+        logAuthFailure("account_insert", error);
         return json({ error: "username_unavailable" }, 409, origin);
       }
-      const token = await createSession(env, accountId);
+      let token;
+      try {
+        token = await createSession(env, accountId);
+      } catch (error) {
+        logAuthFailure("session_create", error);
+        return json({ error: "auth_service_unavailable" }, 503, origin);
+      }
       return json({ ok: true, student: { username } }, 201, origin, { "set-cookie": sessionCookie(token) });
     }
     const account = await env.DB.prepare(
