@@ -15,6 +15,8 @@ const context = vm.createContext({
   Set
 });
 vm.runInContext(source, context, { filename: "solved-examples.js", timeout: 5000 });
+const diagramSource = fs.readFileSync(path.join(root, "question-diagrams.js"), "utf8");
+vm.runInContext(diagramSource, context, { filename: "question-diagrams.js", timeout: 5000 });
 
 const library = context.window.solvedExamplesLibrary;
 const failures = [];
@@ -30,6 +32,11 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
+  const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam22-limits-001", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-002", "ministerial17-graph-003"];
+  for (const id of diagramExamples) {
+    const item = examples.find(example => example.id === id);
+    if (!item || !context.getQuestionDiagram({ q: item.question, topic: item.topic })) failures.push("Missing accompanying graph or variation table for solved example " + id + ".");
+  }
   const examExamples = examples.filter(item => item.sourceType === "دورة امتحانية");
   if (examExamples.length !== 118) failures.push(`Expected 118 source-attributed exam adaptations, found ${examExamples.length}.`);
   if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
@@ -82,6 +89,7 @@ if (!source.includes('id = "solved-examples-library"') && !source.includes('sect
 if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')) failures.push("The solved examples panel needs an accessible label.");
 if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
+if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must display available visuals beside their questions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
 if (!source.includes('source.textContent = "المصدر: "') || source.includes("فتح مرجع المصدر")) failures.push("Sourced examples must retain attribution while omitting the source-opening link.");
   if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must attach available diagrams beside relevant questions.");
