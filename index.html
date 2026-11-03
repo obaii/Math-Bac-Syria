@@ -195,12 +195,14 @@
       <p class="math-assistant-disclosure">يبحث المساعد أولاً في قوانين المنصة وأمثلتها المحلولة. ويمكنه أيضاً شرح الحل أو تبسيط المفهوم عند تفعيل خدمة الذكاء الاصطناعي الاختيارية.</p>
       <form id="math-assistant-form" class="math-assistant-form">
         <label for="math-assistant-question">ما الذي تريد فهمه؟</label>
-        <textarea id="math-assistant-question" rows="2" maxlength="300" required placeholder="مثال: كيف أحسب نهاية تابع؟ أو اشرح قاعدة اشتقاق القوة"></textarea>
+        <textarea id="math-assistant-question" rows="2" maxlength="300" required placeholder="مثال: اشرح نهاية تابع، أو اكتب المسألة ومحاولتك لمراجعة الخطوات"></textarea>
+        <p class="math-assistant-input-hint">لمراجعة خطأك، اكتب نص المسألة ثم خطوات محاولتك أو الإجابة التي وصلت إليها.</p>
         <div class="math-assistant-form-actions"><span id="math-assistant-char-count">٠ / ٣٠٠</span><button type="submit" class="primary">ابحث عن شرح ←</button></div>
       </form>
       <div class="math-assistant-ai-actions">
         <button type="button" id="math-assistant-explain" class="math-assistant-explain" disabled>اشرح لي الحل بالتفصيل</button>
         <button type="button" id="math-assistant-simplify" class="math-assistant-simplify" disabled>بسّط لي المفهوم</button>
+        <button type="button" id="math-assistant-diagnose" class="math-assistant-diagnose" disabled>ساعدني أفهم أين أخطأت</button>
       </div>
       <p id="math-assistant-ai-status" class="math-assistant-ai-status" role="status">البحث المحلي متاح الآن. يمكن تفعيل الشرح الذكي بعد نشر خدمة المساعد.</p>
       <div class="math-assistant-suggestions" aria-label="أسئلة مقترحة">
