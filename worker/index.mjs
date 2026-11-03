@@ -3,6 +3,11 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:4173",
   "http://localhost:4173"
 ]);
+const PAGES_ORIGIN_PATTERN = /^https:\/\/[a-z0-9-]+\.math-bac-syria\.pages\.dev$/i;
+
+function isAllowedOrigin(origin) {
+  return ALLOWED_ORIGINS.has(origin) || PAGES_ORIGIN_PATTERN.test(origin || "");
+}
 const MODEL = "@cf/meta/llama-3.2-3b-instruct";
 const MAX_BODY_BYTES = 10000;
 const MAX_QUESTION_LENGTH = 1200;
@@ -27,7 +32,7 @@ function json(data, status, origin, extraHeaders = {}) {
     "vary": "Origin",
     ...extraHeaders
   };
-  if (origin && ALLOWED_ORIGINS.has(origin)) {
+  if (origin && isAllowedOrigin(origin)) {
     headers["access-control-allow-origin"] = origin;
     headers["access-control-allow-methods"] = "POST, OPTIONS";
     headers["access-control-allow-headers"] = "Content-Type";
@@ -39,7 +44,7 @@ function json(data, status, origin, extraHeaders = {}) {
 
 function allowedRequest(request) {
   const origin = request.headers.get("Origin");
-  return origin && ALLOWED_ORIGINS.has(origin) ? origin : null;
+  return origin && isAllowedOrigin(origin) ? origin : null;
 }
 
 function withinRateLimit(request) {
