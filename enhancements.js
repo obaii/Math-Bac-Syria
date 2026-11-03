@@ -19,9 +19,9 @@
       ...(isRecord(item.topicResults) ? { topicResults:item.topicResults } : {}) })) : [];
   const normalizeSchedule = schedule => {
     if (!isRecord(schedule)) return {};
-    const normalized = {};
+    const normalized = Object.create(null);
     for (const [key, value] of Object.entries(schedule)) {
-      if (!key) continue;
+      if (!key || key === "__proto__" || key === "constructor" || key === "prototype") continue;
       const record = isRecord(value) ? value : { due:value };
       const due = Number(record.due);
       if (!Number.isFinite(due) || due <= 0) continue;
