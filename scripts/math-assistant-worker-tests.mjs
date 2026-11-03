@@ -34,6 +34,10 @@ const health = await worker.fetch(new Request("https://assistant.example.workers
 }), env);
 assert.equal(health.status, 200);
 assert.equal((await health.json()).ok, true);
+assert.equal(health.headers.get("x-content-type-options"), "nosniff");
+assert.equal(health.headers.get("x-frame-options"), "DENY");
+assert.equal(health.headers.get("referrer-policy"), "no-referrer");
+assert.equal(health.headers.get("cache-control"), "no-store");
 
 const preflight = await worker.fetch(new Request("https://assistant.example.workers.dev/api/ask", {
   method: "OPTIONS",
@@ -41,6 +45,7 @@ const preflight = await worker.fetch(new Request("https://assistant.example.work
 }), env);
 assert.equal(preflight.status, 204);
 assert.equal(preflight.headers.get("access-control-allow-origin"), origin);
+assert.equal(preflight.headers.get("content-security-policy"), "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
 
 const blocked = await worker.fetch(new Request("https://assistant.example.workers.dev/api/ask", {
   method: "POST",
@@ -49,8 +54,24 @@ const blocked = await worker.fetch(new Request("https://assistant.example.worker
 }), env);
 assert.equal(blocked.status, 403);
 
+const nullPayload = await worker.fetch(makeRequest(null, "192.0.2.16"), env);
+assert.equal(nullPayload.status, 400);
+assert.equal((await nullPayload.json()).error, "invalid_payload");
+
+const arrayPayload = await worker.fetch(makeRequest([], "192.0.2.17"), env);
+assert.equal(arrayPayload.status, 400);
+assert.equal((await arrayPayload.json()).error, "invalid_payload");
+
 const invalid = await worker.fetch(makeRequest({ question: "   " }, "192.0.2.11"), env);
 assert.equal(invalid.status, 400);
+
+const oversizedQuestion = await worker.fetch(makeRequest({ question: "x".repeat(1201) }, "192.0.2.18"), env);
+assert.equal(oversizedQuestion.status, 400);
+assert.equal((await oversizedQuestion.json()).error, "invalid_question");
+
+const oversizedBody = await worker.fetch(makeRequest({ question: "سؤال", context: "x".repeat(10000) }, "192.0.2.19"), env);
+assert.equal(oversizedBody.status, 413);
+assert.equal((await oversizedBody.json()).error, "request_too_large");
 
 const valid = await worker.fetch(makeRequest({
   question: "اشرح حل المعادلة 2x + 3 = 9",

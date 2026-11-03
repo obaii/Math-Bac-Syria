@@ -18,6 +18,8 @@ jobs:
           node-version: 20
       - name: Check JavaScript syntax
         run: |
+          node --check security-utils.js
+          node --check scripts/security-utils-tests.cjs
           node --check search-utils.js
           node --check app.js
           node --check question-diagrams.js
@@ -61,6 +63,8 @@ jobs:
         run: node scripts/service-worker-tests.cjs
       - name: Check HTML id uniqueness and internal anchor targets
         run: node scripts/html-anchor-integrity-tests.cjs
+      - name: Test safe endpoint and external URL validation
+        run: node scripts/security-utils-tests.cjs
       - name: Test Arabic-aware search normalization
         run: node scripts/search-utils-tests.cjs
       - name: Validate questions and math delimiters

@@ -11,9 +11,8 @@
   const diagnose = document.getElementById("math-assistant-diagnose");
   let aiMode = "steps";
   const aiStatus = document.getElementById("math-assistant-ai-status");
-  let apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim();
-  while (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
-  const aiEnabled = apiBase.startsWith("https://") || apiBase.startsWith("http://localhost") || apiBase.startsWith("http://127.0.0.1");
+  const apiBase = window.MathBacSecurity.safeAssistantApiBase(window.MATH_ASSISTANT_API_URL);
+  const aiEnabled = Boolean(apiBase);
   if (explain) explain.disabled = !aiEnabled || !input.value.trim();
   if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
   if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
