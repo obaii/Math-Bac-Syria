@@ -1228,3 +1228,25 @@ a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,
 .question-hint-text{margin:0;font-size:13px;line-height:1.95;white-space:pre-wrap}
 body.dark-mode .question-hints{background:#101827;border-color:#405579}
 body.dark-mode .hint-button{color:#b8ccff;border-color:#7898ef}
+
+/* Optional similar practice from the existing bank; it never affects quiz scoring. */
+.similar-practice-start{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin-top:12px;padding:9px 14px;border:1px solid var(--primary,#315edb);border-radius:9px;background:var(--primary,#315edb);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.similar-practice-card{display:grid;gap:10px;margin-top:14px;padding:14px;border:1px solid var(--border,#d9e1ed);border-radius:12px;background:var(--surface,#f8fafc)}
+.similar-practice-card h4{margin:0;font-size:15px}
+.similar-practice-note{margin:0;color:var(--muted,#64748b);font-size:12px;line-height:1.8}
+.similar-practice-question{margin:0;font-weight:700;line-height:1.9}
+.similar-practice-options{display:grid;gap:8px}
+.similar-practice-options .option{width:100%;text-align:start}
+.similar-practice-form{display:flex;gap:8px;flex-wrap:wrap}
+.similar-practice-form input{flex:1 1 180px;min-height:42px;padding:8px 10px;border:1px solid var(--border,#d9e1ed);border-radius:8px;background:var(--input-bg,#fff);color:inherit;font:inherit}
+.similar-practice-form button{min-height:42px;padding:8px 14px}
+.similar-practice-feedback,.similar-practice-solution{margin:0;padding:9px 11px;border-radius:8px;line-height:1.9}
+.similar-practice-feedback.good{background:#e8f7ef;color:#176b43}
+.similar-practice-feedback.bad{background:#fff2e8;color:#9a4b12}
+.similar-practice-solution{background:var(--soft-bg,#f4f7fc);white-space:pre-wrap}
+.similar-practice-card [hidden]{display:none!important}
+body.dark-mode .similar-practice-card{background:#101827;border-color:#405579}
+body.dark-mode .similar-practice-form input{background:#101827;border-color:#405579;color:#e7edf8}
+body.dark-mode .similar-practice-feedback.good{background:#123b2a;color:#b9efd0}
+body.dark-mode .similar-practice-feedback.bad{background:#482b1d;color:#ffd3ad}
+@media(max-width:600px){.similar-practice-form{display:grid}.similar-practice-form button,.similar-practice-start{width:100%}}
