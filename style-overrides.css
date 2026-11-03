@@ -1218,3 +1218,13 @@ body.dark-mode .formula-library-sources{border-color:#405579;color:#c1cde0}
 
 /* Visible keyboard focus for links and form controls */
 a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[role="button"]:focus-visible{outline:3px solid #9eb5fa;outline-offset:3px}
+
+
+/* Progressive, accessible hints shown before submitting a quiz answer. */
+.question-hints{display:grid;justify-items:start;gap:9px;margin:12px 0;padding:12px;border:1px solid var(--border,#d9e1ed);border-radius:10px;background:var(--soft-bg,#f4f7fc)}
+.question-hints[hidden],.question-hint-text[hidden]{display:none!important}
+.hint-button{min-height:42px;padding:9px 14px;border:1px solid var(--primary,#315edb);border-radius:9px;background:transparent;color:var(--primary,#315edb);font:inherit;font-weight:700;cursor:pointer}
+.hint-button:disabled{opacity:.65;cursor:default}
+.question-hint-text{margin:0;font-size:13px;line-height:1.95;white-space:pre-wrap}
+body.dark-mode .question-hints{background:#101827;border-color:#405579}
+body.dark-mode .hint-button{color:#b8ccff;border-color:#7898ef}
