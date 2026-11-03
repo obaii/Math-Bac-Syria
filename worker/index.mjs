@@ -35,6 +35,11 @@ function withinRateLimit(request) {
   const key = request.headers.get("CF-Connecting-IP") || "unknown-client";
   const now = Date.now();
   const current = requestBuckets.get(key);
+  if (requestBuckets.size > 2000) {
+    for (const [address, bucket] of requestBuckets) {
+      if (now - bucket.startedAt >= 60000) requestBuckets.delete(address);
+    }
+  }
   if (!current || now - current.startedAt >= 60000) {
     requestBuckets.set(key, { startedAt: now, count: 1 });
     return true;
@@ -46,10 +51,10 @@ function withinRateLimit(request) {
 
 export default {
   async fetch(request, env) {
-    const origin = allowedRequest(request);
-    if (!origin) return json({ error: "origin_not_allowed" }, 403, null);
-
     const url = new URL(request.url);
+    const origin = allowedRequest(request);
+    const healthProbe = request.method === "GET" && url.pathname === "/health" && !request.headers.has("Origin");
+    if (!origin && !healthProbe) return json({ error: "origin_not_allowed" }, 403, null);
     if (request.method === "OPTIONS" && url.pathname === "/api/ask") {
       return new Response(null, {
         status: 204,
