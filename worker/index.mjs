@@ -19,17 +19,19 @@ const SECURITY_HEADERS = Object.freeze({
   "cross-origin-opener-policy": "same-origin"
 });
 
-function json(data, status, origin) {
+function json(data, status, origin, extraHeaders = {}) {
   const headers = {
     ...SECURITY_HEADERS,
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
-    "vary": "Origin"
+    "vary": "Origin",
+    ...extraHeaders
   };
   if (origin && ALLOWED_ORIGINS.has(origin)) {
     headers["access-control-allow-origin"] = origin;
     headers["access-control-allow-methods"] = "POST, OPTIONS";
     headers["access-control-allow-headers"] = "Content-Type";
+    headers["access-control-allow-credentials"] = "true";
     headers["access-control-max-age"] = "86400";
   }
   return new Response(JSON.stringify(data), { status, headers });
@@ -58,6 +60,195 @@ function withinRateLimit(request) {
   return true;
 }
 
+
+const SESSION_COOKIE = "__Host-mbs_session";
+const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
+const PASSWORD_ITERATIONS = 310000;
+const MAX_PROGRESS_BYTES = 50000;
+
+function base64url(bytes) {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/=/g, "").replace(/\\+/g, "-").replace(/\\//g, "_");
+}
+
+function fromBase64url(value) {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
+  return Uint8Array.from(binary, char => char.charCodeAt(0));
+}
+
+async function sha256Hex(value) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function hashPassword(password, saltBytes = crypto.getRandomValues(new Uint8Array(16))) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", hash: "SHA-256", salt: saltBytes, iterations: PASSWORD_ITERATIONS },
+    key,
+    256
+  );
+  return "pbkdf2-sha256$" + PASSWORD_ITERATIONS + "$" + base64url(saltBytes) + "$" + base64url(new Uint8Array(bits));
+}
+
+async function verifyPassword(password, stored) {
+  const parts = stored.split("$");
+  if (parts.length !== 4 || parts[0] !== "pbkdf2-sha256" || Number(parts[1]) !== PASSWORD_ITERATIONS) return false;
+  const expected = fromBase64url(parts[3]);
+  const actual = fromBase64url((await hashPassword(password, fromBase64url(parts[2]))).split("$")[3]);
+  if (actual.length !== expected.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < actual.length; i++) mismatch |= actual[i] ^ expected[i];
+  return mismatch === 0;
+}
+
+function cookieValue(request, name) {
+  const cookie = request.headers.get("Cookie") || "";
+  for (const part of cookie.split(";")) {
+    const index = part.indexOf("=");
+    if (index > 0 && part.slice(0, index).trim() === name) return part.slice(index + 1).trim();
+  }
+  return "";
+}
+
+function sessionCookie(token, maxAge = SESSION_TTL_SECONDS) {
+  return SESSION_COOKIE + "=" + token + "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=" + maxAge;
+}
+
+async function readJsonBody(request, maxBytes = MAX_BODY_BYTES) {
+  const raw = await request.text();
+  if (new TextEncoder().encode(raw).byteLength > maxBytes) return { error: "request_too_large" };
+  try {
+    const value = JSON.parse(raw);
+    return value && typeof value === "object" && !Array.isArray(value) ? { value } : { error: "invalid_payload" };
+  } catch {
+    return { error: "invalid_json" };
+  }
+}
+
+async function getSession(request, env) {
+  const token = cookieValue(request, SESSION_COOKIE);
+  if (!token || token.length > 100) return null;
+  const tokenHash = await sha256Hex(token);
+  const now = Math.floor(Date.now() / 1000);
+  const row = await env.DB.prepare(
+    "SELECT s.token_hash, s.account_id, s.expires_at, a.username, a.created_at " +
+    "FROM student_sessions s JOIN student_accounts a ON a.id = s.account_id " +
+    "WHERE s.token_hash = ? AND s.expires_at > ?"
+  ).bind(tokenHash, now).first();
+  if (!row) return null;
+  if (now - (row.last_seen_at || 0) > 300) {
+    await env.DB.prepare("UPDATE student_sessions SET last_seen_at = ? WHERE token_hash = ?").bind(now, tokenHash).run();
+  }
+  return { tokenHash, accountId: row.account_id, username: row.username, createdAt: row.created_at };
+}
+
+async function createSession(env, accountId) {
+  const token = base64url(crypto.getRandomValues(new Uint8Array(32)));
+  const tokenHash = await sha256Hex(token);
+  const now = Math.floor(Date.now() / 1000);
+  await env.DB.prepare(
+    "INSERT INTO student_sessions (token_hash, account_id, created_at, expires_at, last_seen_at) VALUES (?, ?, ?, ?, ?)"
+  ).bind(tokenHash, accountId, now, now + SESSION_TTL_SECONDS, now).run();
+  return token;
+}
+
+async function handleAuth(request, env, url, origin) {
+  if (request.method === "OPTIONS") return json({}, 204, origin);
+  if (request.method === "GET" && url.pathname === "/api/auth/me") {
+    const session = await getSession(request, env);
+    return session
+      ? json({ authenticated: true, student: { username: session.username, createdAt: session.createdAt } }, 200, origin)
+      : json({ authenticated: false }, 200, origin);
+  }
+  if (request.method === "POST" && !request.headers.get("content-type")?.includes("application/json")) {
+    return json({ error: "json_required" }, 415, origin);
+  }
+  if (request.method === "POST" && ["/api/auth/register", "/api/auth/login"].includes(url.pathname)) {
+    const parsed = await readJsonBody(request, 4000);
+    if (parsed.error) return json({ error: parsed.error }, parsed.error === "request_too_large" ? 413 : 400, origin);
+    const username = typeof parsed.value.username === "string" ? parsed.value.username.trim() : "";
+    const password = typeof parsed.value.password === "string" ? parsed.value.password : "";
+    if (!/^[A-Za-z0-9_-]{3,24}$/.test(username) || password.length < 12 || password.length > 128) {
+      return json({ error: "invalid_credentials_format", message: "اسم المستخدم يجب أن يكون من 3 إلى 24 محرفاً إنجليزياً، وكلمة المرور من 12 إلى 128 محرفاً." }, 400, origin);
+    }
+    if (url.pathname === "/api/auth/register") {
+      const accountId = crypto.randomUUID();
+      const now = Math.floor(Date.now() / 1000);
+      const passwordHash = await hashPassword(password);
+      try {
+        await env.DB.prepare(
+          "INSERT INTO student_accounts (id, username, password_hash, created_at, updated_at) VALUES (?, ?, ?, ?, ?)"
+        ).bind(accountId, username, passwordHash, now, now).run();
+      } catch {
+        return json({ error: "username_unavailable" }, 409, origin);
+      }
+      const token = await createSession(env, accountId);
+      return json({ ok: true, student: { username } }, 201, origin, { "set-cookie": sessionCookie(token) });
+    }
+    const account = await env.DB.prepare(
+      "SELECT id, username, password_hash, created_at FROM student_accounts WHERE username = ? COLLATE NOCASE"
+    ).bind(username).first();
+    const valid = account ? await verifyPassword(password, account.password_hash) : false;
+    if (!valid) return json({ error: "invalid_login" }, 401, origin);
+    const token = await createSession(env, account.id);
+    return json({ ok: true, student: { username: account.username } }, 200, origin, { "set-cookie": sessionCookie(token) });
+  }
+  if (request.method === "POST" && url.pathname === "/api/auth/logout") {
+    const token = cookieValue(request, SESSION_COOKIE);
+    if (token) await env.DB.prepare("DELETE FROM student_sessions WHERE token_hash = ?").bind(await sha256Hex(token)).run();
+    return json({ ok: true }, 200, origin, { "set-cookie": sessionCookie("", 0) });
+  }
+  return json({ error: "not_found" }, 404, origin);
+}
+
+async function handleProgress(request, env, origin) {
+  if (request.method === "OPTIONS") return json({}, 204, origin);
+  const session = await getSession(request, env);
+  if (!session) return json({ error: "authentication_required" }, 401, origin);
+  if (request.method === "GET") {
+    const row = await env.DB.prepare(
+      "SELECT progress_json, revision, updated_at FROM student_progress WHERE account_id = ?"
+    ).bind(session.accountId).first();
+    return json(row
+      ? { progress: JSON.parse(row.progress_json), revision: row.revision, updatedAt: row.updated_at }
+      : { progress: null, revision: 0, updatedAt: null }, 200, origin);
+  }
+  if (request.method !== "PUT") return json({ error: "method_not_allowed" }, 405, origin);
+  if (!request.headers.get("content-type")?.includes("application/json")) return json({ error: "json_required" }, 415, origin);
+  const parsed = await readJsonBody(request, MAX_PROGRESS_BYTES);
+  if (parsed.error) return json({ error: parsed.error }, parsed.error === "request_too_large" ? 413 : 400, origin);
+  const progress = parsed.value.progress;
+  const revision = parsed.value.revision;
+  if (!progress || typeof progress !== "object" || Array.isArray(progress) || !Number.isInteger(revision) || revision < 0) {
+    return json({ error: "invalid_progress_payload" }, 400, origin);
+  }
+  const serialized = JSON.stringify(progress);
+  if (new TextEncoder().encode(serialized).byteLength > MAX_PROGRESS_BYTES) return json({ error: "progress_too_large" }, 413, origin);
+  const now = Math.floor(Date.now() / 1000);
+  if (revision === 0) {
+    try {
+      await env.DB.prepare(
+        "INSERT INTO student_progress (account_id, progress_json, revision, updated_at) VALUES (?, ?, 1, ?)"
+      ).bind(session.accountId, serialized, now).run();
+      return json({ ok: true, revision: 1, updatedAt: now }, 200, origin);
+    } catch {
+      const current = await env.DB.prepare("SELECT revision FROM student_progress WHERE account_id = ?").bind(session.accountId).first();
+      return json({ error: "revision_conflict", currentRevision: current?.revision || 0 }, 409, origin);
+    }
+  }
+  const updated = await env.DB.prepare(
+    "UPDATE student_progress SET progress_json = ?, revision = revision + 1, updated_at = ? WHERE account_id = ? AND revision = ?"
+  ).bind(serialized, now, session.accountId, revision).run();
+  if (!updated.meta?.changes) {
+    const current = await env.DB.prepare("SELECT revision FROM student_progress WHERE account_id = ?").bind(session.accountId).first();
+    return json({ error: "revision_conflict", currentRevision: current?.revision || 0 }, 409, origin);
+  }
+  return json({ ok: true, revision: revision + 1, updatedAt: now }, 200, origin);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -67,14 +258,15 @@ export default {
     // an Origin header; CORS headers are still emitted only for allowlisted origins.
     const healthProbe = request.method === "GET" && ["/health", "/health/db"].includes(url.pathname);
     if (!origin && !healthProbe) return json({ error: "origin_not_allowed" }, 403, null);
-    if (request.method === "OPTIONS" && url.pathname === "/api/ask") {
+    if (request.method === "OPTIONS" && origin) {
       return new Response(null, {
         status: 204,
         headers: {
           ...SECURITY_HEADERS,
           "access-control-allow-origin": origin,
-          "access-control-allow-methods": "POST, OPTIONS",
+          "access-control-allow-methods": "GET, POST, PUT, OPTIONS",
           "access-control-allow-headers": "Content-Type",
+          "access-control-allow-credentials": "true",
           "access-control-max-age": "86400",
           "vary": "Origin"
         }
@@ -91,6 +283,16 @@ export default {
       } catch {
         return json({ ok: false, service: "math-assistant", database: "unavailable" }, 503, origin);
       }
+    }
+    if (url.pathname.startsWith("/api/auth/")) {
+      if (!env.DB) return json({ error: "database_unavailable" }, 503, origin);
+      try { return await handleAuth(request, env, url, origin); }
+      catch { return json({ error: "auth_service_unavailable" }, 503, origin); }
+    }
+    if (url.pathname === "/api/progress") {
+      if (!env.DB) return json({ error: "database_unavailable" }, 503, origin);
+      try { return await handleProgress(request, env, origin); }
+      catch { return json({ error: "progress_service_unavailable" }, 503, origin); }
     }
     if (url.pathname !== "/api/ask") return json({ error: "not_found" }, 404, origin);
     if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, origin);
