@@ -77,11 +77,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 4, "normalized multiword search should find all four relevant worked examples despite Arabic diacritics");
     await page.locator("#solved-example-search").fill("");
     await openPanel("solved-examples-library");
-    await page.locator("#solved-examples-library").waitFor({ state: "hidden" });
+    await page.locator("#solved-examples-library").waitFor({ state: "visible" });
 
     // Exercise scientific calculator functions through the visible interface.
     await openPanel("scientific-calculator");
     await page.locator("#scientific-calculator").waitFor({ state: "visible" });
+    await page.locator("#solved-examples-library").waitFor({ state: "hidden" });
     await page.locator("#calculator-expression").fill("sin(30)+sqrt(16)");
     await page.locator('[data-calc="equals"]').click();
     assert.equal(await page.locator("#calculator-result").innerText(), "4.5", "the calculator should evaluate trigonometry and square roots in degree mode");
