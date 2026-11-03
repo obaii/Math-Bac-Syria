@@ -94,7 +94,7 @@ const assert = require("node:assert/strict");
     await page.locator('[data-calc="clear"]').click();
     assert.equal(await page.locator("#calculator-expression").inputValue(), "", "clear should reset the expression");
     assert.equal(await page.locator("#calculator-result").innerText(), "—", "clear should reset the displayed result");
-    await openPanel("scientific-calculator");
+    await openPanel("topic-section");
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
 
     // Exercise the interactive function plotter using the visible graph controls.
