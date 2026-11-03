@@ -6,17 +6,6 @@
   const response = document.getElementById("math-assistant-response");
   const counter = document.getElementById("math-assistant-char-count");
   const clear = document.getElementById("math-assistant-clear");
-  const explain = document.getElementById("math-assistant-explain");
-  const simplify = document.getElementById("math-assistant-simplify");
-  const diagnose = document.getElementById("math-assistant-diagnose");
-  let aiMode = "steps";
-  const aiStatus = document.getElementById("math-assistant-ai-status");
-  const apiBase = window.MathBacSecurity.safeAssistantApiBase(window.MATH_ASSISTANT_API_URL);
-  const aiEnabled = Boolean(apiBase);
-  if (explain) explain.disabled = !aiEnabled || !input.value.trim();
-  if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
-  if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
-  if (aiStatus && aiEnabled) aiStatus.textContent = "الاتصال بالمساعد الذكي مهيأ. لا تكتب معلومات شخصية في الأسئلة.";
   if (!form || !input || !response) return;
 
   const normalize = value => window.MathSearchUtils.normalize(value);
@@ -103,76 +92,6 @@
     }
     appendMath(response);
   }
-  explain?.addEventListener("click", async () => {
-    const mode = aiMode;
-    aiMode = "steps";
-    if (simplify) simplify.disabled = true;
-    if (diagnose) diagnose.disabled = true;
-    const question = input.value.trim();
-    if (!question || !aiEnabled) return;
-    search(question);
-    const localContext = [...response.querySelectorAll(".math-assistant-card")]
-      .map(card => card.innerText)
-      .join(String.fromCharCode(10, 10))
-      .slice(0, 4000);
-    explain.disabled = true;
-    if (aiStatus) aiStatus.textContent = mode === "simplify"
-      ? "جارٍ تبسيط المفهوم وشرح فكرته بلغة سهلة…"
-      : mode === "diagnose" ? "جارٍ مراجعة محاولتك وتحديد موضع الالتباس…" : "جارٍ إعداد شرح الحل خطوة بخطوة…";
-    const result = make("article","math-assistant-card math-assistant-ai-answer");
-    result.append(make("span","math-assistant-kind",mode === "simplify" ? "تبسيط المفهوم" : mode === "diagnose" ? "مراجعة محاولة الحل" : "شرح ذكي"));
-    result.append(make("p","math-assistant-ai-loading",mode === "simplify"
-      ? "يبحث المساعد عن طريقة سهلة لتوضيح الفكرة."
-      : mode === "diagnose" ? "يراجع المساعد خطوات محاولتك دون افتراض موضع الخطأ مسبقاً." : "يعمل المساعد على تحليل السؤال."));
-    response.append(result);
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
-      let apiResponse;
-      try {
-        apiResponse = await fetch(apiBase + "/api/ask", {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({question, context:localContext, mode}),
-          signal: controller.signal
-        });
-      } finally {
-        clearTimeout(timeout);
-      }
-      const payload = await apiResponse.json().catch(() => ({}));
-      if (!apiResponse.ok || typeof payload.answer !== "string") {
-        const message = apiResponse.status === 429
-          ? "وصل المساعد إلى حد الطلبات المؤقت. انتظر قليلاً ثم أعد المحاولة."
-          : apiResponse.status === 503
-            ? "خدمة النموذج غير متاحة مؤقتاً أو بلغت حصتها المجانية."
-            : "تعذر الحصول على شرح الآن. يمكنك متابعة البحث المحلي في القوانين والأمثلة.";
-        throw new Error(message);
-      }
-      result.querySelector(".math-assistant-ai-loading")?.remove();
-      result.append(make("p","math-assistant-ai-text",payload.answer));
-      if (aiStatus) aiStatus.textContent = mode === "simplify"
-        ? "اكتمل تبسيط المفهوم. قارن الشرح بالقانون والأمثلة المرتبطة."
-        : mode === "diagnose" ? "اكتملت مراجعة المحاولة. قارن الملاحظات بخطواتك وأعد المحاولة."
-          : "اكتمل الشرح. راجع الخطوات وتحقق من النتائج قبل اعتمادها.";
-      appendMath(result);
-    } catch (error) {
-      result.remove();
-      if (aiStatus) aiStatus.textContent = error.name === "AbortError"
-        ? "استغرق الرد وقتاً أطول من المتوقع. حاول مجدداً."
-        : (error.message || "تعذر الاتصال بالمساعد الذكي.");
-    } finally {
-      explain.disabled = !aiEnabled || !input.value.trim();
-      if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
-      if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
-    }
-  });
-
-  simplify?.addEventListener("click", () => {
-    if (!aiEnabled || !input.value.trim() || explain?.disabled) return;
-    aiMode = "simplify";
-    explain?.click();
-  });
-
   form.addEventListener("submit",event => {
     event.preventDefault();
     const query = input.value.trim();
@@ -181,14 +100,6 @@
   });
   input.addEventListener("input",() => {
     if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠";
-    if (explain) explain.disabled = !aiEnabled || !input.value.trim();
-    if (simplify) simplify.disabled = !aiEnabled || !input.value.trim();
-    if (diagnose) diagnose.disabled = !aiEnabled || !input.value.trim();
-  });
-  diagnose?.addEventListener("click", () => {
-    if (!aiEnabled || !input.value.trim() || explain?.disabled) return;
-    aiMode = "diagnose";
-    explain?.click();
   });
   document.querySelectorAll("[data-assistant-prompt]").forEach(button => button.addEventListener("click",() => {
     input.value = button.dataset.assistantPrompt || "";
