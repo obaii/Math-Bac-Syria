@@ -270,7 +270,7 @@ function getQuestionDiagram(question) {
   // expressions and critical points are explicitly present in the question.
   if (prompt.includes("f(x)=x²−4x+1")) {
     return variationTable("جدول تغيرات التابع f(x)=x²−4x+1؛ تنعدم المشتقة عند x=2.",
-      ["−∞", "2", "+∞"], ["−", "0", "+"], ["+∞ ↘", "−3", "↗ +∞"]);
+      ["−∞", "2", "+∞"], ["−", "+"], ["+∞ ↘", "−3", "↗ +∞"]);
   }
   if (prompt.includes("f(x)=x³−3x")) {
     return variationTable("جدول تغيرات التابع على المجال [−2,2] بعد حساب المشتقة.",
@@ -282,15 +282,15 @@ function getQuestionDiagram(question) {
   }
   if (prompt.includes("f(x)=(x+1)^2e^{-x}")) {
     return variationTable("جدول تغيرات التابع؛ تنعدم المشتقة عند x=−1 وx=1.",
-      ["−∞", "−1", "1", "+∞"], ["−", "0 / +", "0 / −", "−"], ["+∞ ↘", "0 ↗", "4/e ↘", "0"]);
+      ["−∞", "−1", "1", "+∞"], ["−", "+", "−"], ["+∞ ↘", "0 ↗", "4/e ↘", "0"]);
   }
   if (prompt.includes("f(x)=\\frac{x-1}{x+1}-e^{-x}") || prompt.includes("f(x)=(x-1)/(x+1)-e^{-x}")) {
     return variationTable("جدول تغيرات التابع على [0,+∞[؛ مشتقته موجبة وقيمته عند الصفر −2 ونهايته 1.",
       ["0", "+∞"], ["+"], ["−2 ↗", "1"]);
   }
   if (prompt.includes("في السؤال الأول من دورة 2019 الأولى") || prompt.includes("جدول تغيرات دورة 2019 الأولى")) {
-    return variationTable("جدول التغيرات المستخلص من معطيات أسئلة دورة 2019 الأولى: صغرى عند −1 وعظمى عند 2.",
-      ["−∞", "−1", "2", "+∞"], ["−", "0 / +", "0 / −", "−"], ["+∞ ↘", "−2 ↗", "4 ↘", "3"]);
+    return variationTable("ملخص القيم والحدود الواردة في أسئلة دورة 2019 الأولى؛ لا يفترض المخطط اتجاهاً خارج المجال المذكور.",
+      ["x→−∞", "x=−1", "x=2", "x→+∞"], null, ["f(x)→+∞", "−2", "4", "f(x)→3"]);
   }
   if (prompt.includes("دورة 2022 الأولى") && prompt.includes("جدول تغيرات")) {
     return variationTable("ملخص النهايات المذكورة في نص السؤال؛ لم تُضف قيمة غير واردة عند 1 من اليمين.",
@@ -302,7 +302,7 @@ function getQuestionDiagram(question) {
       <svg viewBox="0 0 340 210" role="img" aria-label="منحنى له قيمة حدية عند النقطة واحد واحد ومماس أفقي">
         <path d="M25 170H315 M70 190V20" stroke="#64748b" stroke-width="1.5" fill="none"/>
         <path d="M82 55 Q170 55 258 55" stroke="#b45309" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
-        <path d="M45 130 Q105 130 145 55 Q190 8 235 55 Q270 105 305 125" stroke="#2563eb" stroke-width="2.6" fill="none"/>
+        <path d="M45 130 C90 130 125 55 170 55 C215 55 250 130 305 130" stroke="#2563eb" stroke-width="2.6" fill="none"/>
         <circle cx="170" cy="55" r="4" fill="#0f766e"/>
         <g fill="var(--text,#172b4d)" font-size="12"><text x="178" y="48">(1,1)</text><text x="264" y="48">y=1</text><text x="302" y="188">x</text><text x="55" y="25">y</text></g>
       </svg>
