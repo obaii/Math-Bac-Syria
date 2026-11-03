@@ -47,6 +47,10 @@ jobs:
           exit 1
       - name: Run student progress regression tests
         run: node scripts/student-progress-tests.cjs
+      - name: Run formula library regression tests
+        run: node scripts/formula-library-tests.cjs
+      - name: Run solved examples library regression tests
+        run: node scripts/solved-examples-tests.cjs
       - name: Run browser smoke tests
         run: node scripts/browser-user-flow-tests.cjs
       - name: Run accessibility and keyboard navigation tests
