@@ -43,6 +43,18 @@ for (const topic of topics) {
 if (guided.length < 30) {
   failures.push(`Expected at least 30 guided questions after the curriculum expansion, found ${guided.length}.`);
 }
+
+const hinted = questions.filter((q) => Array.isArray(q.hints) && q.hints.length === 3);
+if (hinted.length !== questions.length) {
+  failures.push(`Expected progressive hints for all ${questions.length} existing questions, found ${hinted.length}.`);
+}
+for (const [index, q] of questions.entries()) {
+  if (!Array.isArray(q.hints) || q.hints.length !== 3 ||
+      q.hints.some((hint) => typeof hint !== "string" || !hint.trim())) {
+    failures.push(`Question #${index + 1} (${q.topic || "unknown topic"}) must have exactly three non-empty progressive hints.`);
+  }
+}
+
 const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
@@ -75,7 +87,7 @@ if (!/app\.js\?v=20261103-2/.test(indexHtml)) {
 if (!/enhancements\.js\?v=20261102-6/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-if (indexHtml.indexOf("solution-guides.js?v=20261103-2") > indexHtml.indexOf("app.js?v=20261103-2")) {
+if (indexHtml.indexOf("solution-guides.js?v=20261103-3") > indexHtml.indexOf("app.js?v=20261103-2")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
 
@@ -99,6 +111,7 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(`PASS: ${guided.length} questions have structured solution steps and a key idea.`);
+  console.log(`PASS: all ${questions.length} existing questions have three progressive hints.`);
   console.log(`PASS: all ${topics.length} curriculum topics have at least one detailed guide.`);
   console.log("PASS: the guided-solution renderer includes the step list, key idea, and MathJax typesetting hook.");
 }
