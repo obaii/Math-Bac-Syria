@@ -35,3 +35,10 @@ body.dark-mode .math-assistant-form textarea{background:#101827;color:#e7edf8;bo
 body.dark-mode .math-assistant-card{background:#101827;border-color:#405579}
 body.dark-mode .math-assistant-suggestions button,body.dark-mode .math-assistant-clear{color:#e7edf8;border-color:#405579}
 @media(max-width:600px){.math-assistant{padding:14px}.math-assistant-form-actions button{width:100%}.math-assistant-suggestions button{flex:1 1 auto}.math-assistant-equation{font-size:13px}}
+
+.math-assistant-explain{display:block;width:100%;min-height:44px;margin:10px 0 6px;padding:10px 14px;border:1px solid var(--primary,#315edb);border-radius:10px;background:var(--primary,#315edb);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.math-assistant-explain:disabled{opacity:.55;cursor:not-allowed}
+.math-assistant-ai-status{margin:5px 0 10px;color:var(--muted,#64748b);font-size:12px;line-height:1.8}
+.math-assistant-ai-text{white-space:pre-wrap;overflow-wrap:anywhere;line-height:2}
+.math-assistant-ai-answer{border-color:var(--primary,#315edb)}
+body.dark-mode .math-assistant-explain{background:var(--primary,#557ee8);border-color:var(--primary,#557ee8);color:#fff}
