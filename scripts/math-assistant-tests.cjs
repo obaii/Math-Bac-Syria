@@ -14,7 +14,9 @@ const assert = require("node:assert/strict");
       return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
         answer:payload.mode==="simplify"
           ? "الفكرة ببساطة: نستخدم القانون المناسب لفهم العلاقة بين الكميات."
-          : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون."
+          : payload.mode==="diagnose"
+            ? "خطوتك الأولى صحيحة. موضع الالتباس هو نقل الحد دون تغيير إشارته. صحح الإشارة ثم تحقق بالتعويض."
+            : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون."
       })});
     });
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/",{waitUntil:"domcontentloaded"});
@@ -47,6 +49,12 @@ const assert = require("node:assert/strict");
     await simplify.click();
     await page.locator(".math-assistant-ai-answer").last().locator(".math-assistant-ai-text").waitFor({state:"visible",timeout:10000});
     assert.match(await page.locator(".math-assistant-ai-answer").last().innerText(),/الفكرة ببساطة/);
+    await prompt.fill("المسألة: 2x + 3 = 9. محاولتي: 2x = 9 + 3 ثم x = 6.");
+    const diagnose=page.locator("#math-assistant-diagnose");
+    assert.equal(await diagnose.isEnabled(),true,"the attempt-review button should enable with a configured endpoint");
+    await diagnose.click();
+    await page.locator(".math-assistant-ai-answer").last().locator(".math-assistant-ai-text").waitFor({state:"visible",timeout:10000});
+    assert.match(await page.locator(".math-assistant-ai-answer").last().innerText(),/موضع الالتباس/);
     assert.deepEqual(errors,[],"assistant interactions should not produce browser errors");
     console.log("Interactive math assistant tests passed.");
   } finally {
