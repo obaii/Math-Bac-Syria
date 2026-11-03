@@ -92,8 +92,8 @@ const checks = [
   ["study plan dynamically includes due spaced reviews without persisting duplicate tasks", /const dueReviewCount = getScheduledReviews\(\)\.filter\(item => item\.due <= Date\.now\(\)\)\.length/.test(enhancements) && /study-plan-due-review/.test(enhancements) && /addEventListener\("click", startSmartReview\)/.test(enhancements)],
   ["review summary is responsive and supports dark mode through shared student-tool styles", /review-plan-summary/.test(enhancements) && /@media\(max-width:640px\)\{\.review-plan-summary/.test(enhancements) && /body\.dark-mode \.review-plan-item/.test(enhancements)],
   ["review assistant builds recommendations from local topic accuracy and saved mistakes", /buildReviewAssistantSnapshot/.test(enhancements) && /mistakeCounts\[item\.topic\]/.test(enhancements) && /priorities/.test(enhancements)],
-  ["review assistant sends only an aggregate progress summary after explicit activation", /mode:"review"/.test(enhancements) && /JSON\.stringify\(snapshot\)/.test(enhancements) && /review-assistant-generate/.test(enhancements) && /ملخص مجمّع/.test(html)],
-  ["review assistant has a local fallback when AI is unavailable", /buildLocalReviewAssistantPlan/.test(enhancements) && /أبقينا الخطة المحلية ظاهرة/.test(enhancements)],
+  ["review assistant creates a local plan after explicit activation without network requests", /const runReviewAssistant = \(\) => \{[\s\S]*?buildLocalReviewAssistantPlan\(snapshot\)[\s\S]*?لا تُرسل بياناتك إلى أي خادم/.test(enhancements) && !/const runReviewAssistant = \(\) => \{[\s\S]*?fetch\(/.test(enhancements)],
+  ["review assistant clearly discloses that progress stays on the device", /تُنشأ خطة المراجعة محلياً على جهازك، ولا تُرسل بياناتك إلى أي خادم/.test(enhancements)],
   ["review assistant explains the optional aggregate data transfer", /footer-privacy/.test(html) && /ملخص أداء تعليمي مجمّع/.test(html)],
   ["browser flow verifies the spaced-review summary metrics", /review-plan-summary/.test(browser) && /متقن مبدئياً/.test(browser)],
 
