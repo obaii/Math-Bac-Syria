@@ -8,6 +8,7 @@ const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const flashcards = fs.readFileSync(path.join(root, "flashcards.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
+const mrg = fs.readFileSync(path.join(root, "merge-questions.js"), "utf8");
 const questionsSource = fs.readFileSync(path.join(root, "questions.js"), "utf8");
 const typedQuestionsSource = fs.readFileSync(path.join(root, "questions_typed_additional.js"), "utf8");
 const typedContext = vm.createContext({ console });
@@ -64,7 +65,7 @@ const checks = [
   ["flashcards are cached for offline study", fs.readFileSync(path.join(root, "sw.js"), "utf8").includes('"./flashcards.js"')],
   ["exam setup exposes start, question count, difficulty, and duration", ["start-exam", "exam-question-count", "exam-difficulty", "exam-duration"].every(id => ids.includes(id))],
   ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("questions_typed_additional.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
-  ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && app.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
+  ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && scriptPaths.indexOf("merge-questions.js") < scriptPaths.indexOf("app.js") && mrg.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
   ["answer feedback, solution rendering, and progress persistence are wired", app.includes("function chooseAnswer(") && app.includes('$("feedback").innerHTML') && app.includes("function saveProgress(") && app.includes("progressData.seenQuestions[questionKey(q)] = true")],
   ["exam and student-tool click handlers exist", enhancements.includes("startButton.onclick = () =>") && enhancements.includes("startExam();") && enhancements.includes('bindClick("bookmark-review", toggleBookmarkList)') && enhancements.includes('bindClick("toggle-dark-mode", toggleDarkMode)')],
   ["mathematics rendering and supplemental diagrams are connected", has("tex-mml-chtml.js") && app.includes("getQuestionDiagram(q)") && has("question-diagrams.js")],
