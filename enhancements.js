@@ -352,6 +352,7 @@
         <p>صدّر نسخة احتياطية من تقدمك، أو استوردها على جهاز آخر. المراجعة الذكية تعتمد على الأسئلة التي أخطأت بها ومواعيد مراجعتها.</p>
         <div class="tools-actions">
           <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
+          <button type="button" id="review-assistant-generate" aria-controls="review-assistant-panel">مساعد المراجعة الذكي</button>
           <button type="button" id="review-plan-toggle" aria-expanded="false">خطة المراجعة</button>
           <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
           <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
@@ -364,6 +365,12 @@
         <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
         <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
         <section class="review-plan" id="review-plan" aria-live="polite" hidden></section>
+        <section id="review-assistant-panel" class="review-assistant-panel" aria-labelledby="review-assistant-title" aria-live="polite" hidden>
+          <h4 id="review-assistant-title">خطة مراجعتك الشخصية</h4>
+          <p class="review-assistant-disclosure">تُحلّل المنصة تقدمك على جهازك. عند طلب الخطة الذكية، يُرسل ملخص مجمّع عن الأبحاث ونسب الإجابة والأخطاء فقط.</p>
+          <p id="review-assistant-status" role="status">ستظهر هنا توصيات مراجعة مبنية على أدائك.</p>
+          <div id="review-assistant-output" class="review-assistant-output"></div>
+        </section>
         <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
         <ul class="bookmark-list" id="bookmark-list" hidden></ul>
       `;
@@ -427,6 +434,26 @@
       if (report && report.parentNode) report.insertAdjacentElement("afterend", plan);
       else panel.appendChild(plan);
     }
+    if (actions && !document.getElementById("review-assistant-generate")) {
+      const reviewButton = document.createElement("button");
+      reviewButton.type = "button";
+      reviewButton.id = "review-assistant-generate";
+      reviewButton.setAttribute("aria-controls", "review-assistant-panel");
+      reviewButton.textContent = "مساعد المراجعة الذكي";
+      actions.appendChild(reviewButton);
+    }
+    if (!document.getElementById("review-assistant-panel")) {
+      const reviewAssistant = document.createElement("section");
+      reviewAssistant.id = "review-assistant-panel";
+      reviewAssistant.className = "review-assistant-panel";
+      reviewAssistant.setAttribute("aria-labelledby", "review-assistant-title");
+      reviewAssistant.setAttribute("aria-live", "polite");
+      reviewAssistant.hidden = true;
+      reviewAssistant.innerHTML = "<h4 id=\"review-assistant-title\">خطة مراجعتك الشخصية</h4><p class=\"review-assistant-disclosure\">تُحلّل المنصة تقدمك على جهازك. عند طلب الخطة الذكية، يُرسل ملخص مجمّع عن الأبحاث ونسب الإجابة والأخطاء فقط.</p><p id=\"review-assistant-status\" role=\"status\">ستظهر هنا توصيات مراجعة مبنية على أدائك.</p><div id=\"review-assistant-output\" class=\"review-assistant-output\"></div>";
+      const report = document.getElementById("progress-report");
+      if (report && report.parentNode) report.insertAdjacentElement("afterend", reviewAssistant);
+      else panel.appendChild(reviewAssistant);
+    }
     const bindClick = (id, handler) => {
       const element = document.getElementById(id);
       if (!element || element.dataset.enhancementBound === "true") return;
@@ -434,6 +461,7 @@
       element.dataset.enhancementBound = "true";
     };
     bindClick("smart-review", startSmartReview);
+    bindClick("review-assistant-generate", runReviewAssistant);
     bindClick("review-plan-toggle", toggleReviewPlan);
     bindClick("bookmark-review", toggleBookmarkList);
     bindClick("guided-review", toggleGuidedQuestionList);
@@ -878,6 +906,98 @@
       })
       .filter(Boolean)
       .sort((a, b) => a.due - b.due);
+  };
+  const buildReviewAssistantSnapshot = () => {
+    const bankTopics = Array.isArray(topics) ? topics : [];
+    const stats = progressData && isRecord(progressData.topicStats) ? progressData.topicStats : {};
+    const mistakes = progressData && isRecord(progressData.mistakes) ? progressData.mistakes : {};
+    const mistakeCounts = {};
+    for (const item of Object.values(mistakes)) {
+      if (item && typeof item.topic === "string") mistakeCounts[item.topic] = (mistakeCounts[item.topic] || 0) + 1;
+    }
+    const seenQuestions = isRecord(progressData.seenQuestions) ? progressData.seenQuestions : {};
+    const topicRows = bankTopics.map(topic => {
+      const stat = isRecord(stats[topic]) ? stats[topic] : {};
+      const answered = Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+      const correct = Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+      const questionCount = (Array.isArray(questions) ? questions : []).filter(q => q.topic === topic).length;
+      const seenCount = Object.keys(seenQuestions).filter(key => key.startsWith(topic + "::")).length;
+      return { topic, answered, correct, accuracy: answered ? Math.round(correct / answered * 100) : null,
+        mistakes: mistakeCounts[topic] || 0, remaining: Math.max(0, questionCount - seenCount) };
+    });
+    const priorities = topicRows.filter(row => row.mistakes > 0 || (row.answered > 0 && row.accuracy < 85))
+      .sort((a,b) => b.mistakes-a.mistakes || a.accuracy-b.accuracy || b.answered-a.answered).slice(0,6);
+    const unstarted = topicRows.filter(row => row.answered === 0).slice(0,3).map(row => row.topic);
+    const attempts = Array.isArray(progressData.attempts) ? progressData.attempts : [];
+    const recent = attempts.filter(item => item && typeof item.date === "string" && Number.isFinite(Date.parse(item.date))
+      && Date.now() - Date.parse(item.date) <= 7*86400000 && Date.now() >= Date.parse(item.date));
+    const answered = Number.isSafeInteger(progressData.answered) ? progressData.answered : 0;
+    const correct = Number.isSafeInteger(progressData.correct) ? Math.min(progressData.correct, answered) : 0;
+    const dueReviews = getScheduledReviews().filter(item => item.due <= Date.now()).length;
+    return { overall:{answered,correct,accuracy:answered?Math.round(correct/answered*100):null},
+      recentSevenDays:{answers:recent.length,correct:recent.filter(item=>item.correct).length},
+      dueReviews, priorities, unstarted };
+  };
+  const buildLocalReviewAssistantPlan = snapshot => {
+    if (!snapshot.overall.answered) return "لم تُسجّل إجابات كافية بعد لبناء خطة شخصية. ابدأ بجلسة قصيرة من ٥ إلى ١٠ أسئلة في أحد الأبحاث، ثم اطلب الخطة مجدداً.";
+    const lines = [
+      "ملخصك: " + snapshot.overall.answered.toLocaleString("ar") + " إجابة، ودقة إجمالية " + snapshot.overall.accuracy.toLocaleString("ar") + "٪.",
+      "لديك " + snapshot.dueReviews.toLocaleString("ar") + " مراجعة متباعدة مستحقة الآن.",
+      "", "أولويات المراجعة:"
+    ];
+    if (snapshot.priorities.length) snapshot.priorities.forEach((row,index) => {
+      const reason = row.mistakes ? row.mistakes.toLocaleString("ar") + " أخطاء محفوظة" : "دقة " + row.accuracy.toLocaleString("ar") + "٪";
+      lines.push((index+1) + ". " + row.topic + ": " + reason + ". ابدأ بمراجعة الفكرة الأساسية ثم حل ٥ أسئلة من البنك.");
+    });
+    else lines.push("لا يظهر ضعف واضح في الأبحاث التي تدربت عليها؛ وسّع التغطية إلى أسئلة جديدة ومتقدمة.");
+    if (snapshot.unstarted.length) lines.push("", "أبحاث لم تبدأ بها بعد: " + snapshot.unstarted.join("، ") + ". اختر بحثاً واحداً منها بعد معالجة الأولويات.");
+    lines.push("", "جلسة مقترحة مدتها ٣٠ دقيقة:", "• ٥ دقائق: استرجاع القوانين من الذاكرة.", "• ١٥ دقيقة: حل أسئلة الأولوية دون النظر إلى الحل.", "• ١٠ دقائق: تصحيح الحل وتسجيل الفكرة التي تحتاج إلى تثبيت.");
+    return lines.join("\n");
+  };
+  const runReviewAssistant = async () => {
+    const panel = document.getElementById("review-assistant-panel");
+    const status = document.getElementById("review-assistant-status");
+    const output = document.getElementById("review-assistant-output");
+    const button = document.getElementById("review-assistant-generate");
+    if (!panel || !status || !output || !button) return;
+    panel.hidden = false;
+    panel.setAttribute("aria-busy", "true");
+    button.disabled = true;
+    const snapshot = buildReviewAssistantSnapshot();
+    output.textContent = buildLocalReviewAssistantPlan(snapshot);
+    const apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim().replace(/\/+$/, "");
+    if (!snapshot.overall.answered || !apiBase) {
+      status.textContent = !snapshot.overall.answered
+        ? "ابدأ التدريب أولاً؛ ستُبنى الخطة من نتائجك الفعلية."
+        : "هذه خطة محلية مبنية على تقدمك. يمكن إضافة اقتراحات النموذج الذكي عند تفعيل الخدمة.";
+      panel.removeAttribute("aria-busy");
+      button.disabled = false;
+      panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+      return;
+    }
+    status.textContent = "يراجع المساعد ملخص أدائك ويعد خطة مراجعة مناسبة…";
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      let response;
+      try {
+        response = await fetch(apiBase + "/api/ask", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({mode:"review",question:"أنشئ خطة مراجعة رياضيات شخصية لمدة سبعة أيام، مرتبة حسب الأولوية، مع وقت مقترح لكل جلسة وطريقة للتحقق من التحسن.",context:JSON.stringify(snapshot)}),
+          signal:controller.signal
+        });
+      } finally { clearTimeout(timeout); }
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || typeof payload.answer !== "string" || !payload.answer.trim()) throw new Error("review_unavailable");
+      output.textContent = payload.answer.trim();
+      status.textContent = "اكتملت الخطة الذكية اعتماداً على ملخص أدائك الحالي.";
+    } catch (_) {
+      status.textContent = "تعذر الوصول إلى النموذج الآن؛ أبقينا الخطة المحلية ظاهرة حتى لا تتوقف مراجعتك.";
+    } finally {
+      panel.removeAttribute("aria-busy");
+      button.disabled = false;
+      panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+    }
   };
   const startSmartReview = () => {
     const now = Date.now();

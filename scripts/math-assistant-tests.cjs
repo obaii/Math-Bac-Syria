@@ -6,13 +6,20 @@ const assert = require("node:assert/strict");
   const browser = await chromium.launch({headless:true});
   const page = await browser.newPage({viewport:{width:390,height:844}});
   const errors=[];
+  let reviewModeSeen = false;
   page.on("pageerror",error=>errors.push(error.message));
+  await page.addInitScript(() => localStorage.setItem("mathBacSyriaProgressV1", JSON.stringify({
+    answered:10, correct:4, mistakes:{}, topicStats:{"النهايات والاستمرار":{answered:10,correct:4}}, attempts:[], seenQuestions:{}
+  })));
   try {
     await page.route("**/math-assistant-config.js*",route=>route.fulfill({contentType:"application/javascript",body:'window.MATH_ASSISTANT_API_URL = "https://assistant-test.example.workers.dev";'}));
     await page.route("https://assistant-test.example.workers.dev/api/ask",route=>{
       const payload=route.request().postDataJSON();
+      if (payload.mode === "review") reviewModeSeen = true;
       return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
-        answer:payload.mode==="simplify"
+        answer:payload.mode==="review"
+          ? "خطة مراجعة شخصية لمدة سبعة أيام: ابدأ ببحث النهايات والاستمرار، ثم أعد قياس دقتك."
+          : payload.mode==="simplify"
           ? "الفكرة ببساطة: نستخدم القانون المناسب لفهم العلاقة بين الكميات."
           : payload.mode==="diagnose"
             ? "خطوتك الأولى صحيحة. موضع الالتباس هو نقل الحد دون تغيير إشارته. صحح الإشارة ثم تحقق بالتعويض."
@@ -55,6 +62,13 @@ const assert = require("node:assert/strict");
     await diagnose.click();
     await page.locator(".math-assistant-ai-answer").last().locator(".math-assistant-ai-text").waitFor({state:"visible",timeout:10000});
     assert.match(await page.locator(".math-assistant-ai-answer").last().innerText(),/موضع الالتباس/);
+    const toolsShortcut=page.locator('[data-panel-toggle="student-tools"]');
+    await toolsShortcut.click();
+    await page.locator("#student-tools").waitFor({state:"visible"});
+    await page.locator("#review-assistant-generate").click();
+    await page.locator("#review-assistant-output").waitFor({state:"visible"});
+    await page.waitForFunction(() => document.querySelector("#review-assistant-output")?.textContent.includes("سبعة أيام"));
+    assert.equal(reviewModeSeen,true,"the review assistant should call the dedicated AI review mode");
     assert.deepEqual(errors,[],"assistant interactions should not produce browser errors");
     console.log("Interactive math assistant tests passed.");
   } finally {

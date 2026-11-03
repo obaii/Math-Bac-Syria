@@ -20,7 +20,7 @@
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
-  <link rel="stylesheet" href="math-assistant.css?v=20261103-2">
+  <link rel="stylesheet" href="math-assistant.css?v=20261103-3">
    <link rel="stylesheet" href="style-overrides.css?v=20261103-3">
   <style>
     .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
@@ -66,7 +66,7 @@
   <script defer src="solution-guides.js?v=20261103-3"></script>
   <script defer src="question-diagrams.js?v=20261029-1"></script>
   <script defer src="app.js?v=20261103-2"></script>
-  <script defer src="enhancements.js?v=20261102-6"></script>
+  <script defer src="enhancements.js?v=20261103-3"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
@@ -221,6 +221,7 @@
       <p>راجع الأسئلة، واحفظ المسائل المهمة، وتابع تقدمك، وجرّب الوضع الليلي ومحاكاة الامتحان.</p>
       <div class="tools-actions">
         <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
+        <button type="button" id="review-assistant-generate" aria-controls="review-assistant-panel">مساعد المراجعة الذكي</button>
         <button type="button" id="bookmark-review">مراجعة المسائل المحفوظة (<span id="bookmark-count">0</span>)</button>
         <button type="button" id="guided-review" aria-expanded="false">الأسئلة ذات الحل التفصيلي (<span id="guided-count">0</span>)</button>
         <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
@@ -231,6 +232,12 @@
       </div>
       <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
       <section class="progress-report" id="progress-report" aria-live="polite" hidden></section>
+      <section id="review-assistant-panel" class="review-assistant-panel" aria-labelledby="review-assistant-title" aria-live="polite" hidden>
+        <h4 id="review-assistant-title">خطة مراجعتك الشخصية</h4>
+        <p class="review-assistant-disclosure">تُحلّل المنصة تقدمك على جهازك. عند طلب الخطة الذكية، يُرسل إلى خدمة الذكاء الاصطناعي ملخص مجمّع عن الأبحاث ونسب الإجابة والأخطاء فقط، دون اسمك أو نصوص إجاباتك.</p>
+        <p id="review-assistant-status" role="status">ستظهر هنا توصيات مراجعة مبنية على أدائك.</p>
+        <div id="review-assistant-output" class="review-assistant-output"></div>
+      </section>
       <div class="offline-status" id="offline-status" aria-live="polite">جارٍ التحقق من حالة الاتصال...</div>
       <ul class="bookmark-list" id="bookmark-list" hidden></ul>
     </section>
@@ -385,7 +392,7 @@
 </main>
 <footer><div class="footer-brand"><span>∑</span>  رياضيات البكالوريا السورية <br>
    تصميم وإعداد <br>
-    المهندس : أبي حلو</div><p>منصة تعليمية مستقلة للمراجعة والتدريب · لا تتطلب حساباً</p><p class="footer-privacy">يُحفظ تقدمك على هذا الجهاز فقط، ولا يُرسل إلى أي خادم.</p>
+    المهندس : أبي حلو</div><p>منصة تعليمية مستقلة للمراجعة والتدريب · لا تتطلب حساباً</p><p class="footer-privacy">يُحفظ تقدمك على هذا الجهاز. ولا يُرسل إلى خدمة الذكاء الاصطناعي إلا ملخص أداء تعليمي مجمّع عند طلب إنشاء خطة مراجعة ذكية.</p>
   <p class="footer-disclaimer">مبادرة تعليمية فردية مستقلة لدعم الطلاب، وليست منصة حكومية رسمية ولا تمثل وزارة التربية.</p>
   <p><a href="https://github.com/obaii/Math-Bac-Syria/issues/new?title=%D8%A5%D8%A8%D9%84%D8%A7%D8%BA%20%D8%B9%D9%86%20%D8%AE%D8%B7%D8%A3%20%D9%81%D9%8A%20%D8%B3%D8%A4%D8%A7%D9%84" target="_blank" rel="noopener noreferrer">هل وجدت خطأً في سؤال أو حل؟ أبلغنا على GitHub</a></p></footer>
 </body>

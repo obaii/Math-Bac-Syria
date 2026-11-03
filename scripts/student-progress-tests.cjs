@@ -37,7 +37,7 @@ const checks = [
   ["backup import writes both records before changing in-memory state", /localStorage\.setItem\(STORAGE_KEY, JSON\.stringify\(nextProgress\)\)[\s\S]*?localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(nextExtras\)\)[\s\S]*?progressData = nextProgress;[\s\S]*?extras = nextExtras;/.test(enhancements)],
   ["backup import attempts to restore prior storage after a failed write", /catch \(storageError\)[\s\S]*?previousProgressRaw === null[\s\S]*?previousExtrasRaw === null[\s\S]*?تعذر حفظ النسخة الاحتياطية على هذا الجهاز/.test(enhancements)],
   ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)],
-  ["student-tools and exam script cache version is bumped for updated deployment", /enhancements\.js\?v=20261102-6/.test(html)],
+  ["student-tools and exam script cache version is bumped for updated deployment", /enhancements\.js\?v=20261103-3/.test(html)],
   ["practice session counters clamp answered and remaining values to the question total", /const answeredCount = Math\.min\(Math\.max\(Number\(completed\) \|\| 0, 0\), total\)/.test(app) && /const remainingCount = Math\.max\(0, total - answeredCount\)/.test(app)],
   ["practice session accuracy uses only answered questions and never exceeds their count", /const correct = Math\.min\(Math\.max\(Number\(correctCount\) \|\| 0, 0\), answeredCount\)/.test(app) && /const accuracy = answeredCount \? Math\.round\(correct \/ answeredCount \* 100\) : 0/.test(app)],
   ["practice session summary exposes answered, remaining, and accuracy fields", ["session-answered", "session-remaining", "session-accuracy"].every(id => html.includes('id="' + id + '"')) && ["session-answered", "session-remaining", "session-accuracy"].every(id => app.includes('$("' + id + '")'))],
@@ -86,6 +86,10 @@ const checks = [
   ["review questions expose understandable mastery stages and reset closer after mistakes", /يحتاج إلى تثبيت/.test(enhancements) && /متقن مبدئياً/.test(enhancements) && /قيد الإتقان/.test(enhancements) && /stage:0, due:addDays\(1\), lastResult:"wrong"/.test(enhancements)],
   ["study plan dynamically includes due spaced reviews without persisting duplicate tasks", /const dueReviewCount = getScheduledReviews\(\)\.filter\(item => item\.due <= Date\.now\(\)\)\.length/.test(enhancements) && /study-plan-due-review/.test(enhancements) && /addEventListener\("click", startSmartReview\)/.test(enhancements)],
   ["review summary is responsive and supports dark mode through shared student-tool styles", /review-plan-summary/.test(enhancements) && /@media\(max-width:640px\)\{\.review-plan-summary/.test(enhancements) && /body\.dark-mode \.review-plan-item/.test(enhancements)],
+  ["review assistant builds recommendations from local topic accuracy and saved mistakes", /buildReviewAssistantSnapshot/.test(enhancements) && /mistakeCounts\[item\.topic\]/.test(enhancements) && /priorities/.test(enhancements)],
+  ["review assistant sends only an aggregate progress summary after explicit activation", /mode:"review"/.test(enhancements) && /JSON\.stringify\(snapshot\)/.test(enhancements) && /review-assistant-generate/.test(enhancements) && /ملخص مجمّع/.test(html)],
+  ["review assistant has a local fallback when AI is unavailable", /buildLocalReviewAssistantPlan/.test(enhancements) && /أبقينا الخطة المحلية ظاهرة/.test(enhancements)],
+  ["review assistant explains the optional aggregate data transfer", /footer-privacy/.test(html) && /ملخص أداء تعليمي مجمّع/.test(html)],
   ["browser flow verifies the spaced-review summary metrics", /review-plan-summary/.test(browser) && /متقن مبدئياً/.test(browser)]
 ];
 let failures = 0;
