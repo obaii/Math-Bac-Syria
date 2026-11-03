@@ -288,13 +288,39 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع على [0,+∞[؛ مشتقته موجبة وقيمته عند الصفر −2 ونهايته 1.",
       ["0", "+∞"], ["+"], ["−2 ↗", "1"]);
   }
-  if (prompt.includes("في السؤال الأول من دورة 2019 الأولى") || prompt.includes("جدول تغيرات دورة 2019 الأولى")) {
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("جدول تغيرات")) {
     return variationTable("ملخص القيم والحدود الواردة في أسئلة دورة 2019 الأولى؛ لا يفترض المخطط اتجاهاً خارج المجال المذكور.",
       ["x→−∞", "x=−1", "x=2", "x→+∞"], null, ["f(x)→+∞", "−2", "4", "f(x)→3"]);
   }
-  if (prompt.includes("دورة 2022 الأولى") && prompt.includes("جدول تغيرات")) {
+  if (prompt.includes("جدول تغيرات") && (prompt.includes("R\\\\{1}") || prompt.includes("R\\{1}") || prompt.includes("معرف على R"))) {
     return variationTable("ملخص النهايات المذكورة في نص السؤال؛ لم تُضف قيمة غير واردة عند 1 من اليمين.",
       ["x→−∞", "x→1⁻", "x→+∞"], null, ["f(x)→+∞", "f(x)→−∞", "f(x)→2"]);
+  }
+  if (prompt.includes("جدول تغيرات") && prompt.includes("f(x)=e^(−2x)+2x−2")) {
+    return variationTable("جدول تغيرات التابع: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
+      ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
+  }
+  if (prompt.includes("مركز") && prompt.includes("جدول تغيرات التابع") && prompt.includes("يقطع محور الفواصل في نقطتين")) {
+    return `<figure class="question-diagram" aria-label="مخطط يوضح تقاطع منحنى التابع مع محور الفواصل في نقطتين">
+      <figcaption>مخطط توضيحي: يقطع المنحنى محور الفواصل مرتين كما يذكر السؤال؛ مواضع الجذور الدقيقة غير معطاة هنا.</figcaption>
+      <svg viewBox="0 0 340 205" role="img" aria-label="منحنى يقطع محور الفواصل في نقطتين">
+        <path d="M25 100H315 M55 180V18" stroke="#64748b" stroke-width="1.5" fill="none"/>
+        <path d="M35 35 C75 35 86 165 130 100 S190 35 220 100 S270 165 305 35" stroke="#2563eb" stroke-width="2.6" fill="none"/>
+        <circle cx="105" cy="100" r="4" fill="#0f766e"/><circle cx="245" cy="100" r="4" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="300" y="93">x</text><text x="43" y="22">y</text><text x="92" y="119">جذر 1</text><text x="232" y="119">جذر 2</text></g>
+      </svg>
+    </figure>`;
+  }
+  if (prompt.includes("النموذج الوزاري الأول لعام 2017") && prompt.includes("f(1)=1") && prompt.includes("قيمة عظمى محلية")) {
+    return `<figure class="question-diagram" aria-label="منحنى له قيمة عظمى محلية عند النقطة (1,1)">
+      <figcaption>مخطط توضيحي للقيمة العظمى المحلية: f(1)=1 أكبر من قيم التابع في جوار النقطة.</figcaption>
+      <svg viewBox="0 0 340 205" role="img" aria-label="منحنى يبلغ قيمة عظمى محلية عند x يساوي واحداً">
+        <path d="M25 170H315 M55 185V18" stroke="#64748b" stroke-width="1.5" fill="none"/>
+        <path d="M35 155 C82 150 108 75 170 55 C225 74 252 145 305 155" stroke="#2563eb" stroke-width="2.7" fill="none"/>
+        <circle cx="170" cy="55" r="4.5" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="178" y="48">(1,1)</text><text x="302" y="188">x</text><text x="43" y="22">y</text></g>
+      </svg>
+    </figure>`;
   }
   if (prompt.includes("f(1)=1") && prompt.includes("f′(1)=0") && prompt.includes("جدول تغيرات")) {
     return `<figure class="question-diagram" aria-label="مخطط مماس أفقي عند النقطة (1,1)">
