@@ -83,7 +83,7 @@ if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')
 if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
-if (!source.includes('source.textContent = "المصدر: "') || !source.includes('link.href = item.sourceReference')) failures.push("Sourced examples must display their attribution and source link.");
+if (!source.includes('source.textContent = "المصدر: "') || !source.includes('window.MathBacSecurity.safeHttpsUrl(item.sourceReference)') || !source.includes('link.href = sourceUrl')) failures.push("Sourced examples must display their attribution and source link.");
 
 if (failures.length) {
   console.error("Solved examples library checks failed:");
