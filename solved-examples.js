@@ -415,13 +415,13 @@
   });
 
   function render() {
-    const term = searchInput.value.trim().toLocaleLowerCase("ar");
+    const term = searchInput.value.trim();
     const filtered = examples.filter(item =>
       (!topicSelect.value || item.topic === topicSelect.value) &&
       (!levelSelect.value || item.level === levelSelect.value) &&
       (!sourceSelect.value || (item.sourceType || "تدريبي مؤلف") === sourceSelect.value) &&
       (!yearSelect.value || String(item.sourceYear || "") === yearSelect.value) &&
-      (!term || [item.question,item.lesson,item.keyIdea,item.topic,item.sourceLabel || "",item.sourceSession || "",item.sourceYear || ""].join(" ").toLocaleLowerCase("ar").includes(term))
+      (!term || window.MathSearchUtils.matches([item.question,item.lesson,item.keyIdea,item.topic,item.sourceLabel || "",item.sourceSession || "",item.sourceYear || ""].join(" "), term))
     );
     count.textContent = `عرض ${filtered.length} من ${examples.length} مثالاً`;
     list.replaceChildren();
