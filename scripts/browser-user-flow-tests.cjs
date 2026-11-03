@@ -24,9 +24,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 9, "the home dashboard should expose nine primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 10, "the home dashboard should expose ten primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#solved-examples-library"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
