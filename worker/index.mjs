@@ -62,7 +62,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = allowedRequest(request);
-    const healthProbe = request.method === "GET" && url.pathname === "/health" && !request.headers.has("Origin");
+    const healthProbe = request.method === "GET" && ["/health", "/health/db"].includes(url.pathname) && !request.headers.has("Origin");
     if (!origin && !healthProbe) return json({ error: "origin_not_allowed" }, 403, null);
     if (request.method === "OPTIONS" && url.pathname === "/api/ask") {
       return new Response(null, {
@@ -79,6 +79,15 @@ export default {
     }
     if (url.pathname === "/health" && request.method === "GET") {
       return json({ ok: true, service: "math-assistant" }, 200, origin);
+    }
+    if (url.pathname === "/health/db" && request.method === "GET") {
+      try {
+        if (!env.DB) throw new Error("D1 binding unavailable");
+        await env.DB.prepare("SELECT 1 AS connected").first();
+        return json({ ok: true, service: "math-assistant", database: "connected" }, 200, origin);
+      } catch {
+        return json({ ok: false, service: "math-assistant", database: "unavailable" }, 503, origin);
+      }
     }
     if (url.pathname !== "/api/ask") return json({ error: "not_found" }, 404, origin);
     if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405, origin);
