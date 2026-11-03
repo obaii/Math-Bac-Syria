@@ -95,6 +95,7 @@ try {
   const seenQuestions = new Map();
   const counts = new Map();
   const typeCounts = new Map();
+  const typedTopics = new Set();
   for (const topic of topics || []) counts.set(topic, { total: 0, levels: {} });
 
   for (const [index, q] of (questions || []).entries()) {
@@ -146,6 +147,7 @@ try {
     if (!allowedLevels.has(q.level)) errors.push(`${label}: مستوى الصعوبة غير صالح (${q.level}).`);
 
     typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+    if (type !== "mcq") typedTopics.add(q.topic);
     const questionKey = normalize(q.q);
     if (seenQuestions.has(questionKey)) {
       errors.push(`${label}: نص سؤال مكرر مع العنصر #${seenQuestions.get(questionKey)} (حتى لو اختلف البحث).`);
@@ -183,6 +185,14 @@ try {
       bucket.total += 1;
       bucket.levels[q.level] = (bucket.levels[q.level] || 0) + 1;
     }
+  }
+
+  for (const type of ["true-false", "numeric", "short-text"]) {
+    const count = typeCounts.get(type) || 0;
+    if (count < 4) errors.push(`تنوع أنماط الأسئلة غير كافٍ: النمط ${type} يحتوي ${count} فقط، والمطلوب أربعة على الأقل.`);
+  }
+  if (typedTopics.size < 8) {
+    errors.push(`الأسئلة ذات الإجابة المباشرة موزعة على ${typedTopics.size} أبحاث فقط؛ المطلوب ثمانية أبحاث على الأقل.`);
   }
 
   const guidedQuestions = (questions || []).filter(q =>
