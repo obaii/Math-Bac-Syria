@@ -81,7 +81,7 @@ const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
 if (!/solution-guides\.js\?v=20261103-3/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
-if (!/app\.js\?v=20261103-2/.test(indexHtml)) {
+if (!/app\.js\?v=20261103-3/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
 if (!/enhancements\.js\?v=20261103-4/.test(indexHtml)) {
