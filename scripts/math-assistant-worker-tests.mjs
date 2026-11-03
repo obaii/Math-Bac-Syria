@@ -16,8 +16,11 @@ const env = {
   AI: {
     async run(model, input) {
       assert.equal(model, "@cf/meta/llama-3.2-3b-instruct");
-      assert.ok(input.messages.some(message => message.role === "system" && message.content.includes("خطوات الحل")));
-      return { response: "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون." };
+      const system = input.messages.find(message => message.role === "system")?.content || "";
+      assert.ok(system.includes("رياضيات"));
+      return { response: system.includes("تبسيط المفهوم")
+        ? "الفكرة ببساطة: نفهم العلاقة أولاً ثم نطبق القانون."
+        : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون." };
     }
   }
 };
@@ -53,6 +56,14 @@ assert.equal(valid.status, 200);
 const payload = await valid.json();
 assert.match(payload.answer, /الخطوة الأولى/);
 assert.equal(payload.model, "@cf/meta/llama-3.2-3b-instruct");
+
+const simplified = await worker.fetch(makeRequest({
+  question: "ما معنى النهاية؟",
+  context: "النهاية تصف القيمة التي يقترب منها التابع.",
+  mode: "simplify"
+}, "192.0.2.13"), env);
+assert.equal(simplified.status, 200);
+assert.match((await simplified.json()).answer, /الفكرة ببساطة/);
 
 for (let i = 0; i < 6; i++) {
   const response = await worker.fetch(makeRequest({ question: "اشرح المتتالية الحسابية" }, "192.0.2.12"), env);
