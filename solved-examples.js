@@ -435,6 +435,10 @@
       const tags = document.createElement("span"); tags.textContent = `${item.topic} · ${item.level}`;
       heading.append(title,tags);
       const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = item.question;
+      const diagramMarkup = typeof window.getQuestionDiagram === "function"
+        ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
+        : "";
+      if (diagramMarkup) article.classList.add("has-question-diagram");
       if (item.sourceType && item.sourceType !== "تدريبي مؤلف") {
         const source = document.createElement("p"); source.className = "solved-example-source";
         const details = [item.sourceType, item.sourceYear, item.sourceSession, item.sourceLabel].filter(Boolean);
@@ -444,6 +448,7 @@
       const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + item.keyIdea;
       const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "خطوات الحل";
       const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=step;steps.appendChild(li);});
+      if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
       const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = "النتيجة: " + item.answer;
       const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = "التحقق: " + item.check;
       article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
