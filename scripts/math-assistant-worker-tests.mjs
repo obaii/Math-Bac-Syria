@@ -18,9 +18,11 @@ const env = {
       assert.equal(model, "@cf/meta/llama-3.2-3b-instruct");
       const system = input.messages.find(message => message.role === "system")?.content || "";
       assert.ok(system.includes("رياضيات"));
-      return { response: system.includes("تبسيط المفهوم")
-        ? "الفكرة ببساطة: نفهم العلاقة أولاً ثم نطبق القانون."
-        : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون." };
+      return { response: system.includes("يراجع محاولات")
+        ? "محاولتك صحيحة في البداية، وموضع الالتباس هو تغيير الإشارة عند نقل الحد."
+        : system.includes("تبسيط المفهوم")
+          ? "الفكرة ببساطة: نفهم العلاقة أولاً ثم نطبق القانون."
+          : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون." };
     }
   }
 };
@@ -64,6 +66,13 @@ const simplified = await worker.fetch(makeRequest({
 }, "192.0.2.13"), env);
 assert.equal(simplified.status, 200);
 assert.match((await simplified.json()).answer, /الفكرة ببساطة/);
+
+const diagnosed = await worker.fetch(makeRequest({
+  question: "المسألة: 2x + 3 = 9. محاولتي: 2x = 9 + 3 ثم x = 6.",
+  mode: "diagnose"
+}, "192.0.2.14"), env);
+assert.equal(diagnosed.status, 200);
+assert.match((await diagnosed.json()).answer, /موضع الالتباس/);
 
 for (let i = 0; i < 6; i++) {
   const response = await worker.fetch(makeRequest({ question: "اشرح المتتالية الحسابية" }, "192.0.2.12"), env);
