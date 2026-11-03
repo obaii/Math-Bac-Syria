@@ -16,7 +16,7 @@ const load = (file) => vm.runInContext(
 
 try {
   load("questions.js");
-  const originalQuestionCount = vm.runInContext("questions.length", context);
+  const originalQuestions = vm.runInContext("questions.slice()", context);
   load("questions_vectors_additional.js");
   load("questions_typed_additional.js");
   load("merge-questions.js");
@@ -27,7 +27,11 @@ try {
   );
   const { topics, questions, additional, typedAdditional } = data;
   const errors = [];
-  const expectedQuestionCount = originalQuestionCount + additional.length + typedAdditional.length;
+  const expectedQuestionCount = new Set(
+    [...originalQuestions, ...additional, ...typedAdditional]
+      .filter(question => question && typeof question === "object")
+      .map(question => `${question.topic}::${question.q}`)
+  ).size;
   if (questions.length !== expectedQuestionCount) {
     errors.push(`عدد الأسئلة بعد الدمج غير متوقع: المتوقع ${expectedQuestionCount} والموجود ${questions.length}.`);
   }
