@@ -69,6 +69,9 @@ async function assertVisibleControlsHaveNames(page, context) {
 
     await assertVisibleControlsHaveNames(page, "home screen");
 
+    const sectionMenuButton = page.locator("#section-menu-toggle");
+    await sectionMenuButton.focus();
+    await page.keyboard.press("Enter");
     const calculatorShortcut = page.locator('[data-panel-toggle="scientific-calculator"]');
     await calculatorShortcut.focus();
     await page.keyboard.press("Enter");
