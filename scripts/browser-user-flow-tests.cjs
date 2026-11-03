@@ -713,6 +713,7 @@ const assert = require("node:assert/strict");
     assert.ok(mobileHeader.brandLeft >= -1 && mobileHeader.brandRight <= mobileHeader.viewport + 1, "brand should remain within the phone viewport");
     assert.ok(mobileHeader.installVisible && mobileHeader.installLeft >= -1 && mobileHeader.installRight <= mobileHeader.viewport + 1, "install action should remain visible and within the phone viewport");
 
+    await page.locator("#section-menu-toggle").click();
     const mobileShortcuts = await page.evaluate(() => {
       const grid = document.querySelector(".quick-start");
       const cards = [...grid.children];
