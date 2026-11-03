@@ -612,6 +612,31 @@ function showQuestion(){
     });
     options.append(form);
   }
+  const hintsPanel = $("question-hints");
+  const hintButton = $("show-hint");
+  const hintText = $("question-hint-text");
+  if (hintsPanel && hintButton && hintText) {
+    const hints = Array.isArray(q.hints)
+      ? q.hints.filter(hint => typeof hint === "string" && hint.trim()).slice(0, 3)
+      : [];
+    hintsPanel.hidden = hints.length === 0;
+    hintButton.disabled = false;
+    hintButton.textContent = "أحتاج إلى تلميح";
+    hintText.hidden = true;
+    hintText.textContent = "";
+    let shownHints = 0;
+    hintButton.onclick = () => {
+      if (shownHints >= hints.length) return;
+      shownHints += 1;
+      hintText.textContent = hints[shownHints - 1];
+      hintText.hidden = false;
+      hintButton.disabled = shownHints >= hints.length;
+      hintButton.textContent = shownHints >= hints.length
+        ? "اكتملت التلميحات"
+        : "التلميح التالي (" + (shownHints + 1).toLocaleString("ar") + " من " + hints.length.toLocaleString("ar") + ")";
+      typeset();
+    };
+  }
   $("feedback").className="feedback hidden";
   $("feedback").innerHTML="";
   $("next").disabled=true;
@@ -631,6 +656,8 @@ function submitQuestionAnswer(response){
     return;
   }
   answered=true;
+  const hintButton = $("show-hint");
+  if (hintButton) hintButton.disabled = true;
   const isCorrect=evaluateQuestionAnswer(q,response);
   if(isCorrect)correctCount++;
   else if (!sessionMistakes.some(item => questionKey(item) === questionKey(q))) sessionMistakes.push(q);
