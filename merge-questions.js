@@ -1,9 +1,27 @@
-/* دمج الأسئلة الإضافية دون تكرار أي سؤال موجود */
+/* Centralized assembly of the legacy and supplementary question collections. */
 (function () {
-  if (typeof questions === "undefined" || typeof vectorQuestionsAdditional === "undefined") return;
-  const known = new Set(questions.map(q => `${q.topic}::${q.q}`));
-  for (const q of vectorQuestionsAdditional) {
-    const key = `${q.topic}::${q.q}`;
-    if (!known.has(key)) { questions.push(q); known.add(key); }
+  if (typeof questions === "undefined" || !Array.isArray(questions)) return;
+
+  const known = new Set(
+    questions.map(question => `${question.topic}::${question.q}`)
+  );
+
+  function appendUnique(collection) {
+    if (!Array.isArray(collection)) return;
+    for (const question of collection) {
+      if (!question || typeof question !== "object") continue;
+      const key = `${question.topic}::${question.q}`;
+      if (known.has(key)) continue;
+      questions.push(question);
+      known.add(key);
+    }
+  }
+
+  // Keep the order deterministic: vector questions first, then typed questions.
+  if (typeof vectorQuestionsAdditional !== "undefined") {
+    appendUnique(vectorQuestionsAdditional);
+  }
+  if (typeof typedQuestionsAdditional !== "undefined") {
+    appendUnique(typedQuestionsAdditional);
   }
 })();

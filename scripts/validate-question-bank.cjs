@@ -16,10 +16,10 @@ const load = (file) => vm.runInContext(
 
 try {
   load("questions.js");
+  const originalQuestions = vm.runInContext("questions.slice()", context);
   load("questions_vectors_additional.js");
-  load("merge-questions.js");
   load("questions_typed_additional.js");
-  vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
+  load("merge-questions.js");
   load("solution-guides.js");
   const data = vm.runInContext(
     "({ topics, questions, additional: vectorQuestionsAdditional, typedAdditional: typedQuestionsAdditional })",
@@ -27,6 +27,14 @@ try {
   );
   const { topics, questions, additional, typedAdditional } = data;
   const errors = [];
+  const expectedQuestionCount = new Set(
+    [...originalQuestions, ...additional, ...typedAdditional]
+      .filter(question => question && typeof question === "object")
+      .map(question => `${question.topic}::${question.q}`)
+  ).size;
+  if (questions.length !== expectedQuestionCount) {
+    errors.push(`عدد الأسئلة بعد الدمج غير متوقع: المتوقع ${expectedQuestionCount} والموجود ${questions.length}.`);
+  }
   const warnings = [];
   const allowedLevels = new Set(["أساسي", "متوسط", "متقدم"]);
   const normalize = (value) => String(value ?? "")
