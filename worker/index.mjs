@@ -3,7 +3,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:4173",
   "http://localhost:4173"
 ]);
-const PAGES_ORIGIN_PATTERN = /^https:\/\/[a-z0-9-]+\.math-bac-syria\.pages\.dev$/i;
+const PAGES_ORIGIN_PATTERN = /^https:\/\/(?:[a-z0-9-]+\.)?math-bac-syria\.pages\.dev$/i;
 
 function isAllowedOrigin(origin) {
   return ALLOWED_ORIGINS.has(origin) || PAGES_ORIGIN_PATTERN.test(origin || "");
