@@ -7,6 +7,7 @@
   const counter = document.getElementById("math-assistant-char-count");
   const clear = document.getElementById("math-assistant-clear");
   if (!form || !input || !response) return;
+  input.maxLength = 3000;
 
   const normalize = value => window.MathSearchUtils.normalize(value);
   const stopWords = new Set(["ما","ماذا","كيف","هل","هو","هي","من","في","عن","على","الى","الي","مع","هذا","هذه","اريد","افهم","اشرح","لي","قانون","قاعدة"]);
@@ -99,8 +100,16 @@
     search(query);
   });
   input.addEventListener("input",() => {
-    if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠";
+    if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠٠";
   });
+  document.querySelectorAll("[data-math-insert]").forEach(button => button.addEventListener("click",() => {
+    const token = button.dataset.mathInsert || "";
+    const start = Number.isInteger(input.selectionStart) ? input.selectionStart : input.value.length;
+    const end = Number.isInteger(input.selectionEnd) ? input.selectionEnd : start;
+    input.setRangeText(token, start, end, "end");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.focus();
+  }));
   document.querySelectorAll("[data-assistant-prompt]").forEach(button => button.addEventListener("click",() => {
     input.value = button.dataset.assistantPrompt || "";
     input.dispatchEvent(new Event("input"));
