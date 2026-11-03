@@ -107,6 +107,9 @@
     const start = Number.isInteger(input.selectionStart) ? input.selectionStart : input.value.length;
     const end = Number.isInteger(input.selectionEnd) ? input.selectionEnd : start;
     input.setRangeText(token, start, end, "end");
+    const firstBrace = token.indexOf("{");
+    const cursor = firstBrace >= 0 ? start + firstBrace + 1 : start + token.length;
+    input.setSelectionRange(cursor, cursor);
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.focus();
   }));
