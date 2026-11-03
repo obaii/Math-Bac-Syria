@@ -11,7 +11,7 @@
   let apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim();
   while (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
   const aiEnabled = apiBase.startsWith("https://") || apiBase.startsWith("http://localhost") || apiBase.startsWith("http://127.0.0.1");
-  if (explain) explain.disabled = !aiEnabled;
+  if (explain) explain.disabled = !aiEnabled || !input.value.trim();
   if (aiStatus && aiEnabled) aiStatus.textContent = "الاتصال بالمساعد الذكي مهيأ. لا تكتب معلومات شخصية في الأسئلة.";
   if (!form || !input || !response) return;
 
