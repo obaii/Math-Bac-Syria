@@ -1290,3 +1290,25 @@ body.dark-mode .intensive-training-panel h4{color:#e7edf8}
 body.dark-mode #intensive-training-status{background:#101827;color:#a7b5ca}
 @media(max-width:600px){.section-menu-toggle{width:100%}#intensive-training-start{width:100%}}
 @media(prefers-reduced-motion:reduce){.section-menu-toggle,#intensive-training-start{transition:none;transform:none}}
+
+/* Put question diagrams beside the prompt on wide screens; stack them on phones. */
+.question-text.question-has-diagram{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,.82fr);
+  align-items:center;gap:14px;
+}
+.question-prompt-copy{min-width:0}
+.question-text.question-has-diagram>.question-diagram{grid-column:2;grid-row:1;margin:0}
+.question-text.question-has-diagram>.question-prompt-copy{grid-column:1;grid-row:1}
+.solved-example-card.has-question-diagram{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.78fr);gap:10px 16px;
+}
+.solved-example-card.has-question-diagram>.solved-example-question{grid-column:1;grid-row:2;align-self:center}
+.solved-example-card.has-question-diagram>.question-diagram{grid-column:2;grid-row:2;margin:0}
+.solved-example-card.has-question-diagram>:not(.solved-example-question):not(.question-diagram){grid-column:1/-1}
+@media(max-width:680px){
+  .question-text.question-has-diagram,.solved-example-card.has-question-diagram{grid-template-columns:minmax(0,1fr)}
+  .question-text.question-has-diagram>.question-prompt-copy,
+  .question-text.question-has-diagram>.question-diagram,
+  .solved-example-card.has-question-diagram>.solved-example-question,
+  .solved-example-card.has-question-diagram>.question-diagram{grid-column:1;grid-row:auto}
+}
