@@ -1,3 +1,5 @@
+import { pbkdf2 } from "node:crypto";
+
 const ALLOWED_ORIGINS = new Set([
   "https://obaii.github.io",
   "http://127.0.0.1:4173",
@@ -91,12 +93,14 @@ async function sha256Hex(value) {
 }
 
 async function hashPassword(password, saltBytes = crypto.getRandomValues(new Uint8Array(16))) {
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits(
-    { name: "PBKDF2", hash: "SHA-256", salt: saltBytes, iterations: PASSWORD_ITERATIONS },
-    key,
-    256
-  );
+  // Use the Workers-supported Node.js crypto implementation for PBKDF2.
+  // Keep the existing stored format so previously created hashes remain compatible.
+  const bits = await new Promise((resolve, reject) => {
+    pbkdf2(password, saltBytes, PASSWORD_ITERATIONS, 32, "sha256", (error, derivedKey) => {
+      if (error) reject(error);
+      else resolve(derivedKey);
+    });
+  });
   return "pbkdf2-sha256$" + PASSWORD_ITERATIONS + "$" + base64url(saltBytes) + "$" + base64url(new Uint8Array(bits));
 }
 
