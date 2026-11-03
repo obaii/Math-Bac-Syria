@@ -874,7 +874,7 @@ const assert = require("node:assert/strict");
       exportedAt: validBackupDate,
       appVersion: "2026.11.03",
       questionCount: await page.evaluate(() => questions.length),
-      progress: { answered: 7, correct: 5, mistakes: {}, topicStats: {}, seenQuestions: {}, attempts: [] },
+      progress: { answered: 7, correct: 5, mistakes: {}, topicStats: {}, seenQuestions: {}, attempts: [{ topic: "الاشتقاق", correct: true, date: validBackupDate }] },
       studentTools: {
         darkMode: true,
         textScale: 120,
