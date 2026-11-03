@@ -14,6 +14,11 @@ const assert = require("node:assert/strict");
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
 
+    // Arabic search should ignore alef variants and allow reordered multiword queries.
+    await page.locator("#topic-search").fill("الاشعة الفراغ");
+    assert.equal(await page.locator('#topic-grid [data-topic="الأشعة في الفراغ"]').count(), 1, "topic search should normalize alef variants and match all terms regardless of order");
+    await page.locator("#topic-search").fill("");
+
     // Verify the primary navigation landmarks and keyboard skip link.
     const skipLink = page.getByRole("link", { name: "تجاوز إلى المحتوى الرئيسي" });
     assert.equal(await skipLink.getAttribute("href"), "#main-content", "the skip link should target the main content");
@@ -62,8 +67,8 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-topic").selectOption("تطبيقات الأعداد العقدية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 14, "complex geometry topic should show all fourteen examples");
     await page.locator("#solved-example-topic").selectOption("");
-    await page.locator("#solved-example-search").fill("استقلال حادثتين");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 1, "text search should find the expected worked example");
+    await page.locator("#solved-example-search").fill("اِسْتِقْلال حادثتين");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 4, "normalized multiword search should find all four relevant worked examples despite Arabic diacritics");
     await page.locator("#solved-example-search").fill("");
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
     await page.locator("#solved-examples-library").waitFor({ state: "hidden" });
@@ -127,7 +132,7 @@ const assert = require("node:assert/strict");
     await page.locator('[data-panel-toggle="formula-library"]').click();
     await page.locator("#formula-library").waitFor({ state: "visible" });
     assert.ok(await page.locator("#formula-list .formula-card").count() >= 30, "the formula library should show its curriculum references");
-    await page.locator("#formula-search").fill("دي موافر");
+    await page.locator("#formula-search").fill("مُبرهنة دي موافر");
     assert.equal(await page.locator("#formula-list .formula-card").count(), 1, "search should filter formulas by a unique curriculum theorem title");
     await page.locator("#formula-search").fill("");
     await page.locator("#formula-category").selectOption({ label: "أساسيات سابقة" });

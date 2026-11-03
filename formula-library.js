@@ -251,7 +251,7 @@
     if (units.includes(selected)) unit.value = selected;
   };
   const render = () => {
-    const query = search.value.trim().toLocaleLowerCase();
+    const query = search.value.trim();
     const stageValue = stage.value;
     const categoryValue = category.value;
     const unitValue = unit.value;
@@ -259,7 +259,7 @@
       (stageValue === "all" || item.level === stageValue) &&
       (categoryValue === "all" || item.category === categoryValue) &&
       (unitValue === "all" || item.unit === unitValue) &&
-      [item.title,item.category,item.unit,item.lesson,item.note,item.conditions,item.example,item.tex].join(" ").toLocaleLowerCase().includes(query)
+      window.MathSearchUtils.matches([item.title,item.category,item.unit,item.lesson,item.note,item.conditions,item.example,item.tex].join(" "), query)
     );
     list.replaceChildren();
     count.textContent = "عدد المداخل: " + filtered.length + " من " + formulas.length;

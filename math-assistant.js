@@ -20,14 +20,7 @@
   if (aiStatus && aiEnabled) aiStatus.textContent = "الاتصال بالمساعد الذكي مهيأ. لا تكتب معلومات شخصية في الأسئلة.";
   if (!form || !input || !response) return;
 
-  const normalize = value => String(value || "")
-    .toLocaleLowerCase("ar")
-    .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
-    .replace(/[أإآٱ]/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/[ؤئ]/g, "ء")
-    .replace(/[^\p{L}\p{N}]+/gu, " ")
-    .trim();
+  const normalize = value => window.MathSearchUtils.normalize(value);
   const stopWords = new Set(["ما","ماذا","كيف","هل","هو","هي","من","في","عن","على","الى","الي","مع","هذا","هذه","اريد","افهم","اشرح","لي","قانون","قاعدة"]);
   const tokenize = value => normalize(value).split(/\s+/).filter(word => word.length > 1 && !stopWords.has(word));
 

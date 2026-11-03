@@ -407,7 +407,7 @@ function renderTopics(){
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
   const clearSearchButton = $("clear-topic-search");
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
-  const availableTopics = topics.filter(topic => topic.toLocaleLowerCase("ar").includes(search));
+  const availableTopics = topics.filter(topic => window.MathSearchUtils.matches(topic, search));
   $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
   $("topic-grid").innerHTML = availableTopics.map(topic=>{
     const i = topics.indexOf(topic);
