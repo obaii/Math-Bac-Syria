@@ -23,7 +23,7 @@ const assert = require("node:assert/strict");
     await page.locator("#math-assistant-response .math-assistant-card").first().waitFor({state:"visible",timeout:10000});
     assert.ok(await page.locator("#math-assistant-response .math-assistant-card").count()>0,
       "a known curriculum query should return related local material");
-    await prompt.fill("مصطلح غير موجود إطلاقاً في المحتوى الرياضي");
+    await prompt.fill("كزبلوطتجريبيةلايوجد987654");
     await page.locator("#math-assistant-form button[type=submit]").click();
     await page.locator(".math-assistant-no-results").waitFor({state:"visible"});
     await page.locator("#math-assistant-clear").click();
