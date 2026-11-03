@@ -1,8 +1,8 @@
-const CACHE_NAME = "math-bac-syria-v60";
+const CACHE_NAME = "math-bac-syria-v61";
 const CORE_FILES = [
   "./", "./index.html", "./security-utils.js", "./search-utils.js", "./style.css", "./style-overrides.css", "./student-tools.css",
   "./app.js", "./questions.js", "./questions_vectors_additional.js", "./questions_typed_additional.js", "./question-diagrams.js",
-  "./merge-questions.js", "./solution-guides.js", "./solved-examples.js", "./solved-examples.css", "./enhancements.js", "./math-assistant.css", "./math-assistant-config.js", "./math-assistant.js", "./student-account.js", "./student-account.css", "./scientific-calculator.js", "./function-plotter.js", "./geometry-tools.js", "./formula-library.js", "./flashcards.js",
+  "./merge-questions.js", "./solution-guides.js", "./solved-examples.js", "./solved-examples.css", "./enhancements.js", "./math-assistant.css", "./math-assistant-config.js", "./math-assistant.js", "./scientific-calculator.js", "./function-plotter.js", "./geometry-tools.js", "./formula-library.js", "./flashcards.js",
   "./manifest.webmanifest", "./pwa-install.js", "./assets/icon.svg", "./assets/icon-192.png", "./assets/icon-512.png"
 ];
 const MATHJAX_URL = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
