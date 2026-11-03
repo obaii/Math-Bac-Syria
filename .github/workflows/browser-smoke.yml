@@ -24,6 +24,8 @@ jobs:
         run: |
           python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/math-bac-http.log 2>&1 &
           echo $! > /tmp/math-bac-http.pid
+      - name: Run student progress regression tests
+        run: node scripts/student-progress-tests.cjs
       - name: Run browser smoke tests
         run: node scripts/browser-user-flow-tests.cjs
       - name: Run accessibility and keyboard navigation tests
