@@ -21,18 +21,24 @@
 
 ## إعداد Cloudflare (يتطلب صاحب الحساب المخوّل)
 
-أنشئ قاعدة D1 من لوحة Cloudflare أو باستخدام Wrangler، ثم أضف binding باسم `DB` إلى `worker/wrangler.toml` مع معرف قاعدة البيانات الفعلي الذي توفره Cloudflare. لا تضع أي أسرار أو معرفات وهمية في المستودع.
-
-بعد ربط القاعدة، طبّق الترحيل:
+أنشئ قاعدة D1 من الطرفية بعد تسجيل الدخول إلى حساب Cloudflare المخوّل:
 
 ```sh
-npx wrangler d1 migrations apply <DATABASE_NAME> --remote
+npx wrangler d1 create math-bac-syria-students
+```
+
+سيعرض Wrangler معرّف قاعدة البيانات الفعلي. أضف binding باسم `DB` إلى `worker/wrangler.toml`، وضع ذلك المعرّف في `database_id` داخل قسم `[[d1_databases]]`. لا تضع أي أسرار أو معرّفات وهمية في المستودع، ولا تنفّذ هذه الخطوة على حساب لا تملكه أو لا تملك صلاحية إدارته.
+
+بعد حفظ إعداد الربط، ومن جذر المستودع، طبّق الترحيل الموجود في `worker/migrations/`:
+
+```sh
+npx wrangler d1 migrations apply math-bac-syria-students --remote --config worker/wrangler.toml
 ```
 
 تحقق من الجداول:
 
 ```sh
-npx wrangler d1 execute <DATABASE_NAME> --remote --command "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+npx wrangler d1 execute math-bac-syria-students --remote --config worker/wrangler.toml --command "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
 ```
 
 ## حدود هذه المرحلة
