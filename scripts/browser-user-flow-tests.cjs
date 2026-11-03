@@ -507,6 +507,16 @@ const assert = require("node:assert/strict");
     assert.match(await page.locator("#session-answered").innerText(), /٠|0/, "using hints must not count as answering the question");
     await page.locator("#options [data-option]").first().click();
     await page.locator("#feedback").waitFor({ state: "visible" });
+
+    const similarCountBefore = await page.locator("#session-answered").innerText();
+    await page.locator("#similar-practice-start").click();
+    await page.locator("#similar-practice-card").waitFor({ state: "visible" });
+    assert.notEqual(await page.locator("#similar-practice-card .similar-practice-question").innerText(), "", "a related practice question should be displayed");
+    await page.locator("#similar-practice-card .similar-practice-option").first().click();
+    await page.locator("#similar-practice-feedback").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#session-answered").innerText(), similarCountBefore, "similar practice must not alter the main quiz answer count");
+    assert.equal(await page.locator("#similar-practice-card .similar-practice-solution").isVisible(), true, "the similar practice solution should appear after the attempt");
+
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
       remaining: Math.max(0, quizQuestions.length - index - 1).toLocaleString("ar"),
