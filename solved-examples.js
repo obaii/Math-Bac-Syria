@@ -446,7 +446,7 @@
         article.append(heading,source,question);
       } else article.append(heading,question);
       const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + item.keyIdea;
-      const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "خطوات الحل";
+      const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "شرح الحل خطوة بخطوة";
       const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=step;steps.appendChild(li);});
       if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
       const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = "النتيجة: " + item.answer;
