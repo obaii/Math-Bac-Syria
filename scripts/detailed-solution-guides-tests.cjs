@@ -77,16 +77,16 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261103-4/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261103-5/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 if (!/app\\.js\\?v=20261103-4/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
-if (!/enhancements\\.js\\?v=20261103-7/.test(indexHtml)) {
+if (!/enhancements\\.js\\?v=20261103-8/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-if (indexHtml.indexOf("solution-guides.js?v=20261103-5") > indexHtml.indexOf("app.js?v=20261103-4")) {
+if (indexHtml.indexOf("solution-guides.js?v=20261103-5") > indexHtml.indexOf("app.js?v=20261103-5")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
 
