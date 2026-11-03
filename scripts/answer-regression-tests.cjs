@@ -54,7 +54,7 @@ const cases = [
   { contains: "طول الشعاع \\(\\vec u=(1,2,2)\\)", expected: "3" },
   { contains: "\\operatorname{Im}(z)", expected: "-5" },
   { contains: "ناتج \\((2+i)+(3-4i)\\) هو:", expected: "\\(5-3i\\)" },
-  { contains: "إذا كان \\(z=3+4i\\)، فإن معيار العدد", expected: "5" },
+  { contains: "إذا كان \\(z=3+4i\\)، فإن طويلة العدد", expected: "5" },
   { contains: "\\(z=2-3i\\)", expected: "\\(13\\)" },
   { contains: "\\binom{5}{1}", expected: "5" },
   { contains: "من 4 عناصر مختلفة جميعها", expected: "24" },
