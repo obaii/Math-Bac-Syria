@@ -29,6 +29,7 @@ jobs:
           node --check solved-examples.js
           node --check scripts/solved-examples-tests.cjs
           node --check pwa-install.js
+          node --check scripts/service-worker-tests.cjs
           node --check scripts/validate-question-bank.cjs
           node --check scripts/answer-regression-tests.cjs
           node --check scripts/question-diagram-tests.cjs
@@ -54,6 +55,8 @@ jobs:
           node --check scripts/scientific-calculator-tests.cjs
       - name: Check solved examples curriculum coverage and structure
         run: node scripts/solved-examples-tests.cjs
+      - name: Check PWA offline asset coverage and service worker hooks
+        run: node scripts/service-worker-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
       - name: Run verified answer regression checks
