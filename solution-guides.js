@@ -488,7 +488,12 @@
     return generic;
   }
 
-  for (const question of questions) {
+  const allHintQuestions = questions.concat(
+    typeof typedQuestionsAdditional !== "undefined" && Array.isArray(typedQuestionsAdditional)
+      ? typedQuestionsAdditional
+      : []
+  );
+  for (const question of allHintQuestions) {
     if (Array.isArray(question.hints) && question.hints.length >= 3) continue;
     question.hints = fallbackHints(question);
   }
