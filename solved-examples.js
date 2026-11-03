@@ -439,8 +439,6 @@
         const source = document.createElement("p"); source.className = "solved-example-source";
         const details = [item.sourceType, item.sourceYear, item.sourceSession, item.sourceLabel].filter(Boolean);
         source.textContent = "المصدر: " + details.join(" · ");
-        const sourceUrl = window.MathBacSecurity.safeHttpsUrl(item.sourceReference);
-        if (sourceUrl) { const link = document.createElement("a"); link.href = sourceUrl; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = "فتح مرجع المصدر"; source.append(" — ", link); }
         article.append(heading,source,question);
       } else article.append(heading,question);
       const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + item.keyIdea;
