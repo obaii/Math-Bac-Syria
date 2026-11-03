@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="math-assistant.css?v=20261103-3">
    <link rel="stylesheet" href="style-overrides.css?v=20261103-3">
   <link rel="stylesheet" href="student-tools.css?v=20261103-1">
+  <link rel="stylesheet" href="student-account.css?v=20261103-1">
   <script>
     window.MathJax = {
       tex: {
@@ -54,6 +55,7 @@
   <script defer src="formula-library.js?v=20261103-1"></script>
   <script defer src="solved-examples.js?v=20261103-2"></script>
   <script defer src="math-assistant-config.js?v=20261103-1"></script>
+  <script defer src="student-account.js?v=20261103-1"></script>
   <script defer src="math-assistant.js?v=20261103-5"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
@@ -72,6 +74,34 @@
     <p>اختر البحث، أجب عن الأسئلة، وشاهد التصحيح والحل خطوة بخطوة.</p>
     <div class="hero-stats"><span>١٤ بحثاً</span><span>تصحيح فوري مع الحل</span><span>مجاني دون تسجيل</span></div>
     <div class="hero-bottom"><span class="hero-note"><span class="hero-note-icon">✓</span> ابدأ من أي بحث وتدرّب حسب مستواك</span><a class="hero-link" href="#topic-section">استعرض الأبحاث <span>↓</span></a></div>
+  </section>
+  <section id="student-account" class="student-account" aria-labelledby="student-account-title">
+    <h2 id="student-account-title">حساب الطالب (اختياري)</h2>
+    <p class="student-account-intro">يمكنك إنشاء حساب لحفظ هويتك التعليمية. لا تحتاج إلى حساب لاستخدام المنصة، ولن تتم مزامنة تقدمك أو إرسال بياناته إلى الخادم في هذه المرحلة.</p>
+    <p id="student-account-state" class="student-account-state">جارٍ التحقق من حالة الحساب...</p>
+    <form id="student-account-form" class="student-account-form">
+      <div class="student-account-field">
+        <label for="student-account-mode">الإجراء</label>
+        <select id="student-account-mode" name="mode">
+          <option value="register">إنشاء حساب جديد</option>
+          <option value="login">تسجيل الدخول</option>
+        </select>
+      </div>
+      <div class="student-account-field">
+        <label for="student-account-username">اسم المستخدم</label>
+        <input id="student-account-username" name="username" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]{3,24}" autocomplete="username" required>
+      </div>
+      <div class="student-account-field">
+        <label for="student-account-password">كلمة المرور</label>
+        <input id="student-account-password" name="password" type="password" minlength="12" maxlength="128" autocomplete="new-password" required>
+        <small id="student-account-password-hint" class="student-account-hint">12 محرفاً على الأقل. لا تستخدم كلمة مرور سبق أن شاركتها مع أحد.</small>
+      </div>
+      <div class="student-account-actions">
+        <button id="student-account-submit" type="submit">إنشاء الحساب</button>
+        <button id="student-account-logout" class="student-account-logout" type="button" hidden>تسجيل الخروج</button>
+      </div>
+    </form>
+    <p id="student-account-status" class="student-account-status" role="status" aria-live="polite" aria-atomic="true">جارٍ الاتصال بخدمة الحسابات...</p>
   </section>
   <section id="home"> 
     <div class="dashboard" aria-label="ملخص تقدمك">
