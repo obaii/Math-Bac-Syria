@@ -33,7 +33,8 @@ const assert = require("node:assert/strict");
     await skipLink.press("Enter");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
-    const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
+    const quickStart = page.locator("#section-menu");
+    assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false", "the section menu should start collapsed");
     assert.equal(await quickStart.locator("a").count(), 10, "the home dashboard should expose ten primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
       ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library"], "quick-start links should point to their matching sections");
