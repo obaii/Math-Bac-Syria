@@ -454,6 +454,25 @@ const assert = require("node:assert/strict");
     assert.ok(persistedStudyPlan.days.some(day => day.tasks.some(task => task.done)), "completed task should persist after reloading the page");
     assert.ok((await page.locator("#study-plan").innerText()).includes("إنجاز الخطة"), "study plan should render its completion summary");
 
+    // Intensive training creates a bounded, unique session and records it as normal practice.
+    await page.locator("#student-tools").evaluate(panel => { panel.hidden = false; });
+    await page.locator("#intensive-training-focus").selectOption("all");
+    await page.locator("#intensive-training-count").selectOption("10");
+    await page.locator("#intensive-training-start").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    const intensiveSession = await page.evaluate(() => ({
+      count: quizQuestions.length,
+      unique: new Set(quizQuestions.map(questionKey)).size,
+      reviewMode,
+      title: document.querySelector("#quiz-title").textContent
+    }));
+    assert.equal(intensiveSession.count, 10, "intensive training should honor the selected 10-question session size");
+    assert.equal(intensiveSession.unique, 10, "intensive training should not repeat a question within one session");
+    assert.equal(intensiveSession.reviewMode, false, "intensive training should count as ordinary practice, not passive review");
+    assert.match(intensiveSession.title, /التدريب المكثف/);
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+
     // Seed a deterministic three-day practice streak and verify the progress report derives it.
     await page.evaluate(() => {
       const now = new Date();
