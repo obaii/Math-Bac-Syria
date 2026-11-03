@@ -18,9 +18,11 @@ const env = {
       assert.equal(model, "@cf/meta/llama-3.2-3b-instruct");
       const system = input.messages.find(message => message.role === "system")?.content || "";
       assert.ok(system.includes("رياضيات"));
-      return { response: system.includes("يراجع محاولات")
-        ? "محاولتك صحيحة في البداية، وموضع الالتباس هو تغيير الإشارة عند نقل الحد."
-        : system.includes("تبسيط المفهوم")
+      return { response: system.includes("خطة مراجعة شخصية")
+        ? "خطة مراجعة شخصية لمدة سبعة أيام: ابدأ بالأبحاث ذات الأخطاء، ثم أعد قياس الدقة."
+        : system.includes("يراجع محاولات")
+          ? "محاولتك صحيحة في البداية، وموضع الالتباس هو تغيير الإشارة عند نقل الحد."
+          : system.includes("تبسيط المفهوم")
           ? "الفكرة ببساطة: نفهم العلاقة أولاً ثم نطبق القانون."
           : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون." };
     }
@@ -73,6 +75,14 @@ const diagnosed = await worker.fetch(makeRequest({
 }, "192.0.2.14"), env);
 assert.equal(diagnosed.status, 200);
 assert.match((await diagnosed.json()).answer, /موضع الالتباس/);
+
+const reviewPlan = await worker.fetch(makeRequest({
+  question: "أنشئ خطة مراجعة شخصية لمدة سبعة أيام.",
+  context: JSON.stringify({overall:{answered:10,correct:4,accuracy:40},priorities:[{topic:"النهايات والاستمرار",mistakes:2,accuracy:40}] }),
+  mode: "review"
+}, "192.0.2.15"), env);
+assert.equal(reviewPlan.status, 200);
+assert.match((await reviewPlan.json()).answer, /سبعة أيام/);
 
 for (let i = 0; i < 6; i++) {
   const response = await worker.fetch(makeRequest({ question: "اشرح المتتالية الحسابية" }, "192.0.2.12"), env);
