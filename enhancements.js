@@ -454,6 +454,23 @@
       if (report && report.parentNode) report.insertAdjacentElement("afterend", reviewAssistant);
       else panel.appendChild(reviewAssistant);
     }
+    if (!document.getElementById("intensive-training")) {
+      const training = document.createElement("section");
+      training.id = "intensive-training";
+      training.className = "intensive-training-panel";
+      training.setAttribute("aria-labelledby", "intensive-training-title");
+      training.style.cssText = "margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)";
+      training.innerHTML = "<h4 id='intensive-training-title'>التدريب المكثّف</h4>" +
+        "<p>أنشئ جلسة مركّزة من ١٠ أو ٢٠ أو ٣٠ سؤالاً، واختر مصدر الأسئلة بحسب هدفك.</p>" +
+        "<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end'>" +
+        "<label for='intensive-training-focus'>مصدر الأسئلة<select id='intensive-training-focus' style='display:block;width:100%;min-height:42px;margin-top:5px'><option value='all'>كامل بنك الأسئلة</option><option value='weak'>الأبحاث الأضعف في أدائي</option><option value='mistakes'>الأسئلة التي أخطأت بها</option></select></label>" +
+        "<label for='intensive-training-count'>عدد الأسئلة<select id='intensive-training-count' style='display:block;width:100%;min-height:42px;margin-top:5px'><option value='10'>١٠ أسئلة</option><option value='20'>٢٠ سؤالاً</option><option value='30'>٣٠ سؤالاً</option></select></label>" +
+        "</div><button type='button' id='intensive-training-start' style='margin-top:12px'>ابدأ التدريب المكثّف ←</button>" +
+        "<p id='intensive-training-status' role='status' aria-live='polite'>اختر نوع التدريب وعدد الأسئلة لبدء جلسة جديدة.</p>";
+      const assistantPanel = document.getElementById("review-assistant-panel");
+      if (assistantPanel && assistantPanel.parentNode) assistantPanel.insertAdjacentElement("afterend", training);
+      else panel.appendChild(training);
+    }
     const bindClick = (id, handler) => {
       const element = document.getElementById(id);
       if (!element || element.dataset.enhancementBound === "true") return;
@@ -461,6 +478,7 @@
       element.dataset.enhancementBound = "true";
     };
     bindClick("smart-review", startSmartReview);
+    bindClick("intensive-training-start", startIntensiveTraining);
     bindClick("review-assistant-generate", runReviewAssistant);
     bindClick("review-plan-toggle", toggleReviewPlan);
     bindClick("bookmark-review", toggleBookmarkList);
@@ -998,6 +1016,56 @@
       button.disabled = false;
       panel.scrollIntoView({behavior:"smooth",block:"nearest"});
     }
+  };
+  const startIntensiveTraining = () => {
+    const focus = document.getElementById("intensive-training-focus")?.value || "all";
+    const requested = Math.max(10, Math.min(30, Number(document.getElementById("intensive-training-count")?.value) || 10));
+    const status = document.getElementById("intensive-training-status");
+    const bank = Array.isArray(questions) ? questions.filter(q => isSupportedQuestion(q)) : [];
+    let pool = bank;
+    let label = "من كامل بنك الأسئلة";
+    if (focus === "mistakes") {
+      const mistakeMap = typeof progressData !== "undefined" && isRecord(progressData.mistakes) ? progressData.mistakes : {};
+      pool = Object.keys(mistakeMap).map(byKey).filter(q => q && isSupportedQuestion(q));
+      label = "من أسئلتك التي أخطأت بها";
+    } else if (focus === "weak") {
+      const weakTopics = getStudyPriorityTopics().filter(item => item.answered > 0).slice(0, 3);
+      const selectedTopics = new Set(weakTopics.map(item => item.topic));
+      pool = bank.filter(q => selectedTopics.has(q.topic));
+      label = "من الأبحاث التي تحتاج إلى تقوية";
+    }
+    const unique = new Map();
+    pool.forEach(q => { const key = keyOf(q); if (key && !unique.has(key)) unique.set(key, q); });
+    pool = [...unique.values()];
+    if (!pool.length) {
+      if (status) status.textContent = focus === "mistakes"
+        ? "لا توجد أخطاء محفوظة صالحة للتدريب حالياً. تابع حل الأسئلة أولاً."
+        : focus === "weak"
+          ? "نحتاج إلى بعض نتائج التدريب أولاً حتى نحدد الأبحاث الأضعف."
+          : "لا توجد أسئلة صالحة في بنك الأسئلة حالياً.";
+      return;
+    }
+    // Fisher–Yates produces an unbiased shuffle without mutating the question bank.
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const selected = shuffled.slice(0, requested);
+    currentTopic = "التدريب المكثف";
+    reviewMode = false;
+    sessionMistakes = [];
+    quizQuestions = selected;
+    index = 0;
+    correctCount = 0;
+    answered = false;
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("results").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+    document.getElementById("quiz-title").textContent = "التدريب المكثف — " + label;
+    showQuestion();
+    if (status) status.textContent = "بدأت جلسة من " + selected.length.toLocaleString("ar") + " سؤالاً " + label + ".";
+    window.scrollTo({top:0,behavior:"smooth"});
   };
   const startSmartReview = () => {
     const now = Date.now();
