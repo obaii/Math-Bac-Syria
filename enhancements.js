@@ -2,6 +2,8 @@
 (() => {
   "use strict";
   const EXTRA_KEY = "mathBacSyriaStudentToolsV1";
+  const BACKUP_FORMAT = "math-bac-syria-progress";
+  const BACKUP_VERSION = 2;
   const intervalsDays = [1, 3, 7, 14, 30];
   const safeParse = (raw, fallback) => { try { return raw ? JSON.parse(raw) : fallback; } catch (_) { return fallback; } };
   const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value);
@@ -349,7 +351,7 @@
       panel.className = "student-tools";
       panel.innerHTML = `
         <h3>أدوات المراجعة والحفظ</h3>
-        <p>صدّر نسخة احتياطية من تقدمك، أو استوردها على جهاز آخر. المراجعة الذكية تعتمد على الأسئلة التي أخطأت بها ومواعيد مراجعتها.</p>
+        <p>تتضمن النسخة الاحتياطية تقدمك وإجاباتك المحفوظة والاختبارات والعلامات المرجعية وجدول المراجعة وخيارات العرض. يمكنك نقلها إلى جهاز آخر؛ راجع ملخص الملف قبل تأكيد الاستيراد.</p>
         <div class="tools-actions">
           <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
           <button type="button" id="review-assistant-generate" aria-controls="review-assistant-panel">مساعد المراجعة الذكي</button>
@@ -1120,10 +1122,21 @@
     if (opening) renderReviewPlan();
   };
   const exportProgress = () => {
-    const payload = { format:"math-bac-syria-progress", version:1, exportedAt:new Date().toISOString(), progress:progressData, studentTools:extras };
-    const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json;charset=utf-8"});
+    const payload = {
+      format: BACKUP_FORMAT,
+      version: BACKUP_VERSION,
+      exportedAt: new Date().toISOString(),
+      appVersion: "2026.11.03",
+      questionCount: Array.isArray(questions) ? questions.length : 0,
+      progress: progressData,
+      studentTools: extras
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json;charset=utf-8"});
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href=url; a.download="math-bac-syria-progress.json"; a.click();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "math-bac-syria-progress-" + new Date().toISOString().slice(0, 10) + ".json";
+    a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   const importProgress = async event => {
@@ -1132,12 +1145,36 @@
     try {
       if (file.size > 2_000_000) throw new Error("حجم الملف أكبر من الحد المسموح (2 ميغابايت).");
       const data = JSON.parse(await file.text());
-      if (!data || data.format !== "math-bac-syria-progress" || !data.progress || typeof data.progress !== "object" || Array.isArray(data.progress)) {
+      const version = data && data.version === undefined ? 1 : data?.version;
+      if (!data || data.format !== BACKUP_FORMAT || !data.progress || typeof data.progress !== "object" || Array.isArray(data.progress)) {
         throw new Error("هذا الملف ليس نسخة احتياطية صالحة للمنصة.");
       }
-      if (!confirm("سيتم استبدال التقدم والعلامات الحالية بالبيانات الموجودة في النسخة الاحتياطية. هل تريد المتابعة؟")) return;
+      if (!Number.isSafeInteger(version) || version < 1 || version > BACKUP_VERSION) {
+        throw new Error("إصدار النسخة الاحتياطية غير مدعوم. حدّث المنصة أو استخدم نسخة متوافقة.");
+      }
       const source = data.progress;
+      const sourceTools = isRecord(data.studentTools) ? data.studentTools : {};
       const toCount = value => Number.isSafeInteger(Number(value)) && Number(value) >= 0 ? Number(value) : 0;
+      const backupAnswers = toCount(source.answered);
+      const backupCorrect = Math.min(toCount(source.correct), backupAnswers);
+      const backupBookmarks = Array.isArray(sourceTools.bookmarks) ? sourceTools.bookmarks.length : 0;
+      const backupReviews = isRecord(sourceTools.schedule) ? Object.keys(sourceTools.schedule).length : 0;
+      const backupExams = Array.isArray(sourceTools.examHistory) ? sourceTools.examHistory.length : 0;
+      const backupQuestionCount = toCount(data.questionCount);
+      const currentQuestionCount = Array.isArray(questions) ? questions.length : 0;
+      const bankWarning = backupQuestionCount && currentQuestionCount && backupQuestionCount !== currentQuestionCount
+        ? "\\nتنبيه: أُنشئت النسخة من بنك يضم " + backupQuestionCount.toLocaleString("ar") + " سؤالاً، بينما يضم هذا الإصدار " + currentQuestionCount.toLocaleString("ar") + ". ستُستعاد العناصر المتوافقة فقط."
+        : "";
+      const exportedAt = typeof data.exportedAt === "string" && Number.isFinite(Date.parse(data.exportedAt))
+        ? new Date(data.exportedAt).toLocaleString("ar") : "غير محدد";
+      const confirmation = "ملخص النسخة الاحتياطية (الإصدار " + version + "):\\n"
+        + "تاريخ الإنشاء: " + exportedAt + "\\n"
+        + "الإجابات المسجلة: " + backupAnswers.toLocaleString("ar") + " (الصحيحة: " + backupCorrect.toLocaleString("ar") + ")\\n"
+        + "العلامات المرجعية: " + backupBookmarks.toLocaleString("ar") + "\\n"
+        + "المراجعات المجدولة: " + backupReviews.toLocaleString("ar") + "\\n"
+        + "نتائج الامتحانات: " + backupExams.toLocaleString("ar") + bankWarning
+        + "\\n\\nسيُستبدل التقدم الحالي بمحتوى هذه النسخة. هل تريد المتابعة؟";
+      if (!confirm(confirmation)) return;
       const nextProgress = {
         answered: toCount(source.answered),
         correct: Math.min(toCount(source.correct), toCount(source.answered)),
@@ -1174,9 +1211,10 @@
         const answered = toCount(stat.answered);
         nextProgress.topicStats[topic] = { answered, correct:Math.min(toCount(stat.correct), answered) };
       }
-      let nextExtras = { bookmarks:[], schedule:{}, reviewQuestions:{}, darkMode:false };
-      const sourceTools = data.studentTools && typeof data.studentTools === "object" && !Array.isArray(data.studentTools) ? data.studentTools : {};
+      let nextExtras = { bookmarks:[], schedule:{}, reviewQuestions:{}, darkMode:false, textScale:100, mathScale:100 };
       nextExtras.darkMode = Boolean(sourceTools.darkMode);
+      nextExtras.textScale = Number.isFinite(sourceTools.textScale) ? Math.min(130, Math.max(80, Math.round(sourceTools.textScale / 10) * 10)) : 100;
+      nextExtras.mathScale = Number.isFinite(sourceTools.mathScale) ? Math.min(140, Math.max(80, Math.round(sourceTools.mathScale / 10) * 10)) : 100;
       nextExtras.examHistory = normalizeExamHistory(sourceTools.examHistory);
       nextExtras.studyPlan = normalizeStudyPlan(sourceTools.studyPlan);
       nextExtras.bookmarks = Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))] : [];
@@ -1208,6 +1246,7 @@
       extras = nextExtras;
       if (typeof refreshDashboard === "function") refreshDashboard();
       if (typeof renderTopics === "function") renderTopics();
+      applyReadingSettings();
       updateBookmarkUI();
       updateGuidedQuestionList();
       applyDarkMode();

@@ -866,6 +866,69 @@ const assert = require("node:assert/strict");
     assert.equal(importedTools.schedule[backupQuestionKey].stage, 0, "invalid review stages should safely reset to the first stage");
     assert.equal(importedTools.schedule[backupQuestionKey].lastResult, "pending", "invalid review result markers should be normalized");
     assert.equal(Object.keys(importedTools.schedule).length, 1, "backup import should discard review entries for obsolete questions");
+
+    // Version 2 backups show a restore summary and preserve reading preferences.
+    const backupV2Payload = {
+      format: "math-bac-syria-progress",
+      version: 2,
+      exportedAt: validBackupDate,
+      appVersion: "2026.11.03",
+      questionCount: await page.evaluate(() => questions.length),
+      progress: { answered: 7, correct: 5, mistakes: {}, topicStats: {}, seenQuestions: {}, attempts: [{ topic: "الاشتقاق", correct: true, date: validBackupDate }] },
+      studentTools: {
+        darkMode: true,
+        textScale: 120,
+        mathScale: 130,
+        bookmarks: [backupQuestionKey],
+        schedule: { [backupQuestionKey]: { stage: 1, due: Date.now() + 86400000, lastResult: "correct" } },
+        examHistory: [{ correct: 2, total: 3, date: validBackupDate }]
+      }
+    };
+    await page.evaluate(() => {
+      window.__backupConfirmMessage = "";
+      window.__originalBackupConfirm = window.confirm;
+      window.confirm = message => { window.__backupConfirmMessage = String(message); return true; };
+    });
+    await page.locator("#import-progress-file").setInputFiles({
+      name: "test-backup-v2.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(backupV2Payload))
+    });
+    await page.waitForFunction(() => {
+      const progress = JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null");
+      const tools = JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null");
+      return progress?.answered === 7 && tools?.textScale === 120 && tools?.mathScale === 130;
+    });
+    const backupV2State = await page.evaluate(() => ({
+      progress: JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null"),
+      tools: JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"),
+      confirmation: window.__backupConfirmMessage
+    }));
+    assert.equal(backupV2State.progress.correct, 5, "version 2 backup should restore correct-answer totals");
+    assert.equal(backupV2State.tools.textScale, 120, "version 2 backup should restore text-size preference");
+    assert.equal(backupV2State.tools.mathScale, 130, "version 2 backup should restore math-size preference");
+    assert.equal(backupV2State.tools.darkMode, true, "version 2 backup should restore night mode");
+    assert.deepEqual(backupV2State.tools.bookmarks, [backupQuestionKey], "version 2 backup should restore valid bookmarks");
+    assert.ok(backupV2State.confirmation.includes("الإصدار 2") && backupV2State.confirmation.includes("الإجابات المسجلة") && backupV2State.confirmation.includes("العلامات المرجعية"), "restore confirmation should preview backup contents");
+    await page.evaluate(() => { window.confirm = window.__originalBackupConfirm; });
+
+    // Unknown future backup versions must be rejected without modifying stored progress.
+    const beforeFutureImport = await page.evaluate(() => ({
+      progress: localStorage.getItem("mathBacSyriaProgressV1"),
+      tools: localStorage.getItem("mathBacSyriaStudentToolsV1")
+    }));
+    await page.evaluate(() => { window.__lastBackupAlert = ""; window.alert = message => { window.__lastBackupAlert = String(message); }; });
+    await page.locator("#import-progress-file").setInputFiles({
+      name: "unsupported-backup.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify({ ...backupV2Payload, version: 99, progress: { answered: 999, correct: 999 } }))
+    });
+    await page.waitForFunction(() => window.__lastBackupAlert.includes("إصدار النسخة الاحتياطية غير مدعوم"));
+    const afterFutureImport = await page.evaluate(() => ({
+      progress: localStorage.getItem("mathBacSyriaProgressV1"),
+      tools: localStorage.getItem("mathBacSyriaStudentToolsV1")
+    }));
+    assert.deepEqual(afterFutureImport, beforeFutureImport, "unsupported future backups must not alter saved data");
     await page.locator("#student-tools").scrollIntoViewIfNeeded();
     await page.locator("#progress-report-toggle").click();
     await page.waitForFunction(() => !document.querySelector("#progress-report").hidden);
