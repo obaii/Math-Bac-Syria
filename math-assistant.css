@@ -73,3 +73,12 @@ body.dark-mode .review-assistant-panel{background:#101827;border-color:#405579;c
 .math-assistant-form textarea{min-height:132px;direction:rtl;unicode-bidi:plaintext;line-height:1.9}
 .math-assistant-equation,.math-assistant-response mjx-container{direction:ltr;unicode-bidi:isolate;max-width:100%;overflow-x:auto}
 body.dark-mode .math-symbol-toolbar button{background:#22324b;border-color:#405579;color:#e7edf8}
+
+.math-assistant-input-preview{
+  min-height:42px;margin:8px 0 6px;padding:10px 12px;
+  border:1px dashed var(--border,#cbd5e1);border-radius:10px;
+  background:var(--soft-bg,#f8fafc);color:var(--text,#17243b);
+  direction:rtl;unicode-bidi:plaintext;line-height:1.9;overflow-x:auto;
+}
+.math-assistant-input-preview:empty{display:none}
+.math-assistant-input-preview mjx-container{direction:ltr;unicode-bidi:isolate}
