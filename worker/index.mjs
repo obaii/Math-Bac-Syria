@@ -62,7 +62,10 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = allowedRequest(request);
-    const healthProbe = request.method === "GET" && ["/health", "/health/db"].includes(url.pathname) && !request.headers.has("Origin");
+    // Health endpoints expose only service/database status, not user data.
+    // Keep them readable for direct browser checks even when a browser sends
+    // an Origin header; CORS headers are still emitted only for allowlisted origins.
+    const healthProbe = request.method === "GET" && ["/health", "/health/db"].includes(url.pathname);
     if (!origin && !healthProbe) return json({ error: "origin_not_allowed" }, 403, null);
     if (request.method === "OPTIONS" && url.pathname === "/api/ask") {
       return new Response(null, {
