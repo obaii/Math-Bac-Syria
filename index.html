@@ -177,19 +177,20 @@
         <label for="math-assistant-question">ما الذي تريد فهمه؟</label>
         <textarea id="math-assistant-question" rows="5" maxlength="3000" required placeholder="مثال: اشرح نهاية تابع، أو اكتب المسألة ومحاولتك لمراجعة الخطوات"></textarea>
         <div class="math-symbol-toolbar" role="group" aria-label="إدراج الرموز الرياضية في نص المسألة">
-          <button type="button" data-math-insert="\frac{ }{ }" aria-label="كسر">a⁄b</button>
-          <button type="button" data-math-insert="\sqrt{ }" aria-label="جذر تربيعي">√</button>
-          <button type="button" data-math-insert="\lim_{ }" aria-label="نهاية عند اللانهاية">lim</button>
-          <button type="button" data-math-insert="\int_{ }^{ }" aria-label="تكامل">∫</button>
-          <button type="button" data-math-insert="\sum_{ }^{ }" aria-label="مجموع">∑</button>
-          <button type="button" data-math-insert="\vec{ }" aria-label="شعاع">→</button>
-          <button type="button" data-math-insert="\overrightarrow{ }" aria-label="شعاع بين نقطتين">AB⃗</button>
-          <button type="button" data-math-insert="\infty" aria-label="ما لا نهاية">∞</button>
-          <button type="button" data-math-insert="\to" aria-label="سهم يؤول إلى">→</button>
-          <button type="button" data-math-insert="\pi" aria-label="باي">π</button>
-          <button type="button" data-math-insert="\theta" aria-label="ثيتا">θ</button>
-          <button type="button" data-math-insert="\begin{cases} \;\\ \;\end{cases}" aria-label="حالات متعددة">حالات</button>
+          <button type="button" data-math-insert="\(\frac{ }{ }\)" aria-label="كسر">a⁄b</button>
+          <button type="button" data-math-insert="\(\sqrt{ }\)" aria-label="جذر تربيعي">√</button>
+          <button type="button" data-math-insert="\(\lim_{ }\)" aria-label="نهاية عند اللانهاية">lim</button>
+          <button type="button" data-math-insert="\(\int_{ }^{ }\)" aria-label="تكامل">∫</button>
+          <button type="button" data-math-insert="\(\sum_{ }^{ }\)" aria-label="مجموع">∑</button>
+          <button type="button" data-math-insert="\(\vec{ }\)" aria-label="شعاع">→</button>
+          <button type="button" data-math-insert="\(\overrightarrow{ }\)" aria-label="شعاع بين نقطتين">AB⃗</button>
+          <button type="button" data-math-insert="\(\infty\)" aria-label="ما لا نهاية">∞</button>
+          <button type="button" data-math-insert="\(\to\)" aria-label="سهم يؤول إلى">→</button>
+          <button type="button" data-math-insert="\(\pi\)" aria-label="باي">π</button>
+          <button type="button" data-math-insert="\(\theta\)" aria-label="ثيتا">θ</button>
+          <button type="button" data-math-insert="\( \begin{cases} \;\\ \;\end{cases} \)" aria-label="حالات متعددة">حالات</button>
         </div>
+        <div id="math-assistant-input-preview" class="math-assistant-input-preview" aria-live="polite" aria-label="معاينة الرموز الرياضية">ستظهر معاينة الصيغة هنا بعد إدراج الرموز.</div>
         <p class="math-assistant-input-hint">اكتب المسألة كاملة. استخدم أزرار الرموز لإدراج الكسور والجذور والنهايات والتكاملات والشعاعات. اكتب الصيغ الرياضية بين \( و \)، أو استخدم الأزرار لإدراج أوامر LaTeX.</p>
         <div class="math-assistant-form-actions"><span id="math-assistant-char-count">٠ / ٣٠٠٠</span><button type="submit" class="primary">ابحث عن شرح ←</button></div>
       </form>
