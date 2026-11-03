@@ -13,6 +13,13 @@ assert.ok(bac.length>=75&&prior.length>=45&&supplement.length>=4,"curriculum, pr
 const sequenceUnit=bac.filter(x=>x.unit==="تذكرة بالمتتاليات والإثبات بالتدرج");
 assert.equal(sequenceUnit.length,7,"the first unit should retain its seven core entries");
 assert.ok(sequenceUnit.every(x=>typeof x.conditions==="string"&&x.conditions.trim().length>0),"all first-unit sequence formulas must state their use conditions");
+assert.ok(bac.every(x=>typeof x.conditions==="string"&&x.conditions.trim().length>0),"all baccalaureate formulas across all 14 units must state their conditions and limitations");
+assert.ok(data.find(x=>x.id==="sequence-monotone").tex.includes("\\forall n"),"sequence monotonicity must state that the difference condition holds for every index");
+assert.ok(data.find(x=>x.id==="limit-rational-infinity").tex.includes("\\sim"),"rational-function limits at infinity must express the leading-term comparison");
+assert.ok(data.find(x=>x.id==="geom-limit").conditions.includes("q<−1"),"geometric sequence limits must cover negative ratios below -1");
+assert.ok(data.find(x=>x.id==="prob-total").conditions.includes("تجزئة"),"total probability must require a partition of the sample space");
+assert.ok(data.find(x=>x.id==="plane-param").conditions.includes("غير مرتبطين خطياً"),"parametric plane representation must require independent direction vectors");
+
 const units=[...new Set(bac.map(x=>x.unit))];
 assert.equal(units.length,14,"all and only the 14 textbook units should be classified as baccalaureate content");
 for(const unit of ["تذكرة بالمتتاليات والإثبات بالتدرج","التوابع: النهايات والاستمرار","التوابع: الاشتقاق","نهاية متتالية","التابع اللوغاريتمي النيبري","التابع الأسي","التكامل والتوابع الأصلية","الأشعة في الفراغ","الجداء السلّمي في الفراغ","المستقيمات والمستويات في الفراغ","الأعداد العقدية","تطبيقات الأعداد العقدية في الهندسة","التحليل التوافقي","الاحتمالات"]) assert.ok(units.includes(unit),"missing official baccalaureate unit: "+unit);
