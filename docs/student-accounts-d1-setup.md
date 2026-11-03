@@ -1,6 +1,6 @@
 # تأسيس حسابات الطلاب باستخدام Cloudflare D1
 
-هذه المرحلة تضيف مخطط قاعدة البيانات فقط. لا تُفعّل التسجيل أو تسجيل الدخول بعد، ولا تغيّر آلية الحفظ الحالية في المتصفح. تفعيل واجهات الحسابات يأتي في مرحلة لاحقة بعد إنشاء قاعدة D1 وربطها بالخدمة.
+هذه المرحلة تضيف مخطط قاعدة البيانات فقط. لا تُفعّل التسجيل أو تسجيل الدخول بعد، ولا تغيّر آلية الحفظ الحالية في المتصفح. تفعيل واجهات الحسابات يأتي في مرحلة لاحقة بعد ربط الخدمة واختبارها.
 
 ## الجداول
 
@@ -19,28 +19,50 @@
 6. إبقاء الحفظ المحلي الحالي فعالاً. لا ترفع التقدم إلى الحساب إلا بعد تسجيل الدخول وموافقة الطالب، مع دمج مضبوط واختبارات تمنع فقد البيانات.
 7. لا تطلب الاسم الحقيقي أو البريد الإلكتروني أو تاريخ الميلاد أو أي بيانات تعريفية غير لازمة.
 
-## إعداد Cloudflare (يتطلب صاحب الحساب المخوّل)
+## إعداد قاعدة D1 من لوحة Cloudflare (دون سطر أوامر)
 
-أنشئ قاعدة D1 من الطرفية بعد تسجيل الدخول إلى حساب Cloudflare المخوّل:
+ملف `worker/wrangler.toml` في هذا الطلب يربط Worker بقاعدة D1 التي أنشأها صاحب الحساب:
 
-```sh
-npx wrangler d1 create math-bac-syria-students
+- الاسم: `math-bac-syria-students`
+- Binding: `DB`
+- Database ID: القيمة الفعلية التي زوّد بها صاحب الحساب.
+
+بعد دمج طلب السحب، أنشئ الجداول من لوحة Cloudflare:
+
+1. افتح Cloudflare Dashboard ثم **Storage & databases → D1 SQL Database**.
+2. افتح قاعدة `math-bac-syria-students`.
+3. اختر تبويب **Console**.
+4. افتح ملف `worker/migrations/0001_student_accounts.sql` في GitHub على فرع `main` وانسخ محتواه كاملاً.
+5. الصق SQL في Console واضغط **Execute** مرة واحدة.
+6. للتحقق، نفّذ الاستعلام التالي في Console:
+
+```sql
+SELECT name
+FROM sqlite_master
+WHERE type = 'table'
+  AND name IN (
+    'student_accounts',
+    'student_sessions',
+    'student_progress',
+    'student_recovery_codes'
+  )
+ORDER BY name;
 ```
 
-سيعرض Wrangler معرّف قاعدة البيانات الفعلي. أضف binding باسم `DB` إلى `worker/wrangler.toml`، وضع ذلك المعرّف في `database_id` داخل قسم `[[d1_databases]]`. لا تضع أي أسرار أو معرّفات وهمية في المستودع، ولا تنفّذ هذه الخطوة على حساب لا تملكه أو لا تملك صلاحية إدارته.
+يجب أن تظهر أسماء الجداول الأربعة. لا تنفّذ أوامر حذف أو إعادة إنشاء للجداول الموجودة.
 
-بعد حفظ إعداد الربط، ومن جذر المستودع، طبّق الترحيل الموجود في `worker/migrations/`:
+## نشر Worker من GitHub مباشرة
 
-```sh
-npx wrangler d1 migrations apply math-bac-syria-students --remote --config worker/wrangler.toml
-```
+يمكن نشر Worker دون العمل محلياً:
 
-تحقق من الجداول:
+1. افتح **Workers & Pages** في Cloudflare.
+2. إذا لم يكن Worker موجوداً، اختر **Create application** ثم ربط GitHub واستيراد المستودع `obaii/Math-Bac-Syria`. إذا كان موجوداً، افتحه ثم **Settings → Builds → Connect**.
+3. اختر الفرع `main`، واضبط **Root directory** على `worker` حتى يقرأ Cloudflare ملف `wrangler.toml` الصحيح.
+4. اسم Worker يجب أن يطابق `math-bac-syria-assistant` الموجود في إعداد Wrangler.
+5. اترك Build command فارغاً، واستخدم أمر النشر الافتراضي `npx wrangler deploy`، ثم احفظ إعداد الربط.
 
-```sh
-npx wrangler d1 execute math-bac-syria-students --remote --config worker/wrangler.toml --command "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
-```
+بعدها ينشر Cloudflare التغييرات القادمة من GitHub تلقائياً. لا تنشر نسخة جديدة قبل دمج طلب السحب ومراجعة إعدادات الربط. راجع حالة البناء في Cloudflare وGitHub قبل اعتبار Worker جاهزاً.
 
 ## حدود هذه المرحلة
 
-هذا الترحيل لا ينشئ قاعدة D1 على حساب Cloudflare ولا ينشر Worker ولا يضيف endpoints للمصادقة. تلك العمليات تحتاج قاعدة فعلية وربطاً مخولاً واختبارات تكامل على بيئة Cloudflare. لا تعتبر الحسابات جاهزة للطلاب قبل إتمامها.
+هذا الترحيل لا يفعّل التسجيل أو تسجيل الدخول ولا يضيف endpoints للمصادقة أو مزامنة التقدم. تلك العمليات تحتاج إلى تنفيذ مستقل واختبارات تكامل فعلية على Cloudflare. لا تعتبر حسابات الطلاب جاهزة للاستخدام قبل إتمامها واختبارها. تبقى بيانات التقدم الحالية محفوظة محلياً كما هي.
