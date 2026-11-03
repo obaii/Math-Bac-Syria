@@ -337,6 +337,11 @@
     if (q) {
       q.keyIdea = guide.keyIdea;
       q.steps = guide.steps;
+      q.hints = [
+        "ابدأ بتحديد المعطيات والمطلوب في السؤال.",
+        "الفكرة الأساسية: " + guide.keyIdea,
+        "ابدأ بتنفيذ هذه الخطوة: " + guide.steps[0]
+      ];
     } else {
       console.warn(`تعذر إرفاق الحل التفصيلي؛ لم يُعثر على السؤال المطابق في البحث: ${guide.topic}`);
     }
