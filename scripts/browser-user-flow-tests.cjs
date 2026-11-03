@@ -413,6 +413,7 @@ const assert = require("node:assert/strict");
       assert.equal(await page.locator("#" + id).getAttribute("aria-atomic"), "true", id + " should announce its complete updated value");
     }
 
+    await page.locator("#section-menu-toggle").click();
     await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
     assert.equal(await page.locator("#student-tools").isVisible(), true, "student tools should open from their shortcut; hidden=" + await page.locator("#student-tools").evaluate(el => el.hidden) + "; page errors=" + pageErrors.join(" | "));
     await page.getByRole("button", { name: /تفعيل الوضع الليلي/ }).click();
