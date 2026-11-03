@@ -559,6 +559,125 @@ function formatExpectedAnswer(q){
     .filter(value => typeof value === "string" && value.trim()).join(" أو ");
   return String(q.answer ?? "");
 }
+
+function findSimilarPracticeQuestion(current) {
+  const bank = Array.isArray(questions) ? questions : [];
+  const candidates = bank.filter(candidate =>
+    candidate && candidate.q !== current.q &&
+    candidate.topic === current.topic &&
+    isSupportedQuestion(candidate)
+  );
+  const type = getQuestionType(current);
+  const sameTypeAndLevel = candidates.filter(candidate =>
+    getQuestionType(candidate) === type &&
+    (!current.level || candidate.level === current.level)
+  );
+  const sameType = candidates.filter(candidate => getQuestionType(candidate) === type);
+  const pool = sameTypeAndLevel.length ? sameTypeAndLevel : sameType.length ? sameType : candidates;
+  return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+}
+
+function showSimilarPracticeQuestion(current, host) {
+  host.querySelector(".similar-practice-card")?.remove();
+  const question = findSimilarPracticeQuestion(current);
+  if (!question) return;
+  const card = document.createElement("section");
+  card.className = "similar-practice-card";
+  card.id = "similar-practice-card";
+  card.dataset.topic = question.topic;
+  const heading = document.createElement("h4");
+  heading.textContent = "تمرين مشابه من بنك المنصة";
+  const note = document.createElement("p");
+  note.className = "similar-practice-note";
+  note.textContent = "هذا تدريب إضافي من الأسئلة الموجودة، ولا يدخل في علامة الاختبار أو سجل تقدمك.";
+  const prompt = document.createElement("p");
+  prompt.className = "similar-practice-question";
+  prompt.textContent = question.q;
+  const controls = document.createElement("div");
+  controls.className = "similar-practice-options";
+  const result = document.createElement("p");
+  result.className = "similar-practice-feedback";
+  result.id = "similar-practice-feedback";
+  result.setAttribute("role", "status");
+  result.setAttribute("aria-live", "polite");
+  result.hidden = true;
+  const solution = document.createElement("p");
+  solution.className = "similar-practice-solution";
+  solution.hidden = true;
+  let completed = false;
+
+  const finish = value => {
+    if (completed) return;
+    completed = true;
+    const correct = evaluateQuestionAnswer(question, value);
+    controls.querySelectorAll("button,input").forEach(control => { control.disabled = true; });
+    if (getQuestionType(question) === "mcq") {
+      controls.querySelectorAll("[data-similar-option]").forEach((button, index) => {
+        if (index === question.answer) button.classList.add("correct");
+        if (index === value && !correct) button.classList.add("wrong");
+      });
+    } else if (getQuestionType(question) === "true-false") {
+      controls.querySelectorAll("[data-similar-boolean]").forEach(button => {
+        const selected = button.dataset.similarBoolean === "true";
+        if (selected === question.answer) button.classList.add("correct");
+        if (selected === value && !correct) button.classList.add("wrong");
+      });
+    }
+    result.textContent = correct ? "إجابة صحيحة، أحسنت!" : "ليست هذه الإجابة الصحيحة. راجع الحل ثم حاول في تمرين آخر.";
+    result.classList.add(correct ? "good" : "bad");
+    result.hidden = false;
+    solution.textContent = "الحل: " + String(question.solution || "");
+    solution.hidden = false;
+    typeset();
+  };
+
+  const type = getQuestionType(question);
+  if (type === "mcq") {
+    question.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "option similar-practice-option";
+      button.dataset.similarOption = String(index);
+      button.textContent = String(option);
+      button.addEventListener("click", () => finish(index));
+      controls.append(button);
+    });
+  } else if (type === "true-false") {
+    for (const [value, label] of [[true, "صح"], [false, "خطأ"]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "option similar-practice-option";
+      button.dataset.similarBoolean = String(value);
+      button.textContent = label;
+      button.addEventListener("click", () => finish(value));
+      controls.append(button);
+    }
+  } else {
+    const form = document.createElement("form");
+    form.className = "similar-practice-form";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.autocomplete = "off";
+    input.inputMode = type === "numeric" ? "decimal" : "text";
+    input.placeholder = type === "numeric" ? "اكتب القيمة العددية" : "اكتب إجابتك";
+    input.required = true;
+    const submit = document.createElement("button");
+    submit.type = "submit";
+    submit.className = "primary";
+    submit.textContent = "تحقق من الإجابة";
+    form.append(input, submit);
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      finish(input.value);
+    });
+    controls.append(form);
+  }
+
+  card.append(heading, note, prompt, controls, result, solution);
+  host.append(card);
+  typeset();
+}
+
 function showQuestion(){
   answered=false;
   const q=quizQuestions[index];
@@ -612,6 +731,31 @@ function showQuestion(){
     });
     options.append(form);
   }
+  const hintsPanel = $("question-hints");
+  const hintButton = $("show-hint");
+  const hintText = $("question-hint-text");
+  if (hintsPanel && hintButton && hintText) {
+    const hints = Array.isArray(q.hints)
+      ? q.hints.filter(hint => typeof hint === "string" && hint.trim()).slice(0, 3)
+      : [];
+    hintsPanel.hidden = hints.length === 0;
+    hintButton.disabled = false;
+    hintButton.textContent = "أحتاج إلى تلميح";
+    hintText.hidden = true;
+    hintText.textContent = "";
+    let shownHints = 0;
+    hintButton.onclick = () => {
+      if (shownHints >= hints.length) return;
+      shownHints += 1;
+      hintText.textContent = hints[shownHints - 1];
+      hintText.hidden = false;
+      hintButton.disabled = shownHints >= hints.length;
+      hintButton.textContent = shownHints >= hints.length
+        ? "اكتملت التلميحات"
+        : "التلميح التالي (" + (shownHints + 1).toLocaleString("ar") + " من " + hints.length.toLocaleString("ar") + ")";
+      typeset();
+    };
+  }
   $("feedback").className="feedback hidden";
   $("feedback").innerHTML="";
   $("next").disabled=true;
@@ -631,6 +775,8 @@ function submitQuestionAnswer(response){
     return;
   }
   answered=true;
+  const hintButton = $("show-hint");
+  if (hintButton) hintButton.disabled = true;
   const isCorrect=evaluateQuestionAnswer(q,response);
   if(isCorrect)correctCount++;
   else if (!sessionMistakes.some(item => questionKey(item) === questionKey(q))) sessionMistakes.push(q);
@@ -690,6 +836,13 @@ function submitQuestionAnswer(response){
     : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeSolutionText(formatExpectedAnswer(q)));
   const submittedSummary = type === "mcq" ? "" : '<div>إجابتك: ' + escapeSolutionText(type === "true-false" ? (response ? "صح" : "خطأ") : response) + '</div>';
   fb.innerHTML='<strong>' + (isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة") + '</strong><div>' + answerSummary + '</div>' + submittedSummary + '<div class="solution"><strong>الحل:</strong>' + solutionContent + '</div>';
+  const similarPracticeButton = document.createElement("button");
+  similarPracticeButton.type = "button";
+  similarPracticeButton.id = "similar-practice-start";
+  similarPracticeButton.className = "similar-practice-start";
+  similarPracticeButton.textContent = "تدرّب على سؤال مشابه";
+  similarPracticeButton.addEventListener("click", () => showSimilarPracticeQuestion(q, fb));
+  fb.append(similarPracticeButton);
   $("next").disabled=false;
   $("next").focus({ preventScroll: true });
   $("progress-bar").style.width=((index+1)/quizQuestions.length*100) + "%";

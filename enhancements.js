@@ -1618,7 +1618,7 @@
         const panel = document.getElementById(panelId);
         if (!panel) return;
         const opening = panel.hidden;
-        ["student-tools", "exam-tools", "scientific-calculator"].forEach(id => {
+        ["student-tools", "exam-tools", "scientific-calculator", "math-assistant"].forEach(id => {
           const other = document.getElementById(id);
           if (other && other !== panel) other.hidden = true;
         });

@@ -24,9 +24,9 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => location.hash), "#main-content", "activating the skip link should navigate to the main content");
 
     const quickStart = page.getByRole("navigation", { name: "اختصارات المنصة" });
-    assert.equal(await quickStart.locator("a").count(), 9, "the home dashboard should expose nine primary quick-start links");
+    assert.equal(await quickStart.locator("a").count(), 10, "the home dashboard should expose ten primary quick-start links");
     assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#solved-examples-library"], "quick-start links should point to their matching sections");
+      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
@@ -491,9 +491,32 @@ const assert = require("node:assert/strict");
       const currentQuestion = quizQuestions[index];
       currentQuestion.keyIdea = "الفكرة الأساسية للاختبار";
       currentQuestion.steps = ["الخطوة الأولى للاختبار", "الخطوة الثانية للاختبار"];
+      currentQuestion.hints = ["التلميح الأول للاختبار", "التلميح الثاني للاختبار", "التلميح الثالث للاختبار"];
+      showQuestion();
     });
+    const hintButton = page.locator("#show-hint");
+    await hintButton.waitFor({ state: "visible" });
+    await hintButton.click();
+    assert.equal(await page.locator("#question-hint-text").innerText(), "التلميح الأول للاختبار", "the first hint should appear without revealing later hints");
+    await hintButton.click();
+    assert.equal(await page.locator("#question-hint-text").innerText(), "التلميح الثاني للاختبار", "hints should be revealed in sequence");
+    await hintButton.click();
+    assert.equal(await page.locator("#question-hint-text").innerText(), "التلميح الثالث للاختبار", "the final hint should appear only after the previous hints");
+    assert.equal(await hintButton.isDisabled(), true, "the hint control should disable after all available hints are revealed");
+    assert.match(await hintButton.innerText(), /اكتملت التلميحات/);
+    assert.match(await page.locator("#session-answered").innerText(), /٠|0/, "using hints must not count as answering the question");
     await page.locator("#options [data-option]").first().click();
     await page.locator("#feedback").waitFor({ state: "visible" });
+
+    const similarCountBefore = await page.locator("#session-answered").innerText();
+    await page.locator("#similar-practice-start").click();
+    await page.locator("#similar-practice-card").waitFor({ state: "visible" });
+    assert.notEqual(await page.locator("#similar-practice-card .similar-practice-question").innerText(), "", "a related practice question should be displayed");
+    await page.locator("#similar-practice-card .similar-practice-option").first().click();
+    await page.locator("#similar-practice-feedback").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#session-answered").innerText(), similarCountBefore, "similar practice must not alter the main quiz answer count");
+    assert.equal(await page.locator("#similar-practice-card .similar-practice-solution").isVisible(), true, "the similar practice solution should appear after the attempt");
+
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
       remaining: Math.max(0, quizQuestions.length - index - 1).toLocaleString("ar"),
