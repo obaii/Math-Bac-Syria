@@ -820,9 +820,12 @@ function submitQuestionAnswer(response){
   const hasGuidedSteps = typeof q.keyIdea === "string" && q.keyIdea.trim() &&
     Array.isArray(q.steps) && q.steps.length > 0 &&
     q.steps.every(step => typeof step === "string" && step.trim());
+  const solutionMethod = !hasGuidedSteps && Array.isArray(q.hints) && q.hints.length
+    ? '<div class="solution-method"><strong>منهجية الحل خطوة بخطوة:</strong><ol>' + q.hints.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol></div>'
+    : "";
   const solutionContent = hasGuidedSteps
-    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + escapeSolutionText(q.keyIdea) + '</div></div><ol class="solution-steps">' + q.steps.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol>'
-    : '<div>' + q.solution + '</div>';
+    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + escapeSolutionText(q.keyIdea) + '</div></div><strong class="solution-steps-title">شرح الحل خطوة بخطوة:</strong><ol class="solution-steps">' + q.steps.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol>'
+    : '<div class="solution-original">' + q.solution + '</div>' + solutionMethod;
   const answerSummary = type === "mcq"
     ? (isCorrect ? "اختيارك صحيح." : "الإجابة الصحيحة هي: " + letters[q.answer] + " — " + q.options[q.answer])
     : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeSolutionText(formatExpectedAnswer(q)));
