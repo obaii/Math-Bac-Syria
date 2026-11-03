@@ -12,7 +12,8 @@
     .replace(/[۰-۹]/g, digit => String(digit.charCodeAt(0) - 0x06f0))
     .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
-  const tokenize = value => normalize(value).split(/\s+/).filter(token => token.length > 1 || /^\d+$/.test(token));
+  const stopWords = new Set(["في", "من", "عن", "على", "الى", "مع", "هذا", "هذه"]);
+  const tokenize = value => normalize(value).split(/\s+/).filter(token => (token.length > 1 || /^\d+$/.test(token)) && !stopWords.has(token));
   const matches = (content, query) => {
     const tokens = tokenize(query);
     if (!tokens.length) return true;
