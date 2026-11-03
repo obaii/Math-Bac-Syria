@@ -114,7 +114,7 @@ const assert = require("node:assert/strict");
     await page.locator("#plotter-x-max").fill("-20");
     await page.locator("#plotter-draw").click();
     assert.ok((await page.locator("#plotter-message").innerText()).includes("مجالاً صحيحاً"), "invalid graph ranges should show an accessible validation message");
-    await openPanel("function-plotter");
+    await openPanel("topic-section");
     await page.locator("#function-plotter").waitFor({ state: "hidden" });
     
     await openPanel("geometry-tools");
@@ -133,7 +133,7 @@ const assert = require("node:assert/strict");
     await page.locator("#geometry-shape").selectOption("cone");
     assert.ok((await page.locator("#geometry-board").getAttribute("aria-label")).includes("مخروط"), "the SVG drawing should match the selected solid");
     await page.locator("#geometry-reset").click();
-    await openPanel("geometry-tools");
+    await openPanel("topic-section");
     await page.locator("#geometry-tools").waitFor({ state: "hidden" });
     // Exercise formula search, category filtering, and accessible copy feedback.
     await openPanel("formula-library");
@@ -147,7 +147,7 @@ const assert = require("node:assert/strict");
     await page.locator("#formula-category").selectOption("all");
     await page.locator("#formula-list .formula-copy").first().click();
     assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
-    await openPanel("formula-library");
+    await openPanel("topic-section");
     await page.locator("#formula-library").waitFor({ state: "hidden" });
 
     // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
