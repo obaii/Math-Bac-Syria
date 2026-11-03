@@ -1312,3 +1312,24 @@ body.dark-mode #intensive-training-status{background:#101827;color:#a7b5ca}
   .solved-example-card.has-question-diagram>.solved-example-question,
   .solved-example-card.has-question-diagram>.question-diagram{grid-column:1;grid-row:auto}
 }
+
+/* More legible, expanded solution presentation. */
+.solution-steps-title{display:block;margin:14px 0 8px;font-weight:800;color:var(--ink,#1e293b)}
+.solution-steps,.solution-method ol{padding-inline-start:24px;margin:8px 0 14px}
+.solution-steps li,.solution-method li{
+  margin:8px 0;padding:10px 12px;border-inline-start:3px solid #7c9be8;
+  border-radius:8px;background:rgba(49,94,219,.055);line-height:1.95;
+}
+.solution-method{margin-top:14px;padding:13px;border:1px solid var(--line,#dbe3ef);border-radius:12px;background:var(--card-bg,#fff)}
+.solution-method>strong{display:block;margin-bottom:8px}
+.solved-example-card>strong{display:block;margin:14px 0 8px;color:var(--ink,#1e293b)}
+.solved-example-card>ol{padding-inline-start:26px;margin:8px 0 16px}
+.solved-example-card>ol>li{
+  margin:9px 0;padding:11px 13px;border-inline-start:3px solid #7c9be8;
+  border-radius:9px;background:rgba(49,94,219,.055);line-height:2;
+}
+.solved-example-idea,.solved-example-check{line-height:1.95;padding:10px 12px;border-radius:10px}
+.solved-example-idea{background:rgba(14,116,144,.07)}
+.solved-example-check{background:rgba(22,163,74,.06)}
+body.dark-mode .solution-steps li,body.dark-mode .solution-method li,
+body.dark-mode .solved-example-card>ol>li{background:rgba(125,155,232,.09)}
