@@ -26,6 +26,7 @@ const assert = require("node:assert/strict");
     await prompt.fill("المسألة: ");
     await page.locator('[data-math-insert][aria-label="كسر"]').click();
     assert.ok((await prompt.inputValue()).includes("\\frac{"),"fraction symbol button should insert TeX at the cursor");
+    await page.locator("#math-assistant-input-preview mjx-container").waitFor({state:"visible",timeout:10000});
     await prompt.fill("المتتالية الحسابية");
     await page.locator("#math-assistant-form button[type=submit]").click();
     await page.locator("#math-assistant-response .math-assistant-card").first().waitFor({state:"visible",timeout:10000});
