@@ -8,8 +8,9 @@
   const clear = document.getElementById("math-assistant-clear");
   const explain = document.getElementById("math-assistant-explain");
   const aiStatus = document.getElementById("math-assistant-ai-status");
-  const apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim().replace(/\\/+$/, "");
-  const aiEnabled = /^https:\\/\\//i.test(apiBase) || /^http:\\/\\/localhost(?::\\d+)?$/i.test(apiBase) || /^http:\\/\\/127\\.0\\.0\\.1(?::\\d+)?$/i.test(apiBase);
+  let apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim();
+  while (apiBase.endsWith("/")) apiBase = apiBase.slice(0, -1);
+  const aiEnabled = apiBase.startsWith("https://") || apiBase.startsWith("http://localhost") || apiBase.startsWith("http://127.0.0.1");
   if (explain) explain.disabled = !aiEnabled;
   if (aiStatus && aiEnabled) aiStatus.textContent = "الاتصال بالمساعد الذكي مهيأ. لا تكتب معلومات شخصية في الأسئلة.";
   if (!form || !input || !response) return;
@@ -111,7 +112,7 @@
     search(question);
     const localContext = [...response.querySelectorAll(".math-assistant-card")]
       .map(card => card.innerText)
-      .join("\\n\\n")
+      .join(String.fromCharCode(10, 10))
       .slice(0, 4000);
     explain.disabled = true;
     if (aiStatus) aiStatus.textContent = "جارٍ إعداد شرح الحل خطوة بخطوة…";
