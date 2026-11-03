@@ -5,6 +5,7 @@
   const input = document.getElementById("math-assistant-question");
   const response = document.getElementById("math-assistant-response");
   const counter = document.getElementById("math-assistant-char-count");
+  const preview = document.getElementById("math-assistant-input-preview");
   const clear = document.getElementById("math-assistant-clear");
   if (!form || !input || !response) return;
   input.maxLength = 3000;
@@ -99,16 +100,33 @@
     if (!query) { input.focus(); return; }
     search(query);
   });
+  function renderInputPreview() {
+    if (!preview) return;
+    if (window.MathJax?.typesetClear) window.MathJax.typesetClear([preview]);
+    preview.replaceChildren();
+    if (!input.value.trim()) {
+      preview.textContent = "ستظهر معاينة الصيغة هنا بعد إدراج الرموز.";
+      return;
+    }
+    preview.appendChild(document.createTextNode(input.value));
+    if (window.MathJax?.typesetPromise) {
+      const ready = window.MathJax.startup?.promise || Promise.resolve();
+      ready.then(() => window.MathJax.typesetPromise([preview])).catch(() => {});
+    }
+  }
   input.addEventListener("input",() => {
     if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠٠";
+    renderInputPreview();
   });
+  renderInputPreview();
   document.querySelectorAll("[data-math-insert]").forEach(button => button.addEventListener("click",() => {
     const token = button.dataset.mathInsert || "";
     const start = Number.isInteger(input.selectionStart) ? input.selectionStart : input.value.length;
     const end = Number.isInteger(input.selectionEnd) ? input.selectionEnd : start;
     input.setRangeText(token, start, end, "end");
+    const casesEnd = token.indexOf("\\end{cases}");
     const firstBrace = token.indexOf("{");
-    const cursor = firstBrace >= 0 ? start + firstBrace + 1 : start + token.length;
+    const cursor = casesEnd >= 0 ? start + casesEnd : firstBrace >= 0 ? start + firstBrace + 1 : start + token.length;
     input.setSelectionRange(cursor, cursor);
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.focus();
