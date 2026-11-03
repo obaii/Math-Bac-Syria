@@ -16,7 +16,7 @@ assert.ok(sequenceUnit.every(x=>typeof x.conditions==="string"&&x.conditions.tri
 assert.ok(bac.every(x=>typeof x.conditions==="string"&&x.conditions.trim().length>0),"all baccalaureate formulas across all 14 units must state their conditions and limitations");
 assert.ok(data.find(x=>x.id==="sequence-monotone").tex.includes("\\forall n"),"sequence monotonicity must state that the difference condition holds for every index");
 assert.ok(data.find(x=>x.id==="limit-rational-infinity").tex.includes("\\sim"),"rational-function limits at infinity must express the leading-term comparison");
-assert.ok(data.find(x=>x.id==="geom-limit").conditions.includes("q<−1"),"geometric sequence limits must cover negative ratios below -1");
+assert.ok(data.find(x=>x.id==="geom-limit").conditions.includes("q<−1")&&data.find(x=>x.id==="geom-limit").conditions.includes("q=−1"),"geometric sequence limits must cover negative ratios below -1");
 assert.ok(data.find(x=>x.id==="prob-total").conditions.includes("تجزئة"),"total probability must require a partition of the sample space");
 assert.ok(data.find(x=>x.id==="plane-param").conditions.includes("غير مرتبطين خطياً"),"parametric plane representation must require independent direction vectors");
 
