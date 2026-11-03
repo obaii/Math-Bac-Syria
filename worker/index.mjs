@@ -65,11 +65,13 @@ const SESSION_COOKIE = "__Host-mbs_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 const PASSWORD_ITERATIONS = 310000;
 const MAX_PROGRESS_BYTES = 50000;
+const authRateBuckets = new Map();
+const DUMMY_PASSWORD_SALT = new TextEncoder().encode("MathBacDummySalt!");
 
 function base64url(bytes) {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/=/g, "").replace(/\\+/g, "-").replace(/\\//g, "_");
+  return btoa(binary).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
 function fromBase64url(value) {
@@ -134,7 +136,7 @@ async function getSession(request, env) {
   const tokenHash = await sha256Hex(token);
   const now = Math.floor(Date.now() / 1000);
   const row = await env.DB.prepare(
-    "SELECT s.token_hash, s.account_id, s.expires_at, a.username, a.created_at " +
+    "SELECT s.token_hash, s.account_id, s.expires_at, s.last_seen_at, a.username, a.created_at " +
     "FROM student_sessions s JOIN student_accounts a ON a.id = s.account_id " +
     "WHERE s.token_hash = ? AND s.expires_at > ?"
   ).bind(tokenHash, now).first();
@@ -155,6 +157,25 @@ async function createSession(env, accountId) {
   return token;
 }
 
+function withinAuthRateLimit(request, action) {
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown-client";
+  const key = action + ":" + ip;
+  const now = Date.now();
+  const current = authRateBuckets.get(key);
+  if (authRateBuckets.size > 3000) {
+    for (const [entry, bucket] of authRateBuckets) {
+      if (now - bucket.startedAt >= 15 * 60 * 1000) authRateBuckets.delete(entry);
+    }
+  }
+  if (!current || now - current.startedAt >= 15 * 60 * 1000) {
+    authRateBuckets.set(key, { startedAt: now, count: 1 });
+    return true;
+  }
+  if (current.count >= 8) return false;
+  current.count += 1;
+  return true;
+}
+
 async function handleAuth(request, env, url, origin) {
   if (request.method === "OPTIONS") return json({}, 204, origin);
   if (request.method === "GET" && url.pathname === "/api/auth/me") {
@@ -167,6 +188,7 @@ async function handleAuth(request, env, url, origin) {
     return json({ error: "json_required" }, 415, origin);
   }
   if (request.method === "POST" && ["/api/auth/register", "/api/auth/login"].includes(url.pathname)) {
+    if (!withinAuthRateLimit(request, url.pathname)) return json({ error: "rate_limited" }, 429, origin);
     const parsed = await readJsonBody(request, 4000);
     if (parsed.error) return json({ error: parsed.error }, parsed.error === "request_too_large" ? 413 : 400, origin);
     const username = typeof parsed.value.username === "string" ? parsed.value.username.trim() : "";
@@ -191,7 +213,9 @@ async function handleAuth(request, env, url, origin) {
     const account = await env.DB.prepare(
       "SELECT id, username, password_hash, created_at FROM student_accounts WHERE username = ? COLLATE NOCASE"
     ).bind(username).first();
-    const valid = account ? await verifyPassword(password, account.password_hash) : false;
+    const valid = account
+      ? await verifyPassword(password, account.password_hash)
+      : (await hashPassword(password, DUMMY_PASSWORD_SALT), false);
     if (!valid) return json({ error: "invalid_login" }, 401, origin);
     const token = await createSession(env, account.id);
     return json({ ok: true, student: { username: account.username } }, 200, origin, { "set-cookie": sessionCookie(token) });
