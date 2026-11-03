@@ -369,7 +369,7 @@
         <section class="review-plan" id="review-plan" aria-live="polite" hidden></section>
         <section id="review-assistant-panel" class="review-assistant-panel" aria-labelledby="review-assistant-title" aria-live="polite" hidden>
           <h4 id="review-assistant-title">خطة مراجعتك الشخصية</h4>
-          <p class="review-assistant-disclosure">تُحلّل المنصة تقدمك على جهازك. عند طلب الخطة الذكية، يُرسل ملخص مجمّع عن الأبحاث ونسب الإجابة والأخطاء فقط.</p>
+          <p class="review-assistant-disclosure">تُحلّل المنصة تقدمك على جهازك. تُنشأ خطة المراجعة محلياً على جهازك، ولا تُرسل بياناتك إلى أي خادم.</p>
           <p id="review-assistant-status" role="status">ستظهر هنا توصيات مراجعة مبنية على أدائك.</p>
           <div id="review-assistant-output" class="review-assistant-output"></div>
         </section>
@@ -451,7 +451,7 @@
       reviewAssistant.setAttribute("aria-labelledby", "review-assistant-title");
       reviewAssistant.setAttribute("aria-live", "polite");
       reviewAssistant.hidden = true;
-      reviewAssistant.innerHTML = "<h4 id=\"review-assistant-title\">خطة مراجعتك الشخصية</h4><p class=\"review-assistant-disclosure\">تُحلّل المنصة تقدمك على جهازك. عند طلب الخطة الذكية، يُرسل ملخص مجمّع عن الأبحاث ونسب الإجابة والأخطاء فقط.</p><p id=\"review-assistant-status\" role=\"status\">ستظهر هنا توصيات مراجعة مبنية على أدائك.</p><div id=\"review-assistant-output\" class=\"review-assistant-output\"></div>";
+      reviewAssistant.innerHTML = "<h4 id=\"review-assistant-title\">خطة مراجعتك الشخصية</h4><p class=\"review-assistant-disclosure\">تُحلّل المنصة تقدمك على جهازك. تُنشأ خطة المراجعة محلياً على جهازك، ولا تُرسل بياناتك إلى أي خادم.</p><p id=\"review-assistant-status\" role=\"status\">ستظهر هنا توصيات مراجعة مبنية على أدائك.</p><div id=\"review-assistant-output\" class=\"review-assistant-output\"></div>";
       const report = document.getElementById("progress-report");
       if (report && report.parentNode) report.insertAdjacentElement("afterend", reviewAssistant);
       else panel.appendChild(reviewAssistant);
