@@ -9,12 +9,21 @@ const MAX_QUESTION_LENGTH = 1200;
 const MAX_CONTEXT_LENGTH = 4000;
 const MAX_REQUESTS_PER_MINUTE = 6;
 const requestBuckets = new Map();
+const SECURITY_HEADERS = Object.freeze({
+  "x-content-type-options": "nosniff",
+  "x-frame-options": "DENY",
+  "referrer-policy": "no-referrer",
+  "permissions-policy": "camera=(), microphone=(), geolocation=()",
+  "content-security-policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
+  "strict-transport-security": "max-age=31536000; includeSubDomains",
+  "cross-origin-opener-policy": "same-origin"
+});
 
 function json(data, status, origin) {
   const headers = {
+    ...SECURITY_HEADERS,
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
-    "x-content-type-options": "nosniff",
     "vary": "Origin"
   };
   if (origin && ALLOWED_ORIGINS.has(origin)) {
@@ -59,6 +68,7 @@ export default {
       return new Response(null, {
         status: 204,
         headers: {
+          ...SECURITY_HEADERS,
           "access-control-allow-origin": origin,
           "access-control-allow-methods": "POST, OPTIONS",
           "access-control-allow-headers": "Content-Type",
@@ -89,6 +99,9 @@ export default {
       body = JSON.parse(raw);
     } catch {
       return json({ error: "invalid_json" }, 400, origin);
+    }
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return json({ error: "invalid_payload" }, 400, origin);
     }
 
     const question = typeof body.question === "string" ? body.question.trim() : "";
