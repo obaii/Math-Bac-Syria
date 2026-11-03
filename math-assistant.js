@@ -6,6 +6,12 @@
   const response = document.getElementById("math-assistant-response");
   const counter = document.getElementById("math-assistant-char-count");
   const clear = document.getElementById("math-assistant-clear");
+  const explain = document.getElementById("math-assistant-explain");
+  const aiStatus = document.getElementById("math-assistant-ai-status");
+  const apiBase = String(window.MATH_ASSISTANT_API_URL || "").trim().replace(/\\/+$/, "");
+  const aiEnabled = /^https:\\/\\//i.test(apiBase) || /^http:\\/\\/localhost(?::\\d+)?$/i.test(apiBase) || /^http:\\/\\/127\\.0\\.0\\.1(?::\\d+)?$/i.test(apiBase);
+  if (explain) explain.disabled = !aiEnabled;
+  if (aiStatus && aiEnabled) aiStatus.textContent = "الاتصال بالمساعد الذكي مهيأ. لا تكتب معلومات شخصية في الأسئلة.";
   if (!form || !input || !response) return;
 
   const normalize = value => String(value || "")
@@ -99,6 +105,57 @@
     }
     appendMath(response);
   }
+  explain?.addEventListener("click", async () => {
+    const question = input.value.trim();
+    if (!question || !aiEnabled) return;
+    search(question);
+    const localContext = [...response.querySelectorAll(".math-assistant-card")]
+      .map(card => card.innerText)
+      .join("\\n\\n")
+      .slice(0, 4000);
+    explain.disabled = true;
+    if (aiStatus) aiStatus.textContent = "جارٍ إعداد شرح الحل خطوة بخطوة…";
+    const result = make("article","math-assistant-card math-assistant-ai-answer");
+    result.append(make("span","math-assistant-kind","شرح ذكي"));
+    result.append(make("p","math-assistant-ai-loading","يعمل المساعد على تحليل السؤال."));
+    response.append(result);
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      let apiResponse;
+      try {
+        apiResponse = await fetch(apiBase + "/api/ask", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({question, context:localContext}),
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
+      const payload = await apiResponse.json().catch(() => ({}));
+      if (!apiResponse.ok || typeof payload.answer !== "string") {
+        const message = apiResponse.status === 429
+          ? "وصل المساعد إلى حد الطلبات المؤقت. انتظر قليلاً ثم أعد المحاولة."
+          : apiResponse.status === 503
+            ? "خدمة النموذج غير متاحة مؤقتاً أو بلغت حصتها المجانية."
+            : "تعذر الحصول على شرح الآن. يمكنك متابعة البحث المحلي في القوانين والأمثلة.";
+        throw new Error(message);
+      }
+      result.querySelector(".math-assistant-ai-loading")?.remove();
+      result.append(make("p","math-assistant-ai-text",payload.answer));
+      if (aiStatus) aiStatus.textContent = "اكتمل الشرح. راجع الخطوات وتحقق من النتائج قبل اعتمادها.";
+      appendMath(result);
+    } catch (error) {
+      result.remove();
+      if (aiStatus) aiStatus.textContent = error.name === "AbortError"
+        ? "استغرق الرد وقتاً أطول من المتوقع. حاول مجدداً."
+        : (error.message || "تعذر الاتصال بالمساعد الذكي.");
+    } finally {
+      explain.disabled = false;
+    }
+  });
+
   form.addEventListener("submit",event => {
     event.preventDefault();
     const query = input.value.trim();
@@ -107,6 +164,7 @@
   });
   input.addEventListener("input",() => {
     if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠";
+    if (explain) explain.disabled = !aiEnabled || !input.value.trim();
   });
   document.querySelectorAll("[data-assistant-prompt]").forEach(button => button.addEventListener("click",() => {
     input.value = button.dataset.assistantPrompt || "";
