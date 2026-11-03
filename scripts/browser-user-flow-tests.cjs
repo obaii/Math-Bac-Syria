@@ -68,7 +68,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 14, "complex geometry topic should show all fourteen examples");
     await page.locator("#solved-example-topic").selectOption("");
     await page.locator("#solved-example-search").fill("اِسْتِقْلال حادثتين");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 1, "text search should find the expected worked example");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 4, "normalized multiword search should find all four relevant worked examples despite Arabic diacritics");
     await page.locator("#solved-example-search").fill("");
     await page.locator('[data-panel-toggle="solved-examples-library"]').click();
     await page.locator("#solved-examples-library").waitFor({ state: "hidden" });
