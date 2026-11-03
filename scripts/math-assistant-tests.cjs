@@ -9,7 +9,14 @@ const assert = require("node:assert/strict");
   page.on("pageerror",error=>errors.push(error.message));
   try {
     await page.route("**/math-assistant-config.js*",route=>route.fulfill({contentType:"application/javascript",body:'window.MATH_ASSISTANT_API_URL = "https://assistant-test.example.workers.dev";'}));
-    await page.route("https://assistant-test.example.workers.dev/api/ask",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({answer:"الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون."})}));
+    await page.route("https://assistant-test.example.workers.dev/api/ask",route=>{
+      const payload=route.request().postDataJSON();
+      return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({
+        answer:payload.mode==="simplify"
+          ? "الفكرة ببساطة: نستخدم القانون المناسب لفهم العلاقة بين الكميات."
+          : "الخطوة الأولى: نحدد المعطيات.\\nالخطوة الثانية: نطبق القانون."
+      })});
+    });
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/",{waitUntil:"domcontentloaded"});
     await page.waitForFunction(()=>Array.isArray(window.MathFormulaLibraryData) && Array.isArray(window.solvedExamplesLibrary?.examples),null,{timeout:15000});
     const shortcut=page.locator('[data-panel-toggle="math-assistant"]');
@@ -35,6 +42,11 @@ const assert = require("node:assert/strict");
     await explain.click();
     await page.locator(".math-assistant-ai-text").waitFor({state:"visible",timeout:10000});
     assert.match(await page.locator(".math-assistant-ai-text").innerText(),/الخطوة الأولى/);
+    const simplify=page.locator("#math-assistant-simplify");
+    assert.equal(await simplify.isEnabled(),true,"the concept simplifier should enable with a configured endpoint");
+    await simplify.click();
+    await page.locator(".math-assistant-ai-answer").last().locator(".math-assistant-ai-text").waitFor({state:"visible",timeout:10000});
+    assert.match(await page.locator(".math-assistant-ai-answer").last().innerText(),/الفكرة ببساطة/);
     assert.deepEqual(errors,[],"assistant interactions should not produce browser errors");
     console.log("Interactive math assistant tests passed.");
   } finally {
