@@ -20,8 +20,8 @@
   <title>رياضيات البكالوريا السوريّة</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
-  <link rel="stylesheet" href="math-assistant.css?v=20261103-3">
-   <link rel="stylesheet" href="style-overrides.css?v=20261103-3">
+  <link rel="stylesheet" href="math-assistant.css?v=20261103-4">
+   <link rel="stylesheet" href="style-overrides.css?v=20261103-4">
   <link rel="stylesheet" href="student-tools.css?v=20261103-1">
   <script>
     window.MathJax = {
@@ -47,13 +47,13 @@
   <script defer src="solution-guides.js?v=20261103-4"></script>
   <script defer src="question-diagrams.js?v=20261029-1"></script>
   <script defer src="app.js?v=20261103-3"></script>
-  <script defer src="enhancements.js?v=20261103-6"></script>
+  <script defer src="enhancements.js?v=20261103-7"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-1"></script>
   <script defer src="solved-examples.js?v=20261103-2"></script>
-  <script defer src="math-assistant.js?v=20261103-5"></script>
+  <script defer src="math-assistant.js?v=20261103-6"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
@@ -154,7 +154,8 @@
       <div class="achievement-heading"><div><p class="eyebrow">إنجازاتك</p><h3 id="achievement-title">خطواتك تستحق التقدير</h3><p>تُفتح الشارات تلقائياً مع تقدمك في التدريب، دون التأثير في نتائجك أو بياناتك.</p></div><strong id="achievement-summary" aria-live="polite">أنجزت ٠ من ٧ إنجازات.</strong></div>
       <ul id="achievement-list" class="achievement-list" aria-label="قائمة الإنجازات"></ul>
     </section>
-    <nav class="quick-start" aria-label="اختصارات المنصة">
+    <button type="button" id="section-menu-toggle" class="section-menu-toggle" aria-controls="section-menu" aria-expanded="false">☰ قائمة أقسام المنصة</button>
+    <nav id="section-menu" class="quick-start" aria-label="أقسام المنصة" hidden>
       <a class="quick-start-card" href="#topic-section"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
@@ -171,12 +172,26 @@
         <p>اكتب اسم مفهوم أو قانون أو فكرة رياضية، وسأبحث لك في مكتبة القوانين والأمثلة المحلولة الموجودة في المنصة.</p></div>
         <span class="math-assistant-status">يعمل محلياً</span>
       </div>
-      <p class="math-assistant-disclosure">يبحث المساعد أولاً في قوانين المنصة وأمثلتها المحلولة. ويمكنه أيضاً شرح الحل أو تبسيط المفهوم عند تفعيل خدمة الذكاء الاصطناعي الاختيارية.</p>
+      <p class="math-assistant-disclosure">يبحث المساعد حالياً في مكتبة القوانين والأمثلة المحلولة محلياً. إدماج نموذج ذكاء اصطناعي خارجي يحتاج إلى خدمة خلفية آمنة حتى لا تُكشف مفاتيح الاتصال في المتصفح.</p>
       <form id="math-assistant-form" class="math-assistant-form">
         <label for="math-assistant-question">ما الذي تريد فهمه؟</label>
-        <textarea id="math-assistant-question" rows="2" maxlength="300" required placeholder="مثال: اشرح نهاية تابع، أو اكتب المسألة ومحاولتك لمراجعة الخطوات"></textarea>
-        <p class="math-assistant-input-hint">لمراجعة خطأك، اكتب نص المسألة ثم خطوات محاولتك أو الإجابة التي وصلت إليها.</p>
-        <div class="math-assistant-form-actions"><span id="math-assistant-char-count">٠ / ٣٠٠</span><button type="submit" class="primary">ابحث عن شرح ←</button></div>
+        <textarea id="math-assistant-question" rows="5" maxlength="3000" required placeholder="مثال: اشرح نهاية تابع، أو اكتب المسألة ومحاولتك لمراجعة الخطوات"></textarea>
+        <div class="math-symbol-toolbar" role="group" aria-label="إدراج الرموز الرياضية في نص المسألة">
+          <button type="button" data-math-insert="\\frac{}{}" aria-label="كسر">a⁄b</button>
+          <button type="button" data-math-insert="\\sqrt{}" aria-label="جذر تربيعي">√</button>
+          <button type="button" data-math-insert="\\lim_{x\\to\\infty}" aria-label="نهاية عند اللانهاية">lim</button>
+          <button type="button" data-math-insert="\\int_{}^{}" aria-label="تكامل">∫</button>
+          <button type="button" data-math-insert="\\sum_{}^{}" aria-label="مجموع">∑</button>
+          <button type="button" data-math-insert="\\vec{}" aria-label="شعاع">→</button>
+          <button type="button" data-math-insert="\\overrightarrow{}" aria-label="شعاع بين نقطتين">AB⃗</button>
+          <button type="button" data-math-insert="\\infty" aria-label="ما لا نهاية">∞</button>
+          <button type="button" data-math-insert="\\to" aria-label="سهم يؤول إلى">→</button>
+          <button type="button" data-math-insert="\\pi" aria-label="باي">π</button>
+          <button type="button" data-math-insert="\\theta" aria-label="ثيتا">θ</button>
+          <button type="button" data-math-insert="\\begin{cases}\\\\\\end{cases}" aria-label="حالات متعددة">حالات</button>
+        </div>
+        <p class="math-assistant-input-hint">اكتب المسألة كاملة. استخدم أزرار الرموز لإدراج الكسور والجذور والنهايات والتكاملات والشعاعات. اكتب الصيغ الرياضية بين \( و \)، أو استخدم الأزرار لإدراج أوامر LaTeX.</p>
+        <div class="math-assistant-form-actions"><span id="math-assistant-char-count">٠ / ٣٠٠٠</span><button type="submit" class="primary">ابحث عن شرح ←</button></div>
       </form>
       <div class="math-assistant-ai-actions">
       </div>
