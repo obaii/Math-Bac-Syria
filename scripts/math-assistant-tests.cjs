@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
   const errors=[];
   let apiRequests = 0;
   page.on("pageerror",error=>errors.push(error.message));
-  page.on("request",request=>{ if (request.url().includes("/api/ask") || request.url().includes("workers.dev")) apiRequests++; });
+  page.on("request",request=>{ if (request.url().includes("/api/")) apiRequests++; });
   await page.addInitScript(() => localStorage.setItem("mathBacSyriaProgressV1", JSON.stringify({
     answered:10, correct:4, mistakes:{}, topicStats:{"النهايات والاستمرار":{answered:10,correct:4}}, attempts:[], seenQuestions:{}
   })));
