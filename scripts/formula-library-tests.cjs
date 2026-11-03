@@ -10,6 +10,9 @@ assert.ok(data.every(x=>x.title&&x.category&&x.unit&&x.lesson&&x.tex&&x.note&&x.
 assert.ok(data.every(x=>["bac","prior","supplement"].includes(x.level)),"entries must be classified as baccalaureate or prerequisite material");
 const bac=data.filter(x=>x.level==="bac"),prior=data.filter(x=>x.level==="prior"),supplement=data.filter(x=>x.level==="supplement");
 assert.ok(bac.length>=75&&prior.length>=45&&supplement.length>=4,"curriculum, prerequisite, and teacher-guide coverage should be substantial");
+const sequenceUnit=bac.filter(x=>x.unit==="تذكرة بالمتتاليات والإثبات بالتدرج");
+assert.equal(sequenceUnit.length,7,"the first unit should retain its seven core entries");
+assert.ok(sequenceUnit.every(x=>typeof x.conditions==="string"&&x.conditions.trim().length>0),"all first-unit sequence formulas must state their use conditions");
 const units=[...new Set(bac.map(x=>x.unit))];
 assert.equal(units.length,14,"all and only the 14 textbook units should be classified as baccalaureate content");
 for(const unit of ["تذكرة بالمتتاليات والإثبات بالتدرج","التوابع: النهايات والاستمرار","التوابع: الاشتقاق","نهاية متتالية","التابع اللوغاريتمي النيبري","التابع الأسي","التكامل والتوابع الأصلية","الأشعة في الفراغ","الجداء السلّمي في الفراغ","المستقيمات والمستويات في الفراغ","الأعداد العقدية","تطبيقات الأعداد العقدية في الهندسة","التحليل التوافقي","الاحتمالات"]) assert.ok(units.includes(unit),"missing official baccalaureate unit: "+unit);
