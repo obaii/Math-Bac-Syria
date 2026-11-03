@@ -19,8 +19,8 @@ const context = vm.createContext({
 for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
-  "merge-questions.js",
   "questions_typed_additional.js",
+  "merge-questions.js",
   "solution-guides.js"
 ]) {
   vm.runInContext(
@@ -30,7 +30,6 @@ for (const file of [
   );
 }
 
-vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const { questions, topics } = vm.runInContext("({ questions, topics })", context);
 const guided = questions.filter((q) => Array.isArray(q.steps) && q.steps.length > 0);
 const failures = [];
@@ -59,8 +58,8 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 33) {
-  failures.push(`Expected exactly 33 curated guides (19 existing plus 14 new), found ${guided.length}.`);
+if (guided.length !== 45) {
+  failures.push(`Expected exactly 45 curated guides (33 existing plus 12 new), found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
@@ -78,7 +77,7 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261103-3/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261103-4/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 if (!/app\.js\?v=20261103-3/.test(indexHtml)) {
@@ -87,7 +86,7 @@ if (!/app\.js\?v=20261103-3/.test(indexHtml)) {
 if (!/enhancements\.js\?v=20261103-6/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-if (indexHtml.indexOf("solution-guides.js?v=20261103-3") > indexHtml.indexOf("app.js?v=20261103-3")) {
+if (indexHtml.indexOf("solution-guides.js?v=20261103-4") > indexHtml.indexOf("app.js?v=20261103-3")) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
 }
 
