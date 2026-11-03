@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
   <link rel="stylesheet" href="math-assistant.css?v=20261103-1">
-   <link rel="stylesheet" href="style-overrides.css?v=20261103-1">
+   <link rel="stylesheet" href="style-overrides.css?v=20261103-2">
   <style>
     .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
     body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
@@ -65,7 +65,7 @@
   <script defer src="merge-questions.js?v=20261028-1"></script>
   <script defer src="solution-guides.js?v=20261102-1"></script>
   <script defer src="question-diagrams.js?v=20261029-1"></script>
-  <script defer src="app.js?v=20261103-1"></script>
+  <script defer src="app.js?v=20261103-2"></script>
   <script defer src="enhancements.js?v=20261102-6"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
@@ -360,6 +360,10 @@
       <div class="question-label">السؤال <span id="question-number"></span></div>
       <div id="question-text" class="question-text" tabindex="-1" aria-live="polite" aria-atomic="true"></div>
       <div id="options" class="options"></div>
+      <div id="question-hints" class="question-hints" hidden>
+        <button id="show-hint" class="hint-button" type="button" aria-controls="question-hint-text">أحتاج إلى تلميح</button>
+        <p id="question-hint-text" class="question-hint-text" role="status" aria-live="polite" hidden></p>
+      </div>
       <div id="feedback" class="feedback hidden" aria-live="polite" aria-atomic="true"></div>
       <div class="actions"><button id="next" class="primary" disabled>السؤال التالي ←</button></div>
     </article>
