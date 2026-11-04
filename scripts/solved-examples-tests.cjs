@@ -101,6 +101,33 @@ if (!library || !Array.isArray(library.examples)) {
     failures.push("The 2017 logarithmic equation must enforce its domain and retain only the admissible root.");
   }
 
+  // Independently re-derived elementary complex-number examples.
+  const complexCases = [
+    { id: "cx-001", steps: ["2-4i+3i-6i^2", "2-i+6"], answer: "8-i" },
+    { id: "cx-002", steps: ["(-3)^2+4^2", "9+16"], answer: "|z|=5" },
+    { id: "cx-003", steps: ["z̄=−3−2i", "9+4=13"], answer: "13" },
+    { id: "cx-004", steps: ["z²=−1", "z=i", "z=−i"], answer: "i,−i" },
+    { id: "cx-005", steps: ["4i²", "(2i)²", "z=−2i"], answer: "2i,−2i" },
+    { id: "cx-006", steps: ["(1+i)²/(1−i²)", "1−(−1)=2"], answer: "z=i" },
+    { id: "cx-007", steps: ["z̄=−3−4i", "9+16=25"], answer: "25" },
+    { id: "cx-008", steps: ["25+144", "169"], answer: "|z|=13" },
+    { id: "cx-009", steps: ["i²=−1", "i³=−i", "i⁴=1"], answer: "−i" },
+    { id: "cx-010", steps: ["(1+i)²", "1−i²", "الناتج i"], answer: "=i" },
+    { id: "cx-011", steps: ["=2", "cosθ=1/2", "θ=π/3"], answer: "π/3" },
+    { id: "cx-012", steps: ["(3i)²=9i²=−9", "(−3i)²=−9"], answer: "3i أو z=−3i" },
+    { id: "cx-013", steps: ["z̄=−3−4i", "9+16"], answer: "25" },
+    { id: "cx-014", steps: ["z=3+4i+2−i"], answer: "5+3i" }
+  ];
+  for (const testCase of complexCases) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || example.topic !== "الأعداد العقدية" ||
+        testCase.steps.some(fragment => !solution.includes(fragment)) ||
+        !example.answer.includes(testCase.answer)) {
+      failures.push("Complex-number solution regression failed for " + testCase.id + ".");
+    }
+  }
+
   const probabilityExample = examples.find(item => item.id === "exam19-prob-001");
   if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
     failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
