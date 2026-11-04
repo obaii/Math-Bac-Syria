@@ -288,10 +288,6 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع على [0,+∞[؛ مشتقته موجبة وقيمته عند الصفر −2 ونهايته 1.",
       ["0", "+∞"], ["+"], ["−2 ↗", "1"]);
   }
-  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("جدول تغيرات")) {
-    return variationTable("ملخص القيم والحدود الواردة في أسئلة دورة 2019 الأولى؛ لا يفترض المخطط اتجاهاً خارج المجال المذكور.",
-      ["x→−∞", "x=−1", "x=2", "x→+∞"], null, ["f(x)→+∞", "−2", "4", "f(x)→3"]);
-  }
   if (prompt.includes("جدول تغيرات") && (prompt.includes("R\\\\{1}") || prompt.includes("R\\{1}") || prompt.includes("معرف على R"))) {
     return variationTable("ملخص النهايات المذكورة في نص السؤال؛ لم تُضف قيمة غير واردة عند 1 من اليمين.",
       ["x→−∞", "x→1⁻", "x→+∞"], null, ["f(x)→+∞", "f(x)→−∞", "f(x)→2"]);
@@ -323,14 +319,14 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
   if (prompt.includes("f(1)=1") && prompt.includes("f′(1)=0") && prompt.includes("جدول تغيرات")) {
-    return `<figure class="question-diagram" aria-label="مخطط مماس أفقي عند النقطة (1,1)">
+    return `<figure class="question-diagram" aria-label="مخطط مماس أفقي عند النقطة (1,1) دون افتراض قيمة حدية">
       <figcaption>مخطط المماس من المعطيات: f(1)=1 وf′(1)=0، لذلك يكون المماس أفقياً ومعادلته y=1.</figcaption>
-      <svg viewBox="0 0 340 210" role="img" aria-label="منحنى له قيمة حدية عند النقطة واحد واحد ومماس أفقي">
+      <svg viewBox="0 0 340 210" role="img" aria-label="منحنى متزايد له مماس أفقي عند النقطة واحد واحد">
         <path d="M25 170H315 M70 190V20" stroke="#64748b" stroke-width="1.5" fill="none"/>
-        <path d="M82 55 Q170 55 258 55" stroke="#b45309" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
-        <path d="M45 130 C90 130 125 55 170 55 C215 55 250 130 305 130" stroke="#2563eb" stroke-width="2.6" fill="none"/>
-        <circle cx="170" cy="55" r="4" fill="#0f766e"/>
-        <g fill="var(--text,#172b4d)" font-size="12"><text x="178" y="48">(1,1)</text><text x="264" y="48">y=1</text><text x="302" y="188">x</text><text x="55" y="25">y</text></g>
+        <path d="M82 110 Q170 110 258 110" stroke="#b45309" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+        <path d="M45 150 C95 150 120 110 170 110 C220 110 245 70 305 70" stroke="#2563eb" stroke-width="2.6" fill="none"/>
+        <circle cx="170" cy="110" r="4" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="178" y="103">(1,1)</text><text x="264" y="103">y=1</text><text x="302" y="188">x</text><text x="55" y="25">y</text></g>
       </svg>
     </figure>`;
   }
