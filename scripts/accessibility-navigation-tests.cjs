@@ -85,7 +85,6 @@ async function assertVisibleControlsHaveNames(page, context) {
     await page.locator('[data-dashboard-panel="question-coverage-title"]').waitFor({ state: "visible" });
     assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
       "choosing another dashboard area should replace the currently visible one");
-    await page.locator("#section-menu-toggle").click();
 
     const sectionMenuButton = page.locator("#section-menu-toggle");
     await sectionMenuButton.focus();
