@@ -96,6 +96,43 @@ try {
   failures.push("Could not load the question bank and solved examples for coverage inventory: " + error.message);
 }
 
+
+const labelInventory = JSON.parse(fs.readFileSync(path.join(root, "lesson-label-inventory.json"), "utf8"));
+const labelKey = item => normalize(item.topic) + "||" + normalize(item.lesson);
+const actualLabelCounts = new Map();
+const exampleIds = new Set();
+for (const example of examples) {
+  if (!example.id || !example.topic || !example.lesson) {
+    failures.push("A solved example is missing its ID, topic, or lesson label.");
+    continue;
+  }
+  if (exampleIds.has(example.id)) failures.push("Duplicate solved-example ID: " + example.id);
+  exampleIds.add(example.id);
+  const key = labelKey(example);
+  actualLabelCounts.set(key, (actualLabelCounts.get(key) || 0) + 1);
+}
+if (labelInventory.exampleCount !== examples.length) {
+  failures.push("Solved-example inventory count does not match the library.");
+}
+if (labelInventory.uniqueTopicLessonLabels !== labelInventory.entries.length) {
+  failures.push("Solved-example lesson-label inventory count is inconsistent.");
+}
+const inventoryLabelCounts = new Map(labelInventory.entries.map(item => [
+  normalize(item.topic) + "||" + normalize(item.lessonLabel),
+  item.exampleCount
+]));
+if (inventoryLabelCounts.size !== actualLabelCounts.size) {
+  failures.push("Solved-example lesson-label inventory does not contain every distinct label.");
+}
+for (const [key, count] of actualLabelCounts) {
+  if (inventoryLabelCounts.get(key) !== count) {
+    failures.push("Solved-example label inventory count mismatch for " + key);
+  }
+}
+if ([...inventoryLabelCounts.values()].reduce((sum, count) => sum + count, 0) !== examples.length) {
+  failures.push("Solved-example inventory counts do not sum to the full library size.");
+}
+
 const curriculumTopics = new Set(manifest.units.map(unit => normalize(unit.topic)));
 const questionCounts = new Map();
 const exampleCounts = new Map();
