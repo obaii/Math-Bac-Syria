@@ -43,6 +43,7 @@ jobs:
           node --check scripts/lesson-label-crosswalk-tests.cjs
           node --check scripts/lesson-coverage-audit.cjs
           node --check scripts/lesson-coverage-audit-tests.cjs
+          node --check scripts/solved-example-reference-integrity-tests.cjs
           node --check pwa-install.js
           node --check scripts/service-worker-tests.cjs
           node --check scripts/html-anchor-integrity-tests.cjs
@@ -78,6 +79,8 @@ jobs:
         run: node scripts/lesson-label-crosswalk-tests.cjs
       - name: Audit provisional lesson-by-lesson example distribution
         run: node scripts/lesson-coverage-audit-tests.cjs
+      - name: Verify solved-example IDs across library, inventory, and crosswalk
+        run: node scripts/solved-example-reference-integrity-tests.cjs
       - name: Check PWA offline asset coverage and service worker hooks
         run: node scripts/service-worker-tests.cjs
       - name: Check HTML id uniqueness and internal anchor targets
