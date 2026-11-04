@@ -66,6 +66,7 @@ if (!library || !Array.isArray(library.examples)) {
 
   for (const [index, item] of examples.entries()) {
     const label = `Example #${index + 1} (${item.id || "no ID"})`;
+    if (!expectedTopics.includes(item.topic)) failures.push(`${label}: topic is not one of the canonical curriculum sections (${item.topic}).`);
     for (const field of ["topic", "unit", "lesson", "level", "question", "keyIdea", "answer", "check", "sourceType"]) {
       if (typeof item[field] !== "string" || !item[field].trim()) failures.push(`${label}: missing ${field}.`);
     }
