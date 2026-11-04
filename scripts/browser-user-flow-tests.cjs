@@ -539,7 +539,16 @@ const assert = require("node:assert/strict");
     await openPanel("topic-section");
     await topicButtons.first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#options [data-option]").count(), 4, "each quiz question should show four options");
+    // Keep this interaction test deterministic by starting with an MCQ,
+    // regardless of the mixed question types in the selected research.
+    await page.evaluate(() => {
+      const firstMcq = quizQuestions.find(question => getQuestionType(question) === "mcq");
+      if (!firstMcq) throw new Error("The selected research needs at least one multiple-choice question for this UI test.");
+      quizQuestions = [firstMcq, ...quizQuestions.filter(question => question !== firstMcq)];
+      index = 0;
+      showQuestion();
+    });
+    assert.equal(await page.locator("#options [data-option]").count(), 4, "multiple-choice questions should show four options");
     assert.ok((await page.locator("#question-text").innerText()).trim().length > 0, "question text should be rendered");
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("role"), "progressbar", "quiz progress should expose an accessible progress bar");
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("aria-valuenow"), "0", "a new quiz should begin at zero completed answers");
