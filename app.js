@@ -920,7 +920,29 @@ $("next").addEventListener("click",()=>{
 });
 $("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));
-$("to-home").addEventListener("click",()=>{$("results").classList.add("hidden");$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();window.scrollTo({top:0,behavior:"smooth"});requestAnimationFrame(()=>{const target=$("topic-section");if(target){target.focus({preventScroll:true});if(document.activeElement!==target)setTimeout(()=>target.focus({preventScroll:true}),0);}});});
+function focusVisibleElementWhenReady(id, attempts = 12){
+  const target = $(id);
+  if (!target) return;
+  const focusWhenVisible = remaining => {
+    const current = $(id);
+    if (!current) return;
+    const visible = current.getClientRects().length > 0 && !current.closest(".hidden");
+    if (visible) {
+      current.focus({ preventScroll: true });
+      if (document.activeElement === current || remaining <= 0) return;
+    } else if (remaining <= 0) return;
+    requestAnimationFrame(() => focusWhenVisible(remaining - 1));
+  };
+  requestAnimationFrame(() => focusWhenVisible(attempts));
+}
+$("to-home").addEventListener("click",()=>{
+  $("results").classList.add("hidden");
+  $("quiz").classList.add("hidden");
+  $("home").classList.remove("hidden");
+  renderTopics();
+  window.scrollTo({top:0,behavior:"auto"});
+  focusVisibleElementWhenReady("topic-section");
+});
 $("difficulty").addEventListener("change",renderTopics);
 const topicSearchInput = $("topic-search");
 topicSearchInput.addEventListener("input",renderTopics);
