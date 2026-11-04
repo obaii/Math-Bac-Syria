@@ -920,7 +920,7 @@ $("next").addEventListener("click",()=>{
 });
 $("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));
-$("to-home").addEventListener("click",()=>{$("results").classList.add("hidden");$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
+$("to-home").addEventListener("click",()=>{$("results").classList.add("hidden");$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();requestAnimationFrame(()=>{$("topic-section").focus({preventScroll:true});});window.scrollTo({top:0,behavior:"smooth"});});
 $("difficulty").addEventListener("change",renderTopics);
 const topicSearchInput = $("topic-search");
 topicSearchInput.addEventListener("input",renderTopics);
