@@ -109,6 +109,54 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // Second manually re-derived probability batch: conditional probability, total probability,
+  // variance, union, discrete distributions, and binomial variance.
+  const foundationalProbabilityCases = [
+    {
+      id: "prob-001",
+      steps: ["0.2}{0.5}", "0.4"],
+      answer: "0.4"
+    },
+    {
+      id: "prob-004",
+      steps: ["0.3×0.8+0.7×0.2=0.38"],
+      answer: "0.38"
+    },
+    {
+      id: "prob-013",
+      steps: ["E(X²)=0²×0.5+2²×0.5=2", "V(X)=2−1²=1"],
+      answer: "V(X)=1"
+    },
+    {
+      id: "prob-021",
+      steps: ["0.6+0.5−0.2", "0.9"],
+      answer: "0.9"
+    },
+    {
+      id: "exam19-prob-002",
+      steps: ["C(5,2)=10", "P(X=0)=1/10", "P(X=1)=4/10", "P(X=2)=3/10", "P(X=3)=2/10"],
+      answer: "4/10"
+    },
+    {
+      id: "ministerial17-binomial-001",
+      steps: ["1/81، 8/81، 24/81، 32/81، 16/81"],
+      answer: "1/81، 8/81، 24/81، 32/81، 16/81"
+    },
+    {
+      id: "exam25-prob-001",
+      steps: ["6×\\frac12×\\frac12=\\frac32"],
+      answer: "V(X)=\\frac32"
+    }
+  ];
+  for (const testCase of foundationalProbabilityCases) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || testCase.steps.some(fragment => !solution.includes(fragment)) ||
+        !example.answer.includes(testCase.answer)) {
+      failures.push("Foundational probability regression failed for " + testCase.id + ".");
+    }
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
