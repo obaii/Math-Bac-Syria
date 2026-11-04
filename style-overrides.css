@@ -1355,4 +1355,6 @@ body.dark-mode .solved-example-card>ol>li{background:rgba(125,155,232,.09)}
 #similar-practice-start:hover{background:rgba(49,94,219,.07)}
 body.dark-mode .quick-start-card{background:var(--card-bg,#17243a)}
 @media(max-width:600px){.hero-bottom,.hero-navigation{align-items:stretch;flex-direction:column}.hero-navigation .section-menu-toggle{width:100%}.quick-start{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.quick-start-card{min-height:66px;padding:8px}.quick-start-copy strong{font-size:12px}.quick-start-copy small{font-size:10px}.question-card .actions #next,.question-card .actions #similar-practice-start{flex-basis:100%;max-width:none}}
-@media(max-width:370px){.quick-start{grid-template-columns:1fr}}
+
+
+@media(max-width:600px){.quick-start-card:nth-child(3){grid-column:1/-1}}
