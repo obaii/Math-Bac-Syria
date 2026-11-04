@@ -57,6 +57,25 @@ if (!library || !Array.isArray(library.examples)) {
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
   const rationalExample = examples.find(item => item.id === "exam21-rational-001");
   if (!rationalExample || !rationalExample.steps.join(" ").includes("2a-b=0") || rationalExample.steps.join(" ").includes("3a-b-1=0")) failures.push("The 2021 rational-function extremum example must use the correct derivative condition 2a-b=0.");
+
+  const rangeExample = examples.find(item => item.id === "exam19-func-004");
+  if (!rangeExample || !rangeExample.question.includes("متزايد على المجال") || rangeExample.question.includes("يتناقص")) {
+    failures.push("The 2019 range-from-variation-table example must state a monotonicity condition consistent with its image interval.");
+  }
+  const recurrenceExample = examples.find(item => item.id === "exam20-seq-001");
+  const recurrenceSteps = recurrenceExample?.steps.join(" ") || "";
+  if (!recurrenceExample || !recurrenceSteps.includes("F(x)-x") || !recurrenceSteps.includes("4-x^2")) {
+    failures.push("The 2020 monotone bounded recurrence example must justify u(n+1) <= u(n), not merely assert it.");
+  }
+  const complexRootExample = examples.find(item => item.id === "ministerial17-complexroots-001");
+  const complexRootSteps = complexRootExample?.steps.join(" ") || "";
+  if (!complexRootExample || !complexRootSteps.includes("sqrt{2}") || complexRootSteps.includes("sqrt{2i}")) {
+    failures.push("The 2017 complex square-root verification must use 2*sqrt(2)*i, not sqrt(2i).");
+  }
+  const probabilityExample = examples.find(item => item.id === "exam19-prob-001");
+  if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
+    failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
+  }
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 

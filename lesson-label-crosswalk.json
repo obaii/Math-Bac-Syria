@@ -8,9 +8,9 @@
     "supplementaryLabels": 6,
     "studentExamples": 345,
     "supplementaryExamples": 6,
-    "high": 132,
-    "medium": 139,
-    "low": 24,
+    "high": 140,
+    "medium": 147,
+    "low": 8,
     "unmapped": 0
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
@@ -31,9 +31,9 @@
       "years": [],
       "suggestedLessonId": "probability-01",
       "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "low",
-      "rationale": "احتمال عام لا يحدد درساً منفرداً",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "medium",
+      "rationale": "قاعدة اتحاد الأحداث المتنافية من القواعد الأساسية في باب الاحتمالات؛ يلزم تثبيت موضعها في نص الدرس قبل الاعتماد.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -52,9 +52,9 @@
       "years": [],
       "suggestedLessonId": "probability-01",
       "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "low",
-      "rationale": "احتمال عام لا يحدد درساً منفرداً",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "medium",
+      "rationale": "قاعدة متممة الحدث من أساسيات الاحتمال المرتبطة بدرس الاحتمالات؛ الربط مؤقت حتى مراجعة موضعها في الكتاب.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -90,9 +90,9 @@
       "years": [],
       "suggestedLessonId": "probability-01",
       "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "low",
-      "rationale": "احتمال عام لا يحدد درساً منفرداً",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "medium",
+      "rationale": "عنوان عام لمسألة أحداث، وأقرب درس مدرج هو الاحتمالات المشروطة؛ يحتاج نص المثال لتأكيده.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -149,9 +149,9 @@
       ],
       "suggestedLessonId": "probability-01",
       "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "low",
-      "rationale": "احتمال محسوب بالتوافيق؛ يحتاج فحص نص المسألة",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "medium",
+      "rationale": "المطلوب احتمال حدث مع استخدام التوافيق كأداة عد؛ الربط مؤقت ويحتاج فحص نص المسألة.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -568,9 +568,9 @@
       "years": [],
       "suggestedLessonId": "probability-01",
       "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "low",
-      "rationale": "احتمال عام لا يحدد درساً منفرداً",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "medium",
+      "rationale": "قانون جمع احتمالات الأحداث يقع ضمن قواعد الاحتمال الأساسية؛ يلزم مطابقة عنوان الفقرة في الكتاب.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -811,9 +811,9 @@
       "years": [],
       "suggestedLessonId": "derivatives-03",
       "suggestedLessonTitle": "تطبيقات الاشتقاق",
-      "confidence": "low",
-      "rationale": "موضوع اشتقاق يحتاج مطابقة تفصيلية",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "high",
+      "rationale": "تعيين القيم الحدية المحلية تطبيق مباشر لإشارة المشتقة ودراسة التغير.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -832,9 +832,9 @@
       ],
       "suggestedLessonId": "derivatives-03",
       "suggestedLessonTitle": "تطبيقات الاشتقاق",
-      "confidence": "low",
-      "rationale": "موضوع اشتقاق يحتاج مطابقة تفصيلية",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "high",
+      "rationale": "قراءة القيم الحدية من الرسم تطبيق على دراسة التابع وتغيراته.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -851,9 +851,9 @@
       "years": [],
       "suggestedLessonId": "derivatives-03",
       "suggestedLessonTitle": "تطبيقات الاشتقاق",
-      "confidence": "low",
-      "rationale": "موضوع اشتقاق يحتاج مطابقة تفصيلية",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "high",
+      "rationale": "القيم القصوى من التطبيقات الأساسية للاشتقاق.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -893,9 +893,9 @@
       ],
       "suggestedLessonId": "derivatives-03",
       "suggestedLessonTitle": "تطبيقات الاشتقاق",
-      "confidence": "low",
-      "rationale": "موضوع اشتقاق يحتاج مطابقة تفصيلية",
-      "reviewStatus": "needs-manual-review",
+      "confidence": "high",
+      "rationale": "إيجاد القيمة الصغرى المطلقة يعتمد على دراسة تغيرات التابع ومقارنة القيم الحدية.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -1610,11 +1610,11 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": "complex-01",
-      "suggestedLessonTitle": "مجموعة الأعداد العقديّة",
-      "confidence": "low",
-      "rationale": "موضوع عقدي عام يحتاج مطابقة تفصيلية",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "complex-05",
+      "suggestedLessonTitle": "الشكل الأسّي لعدد عقدي",
+      "confidence": "high",
+      "rationale": "العنوان يطابق درس الشكل الأسي للعدد العقدي مباشرة.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -1631,11 +1631,11 @@
       "years": [
         2025
       ],
-      "suggestedLessonId": "complex-01",
-      "suggestedLessonTitle": "مجموعة الأعداد العقديّة",
-      "confidence": "low",
-      "rationale": "موضوع عقدي عام يحتاج مطابقة تفصيلية",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "complex-05",
+      "suggestedLessonTitle": "الشكل الأسّي لعدد عقدي",
+      "confidence": "high",
+      "rationale": "العنوان يطابق درس الشكل الأسي للعدد العقدي مباشرة.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -3110,11 +3110,11 @@
       "years": [
         2017
       ],
-      "suggestedLessonId": "integration-01",
-      "suggestedLessonTitle": "التوابع الأصليّة",
-      "confidence": "low",
-      "rationale": "مسألة تكامل تحتاج تحديد القاعدة المستخدمة",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "integration-02",
+      "suggestedLessonTitle": "بعض قواعد حساب التوابع الأصليّة",
+      "confidence": "medium",
+      "rationale": "القسمة الإقليدية خطوة تمهيدية لتحويل تكامل تابع كسري إلى صورة قابلة للتكامل؛ يلزم مراجعة نص المثال.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -4943,11 +4943,11 @@
       "years": [
         2017
       ],
-      "suggestedLessonId": "limits-03",
-      "suggestedLessonTitle": "العمليات على النهايات",
-      "confidence": "low",
-      "rationale": "عمليات على النهايات أو موضوع عام يحتاج مراجعة",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "limits-06",
+      "suggestedLessonTitle": "المقارب المائل",
+      "confidence": "high",
+      "rationale": "العنوان يطابق درس المقارب المائل مباشرة.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -4964,11 +4964,11 @@
       "years": [
         2022
       ],
-      "suggestedLessonId": "limits-03",
-      "suggestedLessonTitle": "العمليات على النهايات",
-      "confidence": "low",
-      "rationale": "عمليات على النهايات أو موضوع عام يحتاج مراجعة",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "limits-06",
+      "suggestedLessonTitle": "المقارب المائل",
+      "confidence": "high",
+      "rationale": "تعيين المقارب المائل لتابع أسي تطبيق مباشر لدرس المقارب المائل.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     },
     {
@@ -5022,11 +5022,11 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": "limits-03",
-      "suggestedLessonTitle": "العمليات على النهايات",
-      "confidence": "low",
-      "rationale": "عمليات على النهايات أو موضوع عام يحتاج مراجعة",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "limits-02",
+      "suggestedLessonTitle": "نهاية تابع عند عدد حقيقي",
+      "confidence": "medium",
+      "rationale": "التحليل وإزالة الشكل غير المعين يستخدمان غالباً لحساب نهاية عند نقطة؛ يلزم التأكد من نقطة الاقتراب في المثال.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
@@ -5354,11 +5354,11 @@
       "years": [
         2022
       ],
-      "suggestedLessonId": "limits-03",
-      "suggestedLessonTitle": "العمليات على النهايات",
-      "confidence": "low",
-      "rationale": "عمليات على النهايات أو موضوع عام يحتاج مراجعة",
-      "reviewStatus": "needs-manual-review",
+      "suggestedLessonId": "limits-01",
+      "suggestedLessonTitle": "نهاية تابع عند اللانهاية",
+      "confidence": "medium",
+      "rationale": "العنوان يشير إلى حساب نهاية مجموع تابع أسي وخطي، والأرجح أنه ضمن نهايات التوابع عند اللانهاية؛ يلزم مراجعة نص المثال.",
+      "reviewStatus": "suggested-review",
       "verified": false
     },
     {
