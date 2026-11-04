@@ -18,6 +18,14 @@ const lessons = manifest.units.flatMap(unit =>
     unit: unit.unit
   }))
 );
+
+const expectedQuestionMappings = [
+  { snippet: "في الفراغ، إذا كان", topic: "الأشعة في الفراغ" },
+  { snippet: "إذا كان \\(\\vec u=(2,1,0)\\)", topic: "الجداء السلمي في الفراغ" },
+  { snippet: "إذا كان \\(z=3+4i\\)", topic: "الأعداد العقدية" },
+  { snippet: "إذا كان \\(z=2-3i\\)", topic: "الأعداد العقدية" }
+];
+
 const expectedSectionCounts = new Map([
   ["التحليل", 28],
   ["المتتاليات", 6],
