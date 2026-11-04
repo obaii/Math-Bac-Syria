@@ -1820,15 +1820,16 @@
       });
       menuButton.dataset.menuBound = "true";
     }
-    // Use delegation so links added later (such as the solved-examples shortcut)
-    // work immediately, even before the window load event runs.
-    if (menu && menu.dataset.panelToggleBound !== "true") {
-      menu.addEventListener("click", event => {
-        const link = event.target.closest("a[data-panel-toggle]");
-        if (!link || !menu.contains(link)) return;
+    // Capture at document level so dynamically inserted shortcuts always work,
+    // regardless of which nested element receives the click.
+    if (document.documentElement.dataset.panelToggleBound !== "true") {
+      document.addEventListener("click", event => {
+        const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+        const link = target?.closest('a[data-panel-toggle]');
+        const currentMenu = document.getElementById("section-menu");
+        if (!link || !currentMenu?.contains(link)) return;
         event.preventDefault();
-        const panelId = link.dataset.panelToggle;
-        const panel = document.getElementById(panelId);
+        const panel = document.getElementById(link.dataset.panelToggle);
         if (!panel) return;
         const shouldClose = !panel.hidden;
         const panelIds = [...document.querySelectorAll("[data-panel-toggle]")]
@@ -1841,18 +1842,19 @@
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
           item.setAttribute("aria-expanded", String(!shouldClose && item === link));
         });
-        if (menu) menu.hidden = true;
-        if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+        currentMenu.hidden = true;
+        const currentMenuButton = document.getElementById("section-menu-toggle");
+        if (currentMenuButton) currentMenuButton.setAttribute("aria-expanded", "false");
         if (shouldClose) {
-          menuButton?.focus({ preventScroll: true });
+          currentMenuButton?.focus({ preventScroll: true });
           return;
         }
         panel.hidden = false;
         panel.setAttribute("tabindex", "-1");
         panel.focus({ preventScroll: true });
         panel.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-      menu.dataset.panelToggleBound = "true";
+      }, true);
+      document.documentElement.dataset.panelToggleBound = "true";
     }
     document.querySelectorAll("#section-menu a:not([data-panel-toggle])").forEach(link => {
       if (link.dataset.menuCloseBound === "true") return;
