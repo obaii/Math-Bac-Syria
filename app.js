@@ -662,6 +662,8 @@ function showSimilarPracticeQuestion(current, host) {
 }
 
 function showQuestion(){
+  // The similar-practice action lives beside the feedback, so clear it when moving to a new question.
+  document.querySelectorAll(".question-card .actions .similar-practice-start, #feedback .similar-practice-start").forEach(button => button.remove());
   answered=false;
   const q=quizQuestions[index];
   const type=getQuestionType(q);
@@ -830,6 +832,8 @@ function submitQuestionAnswer(response){
     : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeSolutionText(formatExpectedAnswer(q)));
   const submittedSummary = type === "mcq" ? "" : '<div>إجابتك: ' + escapeSolutionText(type === "true-false" ? (response ? "صح" : "خطأ") : response) + '</div>';
   fb.innerHTML='<strong>' + (isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة") + '</strong><div>' + answerSummary + '</div>' + submittedSummary + '<div class="solution"><strong>الحل:</strong>' + solutionContent + '</div>';
+  // Keep exactly one similar-practice action even if the answer flow is triggered repeatedly.
+  document.querySelectorAll(".question-card .actions .similar-practice-start, #feedback .similar-practice-start").forEach(button => button.remove());
   const similarPracticeButton = document.createElement("button");
   similarPracticeButton.type = "button";
   similarPracticeButton.id = "similar-practice-start";
