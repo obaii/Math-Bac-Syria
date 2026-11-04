@@ -92,6 +92,19 @@ if (!library || !Array.isArray(library.examples)) {
     if (!["أساسي", "متوسط", "متقدم"].includes(item.level)) failures.push(label + ": invalid difficulty level.");
     if (!["تدريبي مؤلف", "دورة امتحانية", "نموذج وزاري"].includes(item.sourceType)) failures.push(label + ": invalid source type.");
     if (item.sourceType !== "تدريبي مؤلف" && (!Number.isInteger(item.sourceYear) || item.sourceYear < 2017 || !item.sourceLabel || !item.sourceReference)) failures.push(label + ": sourced examples need a verified year, label, and reference.");
+    if (item.sourceType !== "تدريبي مؤلف") {
+      try {
+        const sourceUrl = new URL(item.sourceReference);
+        if (sourceUrl.protocol !== "https:") failures.push(label + ": source references must use HTTPS.");
+      } catch {
+        failures.push(label + ": source reference must be a valid absolute URL.");
+      }
+    }
+    if (item.sourceType === "دورة امتحانية") {
+      if (!["الدورة الأولى", "الدورة الثانية", "الدورة الاستثنائية"].includes(item.sourceSession)) {
+        failures.push(label + ": exam-cycle examples must identify a recognized source session.");
+      }
+    }
     if (!Array.isArray(item.steps) || item.steps.length < 2 || item.steps.some(step => typeof step !== "string" || !step.trim())) {
       failures.push(`${label}: expected at least two non-empty solution steps.`);
     }
