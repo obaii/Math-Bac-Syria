@@ -414,7 +414,8 @@ const assert = require("node:assert/strict");
     }
 
     await page.locator("#section-menu-toggle").click();
-    await page.getByRole("link", { name: /أدوات المراجعة/ }).click();
+    await openPanel("student-tools");
+    await page.locator("#student-tools").waitFor({ state: "visible" });
     assert.equal(await page.locator("#student-tools").isVisible(), true, "student tools should open from their shortcut; hidden=" + await page.locator("#student-tools").evaluate(el => el.hidden) + "; page errors=" + pageErrors.join(" | "));
     await page.getByRole("button", { name: /تفعيل الوضع الليلي/ }).click();
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), true, "night mode should toggle on");
