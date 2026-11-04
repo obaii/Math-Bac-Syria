@@ -23,7 +23,15 @@ const expectedQuestionMappings = [
   { snippet: "في الفراغ، إذا كان", topic: "الأشعة في الفراغ" },
   { snippet: "إذا كان \\(\\vec u=(2,1,0)\\)", topic: "الجداء السلمي في الفراغ" },
   { snippet: "إذا كان \\(z=3+4i\\)", topic: "الأعداد العقدية" },
-  { snippet: "إذا كان \\(z=2-3i\\)", topic: "الأعداد العقدية" }
+  { snippet: "إذا كان \\(z=2-3i\\)", topic: "الأعداد العقدية" },
+  { snippet: "إذا كان \\(z=1+i\\)، فإن مرافقه", topic: "الأعداد العقدية" },
+  { snippet: "إذا كان \\(z=3-4i\\)", topic: "الأعداد العقدية" },
+  { snippet: "مرافق العدد \\(z=5-2i\\)", topic: "الأعداد العقدية" },
+  { snippet: "z=1-\\sqrt{3}", topic: "الأعداد العقدية" },
+  { snippet: "z=\\cos\\theta+i\\sin\\theta", topic: "الأعداد العقدية" },
+  { snippet: "مرافق العدد العقدي \\(z=-2+5i\\)", topic: "الأعداد العقدية" },
+  { snippet: "إذا كان \\(z=8+15i\\)", topic: "الأعداد العقدية" },
+  { snippet: "إذا كان \\(z=1-i\\)", topic: "الأعداد العقدية" }
 ];
 
 const expectedSectionCounts = new Map([
