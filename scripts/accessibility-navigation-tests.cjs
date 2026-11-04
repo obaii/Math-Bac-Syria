@@ -72,7 +72,8 @@ async function assertVisibleControlsHaveNames(page, context) {
     const sectionMenuButton = page.locator("#section-menu-toggle");
     await sectionMenuButton.focus();
     await page.keyboard.press("Enter");
-    const calculatorShortcut = page.locator('[data-panel-toggle="scientific-calculator"]');
+    const calculatorShortcut = page.locator('#section-menu [data-panel-toggle="scientific-calculator"]');
+    await calculatorShortcut.waitFor({ state: "visible" });
     await calculatorShortcut.focus();
     await page.keyboard.press("Enter");
     await page.locator("#scientific-calculator").waitFor({ state: "visible" });
