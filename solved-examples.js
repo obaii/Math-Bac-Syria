@@ -388,39 +388,8 @@
     <div id="solved-examples-list" class="solved-examples-list" aria-live="polite"></div>`;
   root.insertAdjacentElement("afterend", section);
 
-  const nav = document.querySelector(".quick-start");
-  if (nav) {
-    const card = document.createElement("a");
-    card.className = "quick-start-card";
-    card.href = "#solved-examples-library";
-    card.dataset.panelToggle = "solved-examples-library";
-    card.setAttribute("aria-controls", "solved-examples-library");
-    card.setAttribute("aria-expanded", "false");
-    card.innerHTML = '<span class="quick-start-icon review-icon">✎</span><span class="quick-start-copy"><strong>الأمثلة المحلولة</strong><small>تعلّم الحل خطوة بخطوة</small></span><span class="quick-start-arrow">←</span>';
-    // Fallback for this dynamically-created link: the shared document-level
-    // handler normally processes it first. If it did not, handle the click
-    // here during capture so the hidden panel cannot remain inaccessible.
-    card.addEventListener("click", event => {
-      if (event.__mathBacPanelHandled) return;
-      event.preventDefault();
-      const target = document.getElementById(card.dataset.panelToggle);
-      if (!target) return;
-      document.querySelectorAll("[data-panel-toggle]").forEach(link => {
-        link.setAttribute("aria-expanded", String(link === card));
-        const panel = document.getElementById(link.dataset.panelToggle);
-        if (panel) panel.hidden = true;
-      });
-      const menu = card.closest("#section-menu");
-      const menuButton = document.getElementById("section-menu-toggle");
-      if (menu) menu.hidden = true;
-      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
-      target.hidden = false;
-      target.setAttribute("tabindex", "-1");
-      target.focus({ preventScroll: true });
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, true);
-    nav.appendChild(card);
-  }
+  // The solved-examples shortcut is declared once in index.html. Do not
+  // append a second copy here; this script only creates the panel itself.
 
   const topicSelect = section.querySelector("#solved-example-topic");
   const searchInput = section.querySelector("#solved-example-search");
