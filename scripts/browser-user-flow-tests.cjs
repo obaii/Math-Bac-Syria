@@ -504,7 +504,7 @@ const assert = require("node:assert/strict");
 
     await openPanel("exam-tools");
     assert.equal(await page.locator("#exam-tools").isVisible(), true, "exam setup should open from its shortcut");
-    await page.getByRole("link", { name: /ابدأ التدريب/ }).click();
+    await openPanel("topic-section");
     await topicButtons.first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#options [data-option]").count(), 4, "each quiz question should show four options");
