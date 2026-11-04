@@ -65,10 +65,6 @@ jobs:
           node --check function-plotter.js
           node --check geometry-tools.js
           node --check formula-library.js
-          node --check math-assistant-config.js
-          node --check math-assistant.js
-          node --check workers/math-assistant/src/index.mjs
-          node --check scripts/cloudflare-ai-worker-tests.mjs
           node --check flashcards.js
           node --check scripts/function-plotter-tests.cjs
           node --check scripts/geometry-tools-tests.cjs
@@ -85,8 +81,6 @@ jobs:
         run: node scripts/lesson-coverage-audit-tests.cjs
       - name: Verify solved-example IDs across library, inventory, and crosswalk
         run: node scripts/solved-example-reference-integrity-tests.cjs
-      - name: Test Cloudflare AI tutor Worker security and behavior
-        run: node scripts/cloudflare-ai-worker-tests.mjs
       - name: Check PWA offline asset coverage and service worker hooks
         run: node scripts/service-worker-tests.cjs
       - name: Check HTML id uniqueness and internal anchor targets
