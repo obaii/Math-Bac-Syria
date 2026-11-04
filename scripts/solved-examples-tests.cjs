@@ -144,8 +144,8 @@ if (!library || !Array.isArray(library.examples)) {
     },
     {
       id: "exam25-prob-001",
-      steps: ["6×\\\\frac12×\\\\frac12=\\\\frac32"],
-      answer: "V(X)=\\\\frac32"
+      steps: ["6×\\frac12×\\frac12=\\frac32"],
+      answer: "V(X)=\\frac32"
     }
   ];
   for (const testCase of foundationalProbabilityCases) {
