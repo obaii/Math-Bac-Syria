@@ -96,7 +96,7 @@ if (!library || !Array.isArray(library.examples)) {
     },
     {
       id: "exam24-prob-002",
-      steps: ["16}{625}", "1}{625}"],
+      steps: ["16}{625}", "frac1{625}"],
       answer: "17}{625}"
     }
   ];
