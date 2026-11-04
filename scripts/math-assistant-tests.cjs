@@ -19,7 +19,7 @@ const assert = require("node:assert/strict");
   await page.route("https://ai.test/api/assistant", async route => {
     if (route.request().method() === "OPTIONS") {
       await route.fulfill({status:204, headers:{
-        "access-control-allow-origin":"https://obaii.github.io",
+        "access-control-allow-origin":"http://127.0.0.1:4173",
         "access-control-allow-methods":"POST, OPTIONS",
         "access-control-allow-headers":"content-type, x-assistant-session"
       }});
