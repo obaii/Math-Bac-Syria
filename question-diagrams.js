@@ -268,6 +268,29 @@ function getQuestionDiagram(question) {
 
   // Exact variation tables for worked examples and sourced questions whose
   // expressions and critical points are explicitly present in the question.
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يؤول إلى +∞") && prompt.includes("يؤول إلى 3")) {
+    return variationTable("جدول النهايات كما وردت في نص السؤال، دون إضافة قيم وسطية.",
+      ["x→−∞", "x→+∞"], null, ["f(x)→+∞", "f(x)→3"]);
+  }
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("lim(x→+∞)f(x)=3")) {
+    return `<figure class="question-diagram" aria-label="المقارب الأفقي y يساوي ثلاثة">
+      <figcaption>المقارب الأفقي عند +∞ هو المستقيم y=3، وفق النهاية المعطاة.</figcaption>
+      <svg viewBox="0 0 340 180" role="img" aria-label="مستقيم أفقي متقطع يمثل المقارب y يساوي ثلاثة">
+        <path d="M25 145H315 M55 160V15" stroke="#64748b" stroke-width="1.4" fill="none"/>
+        <path d="M25 75H315" stroke="#b45309" stroke-width="2.5" stroke-dasharray="7 5"/>
+        <text x="270" y="65" font-size="13" fill="var(--text,#172b4d)">y=3</text>
+        <text x="302" y="164" font-size="12" fill="var(--text,#172b4d)">x</text>
+      </svg>
+    </figure>`;
+  }
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يتناقص حتى x=−1") && prompt.includes("f(−1)=−2")) {
+    return variationTable("جدول التغيرات: صغرى محلية عند x=−1 وقيمتها −2.",
+      ["قبل −1", "−1", "بعد −1"], ["−", "0", "+"], ["يتناقص ↘", "−2", "يتزايد ↗"]);
+  }
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("f(−1)=−2") && prompt.includes("f(2)=4")) {
+    return variationTable("قيمتا طرفي المجال وصورة المجال كما وردتا في السؤال.",
+      ["−1", "2"], null, ["−2 (الأصغر)", "4 (الأكبر)"]);
+  }
   if (prompt.includes("f(x)=x²−4x+1")) {
     return variationTable("جدول تغيرات التابع f(x)=x²−4x+1؛ تنعدم المشتقة عند x=2.",
       ["−∞", "2", "+∞"], ["−", "+"], ["+∞ ↘", "−3", "↗ +∞"]);
