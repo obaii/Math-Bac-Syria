@@ -125,6 +125,7 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("#results h2").evaluate(el => document.activeElement === el),
       true, "finishing a quiz should move focus to the results heading");
     await page.locator("#to-home").click();
+    await page.waitForFunction(() => document.activeElement === document.querySelector("#topic-section"), null, { timeout: 3000 });
     assert.equal(await page.locator("#topic-section").evaluate(el => document.activeElement === el),
       true, "returning home should restore focus to the topic selector");
 
