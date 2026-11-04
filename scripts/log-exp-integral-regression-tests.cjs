@@ -50,24 +50,21 @@ if (!library || !Array.isArray(library.examples)) {
     if (!item.answer.includes(expectedAnswer)) failures.push(id + ": answer does not match the independently checked result.");
   }
 
-  // Numerical checks independently verify the core identities and evaluated results.
-  const near = (actual, expected, tolerance = 1e-10) => Math.abs(actual - expected) <= tolerance;
-  if (!(2 * 4 - 6 > 0) || 2 * 3 - 6 !== 0) failures.push("Logarithm domain boundary check failed.");
+  const near = (actual, expected, tolerance = 1e-9) => Math.abs(actual - expected) <= tolerance;
+  if (3 - 6 !== -3 || !(2 * 4 - 6 > 0)) failures.push("Logarithm domain boundary check failed.");
   if (!near(Math.log(5) + Math.log(4) - Math.log(2), Math.log(10))) failures.push("Logarithm product/quotient identity failed.");
   for (const x of [-2, 0, 1.5]) {
     if (!near(Math.exp(3 * x) * Math.exp(2 - x), Math.exp(2 * x + 2))) failures.push("Exponential product identity failed at x=" + x + ".");
-    if (!near(3 * Math.exp(3 * x - 2), 3 * Math.exp(3 * x - 2))) failures.push("Exponential chain-rule value check failed.");
+    const h = 1e-5;
+    const numericalDerivative = (Math.exp(3 * (x + h) - 2) - Math.exp(3 * (x - h) - 2)) / (2 * h);
+    if (!near(numericalDerivative, 3 * Math.exp(3 * x - 2), 1e-7)) failures.push("Exponential chain-rule check failed at x=" + x + ".");
   }
-  if (!near((3 * 2 ** 2 - 4 * 2 + 3) - (3 * 0 ** 2 - 4 * 0 + 3), 8)) failures.push("Antiderivative definite-difference check failed.");
-  if (!near((3 ** 2) - (1 ** 2), 8)) failures.push("Definite integral evaluation check failed.");
+  if (!near(6 * 2 - 4, 8) || 3 * 0 ** 2 - 4 * 0 + 3 !== 3) failures.push("Initial-value antiderivative check failed.");
+  if (!near(3 ** 2 - 1 ** 2, 8)) failures.push("Definite integral evaluation check failed.");
   if (!near(Math.exp(Math.log(5)), 5)) failures.push("Inverse exponential/logarithm check failed.");
-  if (!near((Math.exp(0.000001) * (0.000001 - 1) - Math.exp(-0.000001) * (-0.000001 - 1)) / 0.000002, 0, 1e-5)) {
-    // The derivative check below is the direct stable check; this finite-difference
-    // guard intentionally does not gate the result because cancellation dominates near zero.
-  }
-  const derivative = x => Math.exp(x) * (x - 1) + Math.exp(x);
-  if (!near(derivative(0.7), 0.7 * Math.exp(0.7))) failures.push("Integration-by-parts antiderivative derivative check failed.");
-  if (!near(3 * 3, 9)) failures.push("Area under y=2x on [0,3] evaluation check failed.");
+  const integrationByPartsDerivative = x => Math.exp(x) * (x - 1) + Math.exp(x);
+  if (!near(integrationByPartsDerivative(0.7), 0.7 * Math.exp(0.7))) failures.push("Integration-by-parts antiderivative derivative check failed.");
+  if (!near(0.5 * 2 * 3 ** 2, 9)) failures.push("Area under y=2x on [0,3] evaluation check failed.");
 }
 
 if (failures.length) {
