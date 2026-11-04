@@ -397,6 +397,32 @@
     card.setAttribute("aria-controls", "solved-examples-library");
     card.setAttribute("aria-expanded", "false");
     card.innerHTML = '<span class="quick-start-icon review-icon">✎</span><span class="quick-start-copy"><strong>الأمثلة المحلولة</strong><small>تعلّم الحل خطوة بخطوة</small></span><span class="quick-start-arrow">←</span>';
+    // Keep this dynamically-created shortcut functional even if another
+    // navigation handler was initialized before the link entered the menu.
+    card.addEventListener("click", event => {
+      if (event.defaultPrevented) return;
+      event.preventDefault();
+      const target = document.getElementById(card.dataset.panelToggle);
+      if (!target) return;
+      const menu = card.closest("#section-menu");
+      const menuButton = document.getElementById("section-menu-toggle");
+      const shouldClose = !target.hidden;
+      document.querySelectorAll("[data-panel-toggle]").forEach(link => {
+        link.setAttribute("aria-expanded", String(!shouldClose && link === card));
+        const panel = document.getElementById(link.dataset.panelToggle);
+        if (panel) panel.hidden = true;
+      });
+      if (menu) menu.hidden = true;
+      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+      if (shouldClose) {
+        menuButton?.focus({ preventScroll: true });
+        return;
+      }
+      target.hidden = false;
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     nav.appendChild(card);
   }
 
