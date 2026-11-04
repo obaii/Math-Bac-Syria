@@ -944,6 +944,8 @@ $("to-home").addEventListener("click",()=>{
   $("results").classList.add("hidden");
   $("quiz").classList.add("hidden");
   $("home").classList.remove("hidden");
+  const topicSelector = $("topic-section");
+  if (topicSelector) topicSelector.hidden = false;
   renderTopics();
   window.scrollTo({top:0,behavior:"auto"});
   focusTopicSelector();
