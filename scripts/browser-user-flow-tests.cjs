@@ -15,7 +15,18 @@ const assert = require("node:assert/strict");
     if (await panel.isVisible()) return;
     const menu = page.locator("#section-menu");
     if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
-    await page.locator('[data-panel-toggle="' + id + '"]').click();
+    const dashboardLink = page.locator('[data-dashboard-target="' + id + '"]');
+    if (await dashboardLink.count()) {
+      await dashboardLink.click();
+      const dashboardPanel = page.locator('[data-dashboard-panel="' + id + '"]');
+      await dashboardPanel.waitFor({ state: "visible" });
+      if (await panel.count() && !(await panel.isVisible())) {
+        // Some dashboard sections intentionally keep their own data-driven empty state hidden.
+        return;
+      }
+    } else {
+      await page.locator('[data-panel-toggle="' + id + '"]').click();
+    }
     await panel.waitFor({ state: "visible" });
   };
   try {
@@ -44,7 +55,9 @@ const assert = require("node:assert/strict");
     const expectedQuickStartLinks = [
       "#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator",
       "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library",
-      "#math-assistant", "#solved-examples-library"
+      "#math-assistant", "#solved-examples-library", "#home", "#learning-progress-title",
+      "#question-coverage-title", "#weak-topic-recommendation", "#resume-session",
+      "#recent-activity", "#performance-trend", "#activity-calendar", "#achievement-section"
     ];
     for (const href of expectedQuickStartLinks) {
       assert.equal(quickStartLinks.filter(link => link === href).length, 1,
@@ -335,10 +348,15 @@ const assert = require("node:assert/strict");
 
     const topicButtons = page.locator("#topic-grid [data-topic]");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
+    assert.equal(await page.locator("[data-dashboard-panel]").count(), 9, "the section menu should contain nine separate dashboard panels");
+    assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 0, "dashboard panels should be hidden on the initial homepage");
     assert.equal(await page.locator("#activity-calendar-grid .activity-calendar-day").count(), 28, "the activity calendar should render the latest 28 days");
-    assert.ok(await page.locator("#activity-calendar").isVisible(), "the activity calendar should remain visible even before the student has activity");
+    assert.equal(await page.locator("#activity-calendar").isVisible(), false, "the activity calendar should stay inside the section menu until selected");
+    await openPanel("activity-calendar");
+    assert.ok(await page.locator("#activity-calendar").isVisible(), "the activity calendar should appear when selected from the section menu");
+    await openPanel("achievement-section");
     assert.equal(await page.locator("#achievement-list .achievement-card").count(), 7, "the dashboard should show seven achievement badges");
-    assert.ok(await page.locator("#achievement-section").isVisible(), "achievement badges should be visible on the dashboard");
+    assert.ok(await page.locator("#achievement-section").isVisible(), "achievement badges should appear when selected from the section menu");
     const badgeFixture = await page.evaluate(() => {
       progressData.answered = 120;
       progressData.correct = 100;
