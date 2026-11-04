@@ -208,7 +208,18 @@
     },
     {
       "kind": "textbook-download-index",
-      "url": "https://www.basita123.com/textbooks"
+      "url": "https://www.basita123.com/textbooks",
+      "note": "فهرس روابط ملفات المركز الوطني لتطوير المناهج؛ يوضح أن ترتيب الدروس في طبعة المركز المتاحة مطابق لطبعة 2025–2026، مع اختلاف الصفحات وحذف المواد الإطارية والرموز."
+    },
+    {
+      "kind": "student-textbook-part-1",
+      "url": "https://nccd.gov.sy/imges/books/Gr12/math12f1.pdf",
+      "note": "ملف كتاب الرياضيات للصف الثالث الثانوي العلمي، الجزء الأول، من المركز الوطني لتطوير المناهج؛ يجب تثبيت أرقام الصفحات وفق النسخة المستخدمة."
+    },
+    {
+      "kind": "student-textbook-part-2",
+      "url": "https://nccd.gov.sy/imges/books/Gr12/math12f2.pdf",
+      "note": "ملف كتاب الرياضيات للصف الثالث الثانوي العلمي، الجزء الثاني، من المركز الوطني لتطوير المناهج؛ يجب تثبيت أرقام الصفحات وفق النسخة المستخدمة."
     },
     {
       "kind": "lesson-index-cross-reference",
