@@ -1820,9 +1820,12 @@
       });
       menuButton.dataset.menuBound = "true";
     }
-    document.querySelectorAll("[data-panel-toggle]").forEach(link => {
-      if (link.dataset.panelToggleBound === "true") return;
-      link.addEventListener("click", event => {
+    // Use delegation so links added later (such as the solved-examples shortcut)
+    // work immediately, even before the window load event runs.
+    if (menu && menu.dataset.panelToggleBound !== "true") {
+      menu.addEventListener("click", event => {
+        const link = event.target.closest("a[data-panel-toggle]");
+        if (!link || !menu.contains(link)) return;
         event.preventDefault();
         const panelId = link.dataset.panelToggle;
         const panel = document.getElementById(panelId);
@@ -1849,8 +1852,8 @@
         panel.focus({ preventScroll: true });
         panel.scrollIntoView({ behavior: "smooth", block: "start" });
       });
-      link.dataset.panelToggleBound = "true";
-    });
+      menu.dataset.panelToggleBound = "true";
+    }
     document.querySelectorAll("#section-menu a:not([data-panel-toggle])").forEach(link => {
       if (link.dataset.menuCloseBound === "true") return;
       link.addEventListener("click", () => {
