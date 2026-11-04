@@ -1,6 +1,6 @@
 # منصة رياضيات البكالوريا السورية — النسخة المطوّرة
 
-منصة عربية تفاعلية للتدرب على الرياضيات لطلاب الثالث الثانوي العلمي، تُنشر واجهتها على GitHub Pages، مع خدمة شرح ذكي اختيارية وآمنة عبر Cloudflare Workers AI.
+منصة عربية تفاعلية للتدرب على الرياضيات لطلاب الثالث الثانوي العلمي، تعمل على GitHub Pages دون خادم أو قاعدة بيانات.
 
 ## محتويات النسخة المطوّرة
 - واجهة رئيسية محدّثة بتصميم عربي متجاوب، مع البحث عن الأبحاث وبطاقات أكثر وضوحاً.
@@ -20,9 +20,6 @@
 - `index.html`: هيكل الصفحة.
 - `style.css`: التنسيق والتصميم المتجاوب.
 - `app.js`: منطق الاختبارات والتصحيح والنتائج وحفظ التقدم محلياً.
-- `math-assistant.js` و`math-assistant-config.js`: البحث المحلي وربط المساعد الرياضي الاختياري بعنوان خدمة الذكاء الاصطناعي العامة (لا يوضع أي مفتاح سري في المتصفح).
-- `workers/math-assistant/src/index.mjs` و`wrangler.toml`: خدمة خلفية محمية باستخدام Cloudflare Workers AI ونموذج متعدد اللغات.
-- `scripts/cloudflare-ai-worker-tests.mjs`: اختبارات التحقق من CORS والتحقق من المدخلات وتحديد معدل الطلبات واستدعاء النموذج.
 - `questions.js`: بنك الأسئلة الأصلي بنمط الاختيار من متعدد.
 - `questions_typed_additional.js`: أسئلة الصح والخطأ والإجابة الرقمية والإجابة النصية القصيرة، في ملف مستقل للحفاظ على سجلات البنك الأصلي.
 - `scripts/validate-question-bank.cjs`: فحص بنية بنك الأسئلة وتكرار الخيارات وتوازن محددات المعادلات.
@@ -112,28 +109,6 @@ node scripts/lesson-coverage-audit.cjs
 
 ```bash
 node scripts/lesson-coverage-audit-tests.cjs
-```
-
-## المساعد الرياضي المدعوم بالذكاء الاصطناعي (اختياري)
-
-يحتفظ المساعد بالبحث المحلي في مكتبة القوانين والأمثلة، ويضيف عند تفعيل الخدمة شرحاً باللغة العربية عبر نموذج `@cf/zai-org/glm-4.7-flash` المستضاف على Cloudflare Workers AI. لا يحتاج النموذج إلى مفتاح مزوّد خارجي داخل المتصفح؛ ويستخدم العامل الخلفي ربط `AI` المدمج في Cloudflare، مع تقييد أصل الطلب، والتحقق من طول السؤال، وحد تقريبي قدره 12 طلباً في الدقيقة لكل جلسة متصفح. يرسل المتصفح السؤال ومقتطفات رياضية محلية ذات صلة فقط عند ضغط الطالب زر الشرح الذكي. لا يخزن كود العامل نص السؤال أو الإجابة في قاعدة بيانات.
-
-### نشر الخدمة من واجهة GitHub
-
-1. من إعدادات مستودع GitHub افتح **Settings → Secrets and variables → Actions**.
-2. أضف سراً باسم `CLOUDFLARE_API_TOKEN`، وأنشئ الرمز من Cloudflare بصلاحية **Edit Cloudflare Workers** فقط.
-3. أضف سراً باسم `CLOUDFLARE_ACCOUNT_ID` يحتوي معرّف حساب Cloudflare (وليس معرّف قاعدة D1).
-4. افتح **Actions → Deploy math assistant Worker → Run workflow** وشغّل سير العمل يدوياً على الفرع الرئيسي.
-5. بعد نجاح النشر، افتح **Cloudflare → Workers & Pages** وانسخ عنوان العامل المنشور.
-6. حدّث القيمة العامة `window.MATH_ASSISTANT_API_URL` في `math-assistant-config.js` إلى العنوان الكامل المنتهي بـ `/api/assistant`. هذا العنوان ليس سراً؛ لا تضع رمز API أو كلمة مرور في هذا الملف.
-7. بعد تحديث الملف ودمجه، يصبح زر الشرح الذكي فعالاً. يبقى البحث المحلي متاحاً حتى عند تعطل الخدمة أو بلوغ الحصة.
-
-تتضمن خطة Cloudflare Workers AI المجانية حالياً مخصصاً يومياً قدره **10,000 Neurons**؛ وعند استنفاده تتوقف طلبات Workers AI الإضافية على خطة Workers المجانية حتى إعادة تعيين الحصة اليومية. لذلك الخدمة مجانية ضمن الحصة وليست استخداماً غير محدود. راجع [تسعير Workers AI الرسمي](https://developers.cloudflare.com/workers-ai/platform/pricing/)، و[إدارة أسرار Cloudflare](https://developers.cloudflare.com/workers/configuration/secrets/)، و[النشر عبر GitHub Actions](https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/).
-
-تشغيل اختبارات العامل محلياً في بيئة Node.js 22:
-
-```bash
-node scripts/cloudflare-ai-worker-tests.mjs
 ```
 
 ## التطبيق دون اتصال (PWA)
