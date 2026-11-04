@@ -1384,3 +1384,7 @@ body.dark-mode #section-menu .quick-start-card{background:#182438;border-color:#
 body.dark-mode .dashboard-empty-state{border-color:#40516b;background:rgba(125,155,232,.08);color:#b9c7dc}
 @media(max-width:600px){.hero-note-group{align-items:center;justify-content:flex-start;flex-direction:row;flex-wrap:wrap;gap:9px}.hero-note-group .hero-note{flex:1 1 165px}.hero-note-group .section-menu-toggle{width:auto;flex:0 0 auto}#section-menu.quick-start{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#section-menu .quick-start-card{min-height:58px;padding:8px}#section-menu .quick-start-copy strong{font-size:11px}#section-menu .quick-start-copy small{font-size:9px}.question-card .actions #next,.question-card .actions #similar-practice-start{flex-basis:calc(50% - 6px)}}
 @media(max-width:380px){#section-menu.quick-start{grid-template-columns:1fr}.question-card .actions #next,.question-card .actions #similar-practice-start{flex-basis:100%;max-width:none}}
+
+
+/* Respect the HTML hidden state even when a component has its own display rule. */
+[hidden]{display:none!important}
