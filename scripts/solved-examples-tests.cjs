@@ -142,7 +142,7 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "int-010", steps: ["2x≥0", "A=∫₀³ 2x dx", "3²−0²=9"], answer: "9" },
     { id: "int-011", steps: ["u=x", "v=e^x", "xe^x−∫e^x dx"], answer: "e^x(x−1)+C" },
     { id: "int-012", steps: ["A=∫₀³ 2x dx", "A=[x²]₀³=9"], answer: "9" },
-    { id: "int-013", steps: ["t=x²+1", "∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
+    { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
     { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
     { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
     { id: "int-016", steps: ["A=∫₀²x² dx", "x³/3", "8/3"], answer: "8/3" }
