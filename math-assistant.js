@@ -95,6 +95,104 @@
     }
     appendMath(response);
   }
+  const aiButton = document.getElementById("math-assistant-ai-submit");
+  const aiStatus = document.getElementById("math-assistant-ai-status");
+  const aiResponse = document.getElementById("math-assistant-ai-response");
+  const aiEndpoint = typeof window.MATH_ASSISTANT_API_URL === "string"
+    ? window.MATH_ASSISTANT_API_URL.trim()
+    : "";
+
+  function getAssistantSessionId() {
+    const storageKey = "mathBacSyriaAiSessionV1";
+    try {
+      let value = window.localStorage.getItem(storageKey);
+      if (!value || !/^[a-zA-Z0-9_-]{16,80}$/.test(value)) {
+        value = window.crypto?.randomUUID
+          ? window.crypto.randomUUID().replace(/-/g, "")
+          : "browser-session-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        window.localStorage.setItem(storageKey, value);
+      }
+      return value;
+    } catch {
+      return "temporary-browser-session";
+    }
+  }
+
+  function buildAssistantContext(query) {
+    const formulas = Array.isArray(window.MathFormulaLibraryData) ? window.MathFormulaLibraryData : [];
+    const examples = Array.isArray(window.solvedExamplesLibrary?.examples) ? window.solvedExamplesLibrary.examples : [];
+    const selectedFormulas = rank(formulas, query,
+      item => [item.title,item.category,item.unit,item.lesson,item.note,item.conditions,item.tex].join(" "),
+      item => item.title).slice(0, 2);
+    const selectedExamples = rank(examples, query,
+      item => [item.topic,item.unit,item.lesson,item.question,item.keyIdea,(item.steps || []).join(" "),item.answer].join(" "),
+      item => [item.topic,item.lesson,item.question].join(" ")).slice(0, 2);
+    const parts = [];
+    selectedFormulas.forEach(item => parts.push(
+      "قانون: " + item.title + (item.tex ? "\nالصيغة: " + item.tex : "") +
+      (item.note ? "\nملاحظة: " + item.note : "")
+    ));
+    selectedExamples.forEach(item => parts.push(
+      "مثال: " + item.question + "\nالفكرة: " + (item.keyIdea || "") +
+      "\nخطوات مختصرة: " + (item.steps || []).slice(0, 4).join(" ") +
+      "\nالنتيجة: " + (item.answer || "")
+    ));
+    return parts.join("\n\n").slice(0, 5000);
+  }
+
+  async function askAI() {
+    const query = input.value.trim();
+    if (!query) {
+      input.focus();
+      if (aiStatus) aiStatus.textContent = "اكتب السؤال أولاً.";
+      return;
+    }
+    if (!aiEndpoint) {
+      if (aiStatus) aiStatus.textContent = "لم تُنشر خدمة الذكاء الاصطناعي بعد. البحث المحلي في القوانين والأمثلة متاح الآن.";
+      return;
+    }
+    if (!aiButton || !aiResponse) return;
+    aiButton.disabled = true;
+    aiResponse.replaceChildren();
+    if (aiStatus) aiStatus.textContent = "جارٍ إعداد الشرح الرياضي…";
+    try {
+      const result = await fetch(aiEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Assistant-Session": getAssistantSessionId()
+        },
+        body: JSON.stringify({
+          question: query,
+          context: buildAssistantContext(query),
+          mode: "explain"
+        })
+      });
+      let payload;
+      try { payload = await result.json(); }
+      catch { throw new Error("تعذر قراءة استجابة خدمة الشرح."); }
+      if (!result.ok || !payload?.ok || typeof payload.answer !== "string") {
+        throw new Error(payload?.error || "تعذر الحصول على شرح من النموذج.");
+      }
+      const answer = make("p", "math-assistant-ai-answer", payload.answer);
+      aiResponse.append(answer);
+      if (aiStatus) aiStatus.textContent = "وصل شرح النموذج. راجع الخطوات وتحقق من النتيجة مع القوانين والأمثلة المحلية.";
+      appendMath(aiResponse);
+    } catch (error) {
+      if (aiStatus) aiStatus.textContent = error.message || "تعذر الاتصال بخدمة الشرح. يمكنك متابعة البحث المحلي.";
+    } finally {
+      aiButton.disabled = false;
+    }
+  }
+
+  if (aiButton) {
+    aiButton.disabled = !aiEndpoint;
+    if (!aiEndpoint && aiStatus) {
+      aiStatus.textContent = "خدمة الذكاء الاصطناعي قيد الإعداد؛ سيبقى البحث المحلي متاحاً إلى حين نشر العامل الخلفي.";
+    }
+    aiButton.addEventListener("click", askAI);
+  }
+
   form.addEventListener("submit",event => {
     event.preventDefault();
     const query = input.value.trim();
@@ -140,6 +238,8 @@
   }));
   clear?.addEventListener("click",() => {
     response.replaceChildren(make("p","math-assistant-welcome","ابدأ بسؤال عن مفهوم رياضي، وسأعرض لك القوانين والأمثلة الأقرب إلى سؤالك."));
+    aiResponse?.replaceChildren();
+    if (aiStatus) aiStatus.textContent = aiEndpoint ? "يمكنك طرح سؤال جديد على المساعد الذكي." : "خدمة الذكاء الاصطناعي قيد الإعداد؛ البحث المحلي متاح.";
     input.value = "";
     input.dispatchEvent(new Event("input"));
     input.focus();
