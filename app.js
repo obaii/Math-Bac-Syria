@@ -166,7 +166,6 @@ function renderActivityCalendar(){
   summary.textContent = "آخر ٧ أيام: " + weeklyAnswers.toLocaleString("ar") + " إجابة خلال " + activeDays.toLocaleString("ar") + " أيام نشطة.";
   section.dataset.totalAnswers = String(weeklyAnswers);
   section.dataset.activeDays = String(activeDays);
-  section.hidden = false;
 }
 
 function renderRecentActivity(){
