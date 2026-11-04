@@ -629,7 +629,8 @@ const assert = require("node:assert/strict");
     // screen before interacting with the home-page exam shortcut.
     await page.locator("#back").click();
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
-    await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
+    await openPanel("exam-tools");
+    await page.locator("#exam-tools").waitFor({ state: "visible" });
     await page.locator("#exam-question-count").selectOption("20");
     await page.getByRole("button", { name: /ابدأ المحاكاة/ }).click();
     await page.locator("#quiz").waitFor({ state: "visible" });
