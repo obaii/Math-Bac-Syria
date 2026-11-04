@@ -1388,3 +1388,7 @@ body.dark-mode .dashboard-empty-state{border-color:#40516b;background:rgba(125,1
 
 /* Respect the HTML hidden state even when a component has its own display rule. */
 [hidden]{display:none!important}
+
+
+/* Keep the menu compact in two columns even on narrow 360px phones. */
+@media(max-width:380px){#section-menu.quick-start{grid-template-columns:repeat(2,minmax(0,1fr))}}
