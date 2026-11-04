@@ -1250,3 +1250,86 @@ body.dark-mode .similar-practice-form input{background:#101827;border-color:#405
 body.dark-mode .similar-practice-feedback.good{background:#123b2a;color:#b9efd0}
 body.dark-mode .similar-practice-feedback.bad{background:#482b1d;color:#ffd3ad}
 @media(max-width:600px){.similar-practice-form{display:grid}.similar-practice-form button,.similar-practice-start{width:100%}}
+
+/* Unified mathematical direction and symbol rendering inside Arabic content. */
+.question-text mjx-container,.feedback mjx-container,.solution mjx-container,
+.solved-example-question mjx-container,.solved-example-card mjx-container,
+.math-assistant-response mjx-container,.exam-review-question mjx-container,
+.exam-review-solution mjx-container{
+  direction:ltr;unicode-bidi:isolate;text-align:center;max-width:100%;
+}
+mjx-container[jax="CHTML"]{unicode-bidi:isolate}
+.section-menu-toggle{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:min(100%,420px);min-height:48px;margin:18px auto 10px;padding:11px 18px;
+  border:1px solid #cbd7eb;border-radius:13px;background:linear-gradient(135deg,#315edb,#244bb9);
+  color:#fff;font-family:inherit;font-size:15px;font-weight:700;line-height:1.5;cursor:pointer;box-shadow:0 8px 20px rgba(49,94,219,.16);
+}
+.section-menu-toggle:hover{transform:translateY(-1px);box-shadow:0 11px 24px rgba(49,94,219,.22)}
+.quick-start[hidden]{display:none!important}
+.quick-start{margin-top:10px}
+.intensive-training-panel{
+  margin-top:18px!important;padding:clamp(16px,2.5vw,24px)!important;
+  border:1px solid #cbd8f2!important;border-radius:18px!important;
+  background:linear-gradient(145deg,#f7f9ff,#edf3ff)!important;
+  box-shadow:0 10px 28px rgba(38,75,160,.09);
+}
+.intensive-training-panel h4{margin:0 0 7px;font-size:19px;color:var(--ink,#19263b)}
+.intensive-training-panel>p:first-of-type{margin:0 0 16px;line-height:1.9;color:var(--muted,#64748b)}
+#intensive-training-start{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;padding:11px 22px;border:0;border-radius:12px;
+  background:linear-gradient(135deg,#315edb,#1f49b8);color:#fff;
+  font-family:inherit;font-size:14px;font-weight:800;line-height:1.4;cursor:pointer;
+  box-shadow:0 7px 18px rgba(49,94,219,.2);transition:transform .18s ease,box-shadow .18s ease;
+}
+#intensive-training-start:hover{transform:translateY(-2px);box-shadow:0 11px 24px rgba(49,94,219,.26)}
+#intensive-training-status{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.72);color:var(--muted,#64748b);font-size:12px;line-height:1.8}
+body.dark-mode .intensive-training-panel{background:linear-gradient(145deg,#1b2b45,#142238)!important;border-color:#405579!important}
+body.dark-mode .intensive-training-panel h4{color:#e7edf8}
+body.dark-mode #intensive-training-status{background:#101827;color:#a7b5ca}
+@media(max-width:600px){.section-menu-toggle{width:100%}#intensive-training-start{width:100%}}
+@media(prefers-reduced-motion:reduce){.section-menu-toggle,#intensive-training-start{transition:none;transform:none}}
+
+/* Put question diagrams beside the prompt on wide screens; stack them on phones. */
+.question-text.question-has-diagram{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,.82fr);
+  align-items:center;gap:14px;
+}
+.question-prompt-copy{min-width:0}
+.question-text.question-has-diagram>.question-diagram{grid-column:2;grid-row:1;margin:0}
+.question-text.question-has-diagram>.question-prompt-copy{grid-column:1;grid-row:1}
+.solved-example-card.has-question-diagram{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.78fr);gap:10px 16px;
+}
+.solved-example-card.has-question-diagram>.solved-example-question{grid-column:1;align-self:center}
+.solved-example-card.has-question-diagram>.question-diagram{grid-column:2;margin:0}
+.solved-example-card.has-question-diagram>:not(.solved-example-question):not(.question-diagram){grid-column:1/-1}
+@media(max-width:680px){
+  .question-text.question-has-diagram,.solved-example-card.has-question-diagram{grid-template-columns:minmax(0,1fr)}
+  .question-text.question-has-diagram>.question-prompt-copy,
+  .question-text.question-has-diagram>.question-diagram,
+  .solved-example-card.has-question-diagram>.solved-example-question,
+  .solved-example-card.has-question-diagram>.question-diagram{grid-column:1;grid-row:auto}
+}
+
+/* More legible, expanded solution presentation. */
+.solution-steps-title{display:block;margin:14px 0 8px;font-weight:800;color:var(--ink,#1e293b)}
+.solution-steps,.solution-method ol{padding-inline-start:24px;margin:8px 0 14px}
+.solution-steps li,.solution-method li{
+  margin:8px 0;padding:10px 12px;border-inline-start:3px solid #7c9be8;
+  border-radius:8px;background:rgba(49,94,219,.055);line-height:1.95;
+}
+.solution-method{margin-top:14px;padding:13px;border:1px solid var(--line,#dbe3ef);border-radius:12px;background:var(--card-bg,#fff)}
+.solution-method>strong{display:block;margin-bottom:8px}
+.solved-example-card>strong{display:block;margin:14px 0 8px;color:var(--ink,#1e293b)}
+.solved-example-card>ol{padding-inline-start:26px;margin:8px 0 16px}
+.solved-example-card>ol>li{
+  margin:9px 0;padding:11px 13px;border-inline-start:3px solid #7c9be8;
+  border-radius:9px;background:rgba(49,94,219,.055);line-height:2;
+}
+.solved-example-idea,.solved-example-check{line-height:1.95;padding:10px 12px;border-radius:10px}
+.solved-example-idea{background:rgba(14,116,144,.07)}
+.solved-example-check{background:rgba(22,163,74,.06)}
+body.dark-mode .solution-steps li,body.dark-mode .solution-method li,
+body.dark-mode .solved-example-card>ol>li{background:rgba(125,155,232,.09)}

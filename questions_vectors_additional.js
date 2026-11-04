@@ -227,7 +227,7 @@ const vectorQuestionsAdditional = [
     "options": [
       "5",
       "25",
-      "\\(\\sqrt5\\)",
+      "\\(\\sqrt{5}\\)",
       "10"
     ],
     "answer": 0,

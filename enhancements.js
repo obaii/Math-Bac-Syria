@@ -461,13 +461,13 @@
       training.id = "intensive-training";
       training.className = "intensive-training-panel";
       training.setAttribute("aria-labelledby", "intensive-training-title");
-      training.style.cssText = "margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg,white)";
+
       training.innerHTML = "<h4 id='intensive-training-title'>التدريب المكثّف</h4>" +
         "<p>أنشئ جلسة مركّزة من ١٠ أو ٢٠ أو ٣٠ سؤالاً، واختر مصدر الأسئلة بحسب هدفك.</p>" +
-        "<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end'>" +
+        "<div class='intensive-training-options' style='display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end'>" +
         "<label for='intensive-training-focus'>مصدر الأسئلة<select id='intensive-training-focus' style='display:block;width:100%;min-height:42px;margin-top:5px'><option value='all'>كامل بنك الأسئلة</option><option value='weak'>الأبحاث الأضعف في أدائي</option><option value='mistakes'>الأسئلة التي أخطأت بها</option></select></label>" +
         "<label for='intensive-training-count'>عدد الأسئلة<select id='intensive-training-count' style='display:block;width:100%;min-height:42px;margin-top:5px'><option value='10'>١٠ أسئلة</option><option value='20'>٢٠ سؤالاً</option><option value='30'>٣٠ سؤالاً</option></select></label>" +
-        "</div><button type='button' id='intensive-training-start' style='margin-top:12px'>ابدأ التدريب المكثّف ←</button>" +
+        "</div><button type='button' id='intensive-training-start'>ابدأ التدريب المكثّف ←</button>" +
         "<p id='intensive-training-status' role='status' aria-live='polite'>اختر نوع التدريب وعدد الأسئلة لبدء جلسة جديدة.</p>";
       const assistantPanel = document.getElementById("review-assistant-panel");
       if (assistantPanel && assistantPanel.parentNode) assistantPanel.insertAdjacentElement("afterend", training);
@@ -791,7 +791,7 @@
     if (topic.includes("المستقيمات") || topic.includes("المستويات")) return "تذكير عام: حدّد شعاع التوجيه للمستقيم والشعاع الناظم للمستوى، ثم استخدم المعادلة أو شرط التعامد/التوازي المناسب.";
     if (topic.includes("الأشعة")) return "تذكير عام: اكتب مركبات الشعاع بطرح إحداثيات نقطة البداية من النهاية، ثم طبّق علاقة شال أو قانون الطول وفق المطلوب.";
     if (topic.includes("احتمال")) return "تذكير عام: عرّف الحوادث أولاً، ثم ميّز بين الاتحاد والتقاطع والاحتمال الشرطي والاستقلال قبل اختيار القانون.";
-    if (topic.includes("عقدي") || topic.includes("العقدية")) return "تذكير عام: عند وجود مساواة عقدية، اكتب العدد على الصورة a+bi وقارن الجزأين الحقيقي والتخيلي؛ استخدم الطول أو السعة فقط عندما يتطلب السؤال ذلك.";
+    if (topic.includes("عقدي") || topic.includes("العقدية")) return "تذكير عام: عند وجود مساواة عقدية، اكتب العدد على الصورة a+bi وقارن الجزأين الحقيقي والتخيلي؛ استخدم الطويلة أو السعة فقط عندما يتطلب السؤال ذلك.";
     if (topic.includes("اشتقاق") || topic.includes("التوابع") || topic.includes("التابع")) return "تذكير عام: حدّد مجال التعريف ونوع المطلوب، ثم اختر قاعدة الاشتقاق أو دراسة التغيّر المناسبة وتحقّق من شروط تطبيقها.";
     if (topic.includes("احتمالات")) return "تذكير عام: عرّف الحوادث وحدّد هل المطلوب اتحاد أم تقاطع أم احتمال شرطي، ثم طبّق القانون الموافق.";
     return "تذكير عام: حدّد المعطيات والمطلوب، واكتب القانون المناسب قبل التعويض، ثم تحقّق من الإشارة والوحدات أو شروط المجال إن وجدت.";
@@ -1808,34 +1808,71 @@
   // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
   ensureExamControls();
 
-  // لا تعرض لوحات المراجعة أو محاكاة الامتحان إلا عند اختيارها من الاختصارات.
+  // Keep the home page uncluttered: one section menu, one active panel at a time.
   const bindHomePanelToggles = () => {
-    document.querySelectorAll("[data-panel-toggle]").forEach(link => {
-      if (link.dataset.panelToggleBound === "true") return;
-      link.addEventListener("click", event => {
-        event.preventDefault();
-        const panelId = link.dataset.panelToggle;
-        const panel = document.getElementById(panelId);
-        if (!panel) return;
-        const opening = panel.hidden;
-        ["student-tools", "exam-tools", "scientific-calculator", "math-assistant"].forEach(id => {
-          const other = document.getElementById(id);
-          if (other && other !== panel) other.hidden = true;
-        });
-        document.querySelectorAll("[data-panel-toggle]").forEach(item => {
-          item.setAttribute("aria-expanded", String(item === link && opening));
-        });
-        panel.hidden = !opening;
-        if (opening) {
-          panel.setAttribute("tabindex", "-1");
-          panel.focus({ preventScroll: true });
-          panel.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          // Return focus to the shortcut when its panel is hidden.
-          link.focus({ preventScroll: true });
-        }
+    const menu = document.getElementById("section-menu");
+    const menuButton = document.getElementById("section-menu-toggle");
+    if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
+      menuButton.addEventListener("click", () => {
+        menu.hidden = !menu.hidden;
+        menuButton.setAttribute("aria-expanded", String(!menu.hidden));
+        if (!menu.hidden) menu.querySelector("a")?.focus({ preventScroll: true });
       });
-      link.dataset.panelToggleBound = "true";
+      menuButton.dataset.menuBound = "true";
+    }
+    // Capture at document level so dynamically inserted shortcuts always work,
+    // regardless of which nested element receives the click.
+    if (document.documentElement.dataset.panelToggleBound !== "true") {
+      document.addEventListener("click", event => {
+        const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+        const link = target?.closest('a[data-panel-toggle]');
+        const currentMenu = document.getElementById("section-menu");
+        if (!link || !currentMenu?.contains(link)) return;
+        event.preventDefault();
+        const panel = document.getElementById(link.dataset.panelToggle);
+        if (!panel) return;
+        event.__mathBacPanelHandled = true;
+        const shouldClose = !panel.hidden;
+        const panelIds = [...document.querySelectorAll("[data-panel-toggle]")]
+          .map(item => item.dataset.panelToggle)
+          .filter(Boolean);
+        for (const id of new Set(panelIds)) {
+          const other = document.getElementById(id);
+          if (other) other.hidden = true;
+        }
+        document.querySelectorAll("[data-panel-toggle]").forEach(item => {
+          item.setAttribute("aria-expanded", String(!shouldClose && item === link));
+        });
+        currentMenu.hidden = true;
+        const currentMenuButton = document.getElementById("section-menu-toggle");
+        if (currentMenuButton) currentMenuButton.setAttribute("aria-expanded", "false");
+        if (shouldClose) {
+          // Closing a secondary panel returns the home view to its default topic selector.
+          const defaultPanel = document.getElementById("topic-section");
+          if (defaultPanel) {
+            defaultPanel.hidden = false;
+            defaultPanel.setAttribute("tabindex", "-1");
+          }
+          document.querySelectorAll("[data-panel-toggle]").forEach(item => {
+            item.setAttribute("aria-expanded", String(item.dataset.panelToggle === "topic-section"));
+          });
+          currentMenuButton?.focus({ preventScroll: true });
+          return;
+        }
+        panel.hidden = false;
+        panel.setAttribute("tabindex", "-1");
+        panel.focus({ preventScroll: true });
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, true);
+      document.documentElement.dataset.panelToggleBound = "true";
+    }
+    document.querySelectorAll("#section-menu a:not([data-panel-toggle])").forEach(link => {
+      if (link.dataset.menuCloseBound === "true") return;
+      link.addEventListener("click", () => {
+        if (menu) menu.hidden = true;
+        if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+      });
+      link.dataset.menuCloseBound = "true";
     });
   };
   bindHomePanelToggles();

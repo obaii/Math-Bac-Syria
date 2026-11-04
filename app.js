@@ -669,10 +669,18 @@ function showQuestion(){
   $("question-number").textContent=(index+1).toLocaleString("ar") + " من " + quizQuestions.length.toLocaleString("ar");
   $("progress").textContent="السؤال " + (index+1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar");
   updateQuizProgress(index);
-  $("question-text").innerHTML=q.q;
+  const questionHost = $("question-text");
+  const promptCopy = document.createElement("div");
+  promptCopy.className = "question-prompt-copy";
+  promptCopy.innerHTML = q.q;
+  questionHost.replaceChildren(promptCopy);
+  questionHost.classList.remove("question-has-diagram");
   if (typeof getQuestionDiagram === "function") {
     const diagramMarkup = getQuestionDiagram(q);
-    if (diagramMarkup) $("question-text").insertAdjacentHTML("beforeend", diagramMarkup);
+    if (diagramMarkup) {
+      questionHost.insertAdjacentHTML("beforeend", diagramMarkup);
+      questionHost.classList.add("question-has-diagram");
+    }
   }
   const options = $("options");
   options.replaceChildren();
@@ -812,9 +820,12 @@ function submitQuestionAnswer(response){
   const hasGuidedSteps = typeof q.keyIdea === "string" && q.keyIdea.trim() &&
     Array.isArray(q.steps) && q.steps.length > 0 &&
     q.steps.every(step => typeof step === "string" && step.trim());
+  const solutionMethod = !hasGuidedSteps && Array.isArray(q.hints) && q.hints.length
+    ? '<div class="solution-method"><strong>منهجية الحل خطوة بخطوة:</strong><ol>' + q.hints.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol></div>'
+    : "";
   const solutionContent = hasGuidedSteps
-    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + escapeSolutionText(q.keyIdea) + '</div></div><ol class="solution-steps">' + q.steps.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol>'
-    : '<div>' + q.solution + '</div>';
+    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + escapeSolutionText(q.keyIdea) + '</div></div><strong class="solution-steps-title">شرح الحل خطوة بخطوة:</strong><ol class="solution-steps">' + q.steps.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol>'
+    : '<div class="solution-original">' + q.solution + '</div>' + solutionMethod;
   const answerSummary = type === "mcq"
     ? (isCorrect ? "اختيارك صحيح." : "الإجابة الصحيحة هي: " + letters[q.answer] + " — " + q.options[q.answer])
     : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeSolutionText(formatExpectedAnswer(q)));
@@ -909,7 +920,36 @@ $("next").addEventListener("click",()=>{
 });
 $("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));
-$("to-home").addEventListener("click",()=>{$("results").classList.add("hidden");$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
+function focusTopicSelector(){
+  const target = $("topic-section");
+  if (!target) return;
+  target.tabIndex = -1;
+  target.focus({ preventScroll: true });
+  if (document.activeElement === target) return;
+  requestAnimationFrame(() => {
+    const current = $("topic-section");
+    if (!current) return;
+    current.focus({ preventScroll: true });
+    if (document.activeElement !== current) {
+      setTimeout(() => {
+        const fallback = $("topic-section");
+        if (fallback && !fallback.closest(".hidden")) {
+          fallback.focus({ preventScroll: true });
+        }
+      }, 0);
+    }
+  });
+}
+$("to-home").addEventListener("click",()=>{
+  $("results").classList.add("hidden");
+  $("quiz").classList.add("hidden");
+  $("home").classList.remove("hidden");
+  const topicSelector = $("topic-section");
+  if (topicSelector) topicSelector.hidden = false;
+  renderTopics();
+  window.scrollTo({top:0,behavior:"auto"});
+  focusTopicSelector();
+}, true);
 $("difficulty").addEventListener("change",renderTopics);
 const topicSearchInput = $("topic-search");
 topicSearchInput.addEventListener("input",renderTopics);

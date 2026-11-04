@@ -42,11 +42,11 @@ const checks = [
   ["backup restores text and math display preferences", /nextExtras\.textScale = Number\.isFinite\(sourceTools\.textScale\)/.test(enhancements) && /nextExtras\.mathScale = Number\.isFinite\(sourceTools\.mathScale\)/.test(enhancements) && /extras = nextExtras;[\s\S]*?applyReadingSettings\(\);/.test(enhancements)],
   ["review schedule imports use a null-prototype map and reject dangerous property names", /const normalized = Object\.create\(null\)/.test(enhancements) && /key === "__proto__" \|\| key === "constructor" \|\| key === "prototype"/.test(enhancements)],
   ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)],
-  ["student-tools and exam script cache version is bumped for updated deployment", /enhancements\.js\?v=20261103-6/.test(html)],
+  ["student-tools and exam script cache version is bumped for updated deployment", /enhancements\.js\?v=20261104-[0-9]+/.test(html)],
   ["practice session counters clamp answered and remaining values to the question total", /const answeredCount = Math\.min\(Math\.max\(Number\(completed\) \|\| 0, 0\), total\)/.test(app) && /const remainingCount = Math\.max\(0, total - answeredCount\)/.test(app)],
   ["practice session accuracy uses only answered questions and never exceeds their count", /const correct = Math\.min\(Math\.max\(Number\(correctCount\) \|\| 0, 0\), answeredCount\)/.test(app) && /const accuracy = answeredCount \? Math\.round\(correct \/ answeredCount \* 100\) : 0/.test(app)],
   ["practice session summary exposes answered, remaining, and accuracy fields", ["session-answered", "session-remaining", "session-accuracy"].every(id => html.includes('id="' + id + '"')) && ["session-answered", "session-remaining", "session-accuracy"].every(id => app.includes('$("' + id + '")'))],
-  ["diagram and practice-session assets use refreshed cache versions", /style-overrides\.css\?v=20261103-3/.test(html) && /app\.js\?v=20261103-3/.test(html)],
+  ["diagram and practice-session assets use refreshed cache versions", /style-overrides\.css\?v=\d{8}-\d+/.test(html) && /app\.js\?v=\d{8}-\d+/.test(html)],
   ["topic mastery waits for at least ten answers before awarding a level", /if \(answered < 10 \|\| rate < 60\)/.test(app) && /function getTopicMastery\(stat\)/.test(app)],
   ["topic mastery distinguishes not-started, practice, good, and mastered states", ["not-started", "practice", "good", "mastered"].every(key => app.includes(`key: "${key}"`)) && ["لم يبدأ بعد", "يحتاج إلى تدريب", "جيد", "متقن"].every(label => app.includes(label))],
   ["topic mastery thresholds require 85 percent for mastery and 60 percent for good", /if \(rate >= 85\)/.test(app) && /return \{ key: "good", label: "جيد"/.test(app)],
@@ -73,7 +73,7 @@ const checks = [
   ["session retry control is created only when at least one mistake exists", /if \(sessionMistakes\.length\)[\s\S]*?retry-session-mistakes/.test(app)],
   ["session retry is tested for filtering and an empty error-free result", /retry should contain only this session/.test(browser) && /retry action should be absent when the session has no mistakes/.test(browser)],
   ["session result panel supports dark mode and narrow screens", /body\.dark-mode \.session-result-review/.test(css) && /@media\(max-width:600px\)\{\.session-result-review/.test(css)],
-  ["application and stylesheet cache versions include session result and exam updates", /app\.js\?v=20261103-3/.test(html) && /style-overrides\.css\?v=20261103-3/.test(html)],
+  ["application and stylesheet cache versions include session result and exam updates", /app\.js\?v=\d{8}-\d+/.test(html) && /style-overrides\.css\?v=\d{8}-\d+/.test(html)],
   ["backup import only restores scheduled questions still present in the bank", /const restoredSchedule = normalizeSchedule\(sourceTools\.schedule\)[\s\S]*?const q = byKey\(key\);[\s\S]*?if \(!q\) continue;/.test(enhancements)],
   ["study plan uses a separate field inside existing student-tools storage", /studyPlan: normalizeStudyPlan\(x\.studyPlan\)/.test(enhancements) && /EXTRA_KEY = "mathBacSyriaStudentToolsV1"/.test(enhancements)],
   ["study plan normalization helpers are safe during initial load and reload", /function localDateKey\(date\)/.test(enhancements) && /function parseLocalDate\(value\)/.test(enhancements) && /function normalizeStudyPlan\(value\)/.test(enhancements)],
@@ -102,7 +102,7 @@ const checks = [
   ["intensive training deduplicates questions and uses Fisher–Yates without mutating the bank", /const unique = new Map\(\)/.test(enhancements) && /Fisher–Yates/.test(enhancements) && /const shuffled = \[\.\.\.pool\]/.test(enhancements)],
   ["intensive training records progress as a normal practice session", /currentTopic = "التدريب المكثف";[\s\S]*?reviewMode = false;[\s\S]*?quizQuestions = selected/.test(enhancements)],
   ["intensive training provides useful empty states for weak-topic and mistake pools", /لا توجد أخطاء محفوظة صالحة للتدريب حالياً/.test(enhancements) && /نحتاج إلى بعض نتائج التدريب أولاً/.test(enhancements)],
-  ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=20261103-6/.test(html) && /math-bac-syria-v61/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
+  ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=20261104-[0-9]+/.test(html) && /math-bac-syria-v61/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
   ["browser flow verifies a bounded unique intensive session", /intensive-training-start/.test(browser) && /new Set\(quizQuestions\.map\(questionKey\)\)/.test(browser) && /reviewMode/.test(browser)]
 ];
 let failures = 0;

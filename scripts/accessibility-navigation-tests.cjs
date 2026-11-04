@@ -69,7 +69,11 @@ async function assertVisibleControlsHaveNames(page, context) {
 
     await assertVisibleControlsHaveNames(page, "home screen");
 
-    const calculatorShortcut = page.locator('[data-panel-toggle="scientific-calculator"]');
+    const sectionMenuButton = page.locator("#section-menu-toggle");
+    await sectionMenuButton.focus();
+    await page.keyboard.press("Enter");
+    const calculatorShortcut = page.locator('#section-menu [data-panel-toggle="scientific-calculator"]');
+    await calculatorShortcut.waitFor({ state: "visible" });
     await calculatorShortcut.focus();
     await page.keyboard.press("Enter");
     await page.locator("#scientific-calculator").waitFor({ state: "visible" });
@@ -78,10 +82,18 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await calculatorShortcut.getAttribute("aria-expanded"), "true",
       "an open panel shortcut should expose aria-expanded=true");
     await assertVisibleControlsHaveNames(page, "scientific calculator panel");
+    await sectionMenuButton.focus();
+    await page.keyboard.press("Enter");
+    await calculatorShortcut.waitFor({ state: "visible" });
     await calculatorShortcut.click();
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
-    assert.equal(await calculatorShortcut.evaluate(el => document.activeElement === el),
-      true, "closing a panel should return focus to its shortcut");
+    await page.locator("#topic-section").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#topic-section").evaluate(el => el.hidden), false,
+      "closing a secondary panel should restore the default topic selector");
+    assert.equal(await calculatorShortcut.getAttribute("aria-expanded"), "false",
+      "the closed secondary panel should expose aria-expanded=false");
+    assert.equal(await sectionMenuButton.evaluate(el => document.activeElement === el),
+      true, "closing a panel should return focus to the section menu button");
     assert.equal(await calculatorShortcut.getAttribute("aria-expanded"), "false",
       "a closed panel shortcut should expose aria-expanded=false");
 
@@ -117,7 +129,71 @@ async function assertVisibleControlsHaveNames(page, context) {
     await page.locator("#results").waitFor({ state: "visible" });
     assert.equal(await page.locator("#results h2").evaluate(el => document.activeElement === el),
       true, "finishing a quiz should move focus to the results heading");
+    await page.evaluate(() => {
+      window.__returnHomeFocusTrace = [];
+      document.addEventListener("focusin", event => {
+        window.__returnHomeFocusTrace.push({
+          type: "focusin",
+          target: event.target?.id || event.target?.tagName || "",
+          active: document.activeElement?.id || document.activeElement?.tagName || ""
+        });
+      }, true);
+      document.addEventListener("click", event => {
+        if (event.target?.closest?.("#to-home")) {
+          window.__returnHomeFocusTrace.push({
+            type: "to-home-click",
+            phase: event.eventPhase,
+            active: document.activeElement?.id || document.activeElement?.tagName || "",
+            homeClass: document.querySelector("#home")?.className || "",
+            resultsClass: document.querySelector("#results")?.className || ""
+          });
+        }
+      }, true);
+    });
     await page.locator("#to-home").click();
+    try {
+      await page.waitForFunction(() => document.activeElement === document.querySelector("#topic-section"), null, { timeout: 3000 });
+    } catch (error) {
+      const diagnostic = await page.evaluate(() => {
+        const target = document.querySelector("#topic-section");
+        const hiddenAncestors = [];
+        for (let node = target; node; node = node.parentElement) {
+          const style = getComputedStyle(node);
+          if (node.hidden || node.classList.contains("hidden") || style.display === "none" ||
+              style.visibility === "hidden" || node.inert) {
+            hiddenAncestors.push({
+              id: node.id, tag: node.tagName, hidden: node.hidden,
+              className: node.className, display: style.display,
+              visibility: style.visibility, inert: node.inert
+            });
+          }
+        }
+        return {
+          activeElement: {
+            id: document.activeElement?.id || "",
+            tag: document.activeElement?.tagName || "",
+            className: document.activeElement?.className || ""
+          },
+          target: target && {
+            id: target.id, tag: target.tagName, tabindex: target.getAttribute("tabindex"),
+            rectCount: target.getClientRects().length,
+            display: getComputedStyle(target).display,
+            visibility: getComputedStyle(target).visibility,
+            closestHidden: target.closest(".hidden")?.id || null,
+            isConnected: target.isConnected
+          },
+          home: { className: document.querySelector("#home")?.className, hidden: document.querySelector("#home")?.hidden },
+          quiz: { className: document.querySelector("#quiz")?.className, hidden: document.querySelector("#quiz")?.hidden },
+          results: { className: document.querySelector("#results")?.className, hidden: document.querySelector("#results")?.hidden },
+          duplicateTopicSectionIds: document.querySelectorAll("#topic-section").length,
+          hiddenAncestors,
+          trace: window.__returnHomeFocusTrace,
+          pageTitle: document.title
+        };
+      });
+      console.error("RETURN_HOME_FOCUS_DIAGNOSTIC", JSON.stringify(diagnostic));
+      throw error;
+    }
     assert.equal(await page.locator("#topic-section").evaluate(el => document.activeElement === el),
       true, "returning home should restore focus to the topic selector");
 

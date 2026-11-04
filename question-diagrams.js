@@ -4,6 +4,20 @@
 function getQuestionDiagram(question) {
   const prompt = question && typeof question.q === "string" ? question.q : "";
 
+  const variationTable = (caption, xRow, derivativeRow, valueRow, aria = caption) => `
+    <figure class="question-diagram variation-table-figure" aria-label="${aria}">
+      <figcaption>${caption}</figcaption>
+      <div class="joint-table-scroll">
+        <table class="joint-probability-table variation-table">
+          <tbody>
+            <tr><th scope="row">x</th>${xRow.map(cell => `<td>${cell}</td>`).join("")}</tr>
+            ${derivativeRow ? `<tr><th scope="row">f′(x)</th>${derivativeRow.map(cell => `<td>${cell}</td>`).join("")}</tr>` : ""}
+            <tr><th scope="row">f(x)</th>${valueRow.map(cell => `<td>${cell}</td>`).join("")}</tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>`;
+
   if (prompt.includes("f(x)=(\\ln x)^2-1")) {
     return `<figure class="question-diagram" aria-label="الرسوم المرشحة لمنحنى التابع">
       <figcaption>اختر الرسم المطابق للتابع. مجاله x&gt;0، وله قيمة صغرى عند (1,−1).</figcaption>
@@ -251,5 +265,105 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
+
+  // Exact variation tables for worked examples and sourced questions whose
+  // expressions and critical points are explicitly present in the question.
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يؤول إلى +∞") && prompt.includes("إلى 3 عندما x يؤول إلى +∞")) {
+    return variationTable("جدول النهايات كما وردت في نص السؤال، دون إضافة قيم وسطية.",
+      ["x→−∞", "x→+∞"], null, ["f(x)→+∞", "f(x)→3"]);
+  }
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("lim(x→+∞)f(x)=3")) {
+    return `<figure class="question-diagram" aria-label="المقارب الأفقي y يساوي ثلاثة">
+      <figcaption>المقارب الأفقي عند +∞ هو المستقيم y=3، وفق النهاية المعطاة.</figcaption>
+      <svg viewBox="0 0 340 180" role="img" aria-label="مستقيم أفقي متقطع يمثل المقارب y يساوي ثلاثة">
+        <path d="M25 145H315 M55 160V15" stroke="#64748b" stroke-width="1.4" fill="none"/>
+        <path d="M25 75H315" stroke="#b45309" stroke-width="2.5" stroke-dasharray="7 5"/>
+        <text x="270" y="65" font-size="13" fill="var(--text,#172b4d)">y=3</text>
+        <text x="302" y="164" font-size="12" fill="var(--text,#172b4d)">x</text>
+      </svg>
+    </figure>`;
+  }
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يتناقص حتى x=−1") && prompt.includes("f(−1)=−2")) {
+    return variationTable("جدول التغيرات: صغرى محلية عند x=−1 وقيمتها −2.",
+      ["قبل −1", "−1", "بعد −1"], ["−", "0", "+"], ["يتناقص ↘", "−2", "يتزايد ↗"]);
+  }
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("f(−1)=−2") && prompt.includes("f(2)=4")) {
+    return variationTable("قيمتا طرفي المجال وصورة المجال كما وردتا في السؤال.",
+      ["−1", "2"], null, ["−2 (الأصغر)", "4 (الأكبر)"]);
+  }
+  if (prompt.includes("f(x)=x²−4x+1")) {
+    return variationTable("جدول تغيرات التابع f(x)=x²−4x+1؛ تنعدم المشتقة عند x=2.",
+      ["−∞", "2", "+∞"], ["−", "+"], ["+∞ ↘", "−3", "↗ +∞"]);
+  }
+  if (prompt.includes("f(x)=x³−3x")) {
+    return variationTable("جدول تغيرات التابع على المجال [−2,2] بعد حساب المشتقة.",
+      ["−2", "−1", "1", "2"], ["+", "0 / −", "0 / +", "+"], ["−2 ↗", "2 ↘", "−2 ↗", "2"]);
+  }
+  if (prompt.includes("f(x)=e^(−2x)")) {
+    return variationTable("جدول تغيرات التابع الأسي؛ مشتقته سالبة على R.",
+      ["−∞", "+∞"], ["−"], ["+∞ ↘", "0"]);
+  }
+  if (prompt.includes("f(x)=(x+1)^2e^{-x}")) {
+    return variationTable("جدول تغيرات التابع؛ تنعدم المشتقة عند x=−1 وx=1.",
+      ["−∞", "−1", "1", "+∞"], ["−", "+", "−"], ["+∞ ↘", "0 ↗", "4/e ↘", "0"]);
+  }
+  if (prompt.includes("f(x)=\\frac{x-1}{x+1}-e^{-x}") || prompt.includes("f(x)=(x-1)/(x+1)-e^{-x}")) {
+    return variationTable("جدول تغيرات التابع على [0,+∞[؛ مشتقته موجبة وقيمته عند الصفر −2 ونهايته 1.",
+      ["0", "+∞"], ["+"], ["−2 ↗", "1"]);
+  }
+  if (prompt.includes("جدول تغيرات") && (prompt.includes("R\\\\{1}") || prompt.includes("R\\{1}") || prompt.includes("معرف على R"))) {
+    return variationTable("ملخص النهايات المذكورة في نص السؤال؛ لم تُضف قيمة غير واردة عند 1 من اليمين.",
+      ["x→−∞", "x→1⁻", "x→+∞"], null, ["f(x)→+∞", "f(x)→−∞", "f(x)→2"]);
+  }
+  if (prompt.includes("جدول تغيرات") && prompt.includes("f(x)=e^(−2x)+2x−2")) {
+    return variationTable("جدول تغيرات التابع: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
+      ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
+  }
+  if (prompt.includes("جدول تغيرات التابع") && prompt.includes("يقطع محور الفواصل في نقطتين")) {
+    return `<figure class="question-diagram" aria-label="مخطط يوضح تقاطع منحنى التابع مع محور الفواصل في نقطتين">
+      <figcaption>مخطط توضيحي: يقطع المنحنى محور الفواصل مرتين كما يذكر السؤال؛ مواضع الجذور الدقيقة غير معطاة هنا.</figcaption>
+      <svg viewBox="0 0 340 205" role="img" aria-label="منحنى يقطع محور الفواصل في نقطتين">
+        <path d="M25 100H315 M55 180V18" stroke="#64748b" stroke-width="1.5" fill="none"/>
+        <path d="M35 35 C75 35 86 165 130 100 S190 35 220 100 S270 165 305 35" stroke="#2563eb" stroke-width="2.6" fill="none"/>
+        <circle cx="105" cy="100" r="4" fill="#0f766e"/><circle cx="245" cy="100" r="4" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="300" y="93">x</text><text x="43" y="22">y</text><text x="92" y="119">جذر 1</text><text x="232" y="119">جذر 2</text></g>
+      </svg>
+    </figure>`;
+  }
+  if (prompt.includes("النموذج الوزاري الأول لعام 2017") && prompt.includes("f(1)=1") && prompt.includes("قيمة عظمى محلية")) {
+    return `<figure class="question-diagram" aria-label="منحنى له قيمة عظمى محلية عند النقطة (1,1)">
+      <figcaption>مخطط توضيحي للقيمة العظمى المحلية: f(1)=1 أكبر من قيم التابع في جوار النقطة.</figcaption>
+      <svg viewBox="0 0 340 205" role="img" aria-label="منحنى يبلغ قيمة عظمى محلية عند x يساوي واحداً">
+        <path d="M25 170H315 M55 185V18" stroke="#64748b" stroke-width="1.5" fill="none"/>
+        <path d="M35 155 C82 150 108 75 170 55 C225 74 252 145 305 155" stroke="#2563eb" stroke-width="2.7" fill="none"/>
+        <circle cx="170" cy="55" r="4.5" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="178" y="48">(1,1)</text><text x="302" y="188">x</text><text x="43" y="22">y</text></g>
+      </svg>
+    </figure>`;
+  }
+  if (prompt.includes("f(1)=1") && prompt.includes("f′(1)=0") && prompt.includes("جدول تغيرات")) {
+    return `<figure class="question-diagram" aria-label="مخطط مماس أفقي عند النقطة (1,1) دون افتراض قيمة حدية">
+      <figcaption>مخطط المماس من المعطيات: f(1)=1 وf′(1)=0، لذلك يكون المماس أفقياً ومعادلته y=1.</figcaption>
+      <svg viewBox="0 0 340 210" role="img" aria-label="منحنى متزايد له مماس أفقي عند النقطة واحد واحد">
+        <path d="M25 170H315 M70 190V20" stroke="#64748b" stroke-width="1.5" fill="none"/>
+        <path d="M82 110 Q170 110 258 110" stroke="#b45309" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+        <path d="M45 150 C95 150 120 110 170 110 C220 110 245 70 305 70" stroke="#2563eb" stroke-width="2.6" fill="none"/>
+        <circle cx="170" cy="110" r="4" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="178" y="103">(1,1)</text><text x="264" y="103">y=1</text><text x="302" y="188">x</text><text x="55" y="25">y</text></g>
+      </svg>
+    </figure>`;
+  }
+  if (prompt.includes("النموذج الوزاري الأول لعام 2017") && (prompt.includes("f(x)=5") || prompt.includes("f(x)≥5"))) {
+    return `<figure class="question-diagram" aria-label="رسم بياني توضيحي لتقاطع المنحنى مع المستقيم y=5 عند x=4">
+      <figcaption>مخطط توضيحي للمعطى: نقطة التقاطع الوحيدة مع y=5 تقع عند x=4، والمنحنى يبقى فوق المستقيم إلى يمينها في سؤال المتراجحة.</figcaption>
+      <svg viewBox="0 0 340 210" role="img" aria-label="منحنى يقطع المستقيم y يساوي خمسة عند x يساوي أربعة">
+        <path d="M25 175H315 M70 190V18" stroke="#64748b" stroke-width="1.5" fill="none"/>
+        <path d="M25 95H315" stroke="#b45309" stroke-width="2" stroke-dasharray="6 4"/>
+        <path d="M30 155 C90 150 125 130 165 95 S230 40 305 30" stroke="#2563eb" stroke-width="2.7" fill="none"/>
+        <circle cx="165" cy="95" r="4.5" fill="#0f766e"/>
+        <g fill="var(--text,#172b4d)" font-size="12"><text x="285" y="86">y=5</text><text x="170" y="112">x=4</text><text x="302" y="193">x</text><text x="55" y="23">y</text></g>
+      </svg>
+    </figure>`;
+  }
   return "";
 }

@@ -65,3 +65,20 @@ body.dark-mode .math-assistant-simplify{color:#b8ccff;border-color:#7898ef}
 .review-assistant-panel[aria-busy="true"]{opacity:.78}
 body.dark-mode .review-assistant-panel{background:#101827;border-color:#405579;color:#e7edf8}
 @media(max-width:600px){#student-tools .tools-actions #review-assistant-generate{width:100%}.review-assistant-panel{padding:12px}}
+
+/* Mathematical expression entry: compact symbol palette and readable RTL/LTR mixing. */
+.math-symbol-toolbar{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 4px}
+.math-symbol-toolbar button{min-width:42px;min-height:38px;padding:6px 10px;border:1px solid var(--border,#d9e1ed);border-radius:9px;background:var(--soft-bg,#f4f7fc);color:var(--text,#17243b);font-family:inherit;font-size:14px;font-weight:600;line-height:1.2;cursor:pointer}
+.math-symbol-toolbar button:hover{border-color:var(--primary,#315edb);background:var(--card-bg,#fff)}
+.math-assistant-form textarea{min-height:132px;direction:rtl;unicode-bidi:plaintext;line-height:1.9}
+.math-assistant-equation,.math-assistant-response mjx-container{direction:ltr;unicode-bidi:isolate;max-width:100%;overflow-x:auto}
+body.dark-mode .math-symbol-toolbar button{background:#22324b;border-color:#405579;color:#e7edf8}
+
+.math-assistant-input-preview{
+  min-height:42px;margin:8px 0 6px;padding:10px 12px;
+  border:1px dashed var(--border,#cbd5e1);border-radius:10px;
+  background:var(--soft-bg,#f8fafc);color:var(--text,#17243b);
+  direction:rtl;unicode-bidi:plaintext;line-height:1.9;overflow-x:auto;
+}
+.math-assistant-input-preview:empty{display:none}
+.math-assistant-input-preview mjx-container{direction:ltr;unicode-bidi:isolate}

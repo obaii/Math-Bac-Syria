@@ -5,8 +5,10 @@
   const input = document.getElementById("math-assistant-question");
   const response = document.getElementById("math-assistant-response");
   const counter = document.getElementById("math-assistant-char-count");
+  const preview = document.getElementById("math-assistant-input-preview");
   const clear = document.getElementById("math-assistant-clear");
   if (!form || !input || !response) return;
+  input.maxLength = 3000;
 
   const normalize = value => window.MathSearchUtils.normalize(value);
   const stopWords = new Set(["ما","ماذا","كيف","هل","هو","هي","من","في","عن","على","الى","الي","مع","هذا","هذه","اريد","افهم","اشرح","لي","قانون","قاعدة"]);
@@ -60,12 +62,13 @@
     card.append(make("p","math-assistant-question",item.question));
     if (item.keyIdea) card.append(make("p","math-assistant-idea","الفكرة الأساسية: " + item.keyIdea));
     if (Array.isArray(item.steps) && item.steps.length) {
-      const title = make("strong","","خطوات الحل");
+      const title = make("strong","","شرح الحل خطوة بخطوة");
       const list = make("ol","math-assistant-steps");
-      item.steps.slice(0,5).forEach(step => list.append(make("li","",step)));
+      item.steps.forEach(step => list.append(make("li","",step)));
       card.append(title,list);
     }
     if (item.answer) card.append(make("p","math-assistant-answer","النتيجة: " + item.answer));
+    if (item.check) card.append(make("p","math-assistant-check","التحقق: " + item.check));
     card.append(make("small","math-assistant-source",(item.sourceType || "مثال") + (item.sourceYear ? " · " + item.sourceYear : "")));
     return card;
   }
@@ -98,9 +101,37 @@
     if (!query) { input.focus(); return; }
     search(query);
   });
+  function renderInputPreview() {
+    if (!preview) return;
+    if (window.MathJax?.typesetClear) window.MathJax.typesetClear([preview]);
+    preview.replaceChildren();
+    if (!input.value.trim()) {
+      preview.textContent = "ستظهر معاينة الصيغة هنا بعد إدراج الرموز.";
+      return;
+    }
+    preview.appendChild(document.createTextNode(input.value));
+    if (window.MathJax?.typesetPromise) {
+      const ready = window.MathJax.startup?.promise || Promise.resolve();
+      ready.then(() => window.MathJax.typesetPromise([preview])).catch(() => {});
+    }
+  }
   input.addEventListener("input",() => {
-    if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠";
+    if (counter) counter.textContent = input.value.length.toLocaleString("ar") + " / ٣٠٠٠";
+    renderInputPreview();
   });
+  renderInputPreview();
+  document.querySelectorAll("[data-math-insert]").forEach(button => button.addEventListener("click",() => {
+    const token = button.dataset.mathInsert || "";
+    const start = Number.isInteger(input.selectionStart) ? input.selectionStart : input.value.length;
+    const end = Number.isInteger(input.selectionEnd) ? input.selectionEnd : start;
+    input.setRangeText(token, start, end, "end");
+    const casesEnd = token.indexOf("\\end{cases}");
+    const firstBrace = token.indexOf("{");
+    const cursor = casesEnd >= 0 ? start + casesEnd : firstBrace >= 0 ? start + firstBrace + 1 : start + token.length;
+    input.setSelectionRange(cursor, cursor);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.focus();
+  }));
   document.querySelectorAll("[data-assistant-prompt]").forEach(button => button.addEventListener("click",() => {
     input.value = button.dataset.assistantPrompt || "";
     input.dispatchEvent(new Event("input"));
