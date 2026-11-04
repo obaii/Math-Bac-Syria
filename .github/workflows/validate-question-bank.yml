@@ -40,6 +40,7 @@ jobs:
           node --check solved-examples.js
           node --check scripts/solved-examples-tests.cjs
           node --check scripts/limits-sequences-regression-tests.cjs
+          node --check scripts/log-exp-integral-regression-tests.cjs
           node --check scripts/curriculum-map-tests.cjs
           node --check scripts/lesson-label-crosswalk-tests.cjs
           node --check scripts/lesson-coverage-audit.cjs
@@ -76,6 +77,8 @@ jobs:
         run: node scripts/solved-examples-tests.cjs
       - name: Verify independently reviewed limits and sequences solutions
         run: node scripts/limits-sequences-regression-tests.cjs
+      - name: Verify independently reviewed logarithm, exponential, and integration solutions
+        run: node scripts/log-exp-integral-regression-tests.cjs
       - name: Validate complete 63-lesson curriculum inventory
         run: node scripts/curriculum-map-tests.cjs
       - name: Validate provisional solved-example lesson crosswalk
