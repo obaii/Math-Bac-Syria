@@ -837,7 +837,9 @@ function submitQuestionAnswer(response){
   similarPracticeButton.className = "similar-practice-start";
   similarPracticeButton.textContent = "تدرّب على سؤال مشابه";
   similarPracticeButton.addEventListener("click", () => showSimilarPracticeQuestion(q, fb));
-  fb.append(similarPracticeButton);
+  const questionActions = document.querySelector(".question-card .actions");
+  if (questionActions) questionActions.append(similarPracticeButton);
+  else fb.append(similarPracticeButton);
   $("next").disabled=false;
   $("next").focus({ preventScroll: true });
   $("progress-bar").style.width=((index+1)/quizQuestions.length*100) + "%";

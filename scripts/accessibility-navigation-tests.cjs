@@ -64,8 +64,11 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("#main-content").evaluate(el => document.activeElement === el), true,
       "activating the skip link should move focus to main content");
     await page.keyboard.press("Tab");
+    assert.equal(await page.locator("#section-menu-toggle").evaluate(el => document.activeElement === el), true,
+      "keyboard navigation should reach the new top-level section menu first");
+    await page.keyboard.press("Tab");
     assert.equal(await page.locator(".hero-link").evaluate(el => document.activeElement === el), true,
-      "keyboard navigation should continue from main content to its first interactive link");
+      "keyboard navigation should continue to the topic browsing link");
 
     await assertVisibleControlsHaveNames(page, "home screen");
 

@@ -1333,3 +1333,28 @@ body.dark-mode #intensive-training-status{background:#101827;color:#a7b5ca}
 .solved-example-check{background:rgba(22,163,74,.06)}
 body.dark-mode .solution-steps li,body.dark-mode .solution-method li,
 body.dark-mode .solved-example-card>ol>li{background:rgba(125,155,232,.09)}
+
+
+/* Bootstrap-enhanced home navigation and compact learning dashboard. */
+.hero-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hero-navigation{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hero-navigation .section-menu-toggle{margin:0;min-height:40px;padding:8px 14px;border-radius:12px;font-size:13px}
+.quick-start{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:10px;margin-top:12px}
+.quick-start-card{min-height:70px;padding:10px 12px;border-radius:13px;box-shadow:0 3px 12px rgba(22,42,78,.055);transition:transform .18s ease,box-shadow .18s ease}
+.quick-start-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(22,42,78,.1)}
+.dashboard,.learning-progress,.question-coverage,.weak-topic-recommendation,.resume-session,.recent-activity,.performance-trend,.activity-calendar,.achievement-section{border-radius:16px}
+.stat-grid{gap:10px}
+.stat-card{min-height:82px;padding:11px 12px;border-radius:13px;grid-template-columns:34px minmax(0,1fr)}
+.stat-card strong{font-size:22px}
+.learning-progress,.question-coverage,.activity-calendar,.achievement-section{padding:15px 17px;margin-top:13px}
+.learning-progress-heading h3,.question-coverage-heading h3,.activity-calendar-heading h3,.achievement-heading h3{font-size:17px}
+.dashboard-shortcut{background:var(--card-bg,#fff)}
+.question-card .actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.question-card .actions #next,.question-card .actions #similar-practice-start{flex:1 1 210px;min-width:0;max-width:360px;margin:0}
+#similar-practice-start{min-height:46px;padding:10px 16px;border:1px solid var(--blue,#315edb);border-radius:11px;background:transparent;color:var(--blue,#315edb);font:inherit;font-weight:800;cursor:pointer}
+#similar-practice-start:hover{background:rgba(49,94,219,.07)}
+body.dark-mode .quick-start-card{background:var(--card-bg,#17243a)}
+@media(max-width:600px){.hero-bottom,.hero-navigation{align-items:stretch;flex-direction:column}.hero-navigation .section-menu-toggle{width:100%}.quick-start{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.quick-start-card{min-height:66px;padding:8px}.quick-start-copy strong{font-size:12px}.quick-start-copy small{font-size:10px}.question-card .actions #next,.question-card .actions #similar-practice-start{flex-basis:100%;max-width:none}}
+
+
+@media(max-width:600px){.quick-start-card:nth-child(3){grid-column:1/-1}}
