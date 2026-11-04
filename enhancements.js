@@ -1827,19 +1827,24 @@
         const panelId = link.dataset.panelToggle;
         const panel = document.getElementById(panelId);
         if (!panel) return;
+        const shouldClose = !panel.hidden;
         const panelIds = [...document.querySelectorAll("[data-panel-toggle]")]
           .map(item => item.dataset.panelToggle)
           .filter(Boolean);
         for (const id of new Set(panelIds)) {
           const other = document.getElementById(id);
-          if (other && other !== panel) other.hidden = true;
+          if (other) other.hidden = true;
         }
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
-          item.setAttribute("aria-expanded", String(item === link));
+          item.setAttribute("aria-expanded", String(!shouldClose && item === link));
         });
-        panel.hidden = false;
         if (menu) menu.hidden = true;
         if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+        if (shouldClose) {
+          menuButton?.focus({ preventScroll: true });
+          return;
+        }
+        panel.hidden = false;
         panel.setAttribute("tabindex", "-1");
         panel.focus({ preventScroll: true });
         panel.scrollIntoView({ behavior: "smooth", block: "start" });
