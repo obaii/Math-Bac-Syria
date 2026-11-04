@@ -35,8 +35,8 @@ const assert = require("node:assert/strict");
 
     const quickStart = page.locator("#section-menu");
     assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false", "the section menu should start collapsed");
-    assert.equal(await quickStart.locator("a").count(), 10, "the home dashboard should expose ten primary quick-start links");
-    assert.deepEqual(await quickStart.locator("a").evaluateAll(links => links.map(link => link.getAttribute("href"))),
+    assert.equal(await quickStart.locator("a.quick-start-card").count(), 10, "the home dashboard should expose ten primary quick-start links");
+    assert.deepEqual(await quickStart.locator("a.quick-start-card").evaluateAll(links => links.map(link => link.getAttribute("href"))),
       ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library"], "quick-start links should point to their matching sections");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
