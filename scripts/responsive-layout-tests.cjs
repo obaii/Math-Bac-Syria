@@ -47,10 +47,18 @@ const assert = require("node:assert/strict");
             visible
           };
         });
+        const cards = [...document.querySelectorAll("#topic-grid .topic-card")];
+        const cardBounds = cards.map(card => {
+          const rect = card.getBoundingClientRect();
+          return { left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width) };
+        });
         return {
           viewport: window.innerWidth,
           documentWidth: document.documentElement.scrollWidth,
           bodyWidth: document.body.scrollWidth,
+          topicCardCount: cards.length,
+          topicGridColumns: getComputedStyle(document.querySelector('#topic-grid')).gridTemplateColumns.split(' ').length,
+          cardBounds,
           elements
         };
       });
@@ -60,6 +68,14 @@ const assert = require("node:assert/strict");
         layout.bodyWidth <= viewport.width + 1,
         `horizontal page overflow at ${viewport.width}px: ${JSON.stringify(layout)}`
       );
+      assert.equal(layout.topicCardCount, 14, "the home page should retain all 14 curriculum research cards");
+      const expectedColumns = viewport.width <= 540 ? 1 : viewport.width <= 850 ? 2 : 3;
+      assert.equal(layout.topicGridColumns, expectedColumns,
+        `research cards should use ${expectedColumns} columns at ${viewport.width}px`);
+      for (const card of layout.cardBounds) {
+        assert.ok(card.width > 0 && card.left >= -1 && card.right <= viewport.width + 1,
+          `a research card is clipped at ${viewport.width}px: ${JSON.stringify(card)}`);
+      }
       for (const item of layout.elements) {
         assert.equal(item.missing, undefined, `${item.selector} should exist`);
         // Collapsible panels may be intentionally hidden on initial load.
