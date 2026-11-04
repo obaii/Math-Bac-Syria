@@ -40,6 +40,7 @@ jobs:
           node --check solved-examples.js
           node --check scripts/solved-examples-tests.cjs
           node --check scripts/curriculum-map-tests.cjs
+          node --check scripts/lesson-label-crosswalk-tests.cjs
           node --check pwa-install.js
           node --check scripts/service-worker-tests.cjs
           node --check scripts/html-anchor-integrity-tests.cjs
@@ -71,6 +72,8 @@ jobs:
         run: node scripts/solved-examples-tests.cjs
       - name: Validate complete 63-lesson curriculum inventory
         run: node scripts/curriculum-map-tests.cjs
+      - name: Validate provisional solved-example lesson crosswalk
+        run: node scripts/lesson-label-crosswalk-tests.cjs
       - name: Check PWA offline asset coverage and service worker hooks
         run: node scripts/service-worker-tests.cjs
       - name: Check HTML id uniqueness and internal anchor targets
