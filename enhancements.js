@@ -1831,6 +1831,7 @@
         event.preventDefault();
         const panel = document.getElementById(link.dataset.panelToggle);
         if (!panel) return;
+        event.__mathBacPanelHandled = true;
         const shouldClose = !panel.hidden;
         const panelIds = [...document.querySelectorAll("[data-panel-toggle]")]
           .map(item => item.dataset.panelToggle)
