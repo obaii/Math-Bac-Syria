@@ -87,6 +87,11 @@ async function assertVisibleControlsHaveNames(page, context) {
     await calculatorShortcut.waitFor({ state: "visible" });
     await calculatorShortcut.click();
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
+    await page.locator("#topic-section").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#topic-section").evaluate(el => el.hidden), false,
+      "closing a secondary panel should restore the default topic selector");
+    assert.equal(await calculatorShortcut.getAttribute("aria-expanded"), "false",
+      "the closed secondary panel should expose aria-expanded=false");
     assert.equal(await sectionMenuButton.evaluate(el => document.activeElement === el),
       true, "closing a panel should return focus to the section menu button");
     assert.equal(await calculatorShortcut.getAttribute("aria-expanded"), "false",
