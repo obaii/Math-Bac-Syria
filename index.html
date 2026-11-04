@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
   <link rel="stylesheet" href="math-assistant.css?v=20261103-5">
-   <link rel="stylesheet" href="style-overrides.css?v=20261104-6">
+   <link rel="stylesheet" href="style-overrides.css?v=20261104-11">
   <link rel="stylesheet" href="student-tools.css?v=20261103-1">
   <script>
     window.MathJax = {
@@ -48,13 +48,13 @@
   <script defer src="merge-questions.js?v=20261103-1"></script>
   <script defer src="solution-guides.js?v=20261103-6"></script>
   <script defer src="question-diagrams.js?v=20261103-4"></script>
-  <script defer src="app.js?v=20261104-7"></script>
+  <script defer src="app.js?v=20261104-8"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
-  <script defer src="enhancements.js?v=20261104-3"></script>
+  <script defer src="enhancements.js?v=20261104-4"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
@@ -72,9 +72,31 @@
     <h1>أتقن الرياضيات سؤالاً بعد سؤال</h1>
     <p>اختر البحث، أجب عن الأسئلة، وشاهد التصحيح والحل خطوة بخطوة.</p>
     <div class="hero-stats"><span>١٤ بحثاً</span><span>تصحيح فوري مع الحل</span><span>مجاني دون تسجيل</span></div>
-    <div class="hero-bottom"><span class="hero-note"><span class="hero-note-icon">✓</span> ابدأ من أي بحث وتدرّب حسب مستواك</span><div class="hero-navigation"><button type="button" id="section-menu-toggle" class="section-menu-toggle" aria-controls="section-menu" aria-expanded="false">☰ قائمة أقسام المنصة</button><a class="hero-link" href="#topic-section">استعرض الأبحاث <span>↓</span></a></div></div>
-  </section><section id="home"> 
-    <div class="dashboard" aria-label="ملخص تقدمك">
+    <div class="hero-bottom"><div class="hero-note-group"><span class="hero-note"><span class="hero-note-icon">✓</span> ابدأ من أي بحث وتدرّب حسب مستواك</span><button type="button" id="section-menu-toggle" class="section-menu-toggle btn btn-primary" aria-controls="section-menu" aria-expanded="false">☰ قائمة أقسام المنصة</button></div></div>
+  </section>
+  <nav id="section-menu" class="quick-start d-grid gap-2" aria-label="اختصارات المنصة" hidden>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#topic-section" data-panel-toggle="topic-section" aria-controls="topic-section" aria-expanded="true"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#flashcards" data-panel-toggle="flashcards" aria-controls="flashcards" aria-expanded="false"><span class="quick-start-icon review-icon">▤</span><span class="quick-start-copy"><strong>البطاقات التعليمية</strong><small>اختبر حفظ القوانين والصيغ</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#formula-library" data-panel-toggle="formula-library" aria-controls="formula-library" aria-expanded="false"><span class="quick-start-icon review-icon">∑</span><span class="quick-start-copy"><strong>مكتبة القوانين</strong><small>ابحث عن الصيغ الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#math-assistant" data-panel-toggle="math-assistant" aria-controls="math-assistant" aria-expanded="false"><span class="quick-start-icon review-icon">؟</span><span class="quick-start-copy"><strong>المساعد الرياضي</strong><small>اسأل عن مفهوم أو قانون</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#solved-examples-library" data-panel-toggle="solved-examples-library" aria-controls="solved-examples-library" aria-expanded="false"><span class="quick-start-icon review-icon">✎</span><span class="quick-start-copy"><strong>مكتبة الأمثلة المحلولة</strong><small>تصفّح المسائل المشروحة</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#home" data-dashboard-target="home"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>مساحتك التعليمية</strong><small>ملخص تعلمك وإجاباتك</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#learning-progress-title" data-dashboard-target="learning-progress-title"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>خطوتك التالية</strong><small>تابع تقدمك في الأبحاث</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#question-coverage-title" data-dashboard-target="question-coverage-title"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>تقدمك في بنك الأسئلة</strong><small>الأسئلة التي تدربت عليها</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#weak-topic-recommendation" data-dashboard-target="weak-topic-recommendation"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>اقتراح للتدريب</strong><small>ركز على البحث الذي يحتاج مراجعة</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#resume-session" data-dashboard-target="resume-session"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>أكمل رحلتك</strong><small>تابع من حيث توقفت</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#recent-activity" data-dashboard-target="recent-activity"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>سجل التعلم</strong><small>آخر نشاطك التعليمي</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#performance-trend" data-dashboard-target="performance-trend"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>مؤشر التقدم</strong><small>تطور أدائك خلال الأيام</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#activity-calendar" data-dashboard-target="activity-calendar"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>انتظامك في الدراسة</strong><small>تقويم نشاطك اليومي</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#achievement-section" data-dashboard-target="achievement-section"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>إنجازاتك</strong><small>الشارات التي حققتها</small></span><span class="quick-start-arrow">←</span></a>
+    </nav>
+<section id="home"> 
+    <div class="dashboard dashboard-menu-panel" data-dashboard-panel="home" aria-label="ملخص تقدمك" hidden>
       <div class="dashboard-intro"><span class="dashboard-kicker">مساحتك التعليمية</span><h2>أهلاً بك في رحلة التفوق</h2><p>تابع إنجازك، وارجع إلى الأسئلة التي تحتاج إلى مراجعة.</p></div>
       <div class="stat-grid">
         <div class="stat-card"><span class="stat-icon blue">✓</span><span class="stat-label">إجابات مجابة</span><strong id="stat-answered" aria-live="polite" aria-atomic="true">٠</strong></div>
@@ -84,7 +106,7 @@
       </div>
       <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
     </div>
-    <section class="learning-progress" aria-labelledby="learning-progress-title">
+    <section class="learning-progress dashboard-menu-panel" data-dashboard-panel="learning-progress-title" aria-labelledby="learning-progress-title" hidden>
       <div class="learning-progress-heading">
         <div><p class="eyebrow">خطوتك التالية</p><h3 id="learning-progress-title">رحلتك التعليمية</h3><p>تابع الأبحاث التي بدأت بها، وأكمل تدريجياً بقية المنهاج.</p></div>
         <div class="learning-progress-total"><strong id="started-topics-count">٠</strong><span>من <b id="all-topics-count">١٤</b> بحثاً</span></div>
@@ -92,7 +114,7 @@
       <div class="learning-progress-track" role="progressbar" aria-label="نسبة الأبحاث التي بدأت بها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="topic-progress-bar"><span id="topic-progress-fill" style="width:0%"></span></div>
       <p class="learning-progress-caption" id="topic-progress-caption">ابدأ بحل أسئلة من أي بحث لتتبع تقدمك هنا.</p>
     </section>
-    <section class="question-coverage" aria-labelledby="question-coverage-title">
+    <section class="question-coverage dashboard-menu-panel" data-dashboard-panel="question-coverage-title" aria-labelledby="question-coverage-title" hidden>
       <div class="question-coverage-heading">
         <div>
           <p class="eyebrow">تقدّمك في بنك الأسئلة</p>
@@ -104,7 +126,7 @@
       <div class="learning-progress-track" id="question-progress-bar" role="progressbar" aria-label="نسبة الأسئلة المختلفة التي جرى حلها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="question-progress-fill" style="width:0%"></span></div>
       <p class="learning-progress-caption" id="question-progress-caption">ابدأ التدريب لتتبع عدد الأسئلة المختلفة التي حللتها.</p>
     </section>
-    <section id="weak-topic-recommendation" class="weak-topic-recommendation" aria-labelledby="weak-topic-heading" hidden>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" data-dashboard-panel="weak-topic-recommendation" hidden><p class="dashboard-empty-state">سيظهر اقتراح مناسب بعد حل عدد كافٍ من الأسئلة.</p><section id="weak-topic-recommendation" class="weak-topic-recommendation" aria-labelledby="weak-topic-heading" hidden>
       <div class="weak-topic-copy">
         <p class="eyebrow">اقتراح للتدريب</p>
         <h3 id="weak-topic-heading">بحث يستحق مزيداً من المراجعة</h3>
@@ -116,16 +138,16 @@
         <span>نسبة الإجابات الصحيحة</span>
         <button type="button" id="weak-topic-button">ابدأ مراجعة البحث ←</button>
       </div>
-    </section>
-    <section id="resume-session" class="resume-session" aria-labelledby="resume-session-title" hidden>
+    </section></div>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" data-dashboard-panel="resume-session" hidden><p class="dashboard-empty-state">سيظهر هنا آخر بحث تدربت عليه لتتمكن من المتابعة.</p><section id="resume-session" class="resume-session" aria-labelledby="resume-session-title" hidden>
       <div class="resume-session-copy">
         <p class="eyebrow">أكمل رحلتك</p>
         <h3 id="resume-session-title">تابع من حيث توقفت</h3>
         <p>آخر بحث تدربت عليه: <strong id="resume-topic-name"></strong></p>
       </div>
       <button type="button" id="resume-topic-button" class="resume-topic-button">متابعة التدريب ←</button>
-    </section>
-    <section id="recent-activity" class="recent-activity" aria-labelledby="recent-activity-title" hidden>
+    </section></div>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" data-dashboard-panel="recent-activity" hidden><p class="dashboard-empty-state">سيظهر سجل نشاطك بعد بدء التدريب.</p><section id="recent-activity" class="recent-activity" aria-labelledby="recent-activity-title" hidden>
       <div class="recent-activity-heading">
         <div>
           <p class="eyebrow">سجل التعلم</p>
@@ -134,8 +156,8 @@
         </div>
       </div>
       <ul id="recent-activity-list" class="recent-activity-list" aria-live="polite"></ul>
-    </section>
-    <section id="performance-trend" class="performance-trend" aria-labelledby="performance-trend-title" hidden>
+    </section></div>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" data-dashboard-panel="performance-trend" hidden><p class="dashboard-empty-state">سيظهر تطور أدائك بعد تسجيل إجاباتك.</p><section id="performance-trend" class="performance-trend" aria-labelledby="performance-trend-title" hidden>
       <div class="performance-trend-heading">
         <div>
           <p class="eyebrow">مؤشر التقدّم</p>
@@ -145,38 +167,18 @@
       </div>
       <ol id="performance-trend-chart" class="performance-trend-chart" aria-label="مخطط نسبة الإجابات الصحيحة خلال الأيام السبعة الماضية"></ol>
       <p id="performance-trend-summary" class="performance-trend-summary" aria-live="polite"></p>
-    </section>
-    <section id="activity-calendar" class="activity-calendar" aria-labelledby="activity-calendar-title" data-total-answers="0" data-active-days="0">
+    </section></div>
+    <section id="activity-calendar" class="activity-calendar dashboard-menu-panel" data-dashboard-panel="activity-calendar" hidden aria-labelledby="activity-calendar-title" data-total-answers="0" data-active-days="0">
       <div class="activity-calendar-heading"><div><p class="eyebrow">انتظامك في الدراسة</p><h3 id="activity-calendar-title">تقويم النشاط خلال آخر ٢٨ يوماً</h3><p>كل مربع يمثل يوماً، ويزداد وضوحه كلما زاد عدد الإجابات في ذلك اليوم.</p></div></div>
       <ol id="activity-calendar-grid" class="activity-calendar-grid" aria-label="تقويم عدد الإجابات اليومية"></ol>
       <div class="activity-calendar-legend" aria-label="مفتاح كثافة النشاط"><span>أقل</span><i class="level-0" aria-hidden="true"></i><i class="level-1" aria-hidden="true"></i><i class="level-2" aria-hidden="true"></i><i class="level-3" aria-hidden="true"></i><i class="level-4" aria-hidden="true"></i><span>أكثر</span></div>
       <p id="activity-calendar-summary" class="activity-calendar-summary" aria-live="polite">آخر ٧ أيام: ٠ إجابة خلال ٠ أيام نشطة.</p>
     </section>
-    <section id="achievement-section" class="achievement-section" aria-labelledby="achievement-title" data-unlocked-count="0" data-total-count="7">
+    <section id="achievement-section" class="achievement-section dashboard-menu-panel" data-dashboard-panel="achievement-section" hidden aria-labelledby="achievement-title" data-unlocked-count="0" data-total-count="7">
       <div class="achievement-heading"><div><p class="eyebrow">إنجازاتك</p><h3 id="achievement-title">خطواتك تستحق التقدير</h3><p>تُفتح الشارات تلقائياً مع تقدمك في التدريب، دون التأثير في نتائجك أو بياناتك.</p></div><strong id="achievement-summary" aria-live="polite">أنجزت ٠ من ٧ إنجازات.</strong></div>
       <ul id="achievement-list" class="achievement-list" aria-label="قائمة الإنجازات"></ul>
     </section>
-    <nav id="section-menu" class="quick-start" aria-label="اختصارات المنصة" hidden>
-      <a class="quick-start-card" href="#topic-section" data-panel-toggle="topic-section" aria-controls="topic-section" aria-expanded="true"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#flashcards" data-panel-toggle="flashcards" aria-controls="flashcards" aria-expanded="false"><span class="quick-start-icon review-icon">▤</span><span class="quick-start-copy"><strong>البطاقات التعليمية</strong><small>اختبر حفظ القوانين والصيغ</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#formula-library" data-panel-toggle="formula-library" aria-controls="formula-library" aria-expanded="false"><span class="quick-start-icon review-icon">∑</span><span class="quick-start-copy"><strong>مكتبة القوانين</strong><small>ابحث عن الصيغ الرياضية</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#math-assistant" data-panel-toggle="math-assistant" aria-controls="math-assistant" aria-expanded="false"><span class="quick-start-icon review-icon">؟</span><span class="quick-start-copy"><strong>المساعد الرياضي</strong><small>اسأل عن مفهوم أو قانون</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card" href="#solved-examples-library" data-panel-toggle="solved-examples-library" aria-controls="solved-examples-library" aria-expanded="false"><span class="quick-start-icon review-icon">✎</span><span class="quick-start-copy"><strong>مكتبة الأمثلة المحلولة</strong><small>تصفّح المسائل المشروحة</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#home" data-dashboard-target="home"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>مساحتك التعليمية</strong><small>ملخص تعلمك وإجاباتك</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#learning-progress-title" data-dashboard-target="learning-progress-title"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>خطوتك التالية</strong><small>تابع تقدمك في الأبحاث</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#question-coverage-title" data-dashboard-target="question-coverage-title"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>تقدمك في بنك الأسئلة</strong><small>الأسئلة التي تدربت عليها</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#weak-topic-recommendation" data-dashboard-target="weak-topic-recommendation"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>اقتراح للتدريب</strong><small>ركز على البحث الذي يحتاج مراجعة</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#resume-session" data-dashboard-target="resume-session"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>أكمل رحلتك</strong><small>تابع من حيث توقفت</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#recent-activity" data-dashboard-target="recent-activity"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>سجل التعلم</strong><small>آخر نشاطك التعليمي</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#performance-trend" data-dashboard-target="performance-trend"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>مؤشر التقدم</strong><small>تطور أدائك خلال الأيام</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#activity-calendar" data-dashboard-target="activity-calendar"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>انتظامك في الدراسة</strong><small>تقويم نشاطك اليومي</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card dashboard-shortcut" href="#achievement-section" data-dashboard-target="achievement-section"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>إنجازاتك</strong><small>الشارات التي حققتها</small></span><span class="quick-start-arrow">←</span></a>
-    </nav>
+    
     <section id="math-assistant" class="math-assistant" aria-labelledby="math-assistant-title" hidden>
       <div class="math-assistant-heading">
         <div><p class="eyebrow">مساعد تعلّم تفاعلي</p><h3 id="math-assistant-title">المساعد الرياضي</h3>

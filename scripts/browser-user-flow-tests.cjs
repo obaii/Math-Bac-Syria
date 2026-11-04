@@ -15,7 +15,18 @@ const assert = require("node:assert/strict");
     if (await panel.isVisible()) return;
     const menu = page.locator("#section-menu");
     if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
-    await page.locator('[data-panel-toggle="' + id + '"]').click();
+    const dashboardLink = page.locator('[data-dashboard-target="' + id + '"]');
+    if (await dashboardLink.count()) {
+      await dashboardLink.click();
+      const dashboardPanel = page.locator('[data-dashboard-panel="' + id + '"]');
+      await dashboardPanel.waitFor({ state: "visible" });
+      if (await panel.count() && !(await panel.isVisible())) {
+        // Some dashboard sections intentionally keep their own data-driven empty state hidden.
+        return;
+      }
+    } else {
+      await page.locator('[data-panel-toggle="' + id + '"]').click();
+    }
     await panel.waitFor({ state: "visible" });
   };
   try {
@@ -44,7 +55,9 @@ const assert = require("node:assert/strict");
     const expectedQuickStartLinks = [
       "#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator",
       "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library",
-      "#math-assistant", "#solved-examples-library"
+      "#math-assistant", "#solved-examples-library", "#home", "#learning-progress-title",
+      "#question-coverage-title", "#weak-topic-recommendation", "#resume-session",
+      "#recent-activity", "#performance-trend", "#activity-calendar", "#achievement-section"
     ];
     for (const href of expectedQuickStartLinks) {
       assert.equal(quickStartLinks.filter(link => link === href).length, 1,
@@ -335,10 +348,16 @@ const assert = require("node:assert/strict");
 
     const topicButtons = page.locator("#topic-grid [data-topic]");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
+    assert.equal(await page.locator("[data-dashboard-panel]").count(), 9, "the section menu should contain nine separate dashboard panels");
+    const initiallyVisibleDashboardPanels = await page.locator("[data-dashboard-panel]:visible").evaluateAll(elements => elements.map(element => element.dataset.dashboardPanel));
+    assert.deepEqual(initiallyVisibleDashboardPanels, [], "dashboard panels should be hidden on the initial homepage; visible: " + initiallyVisibleDashboardPanels.join(", "));
     assert.equal(await page.locator("#activity-calendar-grid .activity-calendar-day").count(), 28, "the activity calendar should render the latest 28 days");
-    assert.ok(await page.locator("#activity-calendar").isVisible(), "the activity calendar should remain visible even before the student has activity");
+    assert.equal(await page.locator("#activity-calendar").isVisible(), false, "the activity calendar should stay inside the section menu until selected");
+    await openPanel("activity-calendar");
+    assert.ok(await page.locator("#activity-calendar").isVisible(), "the activity calendar should appear when selected from the section menu");
+    await openPanel("achievement-section");
     assert.equal(await page.locator("#achievement-list .achievement-card").count(), 7, "the dashboard should show seven achievement badges");
-    assert.ok(await page.locator("#achievement-section").isVisible(), "achievement badges should be visible on the dashboard");
+    assert.ok(await page.locator("#achievement-section").isVisible(), "achievement badges should appear when selected from the section menu");
     const badgeFixture = await page.evaluate(() => {
       progressData.answered = 120;
       progressData.correct = 100;
@@ -367,10 +386,10 @@ const assert = require("node:assert/strict");
     assert.equal(await clearSearch.isVisible(), false, "the clear-search control should hide again after clearing");
     assert.equal(await topicSearch.evaluate(el => document.activeElement === el), true, "clearing the search should return keyboard focus to the search field");
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
-    assert.equal(await page.locator("#resume-session").isVisible(), false, "resume card should stay hidden until a topic has been practiced");
-    assert.equal(await page.locator("#recent-activity").isVisible(), false, "recent activity should stay hidden until an answer is recorded");
-    assert.equal(await page.locator("#performance-trend").isVisible(), false, "the performance chart should stay hidden until a recent answer is recorded");
-    assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), false, "the weakest-topic suggestion should stay hidden before any topic has results");
+    assert.equal(await page.locator("#resume-session").evaluate(el => el.hidden), true, "resume card content should stay hidden until a topic has been practiced");
+    assert.equal(await page.locator("#recent-activity").evaluate(el => el.hidden), true, "recent activity content should stay hidden until an answer is recorded");
+    assert.equal(await page.locator("#performance-trend").evaluate(el => el.hidden), true, "the performance chart content should stay hidden until a recent answer is recorded");
+    assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the weakest-topic suggestion content should stay hidden before any topic has results");
     const weakestTopicFixture = await page.evaluate(() => {
       const [strongTopic, weakTopic] = topics.slice(0, 2);
       progressData.topicStats = {
@@ -380,16 +399,17 @@ const assert = require("node:assert/strict");
       refreshDashboard();
       return weakTopic;
     });
-    assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), true, "the weakest-topic suggestion should appear after topic results exist");
+    assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => !el.hidden), true, "the weakest-topic suggestion content should appear after topic results exist");
     assert.equal(await page.locator("#weak-topic-name").innerText(), weakestTopicFixture, "the suggestion should identify the topic with the lowest accuracy");
     assert.ok(["0٪", "٠٪"].includes(await page.locator("#weak-topic-rate").innerText()), "the suggestion should show the selected topic accuracy");
+    await openPanel("weak-topic-recommendation");
     await page.locator("#weak-topic-button").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), weakestTopicFixture, "the suggestion action should open the selected topic");
     await page.locator("#back").click();
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await page.evaluate(() => { progressData.topicStats = {}; refreshDashboard(); });
-    assert.equal(await page.locator("#weak-topic-recommendation").isVisible(), false, "the suggestion should hide again when no topic has recorded results");
+    assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the suggestion content should hide again when no topic has recorded results");
 
     // Mastery labels require a meaningful sample and use accuracy thresholds independently of coverage.
     const masteryFixture = await page.evaluate(() => {
@@ -520,7 +540,16 @@ const assert = require("node:assert/strict");
     await openPanel("topic-section");
     await topicButtons.first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#options [data-option]").count(), 4, "each quiz question should show four options");
+    // Keep this interaction test deterministic by starting with an MCQ,
+    // regardless of the mixed question types in the selected research.
+    await page.evaluate(() => {
+      const firstMcq = quizQuestions.find(question => getQuestionType(question) === "mcq");
+      if (!firstMcq) throw new Error("The selected research needs at least one multiple-choice question for this UI test.");
+      quizQuestions = [firstMcq, ...quizQuestions.filter(question => question !== firstMcq)];
+      index = 0;
+      showQuestion();
+    });
+    assert.equal(await page.locator("#options [data-option]").count(), 4, "multiple-choice questions should show four options");
     assert.ok((await page.locator("#question-text").innerText()).trim().length > 0, "question text should be rendered");
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("role"), "progressbar", "quiz progress should expose an accessible progress bar");
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("aria-valuenow"), "0", "a new quiz should begin at zero completed answers");
@@ -589,7 +618,8 @@ const assert = require("node:assert/strict");
     const lastPracticedTopic = await page.locator("#quiz-title").innerText();
     await page.locator("#back").click();
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
-    assert.equal(await page.locator("#resume-session").isVisible(), true, "the last practiced topic should appear on the home page");
+    await openPanel("resume-session");
+    assert.equal(await page.locator("#resume-session").evaluate(el => !el.hidden), true, "the last practiced topic should appear inside its menu panel");
     assert.equal(await page.locator("#resume-topic-name").innerText(), lastPracticedTopic, "the resume card should identify the last practiced topic");
     const practicedTopicCard = page.locator("#topic-grid [data-topic]").filter({ hasText: lastPracticedTopic });
     assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "1", "the topic card should show the recorded answer count");
@@ -601,13 +631,16 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#quiz-title").innerText(), lastPracticedTopic, "resume should reopen the last practiced topic");
     await page.locator("#back").click();
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
-    assert.equal(await page.locator("#recent-activity").isVisible(), true, "recent activity should appear after an answer is recorded");
+    await openPanel("recent-activity");
+    assert.equal(await page.locator("#recent-activity").evaluate(el => !el.hidden), true, "recent activity should appear inside its menu panel after an answer is recorded");
     assert.equal(await page.locator("#recent-activity-list li").count(), 1, "recent activity should show the latest practiced topic");
     assert.equal(await page.locator("#recent-activity-list li strong").innerText(), lastPracticedTopic, "recent activity should show the correct topic");
-    assert.equal(await page.locator("#performance-trend").isVisible(), true, "the seven-day performance chart should appear after an answer is recorded");
+    await openPanel("performance-trend");
+    assert.equal(await page.locator("#performance-trend").evaluate(el => !el.hidden), true, "the seven-day performance chart should appear inside its menu panel after an answer is recorded");
     assert.equal(await page.locator("#performance-trend-chart .performance-trend-day").count(), 7, "the performance chart should show one column for each of the last seven days");
     assert.match(await page.locator("#performance-trend-summary").innerText(), /نسبة صحة/, "the chart should summarize the weekly accuracy");
     assert.equal(await page.locator("#performance-trend-chart [role=progressbar]").count(), 7, "each daily chart column should expose its accuracy accessibly");
+    await openPanel("recent-activity");
     await page.locator("#recent-activity-list button").first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), lastPracticedTopic, "recent activity should reopen its selected topic");

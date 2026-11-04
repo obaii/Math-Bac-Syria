@@ -1358,3 +1358,37 @@ body.dark-mode .quick-start-card{background:var(--card-bg,#17243a)}
 
 
 @media(max-width:600px){.quick-start-card:nth-child(3){grid-column:1/-1}}
+
+
+/* Homepage: keep the dashboard behind the section menu and align the menu beside the hero note. */
+.hero-bottom{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin-top:16px}
+.hero-note-group{display:flex;align-items:center;justify-content:flex-start;gap:12px;flex-wrap:wrap;width:100%}
+.hero-note-group .hero-note{margin:0}
+.hero-note-group .section-menu-toggle{display:inline-flex;align-items:center;justify-content:center;width:auto;max-width:100%;min-height:42px;margin:0;padding:9px 15px;border:0;border-radius:12px;background:linear-gradient(135deg,#315edb,#244bb9);color:#fff;font-size:13px;font-weight:800;line-height:1.4;box-shadow:0 5px 14px rgba(49,94,219,.18)}
+#section-menu.quick-start{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:9px;margin:12px 0 18px;padding:0}
+#section-menu.quick-start[hidden]{display:none!important}
+#section-menu .quick-start-card{display:flex;align-items:center;gap:10px;min-height:62px;padding:9px 11px;border:1px solid #e3eaf5;border-radius:13px;background:var(--card-bg,#fff);color:var(--ink,#19263b);text-decoration:none;box-shadow:0 3px 10px rgba(25,48,86,.045);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+#section-menu .quick-start-card:hover{transform:translateY(-2px);border-color:#b7c8f7;box-shadow:0 8px 18px rgba(49,94,219,.09)}
+#section-menu .quick-start-icon{flex-basis:34px;width:34px;height:34px;border-radius:10px;font-size:17px}
+#section-menu .quick-start-copy strong{font-size:12px;line-height:1.5}
+#section-menu .quick-start-copy small{font-size:10px;line-height:1.5}
+#section-menu .quick-start-arrow{font-size:15px}
+.dashboard-menu-panel{scroll-margin-top:18px;min-width:0}
+.dashboard-dynamic-panel{padding:0;margin:0}
+.dashboard-empty-state{margin:0 0 10px;padding:10px 13px;border:1px dashed #cbd7eb;border-radius:11px;color:var(--muted,#64748b);font-size:12px;background:rgba(49,94,219,.035)}
+.dashboard-dynamic-panel:has(> section:not([hidden])) .dashboard-empty-state{display:none}
+.question-card .actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.question-card .actions #next,.question-card .actions #similar-practice-start{display:inline-flex;align-items:center;justify-content:center;flex:1 1 220px;min-width:0;max-width:360px;min-height:44px;margin:0}
+#section-menu-toggle:focus-visible,#section-menu a:focus-visible{outline:3px solid #9eb5fa;outline-offset:3px}
+body.dark-mode #section-menu .quick-start-card{background:#182438;border-color:#34445d;color:#e7edf8}
+body.dark-mode .dashboard-empty-state{border-color:#40516b;background:rgba(125,155,232,.08);color:#b9c7dc}
+@media(max-width:600px){.hero-note-group{align-items:center;justify-content:flex-start;flex-direction:row;flex-wrap:wrap;gap:9px}.hero-note-group .hero-note{flex:1 1 165px}.hero-note-group .section-menu-toggle{width:auto;flex:0 0 auto}#section-menu.quick-start{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#section-menu .quick-start-card{min-height:58px;padding:8px}#section-menu .quick-start-copy strong{font-size:11px}#section-menu .quick-start-copy small{font-size:9px}.question-card .actions #next,.question-card .actions #similar-practice-start{flex-basis:calc(50% - 6px)}}
+@media(max-width:380px){.question-card .actions #next,.question-card .actions #similar-practice-start{flex-basis:100%;max-width:none}}
+
+
+/* Respect the HTML hidden state even when a component has its own display rule. */
+[hidden]{display:none!important}
+
+
+/* Keep the menu compact in two columns even on narrow 360px phones. */
+@media(max-width:380px){#section-menu.quick-start{grid-template-columns:repeat(2,minmax(0,1fr))}}

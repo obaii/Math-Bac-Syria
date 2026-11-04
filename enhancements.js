@@ -1840,6 +1840,7 @@
           const other = document.getElementById(id);
           if (other) other.hidden = true;
         }
+        document.querySelectorAll("[data-dashboard-panel]").forEach(panel => { panel.hidden = true; });
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
           item.setAttribute("aria-expanded", String(!shouldClose && item === link));
         });
@@ -1868,7 +1869,33 @@
     }
     document.querySelectorAll("#section-menu a:not([data-panel-toggle])").forEach(link => {
       if (link.dataset.menuCloseBound === "true") return;
-      link.addEventListener("click", () => {
+      link.addEventListener("click", event => {
+        const panelKey = link.dataset.dashboardTarget;
+        if (panelKey) {
+          event.preventDefault();
+          const panels = [...document.querySelectorAll("[data-dashboard-panel]")];
+          const panel = panels.find(item => item.dataset.dashboardPanel === panelKey);
+          if (panel) {
+            panels.forEach(item => { item.hidden = true; });
+            const otherPanelIds = [...document.querySelectorAll("[data-panel-toggle]")]
+              .map(item => item.dataset.panelToggle).filter(Boolean);
+            for (const id of new Set(otherPanelIds)) {
+              const other = document.getElementById(id);
+              if (other) other.hidden = true;
+            }
+            document.querySelectorAll("[data-panel-toggle]").forEach(item => item.setAttribute("aria-expanded", "false"));
+            panel.hidden = false;
+            document.querySelectorAll("#section-menu [data-dashboard-target]").forEach(item => {
+              item.setAttribute("aria-expanded", String(item === link));
+            });
+            if (menu) menu.hidden = true;
+            if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+            panel.setAttribute("tabindex", "-1");
+            panel.focus({ preventScroll: true });
+            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+          }
+        }
         if (menu) menu.hidden = true;
         if (menuButton) menuButton.setAttribute("aria-expanded", "false");
       });
