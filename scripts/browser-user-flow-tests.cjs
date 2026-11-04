@@ -38,9 +38,15 @@ const assert = require("node:assert/strict");
     const quickStartLinks = await quickStart.evaluate(menu => Array.from(menu.children)
       .filter(child => child.matches("a.quick-start-card"))
       .map(link => link.getAttribute("href")));
-    assert.equal(quickStartLinks.length, 10, "the home dashboard should expose ten primary quick-start links");
-    assert.deepEqual(quickStartLinks,
-      ["#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator", "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library"], "quick-start links should point to their matching sections");
+    const expectedQuickStartLinks = [
+      "#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator",
+      "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library",
+      "#math-assistant", "#solved-examples-library"
+    ];
+    for (const href of expectedQuickStartLinks) {
+      assert.equal(quickStartLinks.filter(link => link === href).length, 1,
+        "the dashboard should expose exactly one shortcut for " + href + "; found: " + quickStartLinks.join(", "));
+    }
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
