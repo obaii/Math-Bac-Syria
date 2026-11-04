@@ -1847,6 +1847,15 @@
         const currentMenuButton = document.getElementById("section-menu-toggle");
         if (currentMenuButton) currentMenuButton.setAttribute("aria-expanded", "false");
         if (shouldClose) {
+          // Closing a secondary panel returns the home view to its default topic selector.
+          const defaultPanel = document.getElementById("topic-section");
+          if (defaultPanel) {
+            defaultPanel.hidden = false;
+            defaultPanel.setAttribute("tabindex", "-1");
+          }
+          document.querySelectorAll("[data-panel-toggle]").forEach(item => {
+            item.setAttribute("aria-expanded", String(item.dataset.panelToggle === "topic-section"));
+          });
           currentMenuButton?.focus({ preventScroll: true });
           return;
         }
