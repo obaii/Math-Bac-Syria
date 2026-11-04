@@ -12,7 +12,7 @@ const failures = [];
 const expect = (ok, message) => { if (!ok) failures.push(message); };
 
 // The library uses stable id:"..." fields in its example records.
-const actualIds = [...source.matchAll(/\bid\s*:\s*"([^"]+)"/g)].map(match => match[1]);
+const actualIds = [...source.matchAll(/["']?id["']?\s*:\s*["']([^"']+)["']/g)].map(match => match[1]);
 const actualSet = new Set(actualIds);
 expect(actualIds.length === actualSet.size, "Solved-example IDs must be unique.");
 expect(actualIds.length === inventory.exampleCount, "Inventory exampleCount must match the actual solved-example library.");
