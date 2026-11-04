@@ -104,11 +104,11 @@ if (!library || !Array.isArray(library.examples)) {
   // Independently re-derived elementary complex-number examples.
   const complexCases = [
     { id: "cx-001", steps: ["2-4i+3i-6i^2", "2-i+6"], answer: "8-i" },
-    { id: "cx-002", steps: ["(-3)^2+4^2", "9+16=5"], answer: "|z|=5" },
+    { id: "cx-002", steps: ["(-3)^2+4^2", "9+16"], answer: "|z|=5" },
     { id: "cx-003", steps: ["z̄=−3−2i", "9+4=13"], answer: "13" },
     { id: "cx-004", steps: ["z²=−1", "z=i", "z=−i"], answer: "i,−i" },
     { id: "cx-005", steps: ["4i²", "(2i)²", "z=−2i"], answer: "2i,−2i" },
-    { id: "cx-006", steps: ["(1+i)²", "1−i²", "z=i"], answer: "z=i" },
+    { id: "cx-006", steps: ["(1+i)²/(1−i²)", "1−(−1)=2"], answer: "z=i" },
     { id: "cx-007", steps: ["z̄=−3−4i", "9+16=25"], answer: "25" },
     { id: "cx-008", steps: ["25+144", "169"], answer: "|z|=13" },
     { id: "cx-009", steps: ["i²=−1", "i³=−i", "i⁴=1"], answer: "−i" },
