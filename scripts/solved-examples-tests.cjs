@@ -79,8 +79,8 @@ if (!library || !Array.isArray(library.examples)) {
 }
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solved-examples\.js\?v=20261103-5/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
-if (!/solved-examples\.css\?v=20261102-1/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
+if (!/solved-examples\.js\?v=[A-Za-z0-9._-]+/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
+if (!/solved-examples\.css\?v=[A-Za-z0-9._-]+/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
 if (index.indexOf("solved-examples.js") > index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
 
 if (!source.includes('id = "solved-examples-library"') && !source.includes('section.id = "solved-examples-library"')) {
