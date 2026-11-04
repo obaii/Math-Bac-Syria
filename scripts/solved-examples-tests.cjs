@@ -76,6 +76,39 @@ if (!library || !Array.isArray(library.examples)) {
   if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
     failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
   }
+  // Independently checked probability examples: total probability, conditional probability,
+  // and two binomial-distribution calculations. Keep the derivations as regression guards.
+  const stagedProbabilityCases = [
+    {
+      id: "exam22-prob-001",
+      steps: ["(1/3)(3/5)+(2/3)(1/5)=1/3"],
+      answer: "P(R₂)=1/3."
+    },
+    {
+      id: "exam22-prob-002",
+      steps: ["(2/15)/(1/3)=2/5"],
+      answer: "الاحتمال الشرطي يساوي 2/5."
+    },
+    {
+      id: "exam24-prob-001",
+      steps: ["E(X)", "16}{25}"],
+      answer: "16}{25}"
+    },
+    {
+      id: "exam24-prob-002",
+      steps: ["16}{625}", "1}{625}"],
+      answer: "17}{625}"
+    }
+  ];
+  for (const testCase of stagedProbabilityCases) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || testCase.steps.some(fragment => !solution.includes(fragment)) ||
+        !testCase.answer.split(" ").every(fragment => example.answer.includes(fragment))) {
+      failures.push("Probability solution regression failed for " + testCase.id + ".");
+    }
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
