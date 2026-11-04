@@ -128,6 +128,35 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // Independently re-derived antiderivatives, definite integrals, and area examples.
+  const integralCases = [
+    { id: "int-001", steps: ["F(x)=3x^2-4x+C", "F(0)=3", "C=3"], answer: "3x^2-4x+3" },
+    { id: "int-002", steps: ["F(x)=x^2", "F(3)-F(1)", "9-1=8"], answer: "8" },
+    { id: "int-003", steps: ["u=x", "v=eˣ", "xeˣ−eˣ+C"], answer: "eˣ(x−1)+C" },
+    { id: "int-004", steps: ["A=∫₀³2x dx", "x²", "3²−0²=9"], answer: "9" },
+    { id: "int-005", steps: ["x³", "−2x²", "2x+C"], answer: "x³−2x²+2x+C" },
+    { id: "int-006", steps: ["F(x)=x³+x", "F(2)=8+2=10", "F(0)=0"], answer: "10" },
+    { id: "int-007", steps: ["u=x²+1", "∫₅¹⁷ u³ du", "17⁴−5⁴"], answer: "20724" },
+    { id: "int-008", steps: ["x≥0", "F(x)=x²/2", "9/2"], answer: "9/2" },
+    { id: "int-009", steps: ["x³", "−2x²", "2x"], answer: "x³−2x²+2x+C" },
+    { id: "int-010", steps: ["2x≥0", "A=∫₀³ 2x dx", "3²−0²=9"], answer: "9" },
+    { id: "int-011", steps: ["u=x", "v=e^x", "xe^x−∫e^x dx"], answer: "e^x(x−1)+C" },
+    { id: "int-012", steps: ["A=∫₀³ 2x dx", "A=[x²]₀³=9"], answer: "9" },
+    { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
+    { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
+    { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
+    { id: "int-016", steps: ["A=∫₀²x² dx", "x³/3", "8/3"], answer: "8/3" }
+  ];
+  for (const testCase of integralCases) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || example.topic !== "التكامل والتابع الأصلي" ||
+        testCase.steps.some(fragment => !solution.includes(fragment)) ||
+        !example.answer.includes(testCase.answer)) {
+      failures.push("Integral solution regression failed for " + testCase.id + ".");
+    }
+  }
+
   const probabilityExample = examples.find(item => item.id === "exam19-prob-001");
   if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
     failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
