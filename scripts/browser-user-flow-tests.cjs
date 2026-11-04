@@ -11,9 +11,12 @@ const assert = require("node:assert/strict");
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("dialog", dialog => dialog.accept());
   const openPanel = async id => {
+    const panel = page.locator("#" + id);
+    if (await panel.isVisible()) return;
     const menu = page.locator("#section-menu");
     if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
     await page.locator('[data-panel-toggle="' + id + '"]').click();
+    await panel.waitFor({ state: "visible" });
   };
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
