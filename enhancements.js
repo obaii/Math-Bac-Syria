@@ -1868,7 +1868,26 @@
     }
     document.querySelectorAll("#section-menu a:not([data-panel-toggle])").forEach(link => {
       if (link.dataset.menuCloseBound === "true") return;
-      link.addEventListener("click", () => {
+      link.addEventListener("click", event => {
+        const panelKey = link.dataset.dashboardTarget;
+        if (panelKey) {
+          event.preventDefault();
+          const panels = [...document.querySelectorAll("[data-dashboard-panel]")];
+          const panel = panels.find(item => item.dataset.dashboardPanel === panelKey);
+          if (panel) {
+            panels.forEach(item => { item.hidden = true; });
+            panel.hidden = false;
+            document.querySelectorAll("#section-menu [data-dashboard-target]").forEach(item => {
+              item.setAttribute("aria-expanded", String(item === link));
+            });
+            if (menu) menu.hidden = true;
+            if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+            panel.setAttribute("tabindex", "-1");
+            panel.focus({ preventScroll: true });
+            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+          }
+        }
         if (menu) menu.hidden = true;
         if (menuButton) menuButton.setAttribute("aria-expanded", "false");
       });
