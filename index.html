@@ -53,8 +53,7 @@
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
   <script defer src="enhancements.js?v=20261104-3"></script>
-  <script defer src="math-assistant-config.js?v=20261104-1"></script>
-  <script defer src="math-assistant.js?v=20261104-1"></script>
+  <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
 </head>
@@ -171,10 +170,10 @@
     <section id="math-assistant" class="math-assistant" aria-labelledby="math-assistant-title" hidden>
       <div class="math-assistant-heading">
         <div><p class="eyebrow">مساعد تعلّم تفاعلي</p><h3 id="math-assistant-title">المساعد الرياضي</h3>
-        <p>ابحث في مكتبة المنصة، أو اطلب شرحاً خطوة بخطوة من النموذج الذكي عند تفعيل الخدمة.</p></div>
-        <span class="math-assistant-status">بحث محلي + ذكاء اصطناعي اختياري</span>
+        <p>اكتب اسم مفهوم أو قانون أو فكرة رياضية، وسأبحث لك في مكتبة القوانين والأمثلة المحلولة الموجودة في المنصة.</p></div>
+        <span class="math-assistant-status">يعمل محلياً</span>
       </div>
-      <p class="math-assistant-disclosure">البحث المحلي يعمل داخل المتصفح. عند الضغط على زر الشرح الذكي، يُرسل نص سؤالك ومقتطفات رياضية ذات صلة إلى خدمة Cloudflare Workers AI. لا ترسل أسماء أو معلومات شخصية؛ ولا يحفظ عامل المنصة نص السؤال أو الإجابة في قاعدة بيانات.</p>
+      <p class="math-assistant-disclosure">يبحث المساعد حالياً في مكتبة القوانين والأمثلة المحلولة محلياً. إدماج نموذج ذكاء اصطناعي خارجي يحتاج إلى خدمة خلفية آمنة حتى لا تُكشف مفاتيح الاتصال في المتصفح.</p>
       <form id="math-assistant-form" class="math-assistant-form">
         <label for="math-assistant-question">ما الذي تريد فهمه؟</label>
         <textarea id="math-assistant-question" rows="5" maxlength="3000" required placeholder="مثال: اشرح نهاية تابع، أو اكتب المسألة ومحاولتك لمراجعة الخطوات"></textarea>
@@ -197,9 +196,6 @@
         <div class="math-assistant-form-actions"><span id="math-assistant-char-count">٠ / ٣٠٠٠</span><button type="submit" class="primary">ابحث عن شرح ←</button></div>
       </form>
       <div class="math-assistant-ai-actions">
-        <button type="button" id="math-assistant-ai-submit" class="math-assistant-explain">اطلب شرحاً ذكياً خطوة بخطوة</button>
-        <p id="math-assistant-ai-status" class="math-assistant-ai-status" role="status">تُفعّل خدمة الشرح الذكي بعد نشر العامل الخلفي وربط عنوانه بالمنصة.</p>
-        <div id="math-assistant-ai-response" class="math-assistant-ai-text" aria-live="polite"></div>
       </div>
       <div class="math-assistant-suggestions" aria-label="أسئلة مقترحة">
         <button type="button" data-assistant-prompt="قاعدة اشتقاق القوة">قاعدة اشتقاق القوة</button>
