@@ -72,6 +72,35 @@ if (!library || !Array.isArray(library.examples)) {
   if (!complexRootExample || !complexRootSteps.includes("sqrt{2}") || complexRootSteps.includes("sqrt{2i}")) {
     failures.push("The 2017 complex square-root verification must use 2*sqrt(2)*i, not sqrt(2i).");
   }
+  // Manually re-derived sequence and complex-number examples.
+  const sequenceCases = [
+    { id: "seq-001", steps: ["u_6=7-10=-3"], answer: "-3" },
+    { id: "seq-002", steps: ["S_5=3", "93"], answer: "93" },
+    { id: "seq-004", steps: ["u₁₀=4+9×3=31", "S₁₀=175"], answer: "175" },
+    { id: "seq-005", steps: ["uₙ₊₁−uₙ=(2n+7)−(2n+5)=2"], answer: "متزايدة تماماً" },
+    { id: "seq-006", steps: ["27−11=4r", "u₁=3", "r=4"], answer: "u₁=3 و r=4" },
+    { id: "seq-007", steps: ["3⁵=243", "S₅=2×242/2=242"], answer: "242" },
+    { id: "seq-008", steps: ["r=−3<0", "متناقصة تماماً"], answer: "متناقصة تماماً" },
+    { id: "seq-limit-001", steps: ["3/n", "4/n"], answer: "2" },
+    { id: "seq-limit-003", steps: ["البسط يصبح 4n"], answer: "2" }
+  ];
+  for (const testCase of sequenceCases) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || testCase.steps.some(fragment => !solution.includes(fragment)) ||
+        !example.answer.includes(testCase.answer)) {
+      failures.push("Sequence solution regression failed for " + testCase.id + ".");
+    }
+  }
+  const logarithmExample = examples.find(item => item.id === "ministerial17-logeq-001");
+  const logarithmSteps = logarithmExample?.steps.join(" ") || "";
+  if (!logarithmExample || !logarithmSteps.includes("x>1") ||
+      !logarithmSteps.includes("x²−x−1=0") ||
+      !logarithmSteps.includes("sqrt{5}") ||
+      !logarithmExample.answer.includes("sqrt{5}")) {
+    failures.push("The 2017 logarithmic equation must enforce its domain and retain only the admissible root.");
+  }
+
   const probabilityExample = examples.find(item => item.id === "exam19-prob-001");
   if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
     failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
