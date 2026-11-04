@@ -157,6 +157,36 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // Independently re-derived derivative, tangent, monotonicity, and extremum examples.
+  const derivativeCases = [
+    { id: "der-001", steps: ["(4x^3)'=12x^2", "(-5x^2)'=-10x", "مشتقة الثابت"], answer: "12x^2-10x+2" },
+    { id: "der-002", steps: ["u=2x+1", "5u^4", "5(2x+1)^4"], answer: "10(2x+1)^4" },
+    { id: "der-003", steps: ["f′(2)=4", "(2,4)", "y=4x−4"], answer: "y=4x−4" },
+    { id: "der-004", steps: ["f′(x)=2x−4=2(x−2)", "x<2", "x>2"], answer: "f(2)=−3" },
+    { id: "der-005", steps: ["u′=2x", "v′=eˣ", "eˣ(x²+2x+1)"], answer: "eˣ(x+1)²" },
+    { id: "der-006", steps: ["3(x−1)(x+1)", "f(−1)=2", "f(1)=−2"], answer: "عظمى محلية" },
+    { id: "der-007", steps: ["u′=v′=1", "−2", "x≠1"], answer: "−2/(x−1)²" },
+    { id: "der-008", steps: ["u′=2x", "v′=eˣ", "eˣ"], answer: "eˣ(x²+2x+1)" },
+    { id: "der-009", steps: ["u=3x−2", "u′=3", "5(3x−2)^4×3"], answer: "15(3x−2)⁴" },
+    { id: "der-010", steps: ["u′=2x", "v′=1", "x²−2x−1"], answer: "(x²−2x−1)/(x−1)²" },
+    { id: "der-011", steps: ["2(x−2)", "x<2", "x>2"], answer: "متناقصة حتى x=2 ثم متزايدة" },
+    { id: "der-012", steps: ["f′(3)=6", "f(3)=9", "y−9=6(x−3)"], answer: "y=6x−9" },
+    { id: "der-013", steps: ["3(x−1)(x+1)", "موجبة خارج", "سالبة داخله"], answer: "متزايد على [−2,−1]" },
+    { id: "der-014", steps: ["u′=2x", "v′=e^x", "2xe^x+(x²+1)e^x"], answer: "e^x(x+1)²" },
+    { id: "der-015", steps: ["2x+2", "x=−1", "f(−1)=4"], answer: "القيمة الصغرى" },
+    { id: "der-016", steps: ["u=3x−1", "u′=3", "4(3x−1)³×3"], answer: "12(3x−1)³" },
+    { id: "der-017", steps: ["−1/x²", "f′(1)=−1", "y−1=−(x−1)"], answer: "y=−x+2" }
+  ];
+  for (const testCase of derivativeCases) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || example.topic !== "الاشتقاق" ||
+        testCase.steps.some(fragment => !solution.includes(fragment)) ||
+        !example.answer.includes(testCase.answer)) {
+      failures.push("Derivative solution regression failed for " + testCase.id + ".");
+    }
+  }
+
   const probabilityExample = examples.find(item => item.id === "exam19-prob-001");
   if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
     failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
