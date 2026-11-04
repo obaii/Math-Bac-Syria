@@ -502,7 +502,7 @@ const assert = require("node:assert/strict");
     assert.equal(await rhythm.locator("strong").nth(1).innerText(), "3", "the report should calculate a three-day consecutive practice streak");
     assert.equal(await rhythm.locator("strong").nth(2).innerText(), "67٪", "the report should calculate weekly answer accuracy from saved attempts");
 
-    await page.getByRole("link", { name: /محاكاة الامتحان/ }).click();
+    await openPanel("exam-tools");
     assert.equal(await page.locator("#exam-tools").isVisible(), true, "exam setup should open from its shortcut");
     await page.getByRole("link", { name: /ابدأ التدريب/ }).click();
     await topicButtons.first().click();
