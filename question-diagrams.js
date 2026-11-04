@@ -268,7 +268,7 @@ function getQuestionDiagram(question) {
 
   // Exact variation tables for worked examples and sourced questions whose
   // expressions and critical points are explicitly present in the question.
-  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يؤول إلى +∞") && prompt.includes("يؤول إلى 3")) {
+  if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يؤول إلى +∞") && prompt.includes("إلى 3 عندما x يؤول إلى +∞")) {
     return variationTable("جدول النهايات كما وردت في نص السؤال، دون إضافة قيم وسطية.",
       ["x→−∞", "x→+∞"], null, ["f(x)→+∞", "f(x)→3"]);
   }
