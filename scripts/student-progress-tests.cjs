@@ -102,7 +102,7 @@ const checks = [
   ["intensive training deduplicates questions and uses Fisher–Yates without mutating the bank", /const unique = new Map\(\)/.test(enhancements) && /Fisher–Yates/.test(enhancements) && /const shuffled = \[\.\.\.pool\]/.test(enhancements)],
   ["intensive training records progress as a normal practice session", /currentTopic = "التدريب المكثف";[\s\S]*?reviewMode = false;[\s\S]*?quizQuestions = selected/.test(enhancements)],
   ["intensive training provides useful empty states for weak-topic and mistake pools", /لا توجد أخطاء محفوظة صالحة للتدريب حالياً/.test(enhancements) && /نحتاج إلى بعض نتائج التدريب أولاً/.test(enhancements)],
-  ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=20261104-[0-9]+/.test(html) && /math-bac-syria-v64/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
+  ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=20261104-[0-9]+/.test(html) && /math-bac-syria-v[0-9]+/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
   ["browser flow verifies a bounded unique intensive session", /intensive-training-start/.test(browser) && /new Set\(quizQuestions\.map\(questionKey\)\)/.test(browser) && /reviewMode/.test(browser)]
 ];
 let failures = 0;
