@@ -1840,6 +1840,7 @@
           const other = document.getElementById(id);
           if (other) other.hidden = true;
         }
+        document.querySelectorAll("[data-dashboard-panel]").forEach(panel => { panel.hidden = true; });
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
           item.setAttribute("aria-expanded", String(!shouldClose && item === link));
         });
@@ -1876,6 +1877,13 @@
           const panel = panels.find(item => item.dataset.dashboardPanel === panelKey);
           if (panel) {
             panels.forEach(item => { item.hidden = true; });
+            const otherPanelIds = [...document.querySelectorAll("[data-panel-toggle]")]
+              .map(item => item.dataset.panelToggle).filter(Boolean);
+            for (const id of new Set(otherPanelIds)) {
+              const other = document.getElementById(id);
+              if (other) other.hidden = true;
+            }
+            document.querySelectorAll("[data-panel-toggle]").forEach(item => item.setAttribute("aria-expanded", "false"));
             panel.hidden = false;
             document.querySelectorAll("#section-menu [data-dashboard-target]").forEach(item => {
               item.setAttribute("aria-expanded", String(item === link));
