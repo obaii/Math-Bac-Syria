@@ -67,10 +67,25 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("#section-menu-toggle").evaluate(el => document.activeElement === el), true,
       "keyboard navigation should reach the new top-level section menu first");
     await page.keyboard.press("Tab");
-    assert.equal(await page.locator(".hero-link").evaluate(el => document.activeElement === el), true,
-      "keyboard navigation should continue to the topic browsing link");
+    assert.equal(await page.locator("#topic-search").evaluate(el => document.activeElement === el), true,
+      "keyboard navigation should continue from the top-level menu to the topic search");
 
     await assertVisibleControlsHaveNames(page, "home screen");
+    assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,
+      "all nine dashboard panels should be available to the menu");
+    assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 0,
+      "dashboard panels should not clutter the initial homepage");
+    await page.locator("#section-menu-toggle").click();
+    await page.locator('#section-menu [data-dashboard-target="home"]').click();
+    await page.locator('[data-dashboard-panel="home"]').waitFor({ state: "visible" });
+    assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
+      "choosing the educational space should reveal only its dashboard panel");
+    await page.locator("#section-menu-toggle").click();
+    await page.locator('#section-menu [data-dashboard-target="question-coverage-title"]').click();
+    await page.locator('[data-dashboard-panel="question-coverage-title"]').waitFor({ state: "visible" });
+    assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
+      "choosing another dashboard area should replace the currently visible one");
+    await page.locator("#section-menu-toggle").click();
 
     const sectionMenuButton = page.locator("#section-menu-toggle");
     await sectionMenuButton.focus();
