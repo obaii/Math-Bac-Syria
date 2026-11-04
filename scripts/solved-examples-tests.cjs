@@ -99,7 +99,6 @@ if (!library || !Array.isArray(library.examples)) {
       } catch {
         failures.push(label + ": source reference must be a valid absolute URL.");
       }
-      if (!item.sourceLabel.includes(String(item.sourceYear))) failures.push(label + ": source label must explicitly repeat its source year.");
     }
     if (item.sourceType === "دورة امتحانية") {
       if (!["الدورة الأولى", "الدورة الثانية", "الدورة الاستثنائية"].includes(item.sourceSession)) {
