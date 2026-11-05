@@ -72,6 +72,29 @@ const assert = require("node:assert/strict");
       "group headings should not replace or hide any existing section shortcut");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
+    // An unfinished topic session should survive a reload and resume at the next unanswered question.
+    const resumeTopic = await page.locator("#topic-grid [data-topic]").first().getAttribute("data-topic");
+    await page.locator('#topic-grid [data-topic="' + resumeTopic + '"]').click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    await page.locator("#options button.option").first().click();
+    await page.locator("#feedback").waitFor({ state: "visible" });
+    await page.locator("#next").click();
+    const savedQuestionNumber = await page.locator("#question-number").innerText();
+    const savedQuestionText = await page.locator("#question-text").innerText();
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    await openPanel("resume-session");
+    await page.locator("#resume-topic-button").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#question-number").innerText(), savedQuestionNumber,
+      "resuming should restore the exact next unanswered question position");
+    assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
+      "resuming should restore the same shuffled question order");
+    await page.locator("#back").click();
+    await page.evaluate(() => localStorage.removeItem("mathBacSyriaTrainingSessionV1"));
+    await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
+
+
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
