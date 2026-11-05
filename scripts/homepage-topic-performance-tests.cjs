@@ -95,7 +95,7 @@ const assert = require("node:assert/strict");
     const searchedTopicCount = await page.locator("#topic-grid .topic-card").count();
     const searchedQuestionCount = await page.locator("#topic-grid .topic-card .topic-meta").textContent();
     assert.equal(searchedTopicCount, 1, "searching an exact topic name should leave one matching topic");
-    assert.equal(searchSummary, `${searchedQuestionCount.replace(" سؤال متاح", "")} سؤال متاح في ١ بحث`,
+    assert.equal(searchSummary, `${searchedQuestionCount.replace(" سؤال متاح", "")} سؤال متاح في ${searchedTopicCount.toLocaleString("ar")} بحث`,
       "the summary should update to the search-filtered topic and question count");
     await page.locator("#clear-topic-search").click();
     await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
