@@ -1885,7 +1885,18 @@
       menuButton.addEventListener("click", () => {
         menu.hidden = !menu.hidden;
         menuButton.setAttribute("aria-expanded", String(!menu.hidden));
-        if (!menu.hidden) menu.querySelector("a")?.focus({ preventScroll: true });
+        if (!menu.hidden) {
+          let recentKey = "";
+          try { recentKey = localStorage.getItem("mathBacSyriaRecentMenuItemV1") || ""; } catch (_) {}
+          menu.querySelectorAll("a.quick-start-card").forEach(item => {
+            const itemKey = item.dataset.panelToggle || item.dataset.dashboardTarget || "";
+            const recent = Boolean(recentKey && itemKey === recentKey);
+            item.classList.toggle("is-recently-used", recent);
+            if (recent) item.setAttribute("data-recent-label", "استُخدم مؤخراً");
+            else item.removeAttribute("data-recent-label");
+          });
+          menu.querySelector("a")?.focus({ preventScroll: true });
+        }
       });
       menuButton.dataset.menuBound = "true";
     }
@@ -1920,6 +1931,7 @@
         const currentMenu = document.getElementById("section-menu");
         if (!link || !currentMenu?.contains(link)) return;
         event.preventDefault();
+        try { localStorage.setItem("mathBacSyriaRecentMenuItemV1", link.dataset.panelToggle || ""); } catch (_) {}
         const panel = document.getElementById(link.dataset.panelToggle);
         if (!panel) return;
         event.__mathBacPanelHandled = true;
@@ -1964,6 +1976,7 @@
         const panelKey = link.dataset.dashboardTarget;
         if (panelKey) {
           event.preventDefault();
+          try { localStorage.setItem("mathBacSyriaRecentMenuItemV1", panelKey); } catch (_) {}
           const panels = [...document.querySelectorAll("[data-dashboard-panel]")];
           const panel = panels.find(item => item.dataset.dashboardPanel === panelKey);
           if (panel) {
