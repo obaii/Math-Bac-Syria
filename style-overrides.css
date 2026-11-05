@@ -1636,3 +1636,8 @@ body.dark-mode .first-visit-dismiss { border-color: #52627a; color: #d1d9e7; }
 @media (prefers-reduced-motion: reduce) {
   .first-visit-guide * { scroll-behavior: auto; transition: none; }
 }
+
+
+/* Explain the bounded local activity history shown by dashboard charts. */
+.dashboard-history-note{margin:6px 0 0!important;padding:7px 10px;border-inline-start:3px solid #91a8d8;border-radius:7px;background:#f3f6fc;color:#52627b!important;font-size:11px!important;line-height:1.7!important}
+body.dark-mode .dashboard-history-note{border-inline-start-color:#718dc8;background:#202e43;color:#c4d0e2!important}
