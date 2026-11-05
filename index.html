@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
   <link rel="stylesheet" href="math-assistant.css?v=20261103-5">
-   <link rel="stylesheet" href="style-overrides.css?v=20261105-3">
+   <link rel="stylesheet" href="style-overrides.css?v=20261105-4">
   <link rel="stylesheet" href="student-tools.css?v=20261103-1">
   <script>
     window.MathJax = {
@@ -175,6 +175,7 @@
           <p class="eyebrow">سجل التعلم</p>
           <h3 id="recent-activity-title">آخر الأبحاث التي تدربت عليها</h3>
           <p>تذكّر نشاطك الأخير وعد إلى أي بحث بسهولة.</p>
+          <p class="dashboard-history-note">يعرض هذا السجل أحدث الأبحاث ضمن آخر ١٠٠ إجابة محفوظة على هذا الجهاز.</p>
         </div>
       </div>
       <ul id="recent-activity-list" class="recent-activity-list" aria-live="polite"></ul>
@@ -185,6 +186,7 @@
           <p class="eyebrow">مؤشر التقدّم</p>
           <h3 id="performance-trend-title">تطوّر أدائك خلال آخر ٧ أيام</h3>
           <p>نسبة الإجابات الصحيحة لكل يوم، اعتماداً على سجل إجاباتك المحفوظ.</p>
+          <p class="dashboard-history-note">تنبيه: يعتمد المخطط على آخر ١٠٠ إجابة محفوظة؛ وقد لا يشمل جميع إجابات الأيام السبعة إذا تجاوزت هذا العدد.</p>
         </div>
       </div>
       <ol id="performance-trend-chart" class="performance-trend-chart" aria-label="مخطط نسبة الإجابات الصحيحة خلال الأيام السبعة الماضية"></ol>
@@ -192,7 +194,7 @@
     </section></div>
     <div class="dashboard-menu-panel" id="dashboard-panel-activity-calendar" data-dashboard-panel="activity-calendar" hidden>
     <section id="activity-calendar" class="activity-calendar" aria-labelledby="activity-calendar-title" data-total-answers="0" data-active-days="0">
-      <div class="activity-calendar-heading"><div><p class="eyebrow">انتظامك في الدراسة</p><h3 id="activity-calendar-title">تقويم النشاط خلال آخر ٢٨ يوماً</h3><p>كل مربع يمثل يوماً، ويزداد وضوحه كلما زاد عدد الإجابات في ذلك اليوم.</p></div></div>
+      <div class="activity-calendar-heading"><div><p class="eyebrow">انتظامك في الدراسة</p><h3 id="activity-calendar-title">تقويم النشاط خلال آخر ٢٨ يوماً</h3><p>كل مربع يمثل يوماً، ويزداد وضوحه كلما زاد عدد الإجابات في ذلك اليوم.</p><p class="dashboard-history-note">تنبيه: يعتمد التقويم على آخر ١٠٠ إجابة محفوظة؛ وقد لا يشمل كل النشاط الأقدم.</p></div></div>
       <ol id="activity-calendar-grid" class="activity-calendar-grid" aria-label="تقويم عدد الإجابات اليومية"></ol>
       <div class="activity-calendar-legend" aria-label="مفتاح كثافة النشاط"><span>أقل</span><i class="level-0" aria-hidden="true"></i><i class="level-1" aria-hidden="true"></i><i class="level-2" aria-hidden="true"></i><i class="level-3" aria-hidden="true"></i><i class="level-4" aria-hidden="true"></i><span>أكثر</span></div>
       <p id="activity-calendar-summary" class="activity-calendar-summary" aria-live="polite">آخر ٧ أيام: ٠ إجابة خلال ٠ أيام نشطة.</p>
