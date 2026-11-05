@@ -53,9 +53,9 @@ const assert = require("node:assert/strict");
       .filter(child => child.matches("a.quick-start-card"))
       .map(link => link.getAttribute("href")));
     const expectedQuickStartLinks = [
+      "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library",
       "#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator",
-      "#function-plotter", "#geometry-tools", "#flashcards", "#formula-library",
-      "#math-assistant", "#solved-examples-library", "#home", "#learning-progress-title",
+      "#function-plotter", "#geometry-tools", "#home", "#learning-progress-title",
       "#question-coverage-title", "#weak-topic-recommendation", "#resume-session",
       "#recent-activity", "#performance-trend", "#activity-calendar", "#achievement-section"
     ];
@@ -65,12 +65,39 @@ const assert = require("node:assert/strict");
     }
     assert.deepEqual(
       await quickStart.locator(".quick-start-group-label").allInnerTexts(),
-      ["التعلّم والتدريب", "الاختبارات والمراجعة", "الأدوات الرياضية والمكتبات", "مساحتك التعليمية وتقدمك"],
+      ["التعلّم", "التدريب", "الاختبارات", "الأدوات", "التقدم"],
       "the section menu should group its shortcuts into four clear learning areas"
     );
     assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
       "group headings should not replace or hide any existing section shortcut");
+
+    // The section menu should remember and visibly mark the last destination used.
+    await page.locator("#section-menu-toggle").click();
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#section-menu-toggle").click();
+    assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').getAttribute("data-recent-label"), "استُخدم مؤخراً",
+      "the menu should mark the most recently used destination");
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
+
+    // An unfinished topic session should survive a reload and restore its question order.
+    const resumeTopic = await page.locator("#topic-grid [data-topic]").first().getAttribute("data-topic");
+    await page.locator('#topic-grid [data-topic="' + resumeTopic + '"]').click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    const savedQuestionNumber = await page.locator("#question-number").innerText();
+    const savedQuestionText = await page.locator("#question-text").innerText();
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    await openPanel("resume-session");
+    await page.locator("#resume-topic-button").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#question-number").innerText(), savedQuestionNumber,
+      "resuming should restore the saved question position");
+    assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
+      "resuming should restore the same shuffled question order");
+    await page.locator("#back").click();
+    await page.evaluate(() => localStorage.removeItem("mathBacSyriaTrainingSessionV1"));
+    await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");

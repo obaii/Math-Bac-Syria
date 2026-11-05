@@ -8,6 +8,7 @@ let reviewQuestions = [];
 let sessionMistakes = [];
 const STORAGE_KEY = "mathBacSyriaProgressV1";
 const LAST_TOPIC_KEY = "mathBacSyriaLastTopicV1";
+const TRAINING_SESSION_KEY = "mathBacSyriaTrainingSessionV1";
 const $ = (id) => document.getElementById(id);
 // Question records are assembled once by merge-questions.js before app initialization.
 const letters = ["أ","ب","ج","د"];
@@ -455,6 +456,55 @@ function getLastOpenedTopic(){
   catch (_) { return ""; }
 }
 
+function readTrainingSession(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(TRAINING_SESSION_KEY) || "null");
+    if (!saved || saved.version !== 1 || typeof saved.topic !== "string" ||
+        !Array.isArray(saved.questionKeys) || !saved.questionKeys.length ||
+        !Number.isSafeInteger(saved.index) || saved.index < 0 ||
+        !Number.isSafeInteger(saved.correctCount) || saved.correctCount < 0) return null;
+    return saved;
+  } catch (_) { return null; }
+}
+
+function saveTrainingSession(){
+  if (reviewMode || !currentTopic || !Array.isArray(quizQuestions) || !quizQuestions.length) return;
+  const questionKeys = quizQuestions.map(questionKey);
+  const nextIndex = Math.min(quizQuestions.length, Math.max(0, index + (answered ? 1 : 0)));
+  const session = {
+    version: 1, topic: currentTopic, questionKeys, index: nextIndex,
+    correctCount: Math.min(correctCount, nextIndex),
+    mistakeKeys: sessionMistakes.map(questionKey), updatedAt: new Date().toISOString()
+  };
+  try { localStorage.setItem(TRAINING_SESSION_KEY, JSON.stringify(session)); }
+  catch (error) { console.warn("تعذر حفظ جلسة التدريب", error); }
+}
+
+function clearTrainingSession(){
+  try { localStorage.removeItem(TRAINING_SESSION_KEY); } catch (_) {}
+}
+
+function resumeTrainingSession(topic){
+  const saved = readTrainingSession();
+  if (!saved || saved.topic !== topic) return false;
+  const byKey = new Map(questions.map(question => [questionKey(question), question]));
+  const restoredQuestions = saved.questionKeys.map(key => byKey.get(key));
+  if (restoredQuestions.some(question => !question) || saved.index > restoredQuestions.length || saved.correctCount > saved.index) {
+    clearTrainingSession();
+    return false;
+  }
+  currentTopic = topic; reviewMode = false; quizQuestions = restoredQuestions;
+  index = saved.index; correctCount = saved.correctCount; answered = false;
+  sessionMistakes = (Array.isArray(saved.mistakeKeys) ? saved.mistakeKeys : []).map(key => byKey.get(key)).filter(Boolean);
+  try { localStorage.setItem(LAST_TOPIC_KEY, topic); } catch (_) {}
+  $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
+  $("quiz-title").textContent = topic; updateResumeCard();
+  if (index >= quizQuestions.length) { clearTrainingSession(); showResults(); }
+  else showQuestion();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  return true;
+}
+
 function renderTopics(){
   const level = $("difficulty").value;
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
@@ -515,7 +565,10 @@ function updateResumeCard(){
       : "لم تسجل إجابات في هذا البحث بعد.";
   }
   section.hidden = false;
-  button.onclick = () => startQuiz(lastTopic);
+  const savedSession = readTrainingSession();
+  const canResume = savedSession && savedSession.topic === lastTopic && savedSession.questionKeys.length > 0;
+  button.textContent = canResume ? "استئناف جلسة التدريب" : "ابدأ التدريب مجدداً";
+  button.onclick = () => { if (!canResume || !resumeTrainingSession(lastTopic)) startQuiz(lastTopic); };
 }
 
 function startQuiz(topic){
@@ -526,11 +579,14 @@ function startQuiz(topic){
   const level = $("difficulty").value;
   quizQuestions = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level));
   if(!quizQuestions.length){ alert("لا توجد أسئلة في هذا المستوى لهذا البحث حالياً. اختر مستوى آخر."); return; }
+  clearTrainingSession();
   quizQuestions = [...quizQuestions].sort(()=>Math.random()-0.5);
   index=0; correctCount=0; answered=false; sessionMistakes=[];
   $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent=topic;
   showQuestion();
+  saveTrainingSession();
+  updateResumeCard();
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function updateQuizProgress(completed){
@@ -915,8 +971,11 @@ function submitQuestionAnswer(response){
   $("next").focus({ preventScroll: true });
   $("progress-bar").style.width=((index+1)/quizQuestions.length*100) + "%";
   typeset();
+  saveTrainingSession();
+  updateResumeCard();
 }
 function showResults(){
+  if (!reviewMode) clearTrainingSession();
   $("quiz").classList.add("hidden"); $("results").classList.remove("hidden");
   const total=quizQuestions.length;
   const wrongCount=Math.max(0, total-correctCount);
@@ -988,8 +1047,9 @@ function typeset(){
 }
 $("next").addEventListener("click",()=>{
   if(!answered)return;
-  if(index<quizQuestions.length-1){index++;showQuestion();}
-  else showResults();
+  if(index<quizQuestions.length-1){index++;showQuestion();saveTrainingSession();}
+  else {clearTrainingSession();showResults();}
+  updateResumeCard();
 });
 $("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));

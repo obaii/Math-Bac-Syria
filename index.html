@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
   <link rel="stylesheet" href="math-assistant.css?v=20261103-5">
-   <link rel="stylesheet" href="style-overrides.css?v=20261105-4">
+   <link rel="stylesheet" href="style-overrides.css?v=20261105-6">
   <link rel="stylesheet" href="student-tools.css?v=20261105-1">
   <script>
     window.MathJax = {
@@ -48,13 +48,13 @@
   <script defer src="merge-questions.js?v=20261105-2"></script>
   <script defer src="solution-guides.js?v=20261103-6"></script>
   <script defer src="question-diagrams.js?v=20261103-4"></script>
-  <script defer src="app.js?v=20261105-1"></script>
+  <script defer src="app.js?v=20261105-2"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
-  <script defer src="enhancements.js?v=20261105-7"></script>
+  <script defer src="enhancements.js?v=20261105-8"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
@@ -92,20 +92,21 @@
     </div>
   </section>
   <nav id="section-menu" class="quick-start d-grid gap-2" aria-label="اختصارات المنصة" hidden>
-      <p class="quick-start-group-label" role="heading" aria-level="2">التعلّم والتدريب</p>
-      <a class="quick-start-card card shadow-sm text-decoration-none" href="#topic-section" data-panel-toggle="topic-section" aria-controls="topic-section" aria-expanded="true"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
-      <p class="quick-start-group-label" role="heading" aria-level="2">الاختبارات والمراجعة</p>
-      <a class="quick-start-card card shadow-sm text-decoration-none" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card card shadow-sm text-decoration-none" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
-      <p class="quick-start-group-label" role="heading" aria-level="2">الأدوات الرياضية والمكتبات</p>
-      <a class="quick-start-card card shadow-sm text-decoration-none" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card card shadow-sm text-decoration-none" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
-      <a class="quick-start-card card shadow-sm text-decoration-none" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
+      <p class="quick-start-group-label" role="heading" aria-level="2">التعلّم</p>
       <a class="quick-start-card card shadow-sm text-decoration-none" href="#flashcards" data-panel-toggle="flashcards" aria-controls="flashcards" aria-expanded="false"><span class="quick-start-icon review-icon">▤</span><span class="quick-start-copy"><strong>البطاقات التعليمية</strong><small>اختبر حفظ القوانين والصيغ</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card card shadow-sm text-decoration-none" href="#formula-library" data-panel-toggle="formula-library" aria-controls="formula-library" aria-expanded="false"><span class="quick-start-icon review-icon">∑</span><span class="quick-start-copy"><strong>مكتبة القوانين</strong><small>ابحث عن الصيغ الرياضية</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card card shadow-sm text-decoration-none" href="#math-assistant" data-panel-toggle="math-assistant" aria-controls="math-assistant" aria-expanded="false"><span class="quick-start-icon review-icon">؟</span><span class="quick-start-copy"><strong>المساعد الرياضي</strong><small>اسأل عن مفهوم أو قانون</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card card shadow-sm text-decoration-none" href="#solved-examples-library" data-panel-toggle="solved-examples-library" aria-controls="solved-examples-library" aria-expanded="false"><span class="quick-start-icon review-icon">✎</span><span class="quick-start-copy"><strong>مكتبة الأمثلة المحلولة</strong><small>تصفّح المسائل المشروحة</small></span><span class="quick-start-arrow">←</span></a>
-      <p class="quick-start-group-label" role="heading" aria-level="2">مساحتك التعليمية وتقدمك</p>
+      <p class="quick-start-group-label" role="heading" aria-level="2">التدريب</p>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#topic-section" data-panel-toggle="topic-section" aria-controls="topic-section" aria-expanded="true"><span class="quick-start-icon training-icon">✎</span><span class="quick-start-copy"><strong>ابدأ التدريب</strong><small>اختر بحثاً من المنهاج</small></span><span class="quick-start-arrow">←</span></a>
+      <p class="quick-start-group-label" role="heading" aria-level="2">الاختبارات</p>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#exam-tools" data-panel-toggle="exam-tools" aria-controls="exam-tools" aria-expanded="false"><span class="quick-start-icon exam-icon">◷</span><span class="quick-start-copy"><strong>محاكاة الامتحان</strong><small>تدرّب ضمن وقت محدد</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#student-tools" data-panel-toggle="student-tools" aria-controls="student-tools" aria-expanded="false"><span class="quick-start-icon review-icon">✓</span><span class="quick-start-copy"><strong>أدوات المراجعة</strong><small>راجع تقدمك ومحفوظاتك</small></span><span class="quick-start-arrow">←</span></a>
+      <p class="quick-start-group-label" role="heading" aria-level="2">الأدوات</p>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#scientific-calculator" data-panel-toggle="scientific-calculator" aria-controls="scientific-calculator" aria-expanded="false"><span class="quick-start-icon review-icon">√</span><span class="quick-start-copy"><strong>الآلة الحاسبة</strong><small>احسب بالدوال الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#function-plotter" data-panel-toggle="function-plotter" aria-controls="function-plotter" aria-expanded="false"><span class="quick-start-icon review-icon">⌁</span><span class="quick-start-copy"><strong>راسم الدوال</strong><small>ارسم المنحنيات الرياضية</small></span><span class="quick-start-arrow">←</span></a>
+      <a class="quick-start-card card shadow-sm text-decoration-none" href="#geometry-tools" data-panel-toggle="geometry-tools" aria-controls="geometry-tools" aria-expanded="false"><span class="quick-start-icon review-icon">△</span><span class="quick-start-copy"><strong>الهندسة التفاعلية</strong><small>أنشئ الأشكال وقِسها</small></span><span class="quick-start-arrow">←</span></a>
+      <p class="quick-start-group-label" role="heading" aria-level="2">التقدم</p>
       <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#home" data-dashboard-target="home" aria-controls="dashboard-panel-home" aria-expanded="false"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>مساحتك التعليمية</strong><small>ملخص تعلمك وإجاباتك</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#learning-progress-title" data-dashboard-target="learning-progress-title" aria-controls="dashboard-panel-learning-progress-title" aria-expanded="false"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>خطوتك التالية</strong><small>تابع تقدمك في الأبحاث</small></span><span class="quick-start-arrow">←</span></a>
       <a class="quick-start-card dashboard-shortcut card shadow-sm text-decoration-none" href="#question-coverage-title" data-dashboard-target="question-coverage-title" aria-controls="dashboard-panel-question-coverage-title" aria-expanded="false"><span class="quick-start-icon review-icon">✦</span><span class="quick-start-copy"><strong>تقدمك في بنك الأسئلة</strong><small>الأسئلة التي تدربت عليها</small></span><span class="quick-start-arrow">←</span></a>

@@ -1641,3 +1641,21 @@ body.dark-mode .first-visit-dismiss { border-color: #52627a; color: #d1d9e7; }
 /* Explain the bounded local activity history shown by dashboard charts. */
 .dashboard-history-note{margin:6px 0 0!important;padding:7px 10px;border-inline-start:3px solid #91a8d8;border-radius:7px;background:#f3f6fc;color:#52627b!important;font-size:11px!important;line-height:1.7!important}
 body.dark-mode .dashboard-history-note{border-inline-start-color:#718dc8;background:#202e43;color:#c4d0e2!important}
+
+
+/* Homepage polish: a restrained scale response without changing card layout. */
+#topic-grid .topic-card:hover:not(:disabled) { transform: translateY(-3px) scale(1.015); }
+#topic-grid .topic-card:active:not(:disabled) { transform: translateY(-1px) scale(1.005); }
+#topic-grid .topic-card.is-resume-topic { border-color: var(--topic-accent, #8aa8ff); }
+#topic-grid .topic-card.is-resume-topic:focus-visible { outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-card:hover:not(:disabled), #topic-grid .topic-card:active:not(:disabled) { transform: none; }
+}
+
+
+/* Section menu: highlight the most recently used destination without changing its order. */
+#section-menu .quick-start-card.is-recently-used { border-color: #8aa8ff; box-shadow: 0 0 0 2px rgba(49,94,219,.10); }
+#section-menu .quick-start-card.is-recently-used::after { content: attr(data-recent-label); flex: 0 0 auto; margin-inline-start: auto; padding: 3px 7px; border-radius: 999px; background: #edf2ff; color: #315edb; font-size: 10px; font-weight: 700; }
+body.dark-mode #section-menu .quick-start-card.is-recently-used { border-color: #718dc8; }
+body.dark-mode #section-menu .quick-start-card.is-recently-used::after { background: #243653; color: #c6d6ff; }
+@media (max-width: 540px) { #section-menu .quick-start-card.is-recently-used::after { font-size: 9px; padding: 2px 6px; } }
