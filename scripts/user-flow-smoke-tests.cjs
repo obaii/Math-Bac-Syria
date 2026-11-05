@@ -72,6 +72,14 @@ const checks = [
   ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && scriptPaths.indexOf("merge-questions.js") < scriptPaths.indexOf("app.js") && mrg.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
   ["answer feedback, solution rendering, and progress persistence are wired", app.includes("function chooseAnswer(") && app.includes('$("feedback").innerHTML') && app.includes("function saveProgress(") && app.includes("progressData.seenQuestions[questionKey(q)] = true")],
   ["exam and student-tool click handlers exist", enhancements.includes("startButton.onclick = () =>") && enhancements.includes("startExam();") && enhancements.includes('bindClick("bookmark-review", toggleBookmarkList)') && enhancements.includes('bindClick("toggle-dark-mode", toggleDarkMode)')],
+  ["overdue study-plan tasks keep stable IDs when rebalanced", (() => {
+    const start = enhancements.indexOf("const rebalanceStudyPlan = plan => {");
+    const end = enhancements.indexOf("const renderStudyPlan = () => {", start);
+    const source = start >= 0 && end > start ? enhancements.slice(start, end) : "";
+    return source.includes("destination.tasks.push({ ...task })") &&
+      source.includes("existing.id === task.id") &&
+      !source.includes('task.id+"-moved-"+today');
+  })()],
   ["mathematics rendering and supplemental diagrams are connected", has("tex-mml-chtml.js") && app.includes("getQuestionDiagram(q)") && has("question-diagrams.js")],
   ["service worker and install-app entry points are included", has("pwa-install.js") && has('id="install-app-button"') && fs.existsSync(path.join(root, "sw.js"))]
 ];
