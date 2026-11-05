@@ -9,6 +9,7 @@ let sessionMistakes = [];
 const STORAGE_KEY = "mathBacSyriaProgressV1";
 const LAST_TOPIC_KEY = "mathBacSyriaLastTopicV1";
 const TRAINING_SESSION_KEY = "mathBacSyriaTrainingSessionV1";
+const HOMEPAGE_FILTERS_KEY = "mathBacSyriaHomepageFiltersV1";
 const $ = (id) => document.getElementById(id);
 // Question records are assembled once by merge-questions.js before app initialization.
 const letters = ["أ","ب","ج","د"];
@@ -1120,11 +1121,42 @@ $("to-home").addEventListener("click",()=>{
   window.scrollTo({top:0,behavior:"auto"});
   focusTopicSelector();
 }, true);
-$("difficulty").addEventListener("change",renderTopics);
 const topicSearchInput = $("topic-search");
-topicSearchInput.addEventListener("input",renderTopics);
+function readHomepageFilters(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(HOMEPAGE_FILTERS_KEY) || "null");
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) return null;
+    return {
+      level: typeof saved.level === "string" ? saved.level : "",
+      search: typeof saved.search === "string" ? saved.search.slice(0, 100) : ""
+    };
+  } catch (_) { return null; }
+}
+function saveHomepageFilters(){
+  try {
+    localStorage.setItem(HOMEPAGE_FILTERS_KEY, JSON.stringify({
+      level: $("difficulty").value,
+      search: topicSearchInput.value.slice(0, 100)
+    }));
+  } catch (_) {}
+}
+const savedHomepageFilters = readHomepageFilters();
+if (savedHomepageFilters) {
+  const availableLevels = [...$("difficulty").options].map(option => option.value);
+  if (availableLevels.includes(savedHomepageFilters.level)) $("difficulty").value = savedHomepageFilters.level;
+  topicSearchInput.value = savedHomepageFilters.search;
+}
+$("difficulty").addEventListener("change",()=>{
+  saveHomepageFilters();
+  renderTopics();
+});
+topicSearchInput.addEventListener("input",()=>{
+  saveHomepageFilters();
+  renderTopics();
+});
 $("clear-topic-search").addEventListener("click",()=>{
   topicSearchInput.value = "";
+  saveHomepageFilters();
   renderTopics();
   topicSearchInput.focus();
 });
