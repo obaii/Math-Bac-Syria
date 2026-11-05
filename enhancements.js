@@ -1830,6 +1830,18 @@
       });
       document.documentElement.dataset.menuEscapeBound = "true";
     }
+    // Dismiss the section menu when the user clicks outside it, without
+    // stealing focus from the control they intentionally clicked.
+    if (menu && menuButton && document.documentElement.dataset.menuOutsideBound !== "true") {
+      document.addEventListener("click", event => {
+        if (menu.hidden) return;
+        const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+        if (target && (menu.contains(target) || menuButton.contains(target))) return;
+        menu.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+      });
+      document.documentElement.dataset.menuOutsideBound = "true";
+    }
     // Capture at document level so dynamically inserted shortcuts always work,
     // regardless of which nested element receives the click.
     if (document.documentElement.dataset.panelToggleBound !== "true") {
