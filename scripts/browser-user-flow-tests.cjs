@@ -58,6 +58,11 @@ const assert = require("node:assert/strict");
     await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
     assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "المتحوّلات العشوائيّة",
       "switching topics should restore that topic's own saved lesson");
+    await page.locator('#topic-grid [data-topic="الاشتقاق"]').click();
+    assert.equal(await page.locator("#curriculum-topic-select").inputValue(), "الاشتقاق",
+      "opening a topic for training should synchronize the lesson tracker to that active topic");
+    await page.locator("#back").click();
+    await page.waitForSelector("#topic-grid [data-topic]", { timeout: 10000 });
 
     assert.equal(await page.evaluate(() => typeof window.bootstrap), "undefined",
       "the homepage should not download the unused Bootstrap JavaScript bundle");
