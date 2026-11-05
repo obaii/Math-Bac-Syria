@@ -67,8 +67,14 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("#section-menu-toggle").evaluate(el => document.activeElement === el), true,
       "keyboard navigation should reach the new top-level section menu first");
     await page.keyboard.press("Tab");
+    assert.equal(await page.locator("#first-visit-start").evaluate(el => document.activeElement === el), true,
+      "keyboard navigation should reach the first-visit guide action after the top-level menu");
+    await page.keyboard.press("Tab");
+    assert.equal(await page.locator("#first-visit-dismiss").evaluate(el => document.activeElement === el), true,
+      "keyboard navigation should reach the guide dismissal action");
+    await page.keyboard.press("Tab");
     assert.equal(await page.locator("#topic-search").evaluate(el => document.activeElement === el), true,
-      "keyboard navigation should continue from the top-level menu to the topic search");
+      "keyboard navigation should continue to the topic search after the guide actions");
 
     await assertVisibleControlsHaveNames(page, "home screen");
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,

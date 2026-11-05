@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
   <link rel="stylesheet" href="math-assistant.css?v=20261103-5">
-   <link rel="stylesheet" href="style-overrides.css?v=20261105-2">
+   <link rel="stylesheet" href="style-overrides.css?v=20261105-3">
   <link rel="stylesheet" href="student-tools.css?v=20261103-1">
   <script>
     window.MathJax = {
@@ -58,6 +58,7 @@
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
+  <script defer src="onboarding.js?v=20261105-1"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">تجاوز إلى المحتوى الرئيسي</a>
@@ -73,6 +74,22 @@
     <p>اختر البحث، أجب عن الأسئلة، وشاهد التصحيح والحل خطوة بخطوة.</p>
     <div class="hero-stats"><span>١٤ بحثاً</span><span>تصحيح فوري مع الحل</span><span>مجاني دون تسجيل</span></div>
     <div class="hero-bottom"><div class="hero-note-group"><span class="hero-note"><span class="hero-note-icon">✓</span> ابدأ من أي بحث وتدرّب حسب مستواك</span><button type="button" id="section-menu-toggle" class="section-menu-toggle btn btn-primary" aria-controls="section-menu" aria-expanded="false">☰ قائمة أقسام المنصة</button></div></div>
+  </section>
+  <section id="first-visit-guide" class="first-visit-guide" aria-labelledby="first-visit-guide-title" aria-describedby="first-visit-guide-description" hidden>
+    <div class="first-visit-guide-copy">
+      <p class="eyebrow">بداية سهلة</p>
+      <h2 id="first-visit-guide-title">ابدأ رحلتك التعليمية في ثلاث خطوات</h2>
+      <p id="first-visit-guide-description">اختر بحثاً من المنهاج، حلّ سؤالاً، ثم راجع التصحيح والشرح لتعرف خطوتك التالية.</p>
+      <ol class="first-visit-steps">
+        <li><strong>اختر بحثاً</strong><span>ابدأ من أي موضوع يناسبك.</span></li>
+        <li><strong>تدرّب بمستواك</strong><span>اختر الأسئلة الأساسية أو المتوسطة أو المتقدمة.</span></li>
+        <li><strong>تابع تقدمك</strong><span>تجد إجاباتك ونقاط المراجعة في مساحتك التعليمية.</span></li>
+      </ol>
+      <div class="first-visit-actions">
+        <a class="first-visit-start" href="#topic-section" id="first-visit-start">ابدأ التدريب الآن ←</a>
+        <button type="button" class="first-visit-dismiss" id="first-visit-dismiss">إخفاء هذا التوجيه</button>
+      </div>
+    </div>
   </section>
   <nav id="section-menu" class="quick-start d-grid gap-2" aria-label="اختصارات المنصة" hidden>
       <p class="quick-start-group-label" role="heading" aria-level="2">التعلّم والتدريب</p>

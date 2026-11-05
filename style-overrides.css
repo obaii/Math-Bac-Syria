@@ -1565,3 +1565,74 @@ body.dark-mode .resume-topic-activity { color: #a7b5ca; }
   #topic-grid .topic-resume-badge { max-width: 96px; font-size: 8px; }
   #topic-grid .topic-last-activity { font-size: 9px; }
 }
+
+
+/* First-visit guide: a compact, dismissible orientation for new learners. */
+.first-visit-guide {
+  margin: 16px 0 20px;
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid #dce6fb;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f5f8ff, #fff);
+}
+.first-visit-guide h2 { margin: 0 0 8px; color: #1c2d48; font-size: clamp(18px, 2.4vw, 22px); }
+.first-visit-guide-copy > p:not(.eyebrow) { margin: 0; color: #61718a; line-height: 1.8; }
+.first-visit-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+}
+.first-visit-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e4eaf5;
+  border-radius: 13px;
+  background: rgba(255,255,255,.82);
+}
+.first-visit-steps strong { color: #294d9d; font-size: 13px; }
+.first-visit-steps span { color: #718096; font-size: 12px; line-height: 1.7; }
+.first-visit-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.first-visit-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  background: #315edb;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+.first-visit-start:hover { background: #244dbd; color: #fff; }
+.first-visit-dismiss {
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid #d8e0ed;
+  border-radius: 11px;
+  background: transparent;
+  color: #53647e;
+}
+body.dark-mode .first-visit-guide { border-color: #34445d; background: linear-gradient(135deg, #1a2a43, #142033); }
+body.dark-mode .first-visit-guide h2 { color: #e7edf8; }
+body.dark-mode .first-visit-guide-copy > p:not(.eyebrow),
+body.dark-mode .first-visit-steps span { color: #a7b5ca; }
+body.dark-mode .first-visit-steps li { border-color: #34445d; background: rgba(24,36,56,.8); }
+body.dark-mode .first-visit-steps strong { color: #b8ccff; }
+body.dark-mode .first-visit-dismiss { border-color: #52627a; color: #d1d9e7; }
+@media (max-width: 600px) {
+  .first-visit-guide { padding: 16px; }
+  .first-visit-steps { grid-template-columns: 1fr; gap: 8px; }
+  .first-visit-steps li { padding: 10px 12px; }
+  .first-visit-actions { align-items: stretch; }
+  .first-visit-start, .first-visit-dismiss { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .first-visit-guide * { scroll-behavior: auto; transition: none; }
+}
