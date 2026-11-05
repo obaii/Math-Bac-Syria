@@ -46,12 +46,12 @@ const assert = require("node:assert/strict");
         const visibleQuestionCount = cards.reduce((total, card) =>
           total + (expected.get(card.dataset.topic)?.total || 0), 0);
         const summary = document.querySelector("#total-count");
-        assert.equal(summary.getAttribute("aria-live"), "polite",
-          "the filtered question total should be announced politely to assistive technology");
-        assert.equal(summary.textContent,
-          `${visibleQuestionCount.toLocaleString("ar")} سؤال متاح في ${cards.length.toLocaleString("ar")} بحث`,
-          `the summary should match visible topics and available questions at level "${level}"`);
-        return cards.map(card => {
+        const expectedSummary = `${visibleQuestionCount.toLocaleString("ar")} سؤال متاح في ${cards.length.toLocaleString("ar")} بحث`;
+        return {
+          summary: summary.textContent,
+          expectedSummary,
+          summaryLive: summary.getAttribute("aria-live"),
+          cards: cards.map(card => {
           const counts = expected.get(card.dataset.topic) || { total: 0, seen: 0 };
           const coverage = counts.total
             ? Math.min(100, Math.round(counts.seen / counts.total * 100))
@@ -67,11 +67,16 @@ const assert = require("node:assert/strict");
             expectedDisabled: counts.total === 0,
             actualDisabled: card.disabled
           };
-        });
+          })
+        };
       });
 
-      assert.equal(result.length, 14, `all 14 topics should remain visible for level "${level}"`);
-      for (const card of result) {
+      assert.equal(result.summaryLive, "polite",
+        "the filtered question total should be announced politely to assistive technology");
+      assert.equal(result.summary, result.expectedSummary,
+        `the summary should match visible topics and available questions at level "${level}"`);
+      assert.equal(result.cards.length, 14, `all 14 topics should remain visible for level "${level}"`);
+      for (const card of result.cards) {
         assert.equal(card.actualCount, card.expectedCount,
           `question count should remain correct for ${card.topic} at level "${level}"`);
         assert.equal(card.actualSeen, card.expectedSeen,
