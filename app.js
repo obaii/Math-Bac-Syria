@@ -1146,14 +1146,10 @@ if (savedHomepageFilters) {
   if (availableLevels.includes(savedHomepageFilters.level)) $("difficulty").value = savedHomepageFilters.level;
   topicSearchInput.value = savedHomepageFilters.search;
 }
-$("difficulty").addEventListener("change",()=>{
-  saveHomepageFilters();
-  renderTopics();
-});
-topicSearchInput.addEventListener("input",()=>{
-  saveHomepageFilters();
-  renderTopics();
-});
+$("difficulty").addEventListener("change",saveHomepageFilters);
+$("difficulty").addEventListener("change",renderTopics);
+topicSearchInput.addEventListener("input",saveHomepageFilters);
+topicSearchInput.addEventListener("input",renderTopics);
 $("clear-topic-search").addEventListener("click",()=>{
   topicSearchInput.value = "";
   saveHomepageFilters();
