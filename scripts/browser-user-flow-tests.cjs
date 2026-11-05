@@ -38,6 +38,27 @@ const assert = require("node:assert/strict");
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
+    await page.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
+    assert.equal(await page.locator("#curriculum-topic-select option").count(), 14,
+      "the curriculum selector should expose all 14 mapped topics");
+    await page.locator("#curriculum-topic-select").selectOption("الاشتقاق");
+    await page.locator("#curriculum-lesson-select").selectOption("تطبيقات الاشتقاق");
+    const savedLesson = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaLastLessonByTopicV1")));
+    assert.equal(savedLesson["الاشتقاق"], "تطبيقات الاشتقاق",
+      "the selected lesson should be stored against its own topic");
+    await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
+    await page.locator("#curriculum-lesson-select").selectOption("المتحوّلات العشوائيّة");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
+    await page.locator("#curriculum-topic-select").selectOption("الاشتقاق");
+    assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "تطبيقات الاشتقاق",
+      "the last lesson should be restored independently for each topic after reload");
+    assert.equal(await page.locator('#topic-grid [data-topic="الاشتقاق"] .topic-last-lesson').innerText(),
+      "آخر درس: تطبيقات الاشتقاق", "the topic card should show its saved lesson");
+    await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
+    assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "المتحوّلات العشوائيّة",
+      "switching topics should restore that topic's own saved lesson");
+
     assert.equal(await page.evaluate(() => typeof window.bootstrap), "undefined",
       "the homepage should not download the unused Bootstrap JavaScript bundle");
 
