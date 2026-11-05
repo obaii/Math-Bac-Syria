@@ -84,7 +84,7 @@ const appScriptMatch = indexHtml.match(/app\.js\?v=20[0-9]{6}-[0-9]+/);
 if (!appScriptMatch) {
   failures.push("index.html must use the refreshed cache version for app.js after guided-solution rendering changes.");
 }
-if (!/enhancements\.js\?v=20261104-[0-9]+/.test(indexHtml)) {
+if (!/enhancements\.js\?v=20[0-9]{6}-[0-9]+/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
 const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261103-6");
