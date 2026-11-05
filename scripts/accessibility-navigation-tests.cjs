@@ -111,6 +111,7 @@ async function assertVisibleControlsHaveNames(page, context) {
     await page.locator("#section-menu-toggle").click();
     await page.locator("#section-menu a").first().focus();
     await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
     assert.equal(await page.locator("#section-menu").evaluate(el => el.hidden), true,
       "Escape should close the expanded section menu");
     assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false",
@@ -120,6 +121,7 @@ async function assertVisibleControlsHaveNames(page, context) {
 
     await page.locator("#section-menu-toggle").click();
     await page.locator(".hero h1").click();
+    await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
     assert.equal(await page.locator("#section-menu").evaluate(el => el.hidden), true,
       "clicking outside the expanded section menu should dismiss it");
     assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false",
