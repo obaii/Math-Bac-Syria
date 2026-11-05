@@ -229,6 +229,10 @@
       extras.studyPlan.completedStudyDays = extras.studyPlan.days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).map(day => day.date);
       persistExtras();
       renderStudyPlan();
+      // Re-rendering the plan replaces its controls; restore keyboard focus to the task just changed.
+      const nextFocus = Array.from(panel.querySelectorAll("[data-study-task]"))
+        .find(item => item.dataset.studyTask === taskId);
+      if (nextFocus) nextFocus.focus();
     }));
     panel.querySelectorAll("[data-study-open]").forEach(button => button.addEventListener("click", () => {
       if (button.dataset.studyOpen === "practice") {
