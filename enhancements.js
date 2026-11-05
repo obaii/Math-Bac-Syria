@@ -79,18 +79,23 @@
     const dailyTarget = Number(value.dailyTarget);
     if (!examDate || !Number.isInteger(dailyTarget) || dailyTarget < 5 || dailyTarget > 30) return null;
     const allowedTopics = new Set(typeof topics !== "undefined" && Array.isArray(topics) ? topics : []);
+    const normalizeTask = task => isRecord(task)
+      && typeof task.id === "string" && task.id.length > 0 && task.id.length <= 180
+      && ["practice", "mistakes"].includes(task.kind)
+      && (task.kind === "mistakes" || allowedTopics.has(task.topic))
+      && Number.isInteger(task.target) && task.target >= 1 && task.target <= 30
+      ? { id:task.id, kind:task.kind, topic:task.topic || "", title:String(task.title || "").slice(0,100),
+          target:task.target, done:task.done === true }
+      : null;
     const days = Array.isArray(value.days) ? value.days.slice(0, 366).filter(day => isRecord(day) && parseLocalDate(day.date)).map(day => ({
       date: day.date,
-      tasks: (Array.isArray(day.tasks) ? day.tasks : []).slice(0, 10).filter(task => isRecord(task)
-        && typeof task.id === "string" && task.id.length <= 180
-        && ["practice", "mistakes"].includes(task.kind)
-        && (task.kind === "mistakes" || allowedTopics.has(task.topic))
-        && Number.isInteger(task.target) && task.target >= 1 && task.target <= 30)
-        .map(task => ({ id:task.id, kind:task.kind, topic:task.topic || "", title:String(task.title || "").slice(0,100),
-          target:task.target, done:task.done === true }))
+      tasks: (Array.isArray(day.tasks) ? day.tasks : []).slice(0, 10).map(normalizeTask).filter(Boolean)
     })) : [];
+    const pendingTasks = Array.isArray(value.pendingTasks)
+      ? value.pendingTasks.slice(0, 1000).map(normalizeTask).filter(Boolean)
+      : [];
     return { examDate:localDateKey(examDate), dailyTarget, createdAt:typeof value.createdAt === "string" && Number.isFinite(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString(),
-      lastRebalancedDate:parseLocalDate(value.lastRebalancedDate) ? value.lastRebalancedDate : "", days,
+      lastRebalancedDate:parseLocalDate(value.lastRebalancedDate) ? value.lastRebalancedDate : "", days, pendingTasks,
       completedStudyDays:Array.isArray(value.completedStudyDays) ? [...new Set(value.completedStudyDays.filter(d => parseLocalDate(d)))].slice(-366) : [] };
   }
   const getStudyPriorityTopics = () => {
@@ -118,9 +123,10 @@
     const mistakeKeys = typeof progressData !== "undefined" && isRecord(progressData.mistakes)
       ? Object.keys(progressData.mistakes).filter(key => byKey(key)) : [];
     // Keep completion marks only when the task identity and target are unchanged.
-    const previousCompletedTasks = new Map((extras.studyPlan?.days || [])
-      .flatMap(day => Array.isArray(day.tasks) ? day.tasks : [])
-      .filter(task => task && task.done === true && typeof task.id === "string")
+    const previousCompletedTasks = new Map([
+      ...(extras.studyPlan?.days || []).flatMap(day => Array.isArray(day.tasks) ? day.tasks : []),
+      ...(extras.studyPlan?.pendingTasks || [])
+    ].filter(task => task && task.done === true && typeof task.id === "string")
       .map(task => [task.id, task.target]));
     studyPlanExpanded = false;
     const days = [];
@@ -149,28 +155,34 @@
     if (!plan || !Array.isArray(plan.days)) return;
     const today = localDateKey(new Date());
     if (plan.lastRebalancedDate === today) return;
-    const pending = [];
+    const retainedBacklog = (Array.isArray(plan.pendingTasks) ? plan.pendingTasks : [])
+      .filter(task => task && typeof task.id === "string" && task.done === true);
+    const pending = new Map((Array.isArray(plan.pendingTasks) ? plan.pendingTasks : [])
+      .filter(task => task && typeof task.id === "string" && task.done !== true)
+      .map(task => [task.id, task]));
+    plan.pendingTasks = retainedBacklog;
     for (const day of plan.days) {
       if (day.date < today) {
         const retained = [];
         for (const task of day.tasks) {
           if (task.done) retained.push(task);
-          else pending.push(task);
+          else pending.set(task.id, task);
         }
         day.tasks = retained;
       }
     }
     const future = plan.days.filter(day => day.date >= today);
-    pending.forEach((task, index) => {
-      if (!future.length) return;
-      const destination = future[index % future.length];
-      // A moved task keeps its original identity across later rebalances.
-      // Changing the ID every day would grow it indefinitely and eventually
-      // cause normalizeStudyPlan() to discard the task after reload.
-      if (!destination.tasks.some(existing => existing.id === task.id)) {
-        destination.tasks.push({ ...task });
-      }
-    });
+    for (const task of pending.values()) {
+      // A task already present on a future day must not be duplicated.
+      if (future.some(day => day.tasks.some(existing => existing.id === task.id))) continue;
+      // Keep the daily task limit intact; overflow remains visible in the backlog
+      // and can be distributed as days advance instead of being truncated on reload.
+      const destination = future
+        .filter(day => day.tasks.length < 10)
+        .sort((a, b) => a.tasks.length - b.tasks.length)[0];
+      if (destination) destination.tasks.push({ ...task });
+      else plan.pendingTasks.push({ ...task });
+    }
     plan.lastRebalancedDate = today;
     persistExtras();
   };
@@ -183,7 +195,7 @@
       panel.innerHTML = '<h3>خطة دراستي</h3><p>حدد موعد امتحانك والهدف اليومي، وسنوزّع الأبحاث تلقائياً مع إعطاء أولوية أكبر للأبحاث التي تحتاج إلى تدريب.</p><form id="study-plan-form" class="study-plan-form"><label>موعد الامتحان<input id="study-exam-date" type="date" min="'+today+'" required></label><label>عدد الأسئلة يومياً<input id="study-daily-target" type="number" min="5" max="30" step="5" value="10" required></label><button type="submit">إنشاء خطة دراستي</button></form><p class="study-plan-note">التاريخ تحدده أنت، والخطة محفوظة على هذا الجهاز فقط.</p>';
     } else {
       rebalanceStudyPlan(plan);
-      const allTasks = plan.days.flatMap(day => day.tasks);
+      const allTasks = [...plan.days.flatMap(day => day.tasks), ...(plan.pendingTasks || [])];
       const total = allTasks.length;
       const done = allTasks.filter(task => task.done).length;
       const percent = total ? Math.round(done/total*100) : 0;
@@ -195,13 +207,13 @@
       const upcomingToggleMarkup = allUpcoming.length > 3
         ? '<button type="button" class="study-plan-upcoming-toggle" id="study-plan-upcoming-toggle" aria-controls="study-plan-upcoming" aria-expanded="'+String(studyPlanExpanded)+'">'+(studyPlanExpanded ? "إخفاء الأيام اللاحقة" : "عرض بقية الخطة ("+(allUpcoming.length - 3).toLocaleString("ar")+" أيام)")+'</button>'
         : "";
-      const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+' · '+escapeHtml(day.date)+'</h4><ul>'+day.tasks.map(task =>
+      const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+(day.date ? ' · '+escapeHtml(day.date) : '')+'</h4><ul>'+day.tasks.map(task =>
         '<li><label><input type="checkbox" data-study-task="'+escapeHtml(task.id)+'" '+(task.done?'checked':'')+'><span><strong>'+escapeHtml(task.title)+'</strong><small>'+(task.kind==="practice" ? task.target+" سؤالاً" : "حتى "+task.target+" أسئلة")+'</small></span></label><button type="button" data-study-open="'+task.kind+'" data-study-topic="'+escapeHtml(task.topic || "")+'" data-study-target="'+task.target+'">'+(task.kind==="practice" ? "ابدأ التدريب" : "افتح المراجعة")+'</button></li>'
       ).join("")+'</ul></section>';
       const dueReviewCount = getScheduledReviews().filter(item => item.due <= Date.now()).length;
       const dueReviewTask = dueReviewCount ? '<section class="study-plan-day study-plan-due-review"><h4>مراجعة ذكية مستحقة اليوم</h4><p>لديك '+dueReviewCount.toLocaleString("ar")+' سؤالاً حان موعد مراجعته. أُضيفت هذه المهمة تلقائياً من جدول المراجعة دون إنشاء مهام مكررة أو تغيير إنجازاتك السابقة.</p><button type="button" id="study-plan-due-review">ابدأ مراجعة الأسئلة المستحقة</button></section>' : '<p class="study-plan-note">لا توجد مراجعات متباعدة مستحقة اليوم.</p>';
       const editDateValue = plan.examDate < today ? today : plan.examDate;
-      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit" aria-controls="study-plan-edit-form" aria-expanded="false">تعديل الخطة</button></div><form id="study-plan-edit-form" class="study-plan-form study-plan-edit-form" hidden><label for="study-plan-edit-date">موعد الامتحان الجديد<input id="study-plan-edit-date" type="date" min="'+today+'" value="'+escapeHtml(editDateValue)+'" required></label><label for="study-plan-edit-target">عدد الأسئلة يومياً<input id="study-plan-edit-target" type="number" min="5" max="30" step="5" value="'+plan.dailyTarget+'" required></label><div class="study-plan-edit-actions"><button type="submit">حفظ التعديلات</button><button type="button" id="study-plan-edit-cancel" class="study-plan-cancel">إلغاء</button></div><p class="study-plan-note">ستُحفظ المهام المكتملة المطابقة، وتُعاد جدولة المهام التي تغيرت.</p></form><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+dueReviewTask+'<div id="study-plan-upcoming">'+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'</div>'+upcomingToggleMarkup+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
+      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit" aria-controls="study-plan-edit-form" aria-expanded="false">تعديل الخطة</button></div><form id="study-plan-edit-form" class="study-plan-form study-plan-edit-form" hidden><label for="study-plan-edit-date">موعد الامتحان الجديد<input id="study-plan-edit-date" type="date" min="'+today+'" value="'+escapeHtml(editDateValue)+'" required></label><label for="study-plan-edit-target">عدد الأسئلة يومياً<input id="study-plan-edit-target" type="number" min="5" max="30" step="5" value="'+plan.dailyTarget+'" required></label><div class="study-plan-edit-actions"><button type="submit">حفظ التعديلات</button><button type="button" id="study-plan-edit-cancel" class="study-plan-cancel">إلغاء</button></div><p class="study-plan-note">ستُحفظ المهام المكتملة المطابقة، وتُعاد جدولة المهام التي تغيرت.</p></form><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+(plan.pendingTasks?.length ? renderDay({ date:"", tasks:plan.pendingTasks },"مهام متراكمة تحتاج إلى توزيع") : "")+dueReviewTask+'<div id="study-plan-upcoming">'+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'</div>'+upcomingToggleMarkup+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
       const dueReviewButton = document.getElementById("study-plan-due-review");
       if (dueReviewButton) dueReviewButton.addEventListener("click", startSmartReview);
        const upcomingToggle = document.getElementById("study-plan-upcoming-toggle");
@@ -249,6 +261,8 @@
         const task = day.tasks.find(item => item.id === taskId);
         if (task) task.done = input.checked;
       }
+      const pendingTask = (extras.studyPlan.pendingTasks || []).find(item => item.id === taskId);
+      if (pendingTask) pendingTask.done = input.checked;
       extras.studyPlan.completedStudyDays = extras.studyPlan.days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).map(day => day.date);
       persistExtras();
       renderStudyPlan();
