@@ -155,9 +155,12 @@
     if (!plan || !Array.isArray(plan.days)) return;
     const today = localDateKey(new Date());
     if (plan.lastRebalancedDate === today) return;
+    const retainedBacklog = (Array.isArray(plan.pendingTasks) ? plan.pendingTasks : [])
+      .filter(task => task && typeof task.id === "string" && task.done === true);
     const pending = new Map((Array.isArray(plan.pendingTasks) ? plan.pendingTasks : [])
-      .filter(task => task && typeof task.id === "string").map(task => [task.id, task]));
-    plan.pendingTasks = [];
+      .filter(task => task && typeof task.id === "string" && task.done !== true)
+      .map(task => [task.id, task]));
+    plan.pendingTasks = retainedBacklog;
     for (const day of plan.days) {
       if (day.date < today) {
         const retained = [];
