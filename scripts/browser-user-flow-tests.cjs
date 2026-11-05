@@ -71,6 +71,17 @@ const assert = require("node:assert/strict");
     assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
       "group headings should not replace or hide any existing section shortcut");
 
+    // A new homepage destination should show one update marker until the learner opens it.
+    await page.locator("#section-menu-toggle").click();
+    const resumeUpdateBadge = page.locator('[data-update-key="resume-session-20261105"] .menu-update-badge');
+    assert.ok(await resumeUpdateBadge.isVisible(), "the new resume destination should show a small update marker");
+    await page.locator('[data-dashboard-target="resume-session"]').click();
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await page.locator("#section-menu-toggle").click();
+    assert.ok(await resumeUpdateBadge.isHidden(), "the update marker should stay dismissed after the learner opens the destination");
+    await page.locator("#section-menu-toggle").click();
+
     // The section menu should remember and visibly mark the last destination used.
     await page.locator("#section-menu-toggle").click();
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();

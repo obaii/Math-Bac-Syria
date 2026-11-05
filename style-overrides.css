@@ -1668,3 +1668,32 @@ body.dark-mode .dashboard-history-note{border-inline-start-color:#718dc8;backgro
 body.dark-mode #section-menu .quick-start-card.is-recently-used { border-color: #718dc8; }
 body.dark-mode #section-menu .quick-start-card.is-recently-used::after { background: #243653; color: #c6d6ff; }
 @media (max-width: 540px) { #section-menu .quick-start-card.is-recently-used::after { font-size: 9px; padding: 2px 6px; } }
+
+
+/* A small, dismiss-on-visit update marker for genuinely new homepage destinations. */
+#section-menu .menu-update-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border: 1px solid #d8e4ff;
+  border-radius: 999px;
+  background: #edf2ff;
+  color: #315edb;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+#section-menu .menu-update-badge[hidden] { display: none; }
+#section-menu .quick-start-card.has-new-update { border-color: #c5d5ff; }
+body.dark-mode #section-menu .menu-update-badge {
+  border-color: #3d5278;
+  background: #243653;
+  color: #c6d6ff;
+}
+body.dark-mode #section-menu .quick-start-card.has-new-update { border-color: #718dc8; }
+@media (max-width: 540px) {
+  #section-menu .menu-update-badge { padding: 2px 6px; font-size: 9px; }
+}
