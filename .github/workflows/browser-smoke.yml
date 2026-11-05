@@ -51,6 +51,8 @@ jobs:
         run: node scripts/student-progress-tests.cjs
       - name: Run homepage topic rendering performance tests
         run: node scripts/homepage-topic-performance-tests.cjs
+      - name: Run homepage topic color contrast tests
+        run: node scripts/homepage-topic-contrast-tests.cjs
       - name: Run formula library regression tests
         run: node scripts/formula-library-tests.cjs
       - name: Run solved examples library regression tests
