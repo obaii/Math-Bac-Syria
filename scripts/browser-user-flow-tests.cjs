@@ -76,7 +76,12 @@ const assert = require("node:assert/strict");
     const resumeTopic = await page.locator("#topic-grid [data-topic]").first().getAttribute("data-topic");
     await page.locator('#topic-grid [data-topic="' + resumeTopic + '"]').click();
     await page.locator("#quiz").waitFor({ state: "visible" });
-    await page.locator("#options button.option").first().click();
+    const answerButtons = page.locator("#options button.option");
+    if (await answerButtons.count()) await answerButtons.first().click();
+    else {
+      await page.locator("#typed-answer-input").fill("0");
+      await page.locator("#options button[type=\"submit\"]").click();
+    }
     await page.locator("#feedback").waitFor({ state: "visible" });
     await page.locator("#next").click();
     const savedQuestionNumber = await page.locator("#question-number").innerText();
