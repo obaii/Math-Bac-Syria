@@ -114,21 +114,30 @@
     const dailyTarget = Math.max(5, Math.min(30, Math.round(Number(dailyTargetValue) || 10)));
     const mistakeKeys = typeof progressData !== "undefined" && isRecord(progressData.mistakes)
       ? Object.keys(progressData.mistakes).filter(key => byKey(key)) : [];
+    // Keep completion marks only when the task identity and target are unchanged.
+    const previousCompletedTasks = new Map((extras.studyPlan?.days || [])
+      .flatMap(day => Array.isArray(day.tasks) ? day.tasks : [])
+      .filter(task => task && task.done === true && typeof task.id === "string")
+      .map(task => [task.id, task.target]));
     const days = [];
     for (let offset=0; offset<daysCount; offset++) {
       const date = new Date(today.getFullYear(), today.getMonth(), today.getDate()+offset);
       const dateKey = localDateKey(date);
       const topic = priorities[offset % priorities.length].topic;
-      const tasks = [{ id:"practice-"+dateKey+"-"+encodeURIComponent(topic), kind:"practice", topic,
-        title:"تدريب على بحث "+topic, target:dailyTarget, done:false }];
+      const practiceId = "practice-"+dateKey+"-"+encodeURIComponent(topic);
+      const tasks = [{ id:practiceId, kind:"practice", topic,
+        title:"تدريب على بحث "+topic, target:dailyTarget, done:previousCompletedTasks.get(practiceId) === dailyTarget }];
       if (mistakeKeys.length && offset % 2 === 0) {
-        tasks.push({ id:"mistakes-"+dateKey, kind:"mistakes", topic:"",
-          title:"مراجعة الأسئلة الخاطئة", target:Math.min(5,mistakeKeys.length), done:false });
+        const mistakeId = "mistakes-"+dateKey;
+        const mistakeTarget = Math.min(5,mistakeKeys.length);
+        tasks.push({ id:mistakeId, kind:"mistakes", topic:"",
+          title:"مراجعة الأسئلة الخاطئة", target:mistakeTarget, done:previousCompletedTasks.get(mistakeId) === mistakeTarget });
       }
       days.push({ date:dateKey, tasks });
     }
     extras.studyPlan = { examDate:localDateKey(examDate), dailyTarget, createdAt:new Date().toISOString(),
-      lastRebalancedDate:localDateKey(today), days, completedStudyDays:[] };
+      lastRebalancedDate:localDateKey(today), days,
+      completedStudyDays:days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).map(day => day.date) };
     persistExtras();
     renderStudyPlan();
   };
@@ -177,16 +186,32 @@
       ).join("")+'</ul></section>';
       const dueReviewCount = getScheduledReviews().filter(item => item.due <= Date.now()).length;
       const dueReviewTask = dueReviewCount ? '<section class="study-plan-day study-plan-due-review"><h4>مراجعة ذكية مستحقة اليوم</h4><p>لديك '+dueReviewCount.toLocaleString("ar")+' سؤالاً حان موعد مراجعته. أُضيفت هذه المهمة تلقائياً من جدول المراجعة دون إنشاء مهام مكررة أو تغيير إنجازاتك السابقة.</p><button type="button" id="study-plan-due-review">ابدأ مراجعة الأسئلة المستحقة</button></section>' : '<p class="study-plan-note">لا توجد مراجعات متباعدة مستحقة اليوم.</p>';
-      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit">إعادة تنظيم الخطة</button></div><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+dueReviewTask+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
+      const editDateValue = plan.examDate < today ? today : plan.examDate;
+      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit" aria-controls="study-plan-edit-form" aria-expanded="false">تعديل الخطة</button></div><form id="study-plan-edit-form" class="study-plan-form study-plan-edit-form" hidden><label for="study-plan-edit-date">موعد الامتحان الجديد<input id="study-plan-edit-date" type="date" min="'+today+'" value="'+escapeHtml(editDateValue)+'" required></label><label for="study-plan-edit-target">عدد الأسئلة يومياً<input id="study-plan-edit-target" type="number" min="5" max="30" step="5" value="'+plan.dailyTarget+'" required></label><div class="study-plan-edit-actions"><button type="submit">حفظ التعديلات</button><button type="button" id="study-plan-edit-cancel" class="study-plan-cancel">إلغاء</button></div><p class="study-plan-note">ستُحفظ المهام المكتملة المطابقة، وتُعاد جدولة المهام التي تغيرت.</p></form><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+dueReviewTask+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
       const dueReviewButton = document.getElementById("study-plan-due-review");
       if (dueReviewButton) dueReviewButton.addEventListener("click", startSmartReview);
       const edit = document.getElementById("study-plan-edit");
-      if (edit) edit.addEventListener("click", () => {
-        const nextDate = prompt("أدخل موعد الامتحان الجديد بصيغة YYYY-MM-DD", plan.examDate);
-        if (nextDate === null) return;
-        const nextTarget = prompt("كم سؤالاً تريد يومياً؟ (من 5 إلى 30)", String(plan.dailyTarget));
-        if (nextTarget === null) return;
-        buildStudyPlan(nextDate, nextTarget);
+      const editForm = document.getElementById("study-plan-edit-form");
+      const editDate = document.getElementById("study-plan-edit-date");
+      const editTarget = document.getElementById("study-plan-edit-target");
+      const cancelEdit = document.getElementById("study-plan-edit-cancel");
+      if (edit && editForm) edit.addEventListener("click", () => {
+        editForm.hidden = false;
+        edit.hidden = true;
+        edit.setAttribute("aria-expanded", "true");
+        editDate?.focus();
+      });
+      if (cancelEdit && editForm && edit) cancelEdit.addEventListener("click", () => {
+        editForm.hidden = true;
+        edit.hidden = false;
+        edit.setAttribute("aria-expanded", "false");
+        edit.focus();
+      });
+      if (editForm) editForm.addEventListener("submit", event => {
+        event.preventDefault();
+        if (!editForm.reportValidity()) return;
+        if (!confirm("سيُعاد توزيع مهام الخطة وفق التاريخ والهدف الجديدين. ستبقى علامات إنجاز المهام المطابقة كما هي، أما المهام التي تغيّر هدفها أو موعدها فستبدأ من جديد. هل تريد المتابعة؟")) return;
+        buildStudyPlan(editDate.value, editTarget.value);
       });
     }
     const form = document.getElementById("study-plan-form");
