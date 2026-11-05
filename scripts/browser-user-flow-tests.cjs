@@ -416,6 +416,20 @@ const assert = require("node:assert/strict");
       "filtering should not change a topic's assigned icon");
     await page.locator("#topic-search").fill("");
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    const cardMotion = await topicButtons.evaluateAll(cards => cards.slice(0, 2).map(card => ({
+      name: getComputedStyle(card).animationName,
+      delay: getComputedStyle(card).animationDelay
+    })));
+    assert.ok(cardMotion.every(item => item.name === "homepage-topic-card-enter"),
+      "topic cards should use the subtle homepage entrance animation");
+    assert.notEqual(cardMotion[0].delay, cardMotion[1].delay,
+      "topic cards should appear with a gentle stagger");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    assert.equal(await topicButtons.first().evaluate(card => getComputedStyle(card).animationName), "none",
+      "the homepage entrance animation should be disabled for reduced-motion users");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9, "the section menu should contain nine separate dashboard panels");
     const initiallyVisibleDashboardPanels = await page.locator("[data-dashboard-panel]:visible").evaluateAll(elements => elements.map(element => element.dataset.dashboardPanel));
     assert.deepEqual(initiallyVisibleDashboardPanels, [], "dashboard panels should be hidden on the initial homepage; visible: " + initiallyVisibleDashboardPanels.join(", "));

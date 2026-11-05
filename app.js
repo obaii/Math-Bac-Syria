@@ -533,7 +533,7 @@ function renderTopics(){
   const latestAttempts = getLatestTopicAttempts();
   const lastOpenedTopic = getLastOpenedTopic();
   $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
-  $("topic-grid").innerHTML = availableTopics.map(topic=>{
+  $("topic-grid").innerHTML = availableTopics.map((topic, displayIndex)=>{
     const i = topics.indexOf(topic);
     const count = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level)).length;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
@@ -547,7 +547,7 @@ function renderTopics(){
     const isLastOpenedTopic = lastOpenedTopic === topic;
     const lastActivityText = lastAttempt ? formatTopicActivity(lastAttempt.date) : "";
     const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
-    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
+    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" style="--topic-order:${displayIndex}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span>${isLastOpenedTopic ? '<span class="topic-resume-badge">آخر بحث فتحته</span>' : ""}<span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">ابدأ التدريب ←</span></span>
