@@ -30,6 +30,8 @@ jobs:
           node --check scripts/security-utils-tests.cjs
           node --check search-utils.js
           node --check app.js
+          node --check curriculum-progress.js
+          node --check scripts/curriculum-progress-tests.cjs
           node --check question-diagrams.js
           node --check enhancements.js
           node --check questions.js
@@ -79,6 +81,8 @@ jobs:
         run: node scripts/limits-sequences-regression-tests.cjs
       - name: Verify independently reviewed logarithm, exponential, and integration solutions
         run: node scripts/log-exp-integral-regression-tests.cjs
+      - name: Validate per-topic last lesson selection and restoration
+        run: node scripts/curriculum-progress-tests.cjs
       - name: Validate complete 63-lesson curriculum inventory
         run: node scripts/curriculum-map-tests.cjs
       - name: Validate provisional solved-example lesson crosswalk
