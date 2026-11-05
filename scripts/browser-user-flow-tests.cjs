@@ -496,7 +496,10 @@ const assert = require("node:assert/strict");
     assert.equal(generatedPlan.dailyTarget, 15, "study plan should save the daily question target");
     assert.ok(generatedPlan.days.length >= 5, "study plan should distribute study tasks across the days before the exam");
     const firstTask = page.locator("#study-plan [data-study-task]").first();
+    const firstTaskId = await firstTask.getAttribute("data-study-task");
     await firstTask.check();
+    assert.equal(await page.evaluate(() => document.activeElement?.dataset.studyTask || null), firstTaskId,
+      "toggling a study task should preserve keyboard focus on the same task after the plan re-renders");
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     await page.waitForFunction(() => document.querySelector("#study-plan-toggle")?.dataset.enhancementBound === "true");
