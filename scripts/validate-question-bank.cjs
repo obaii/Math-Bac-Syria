@@ -149,7 +149,7 @@ try {
     if (!normalize(q.solution)) errors.push(`${label}: الحل فارغ.`);
     if (!allowedLevels.has(q.level)) errors.push(`${label}: مستوى الصعوبة غير صالح (${q.level}).`);
 
-    if (typeof q.id !== "string" || !/^q-[a-z0-9]+(?:-\\d+)?$/.test(q.id)) {
+    if (typeof q.id !== "string" || !/^q-[a-z0-9]+(?:-\d+)?$/.test(q.id)) {
       errors.push(`${label}: معرّف السؤال الثابت مفقود أو غير صالح.`);
     } else if (seenIds.has(q.id)) {
       errors.push(`${label}: معرّف مكرر مع السؤال #${seenIds.get(q.id)}.`);
