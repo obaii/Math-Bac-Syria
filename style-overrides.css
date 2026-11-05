@@ -1888,3 +1888,28 @@ body.dark-mode #no-topics { color: #a7b5ca; }
 @media (max-width: 540px) {
   #no-topics button { width: 100%; max-width: 280px; }
 }
+
+
+/* Make the topic-search clear action comfortable to use on touch screens. */
+.search-box #clear-topic-search:not([hidden]) {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #52627b;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.search-box #clear-topic-search[hidden] { display: none !important; }
+.search-box #clear-topic-search:hover { background: #edf2ff; color: #244dbd; }
+.search-box #clear-topic-search:focus-visible { outline: 3px solid var(--focus-ring, #8aa8ff); outline-offset: 1px; }
+body.dark-mode .search-box #clear-topic-search { color: #c4d0e2; }
+body.dark-mode .search-box #clear-topic-search:hover { background: #243653; color: #e7edf8; }

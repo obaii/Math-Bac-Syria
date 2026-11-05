@@ -88,6 +88,16 @@ const assert = require("node:assert/strict");
         }
       }
 
+      await page.locator("#topic-search").fill("اختبار");
+      const clearButton = page.locator("#clear-topic-search");
+      await clearButton.waitFor({ state: "visible" });
+      const clearBounds = await clearButton.boundingBox();
+      assert.ok(clearBounds && clearBounds.width >= 40 && clearBounds.height >= 40,
+        `the search-clear action should provide a 40px touch target at ${viewport.width}px: ${JSON.stringify(clearBounds)}`);
+      await clearButton.click();
+      assert.equal(await page.locator("#topic-search").inputValue(), "",
+        "the search-clear action should empty the query at every responsive viewport");
+
       const controls = page.locator(".top-actions button, #student-tools button, #exam-tools button");
       for (let i = 0; i < await controls.count(); i++) {
         const box = await controls.nth(i).boundingBox();
