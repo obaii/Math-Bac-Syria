@@ -1155,6 +1155,23 @@ $("difficulty").addEventListener("change",saveHomepageFilters);
 $("difficulty").addEventListener("change",renderTopics);
 topicSearchInput.addEventListener("input",saveHomepageFilters);
 topicSearchInput.addEventListener("input",renderTopics);
+document.addEventListener("keydown",event=>{
+  if(event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+  const target = event.target;
+  const isTyping = target instanceof HTMLElement &&
+    (target.isContentEditable || ["INPUT","TEXTAREA","SELECT"].includes(target.tagName));
+  if(event.key === "/" && !isTyping && !$("home").classList.contains("hidden")){
+    event.preventDefault();
+    topicSearchInput.focus();
+    return;
+  }
+  if(event.key === "Escape" && target === topicSearchInput && topicSearchInput.value){
+    event.preventDefault();
+    topicSearchInput.value = "";
+    saveHomepageFilters();
+    renderTopics();
+  }
+});
 $("clear-topic-search").addEventListener("click",()=>{
   topicSearchInput.value = "";
   saveHomepageFilters();
