@@ -38,6 +38,8 @@ const assert = require("node:assert/strict");
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
+    assert.equal(await page.evaluate(() => typeof window.bootstrap), "undefined",
+      "the homepage should not download the unused Bootstrap JavaScript bundle");
 
     // Arabic search should ignore alef variants and allow reordered multiword queries.
     await page.locator("#topic-search").fill("الاشعة الفراغ");

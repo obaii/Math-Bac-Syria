@@ -76,6 +76,7 @@ const checks = [
   ["flashcards are cached for offline study", fs.readFileSync(path.join(root, "sw.js"), "utf8").includes('"./flashcards.js"')],
   ["exam setup exposes start, question count, difficulty, and duration", ["start-exam", "exam-question-count", "exam-difficulty", "exam-duration"].every(id => ids.includes(id))],
   ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("questions_typed_additional.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
+  ["unused Bootstrap JavaScript is omitted while its stylesheet remains and MathJax has low fetch priority", !html.includes("bootstrap.bundle.min.js") && html.includes("bootstrap.rtl.min.css") && /fetchpriority="low"[^>]*mathjax@3\/es5\/tex-mml-chtml\.js/.test(html)],
   ["question assembly assigns stable IDs, provenance, and curriculum-unit metadata", (() => {
     const source = mrg;
     return source.includes("QUESTION_SCHEMA_VERSION = 1") &&
