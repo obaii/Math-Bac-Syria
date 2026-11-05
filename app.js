@@ -411,10 +411,29 @@ function topicIcon(topic){
   if (name.includes("اللوغاريتمي")) return "ln";
   if (name.includes("الأسي")) return "eˣ";
   if (name.includes("الاشتقاق")) return "ƒ′";
-  if (name.includes("نهاية متتالية")) return "uₙ";
+  if (name.includes("نهاية متتالية")) return "lim";
   if (name.includes("المتتاليات")) return "uₙ";
   if (name.includes("النهايات")) return "↗";
   return "∑";
+}
+
+function topicColor(topic){
+  const name = String(topic || "");
+  if (name.includes("تطبيقات الأعداد العقدية")) return "complex-geometry";
+  if (name.includes("الأعداد العقدية")) return "complex";
+  if (name.includes("الجداء السلمي")) return "dot-product";
+  if (name.includes("المستقيمات والمستويات")) return "lines-planes";
+  if (name.includes("الأشعة")) return "vectors";
+  if (name.includes("نهاية متتالية")) return "sequence-limits";
+  if (name.includes("المتتاليات")) return "sequences";
+  if (name.includes("التكامل")) return "integration";
+  if (name.includes("اللوغاريتمي")) return "logarithm";
+  if (name.includes("الأسي")) return "exponential";
+  if (name.includes("الاشتقاق")) return "derivatives";
+  if (name.includes("النهايات")) return "limits";
+  if (name.includes("التحليل التوافقي")) return "combinatorics";
+  if (name.includes("الاحتمالات")) return "probability";
+  return "general";
 }
 
 // تصنيف الإتقان يحتاج عينة كافية حتى لا يُضلّل الطالب بنتائج عدد قليل من الإجابات.
@@ -528,7 +547,7 @@ function renderTopics(){
     const isLastOpenedTopic = lastOpenedTopic === topic;
     const lastActivityText = lastAttempt ? formatTopicActivity(lastAttempt.date) : "";
     const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
-    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
+    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span>${isLastOpenedTopic ? '<span class="topic-resume-badge">آخر بحث فتحته</span>' : ""}<span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">ابدأ التدريب ←</span></span>
