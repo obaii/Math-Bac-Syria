@@ -92,6 +92,9 @@ try {
     errors.push("بنك questions مفقود أو فارغ.");
   }
 
+  const curriculumManifest = JSON.parse(fs.readFileSync(path.join(root, "curriculum-map.json"), "utf8"));
+  const unitsByTopic = new Map((curriculumManifest.units || []).map(unit => [unit.topic, unit]));
+  const seenIds = new Map();
   const seenQuestions = new Map();
   const counts = new Map();
   const typeCounts = new Map();
@@ -145,6 +148,32 @@ try {
     }
     if (!normalize(q.solution)) errors.push(`${label}: الحل فارغ.`);
     if (!allowedLevels.has(q.level)) errors.push(`${label}: مستوى الصعوبة غير صالح (${q.level}).`);
+
+    if (typeof q.id !== "string" || !/^q-[a-z0-9]+(?:-\\d+)?$/.test(q.id)) {
+      errors.push(`${label}: معرّف السؤال الثابت مفقود أو غير صالح.`);
+    } else if (seenIds.has(q.id)) {
+      errors.push(`${label}: معرّف مكرر مع السؤال #${seenIds.get(q.id)}.`);
+    } else {
+      seenIds.set(q.id, index + 1);
+    }
+    if (q.schemaVersion !== 1) errors.push(`${label}: إصدار بنية بيانات السؤال غير مدعوم.`);
+    const mappedUnit = unitsByTopic.get(q.topic);
+    if (!mappedUnit || q.unitId !== mappedUnit.id || q.unitTitle !== mappedUnit.unit ||
+        q.curriculumPart !== mappedUnit.part || q.curriculumSection !== mappedUnit.section) {
+      errors.push(`${label}: ربط الوحدة أو الجزء أو القسم لا يطابق خريطة المنهاج.`);
+    }
+    if (q.lessonId !== null && typeof q.lessonId !== "string") errors.push(`${label}: معرّف الدرس يجب أن يكون نصاً أو null.`);
+    if (q.lessonMappingStatus !== (q.lessonId ? "lesson-mapped" : "topic-only")) {
+      errors.push(`${label}: حالة ربط الدرس غير متوافقة مع lessonId.`);
+    }
+    const validSources = {
+      "questions.js":"original-bank",
+      "questions_vectors_additional.js":"vector-supplement",
+      "questions_typed_additional.js":"typed-supplement"
+    };
+    if (!q.source || typeof q.source !== "object" || validSources[q.source.file] !== q.source.kind) {
+      errors.push(`${label}: مصدر السؤال أو نوع مصدره غير موثق.`);
+    }
 
     typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
     if (type !== "mcq") typedTopics.add(q.topic);
