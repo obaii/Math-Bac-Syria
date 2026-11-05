@@ -1458,6 +1458,15 @@ body.dark-mode .dashboard-empty-state{border-color:#40516b;background:rgba(125,1
 }
 #topic-grid .topic-start { color: var(--topic-accent); }
 #topic-grid .topic-mastery > span { background: var(--topic-accent); }
+@keyframes homepage-topic-card-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+#topic-grid .topic-card {
+  animation: homepage-topic-card-enter .3s ease both;
+  animation-delay: calc(var(--topic-order, 0) * 28ms);
+}
+
 #topic-grid .topic-card:hover:not(:disabled) {
   transform: translateY(-3px);
   border-color: var(--topic-border);
@@ -1491,6 +1500,7 @@ body.dark-mode #topic-grid .topic-number {
   #topic-grid .topic-title { font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-card { animation: none !important; }
   #topic-grid .topic-card,
   #topic-grid .topic-card::before,
   #topic-grid .topic-arrow,
