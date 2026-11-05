@@ -133,6 +133,15 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
       "the empty-state recovery action should restore all research cards");
 
+    await page.selectOption("#difficulty", savedLevel);
+    assert.equal(await page.locator("#clear-all-topic-filters").isVisible(), true,
+      "the clear-all action should appear whenever a difficulty filter is active");
+    await page.locator("#clear-all-topic-filters").click();
+    assert.equal(await page.locator("#difficulty").inputValue(), "الكل",
+      "the clear-all action should restore all difficulty levels");
+    assert.equal(await page.locator("#clear-all-topic-filters").isVisible(), false,
+      "the clear-all action should hide when no filters remain");
+
     assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");
   } finally {
