@@ -1877,6 +1877,36 @@
   // أنشئ أدوات المحاكاة بعد إنشاء لوحة أدوات الطالب، ولا تعتمد على حدث load وحده.
   ensureExamControls();
 
+  // Announce genuinely new homepage destinations once, then remember that the learner has seen them.
+  const MENU_UPDATE_STORAGE_KEY = "mathBacSyriaSeenMenuUpdatesV1";
+  const readSeenMenuUpdates = () => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(MENU_UPDATE_STORAGE_KEY) || "[]");
+      return new Set(Array.isArray(parsed) ? parsed.filter(key => typeof key === "string") : []);
+    } catch (_) { return new Set(); }
+  };
+  const refreshMenuUpdateBadges = menu => {
+    if (!menu) return;
+    const seen = readSeenMenuUpdates();
+    menu.querySelectorAll("[data-update-key]").forEach(link => {
+      const key = link.dataset.updateKey;
+      const isNew = Boolean(key && !seen.has(key));
+      const badge = link.querySelector(".menu-update-badge");
+      if (badge) badge.hidden = !isNew;
+      link.classList.toggle("has-new-update", isNew);
+    });
+  };
+  const markMenuUpdateSeen = link => {
+    const key = link?.dataset?.updateKey;
+    if (!key) return;
+    const seen = readSeenMenuUpdates();
+    seen.add(key);
+    try { localStorage.setItem(MENU_UPDATE_STORAGE_KEY, JSON.stringify([...seen].slice(-30))); } catch (_) {}
+    const badge = link.querySelector(".menu-update-badge");
+    if (badge) badge.hidden = true;
+    link.classList.remove("has-new-update");
+  };
+
   // Keep the home page uncluttered: one section menu, one active panel at a time.
   const bindHomePanelToggles = () => {
     const menu = document.getElementById("section-menu");
@@ -1886,6 +1916,7 @@
         menu.hidden = !menu.hidden;
         menuButton.setAttribute("aria-expanded", String(!menu.hidden));
         if (!menu.hidden) {
+          refreshMenuUpdateBadges(menu);
           let recentKey = "";
           try { recentKey = localStorage.getItem("mathBacSyriaRecentMenuItemV1") || ""; } catch (_) {}
           menu.querySelectorAll("a.quick-start-card").forEach(item => {
@@ -1931,6 +1962,7 @@
         const currentMenu = document.getElementById("section-menu");
         if (!link || !currentMenu?.contains(link)) return;
         event.preventDefault();
+        markMenuUpdateSeen(link);
         try { localStorage.setItem("mathBacSyriaRecentMenuItemV1", link.dataset.panelToggle || ""); } catch (_) {}
         const panel = document.getElementById(link.dataset.panelToggle);
         if (!panel) return;
@@ -1976,6 +2008,7 @@
         const panelKey = link.dataset.dashboardTarget;
         if (panelKey) {
           event.preventDefault();
+          markMenuUpdateSeen(link);
           try { localStorage.setItem("mathBacSyriaRecentMenuItemV1", panelKey); } catch (_) {}
           const panels = [...document.querySelectorAll("[data-dashboard-panel]")];
           const panel = panels.find(item => item.dataset.dashboardPanel === panelKey);
