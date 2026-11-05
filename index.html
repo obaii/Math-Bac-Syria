@@ -52,7 +52,7 @@
   <script defer src="merge-questions.js?v=20261105-2"></script>
   <script defer src="solution-guides.js?v=20261103-6"></script>
   <script defer src="question-diagrams.js?v=20261103-4"></script>
-  <script defer src="app.js?v=20261105-9"></script>
+  <script defer src="app.js?v=20261105-10"></script>
   <script defer src="curriculum-progress.js?v=20261105-2"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
@@ -388,6 +388,7 @@
       </select>
       <span class="filter-hint" id="difficulty-hint">اختر المستوى المناسب لك.</span>
       </div>
+      <button type="button" id="clear-all-topic-filters" class="filter-reset-button" hidden>إعادة ضبط الفلاتر</button>
     </div>
     <div id="topic-grid" class="topic-grid" aria-busy="true"><div class="topic-loading" role="status" aria-live="polite"><span class="topic-loading-spinner" aria-hidden="true"></span><span>جارٍ تجهيز الأبحاث الرياضية...</span></div></div>
     <div id="no-topics" class="empty-state hidden" role="status" aria-live="polite" aria-atomic="true"><p>لا توجد أبحاث تطابق كلمات البحث أو المستوى المحدد.</p><button type="button" id="reset-topic-filters" class="secondary">إظهار جميع الأبحاث</button></div>
