@@ -118,6 +118,21 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
       "students should be able to clear the restored filters and return to the full topic list");
 
+    await page.locator("#topic-search").fill("لا يوجد بحث بهذا الاسم");
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 0,
+      "an unmatched search should show no research cards");
+    assert.equal(await page.locator("#no-topics").isVisible(), true,
+      "an unmatched search should expose the empty state");
+    await page.locator("#reset-topic-filters").click();
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    assert.equal(await page.locator("#difficulty").inputValue(), "الكل",
+      "the empty-state recovery action should reset the difficulty filter");
+    assert.equal(await page.locator("#topic-search").inputValue(), "",
+      "the empty-state recovery action should clear the search query");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "the empty-state recovery action should restore all research cards");
+
     assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");
   } finally {
