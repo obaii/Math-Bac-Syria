@@ -1862,3 +1862,7 @@ body.dark-mode .topic-card .topic-status { color: var(--muted); }
     transition: none !important;
   }
 }
+
+
+/* Align both post-answer actions to the same row height on narrow screens. */
+#quiz .actions { align-items: stretch; }
