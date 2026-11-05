@@ -213,12 +213,16 @@
         if (!editForm.reportValidity()) return;
         if (!confirm("سيُعاد توزيع مهام الخطة وفق التاريخ والهدف الجديدين. ستبقى علامات إنجاز المهام المطابقة كما هي، أما المهام التي تغيّر هدفها أو موعدها فستبدأ من جديد. هل تريد المتابعة؟")) return;
         buildStudyPlan(editDate.value, editTarget.value);
+        // The form is replaced during rendering; return focus to the plan editor control.
+        document.getElementById("study-plan-edit")?.focus();
       });
     }
     const form = document.getElementById("study-plan-form");
     if (form) form.addEventListener("submit", event => {
       event.preventDefault();
       buildStudyPlan(document.getElementById("study-exam-date").value, document.getElementById("study-daily-target").value);
+      // Move focus to the newly rendered plan controls after creating the plan.
+      document.getElementById("study-plan-edit")?.focus();
     });
     panel.querySelectorAll("[data-study-task]").forEach(input => input.addEventListener("change", () => {
       const taskId = input.dataset.studyTask;

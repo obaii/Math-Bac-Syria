@@ -491,6 +491,8 @@ const assert = require("node:assert/strict");
     await page.locator("#study-daily-target").fill("15");
     await page.locator("#study-plan-form button[type=submit]").click();
     await page.locator(".study-plan-day").first().waitFor({ state: "visible" });
+    assert.equal(await page.evaluate(() => document.activeElement?.id || null), "study-plan-edit",
+      "creating a study plan should move keyboard focus to its newly rendered edit control");
     const generatedPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
     assert.equal(generatedPlan.examDate, planDate, "study plan should save the selected exam date");
     assert.equal(generatedPlan.dailyTarget, 15, "study plan should save the daily question target");
@@ -521,6 +523,8 @@ const assert = require("node:assert/strict");
     await page.locator("#study-plan-edit-date").fill(revisedPlanDate);
     await page.locator("#study-plan-edit-form button[type=submit]").click();
     await page.locator("#study-plan-edit-form").waitFor({ state: "hidden" });
+    assert.equal(await page.evaluate(() => document.activeElement?.id || null), "study-plan-edit",
+      "saving study plan changes should return keyboard focus to the edit control");
     const editedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
     assert.equal(editedStudyPlan.examDate, revisedPlanDate, "inline editing should save the revised exam date");
     assert.equal(editedStudyPlan.dailyTarget, 15, "inline editing should retain the saved daily target when unchanged");
