@@ -1156,6 +1156,13 @@ $("clear-topic-search").addEventListener("click",()=>{
   renderTopics();
   topicSearchInput.focus();
 });
+$("reset-topic-filters").addEventListener("click",()=>{
+  topicSearchInput.value = "";
+  $("difficulty").value = "الكل";
+  saveHomepageFilters();
+  renderTopics();
+  topicSearchInput.focus();
+});
 $("brand-home").addEventListener("click",e=>{e.preventDefault();$("quiz").classList.add("hidden");$("results").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
 function startReviewQuiz(){
   const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
