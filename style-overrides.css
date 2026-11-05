@@ -1651,3 +1651,11 @@ body.dark-mode .dashboard-history-note{border-inline-start-color:#718dc8;backgro
 @media (prefers-reduced-motion: reduce) {
   #topic-grid .topic-card:hover:not(:disabled), #topic-grid .topic-card:active:not(:disabled) { transform: none; }
 }
+
+
+/* Section menu: highlight the most recently used destination without changing its order. */
+#section-menu .quick-start-card.is-recently-used { border-color: #8aa8ff; box-shadow: 0 0 0 2px rgba(49,94,219,.10); }
+#section-menu .quick-start-card.is-recently-used::after { content: attr(data-recent-label); flex: 0 0 auto; margin-inline-start: auto; padding: 3px 7px; border-radius: 999px; background: #edf2ff; color: #315edb; font-size: 10px; font-weight: 700; }
+body.dark-mode #section-menu .quick-start-card.is-recently-used { border-color: #718dc8; }
+body.dark-mode #section-menu .quick-start-card.is-recently-used::after { background: #243653; color: #c6d6ff; }
+@media (max-width: 540px) { #section-menu .quick-start-card.is-recently-used::after { font-size: 9px; padding: 2px 6px; } }
