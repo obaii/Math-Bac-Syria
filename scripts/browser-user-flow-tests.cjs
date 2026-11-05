@@ -50,7 +50,6 @@ const assert = require("node:assert/strict");
       "student progress panels should not appear on the default homepage");
     await openPanel("resume-session");
     await resetResumeUpdateMarker();
-    await resetResumeUpdateMarker();
     assert.equal(await page.locator("#curriculum-progress-picker").isVisible(), true,
       "the lesson tracker should appear when the learner opens the resume destination");
     assert.equal(await page.locator("#curriculum-topic-select option").count(), 14,
@@ -65,6 +64,7 @@ const assert = require("node:assert/strict");
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForSelector("#curriculum-topic-select", { state: "attached", timeout: 10000 });
     await openPanel("resume-session");
+    await resetResumeUpdateMarker();
     await page.locator("#curriculum-topic-select").selectOption("الاشتقاق");
     assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "تطبيقات الاشتقاق",
       "the last lesson should be restored independently for each topic after reload");
