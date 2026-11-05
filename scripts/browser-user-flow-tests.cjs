@@ -517,7 +517,7 @@ const assert = require("node:assert/strict");
     }, planDate);
     await page.locator("#study-plan-edit-date").fill(revisedPlanDate);
     await page.locator("#study-plan-edit-form button[type=submit]").click();
-    await page.locator("#study-plan-edit-form").waitFor({ state: "detached" });
+    await page.locator("#study-plan-edit-form").waitFor({ state: "hidden" });
     const editedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
     assert.equal(editedStudyPlan.examDate, revisedPlanDate, "inline editing should save the revised exam date");
     assert.equal(editedStudyPlan.dailyTarget, 15, "inline editing should retain the saved daily target when unchanged");
