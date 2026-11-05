@@ -61,7 +61,8 @@
   }
   function mountSelector() {
     const grid = document.getElementById("topic-grid");
-    if (!grid || document.getElementById("curriculum-progress-picker")) return;
+    const host = document.getElementById("dashboard-panel-resume-session");
+    if (!grid || !host || document.getElementById("curriculum-progress-picker")) return;
     const panel = document.createElement("section");
     panel.id = "curriculum-progress-picker";
     panel.className = "curriculum-progress-picker";
@@ -98,7 +99,7 @@
     status.className = "curriculum-progress-status";
     status.setAttribute("role", "status");
     panel.append(heading, controls, status);
-    grid.insertAdjacentElement("beforebegin", panel);
+    host.appendChild(panel);
 
     let lastTopic = activeTopic;
     if (!lastTopic) {
