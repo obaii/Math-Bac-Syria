@@ -158,6 +158,17 @@ async function assertVisibleControlsHaveNames(page, context) {
       "starting a topic quiz should avoid animated page scrolling when reduced motion is requested");
     await reducedMotionQuizPage.close();
 
+    await page.locator("#section-menu-toggle").focus();
+    await page.keyboard.press("/");
+    assert.equal(await page.locator("#topic-search").evaluate(el => document.activeElement === el), true,
+      "the slash shortcut should focus the homepage topic search when not typing in another control");
+    await page.locator("#topic-search").fill("بحث تجريبي");
+    await page.keyboard.press("Escape");
+    assert.equal(await page.locator("#topic-search").inputValue(), "",
+      "Escape should clear a non-empty homepage topic search");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "clearing the search with Escape should restore all research cards");
+
     await assertVisibleControlsHaveNames(page, "home screen");
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,
       "all nine dashboard panels should be available to the menu");
