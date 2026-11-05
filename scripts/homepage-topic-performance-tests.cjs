@@ -102,6 +102,22 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
       "clearing the topic search should restore all fourteen topics");
 
+    const savedLevel = levels.find(level => level !== "الكل");
+    await page.selectOption("#difficulty", savedLevel);
+    await page.locator("#topic-search").fill(firstTopic);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    assert.equal(await page.locator("#difficulty").inputValue(), savedLevel,
+      "the selected difficulty should be restored after reloading the homepage");
+    assert.equal(await page.locator("#topic-search").inputValue(), firstTopic,
+      "the topic search should be restored after reloading the homepage");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 1,
+      "restored filters should be applied before rendering the topic cards");
+    await page.locator("#clear-topic-search").click();
+    await page.selectOption("#difficulty", "الكل");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "students should be able to clear the restored filters and return to the full topic list");
+
     assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");
   } finally {
