@@ -60,6 +60,7 @@
       .then(() => mathJax.typesetPromise([target]))
       .catch(error => console.warn("تعذر تنسيق المعادلات في هذا القسم", error));
   };
+  const calendarDayOrdinal = date => Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
   function localDateKey(date) {
     const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     return [d.getFullYear(), String(d.getMonth()+1).padStart(2,"0"), String(d.getDate()).padStart(2,"0")].join("-");
@@ -108,7 +109,7 @@
     const today = new Date();
     today.setHours(0,0,0,0);
     if (!examDate || examDate < today) { alert("اختر تاريخاً اليوم أو في المستقبل."); return; }
-    const daysCount = Math.min(366, Math.floor((examDate - today) / 86400000) + 1);
+    const daysCount = Math.min(366, calendarDayOrdinal(examDate) - calendarDayOrdinal(today) + 1);
     const priorities = getStudyPriorityTopics();
     if (!priorities.length) { alert("لم يتم العثور على أبحاث في بنك المنصة."); return; }
     const dailyTarget = Math.max(5, Math.min(30, Math.round(Number(dailyTargetValue) || 10)));
@@ -178,7 +179,7 @@
       const done = allTasks.filter(task => task.done).length;
       const percent = total ? Math.round(done/total*100) : 0;
       const completedDays = plan.days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).length;
-      const remainingDays = Math.max(0, Math.ceil((parseLocalDate(plan.examDate)-new Date(new Date().setHours(0,0,0,0)))/86400000)+1);
+      const remainingDays = Math.max(0, calendarDayOrdinal(parseLocalDate(plan.examDate)) - calendarDayOrdinal(new Date()) + 1);
       const todayPlan = plan.days.find(day => day.date === today);
       const upcoming = plan.days.filter(day => day.date > today).slice(0,3);
       const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+' · '+escapeHtml(day.date)+'</h4><ul>'+day.tasks.map(task =>
