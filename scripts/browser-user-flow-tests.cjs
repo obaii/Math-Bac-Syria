@@ -628,11 +628,23 @@ const assert = require("node:assert/strict");
     await openPanel("resume-session");
     assert.equal(await page.locator("#resume-session").evaluate(el => !el.hidden), true, "the last practiced topic should appear inside its menu panel");
     assert.equal(await page.locator("#resume-topic-name").innerText(), lastPracticedTopic, "the resume card should identify the last practiced topic");
+    assert.match(await page.locator("#resume-topic-activity").innerText(), /آخر إجابة .* إجابة مسجلة · دقة/,
+      "the resume panel should show the latest answer time, saved answer count, and accuracy");
     const practicedTopicCard = page.locator("#topic-grid [data-topic]").filter({ hasText: lastPracticedTopic });
     assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "1", "the topic card should show the recorded answer count");
     assert.ok(["0", "1"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
     assert.equal(await practicedTopicCard.locator(".topic-state").innerText(), "قيد التقدم", "a topic with some but not all questions tried should be marked in progress");
     assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .*٪ دقة/, "the topic card should summarize attempts, correct answers, and accuracy");
+    assert.equal(await practicedTopicCard.getAttribute("data-last-practiced") === "" , false,
+      "the topic card should store a valid last-practice timestamp");
+    assert.ok(Number.isFinite(Date.parse(await practicedTopicCard.getAttribute("data-last-practiced"))),
+      "the last-practice timestamp should be a valid date");
+    assert.match(await practicedTopicCard.locator(".topic-last-activity").innerText(), /^آخر تدريب:/,
+      "the topic card should show when it was last practiced");
+    assert.equal(await practicedTopicCard.locator(".topic-resume-badge").innerText(), "آخر بحث فتحته",
+      "the most recently opened topic should be visually identified");
+    assert.equal(await page.locator("#topic-grid .topic-resume-badge").count(), 1,
+      "only one topic card should be marked as the most recently opened topic");
     await page.locator("#resume-topic-button").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), lastPracticedTopic, "resume should reopen the last practiced topic");

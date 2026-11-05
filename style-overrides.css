@@ -1517,3 +1517,51 @@ body.dark-mode #section-menu .quick-start-group-label::after {
     font-size: 11px;
   }
 }
+
+/* المرحلة الثالثة: إبراز آخر بحث تدرب عليه الطالب وإظهار توقيت نشاطه. */
+#topic-grid .topic-card.is-resume-topic {
+  border-color: var(--topic-accent, #315edb);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--topic-accent, #315edb) 13%, transparent),
+    0 8px 20px rgba(25,48,86,.07);
+}
+#topic-grid .topic-card.is-resume-topic::before { height: 4px; }
+#topic-grid .topic-resume-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 112px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--topic-soft, #edf2ff);
+  color: var(--topic-accent, #315edb);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+#topic-grid .topic-last-activity {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted, #718096);
+  font-size: 10px;
+  line-height: 1.6;
+}
+body.dark-mode #topic-grid .topic-card.is-resume-topic {
+  border-color: color-mix(in srgb, var(--topic-accent, #8aa8ff) 72%, #34445d);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--topic-accent, #8aa8ff) 16%, transparent);
+}
+body.dark-mode #topic-grid .topic-resume-badge {
+  background: color-mix(in srgb, var(--topic-accent, #8aa8ff) 20%, #182438);
+  color: #dce7ff;
+}
+body.dark-mode #topic-grid .topic-last-activity { color: #a7b5ca; }
+.resume-topic-activity {
+  margin: 5px 0 0 !important;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+body.dark-mode .resume-topic-activity { color: #a7b5ca; }
+@media (max-width: 540px) {
+  #topic-grid .topic-resume-badge { max-width: 96px; font-size: 8px; }
+  #topic-grid .topic-last-activity { font-size: 9px; }
+}

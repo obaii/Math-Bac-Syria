@@ -369,6 +369,7 @@ function refreshDashboard(){
   renderActivityCalendar();
   renderAchievements();
   renderWeakTopicRecommendation();
+  updateResumeCard();
 }
 
 function topicIcon(topic){
@@ -401,12 +402,42 @@ function getTopicMastery(stat){
   return { key: "good", label: "جيد", answered, correct, rate };
 }
 
+function getLatestTopicAttempts(){
+  const latest = new Map();
+  for (const attempt of (Array.isArray(progressData.attempts) ? progressData.attempts : [])) {
+    if (!attempt || typeof attempt.topic !== "string" || !topics.includes(attempt.topic) ||
+        !Number.isFinite(Date.parse(attempt.date))) continue;
+    const previous = latest.get(attempt.topic);
+    if (!previous || Date.parse(attempt.date) > Date.parse(previous.date)) latest.set(attempt.topic, attempt);
+  }
+  return latest;
+}
+function formatTopicActivity(dateValue){
+  const timestamp = Date.parse(dateValue);
+  if (!Number.isFinite(timestamp)) return "";
+  const minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+  const relative = new Intl.RelativeTimeFormat("ar", { numeric: "auto" });
+  if (minutes < 1) return "الآن";
+  if (minutes < 60) return relative.format(-minutes, "minute");
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return relative.format(-hours, "hour");
+  const days = Math.floor(hours / 24);
+  if (days < 7) return relative.format(-days, "day");
+  return new Intl.DateTimeFormat("ar", { day: "numeric", month: "short" }).format(new Date(timestamp));
+}
+function getLastOpenedTopic(){
+  try { return localStorage.getItem(LAST_TOPIC_KEY) || ""; }
+  catch (_) { return ""; }
+}
+
 function renderTopics(){
   const level = $("difficulty").value;
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
   const clearSearchButton = $("clear-topic-search");
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
   const availableTopics = topics.filter(topic => window.MathSearchUtils.matches(topic, search));
+  const latestAttempts = getLatestTopicAttempts();
+  const lastOpenedTopic = getLastOpenedTopic();
   $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
   $("topic-grid").innerHTML = availableTopics.map(topic=>{
     const i = topics.indexOf(topic);
@@ -418,12 +449,15 @@ function renderTopics(){
     const attempts = Number.isSafeInteger(topicStat.answered) && topicStat.answered > 0 ? topicStat.answered : 0;
     const correctAnswers = Number.isSafeInteger(topicStat.correct) && topicStat.correct > 0 ? Math.min(topicStat.correct, attempts) : 0;
     const mastery = getTopicMastery(topicStat);
+    const lastAttempt = latestAttempts.get(topic);
+    const isLastOpenedTopic = lastOpenedTopic === topic;
+    const lastActivityText = lastAttempt ? formatTopicActivity(lastAttempt.date) : "";
     const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
-    return `<button class="topic-card" data-topic="${topic}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" ${count===0?"disabled":""}>
-      <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span><span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
+    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
+      <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span>${isLastOpenedTopic ? '<span class="topic-resume-badge">آخر بحث فتحته</span>' : ""}<span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">ابدأ التدريب ←</span></span>
-      <span class="topic-card-performance">${attempts ? `${attempts.toLocaleString("ar")} إجابة · ${correctAnswers.toLocaleString("ar")} صحيحة · ${successRate.toLocaleString("ar")}٪ دقة` : "لم تسجل إجابات بعد"}</span>
+      <span class="topic-card-performance">${attempts ? `${attempts.toLocaleString("ar")} إجابة · ${correctAnswers.toLocaleString("ar")} صحيحة · ${successRate.toLocaleString("ar")}٪ دقة` : "لم تسجل إجابات بعد"}</span>${lastAttempt ? `<time class="topic-last-activity" datetime="${new Date(lastAttempt.date).toISOString()}">آخر تدريب: ${lastActivityText}</time>` : ""}
       <span class="topic-mastery-status ${mastery.key}" title="${mastery.answered < 10 && mastery.answered > 0 ? "يحتاج تصنيف الإتقان إلى 10 إجابات على الأقل" : mastery.rate === null ? "لم تُسجّل إجابات لهذا البحث بعد" : mastery.rate.toLocaleString("ar") + "٪ من الإجابات صحيحة"}">${mastery.label}</span>
       <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}"><span style="width:${coverageRate}%"></span></span>
     </button>`;
@@ -437,14 +471,24 @@ function updateResumeCard(){
   const name = $("resume-topic-name");
   const button = $("resume-topic-button");
   if (!section || !name || !button) return;
-  let lastTopic = "";
-  try { lastTopic = localStorage.getItem(LAST_TOPIC_KEY) || ""; }
-  catch (_) { lastTopic = ""; }
+  const lastTopic = getLastOpenedTopic();
   if (!lastTopic || !Array.isArray(topics) || !topics.includes(lastTopic) || !questions.some(q => q.topic === lastTopic)) {
     section.hidden = true;
     return;
   }
   name.textContent = lastTopic;
+  const activity = $("resume-topic-activity");
+  const stat = progressData.topicStats[lastTopic] || { answered: 0, correct: 0 };
+  const answered = Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+  const correct = Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+  const latestAttempt = getLatestTopicAttempts().get(lastTopic);
+  if (activity) {
+    activity.textContent = latestAttempt
+      ? "آخر إجابة " + formatTopicActivity(latestAttempt.date) + " · " +
+        answered.toLocaleString("ar") + " إجابة مسجلة · دقة " +
+        (answered ? Math.round(correct / answered * 100).toLocaleString("ar") : "٠") + "٪"
+      : "لم تسجل إجابات في هذا البحث بعد.";
+  }
   section.hidden = false;
   button.onclick = () => startQuiz(lastTopic);
 }
