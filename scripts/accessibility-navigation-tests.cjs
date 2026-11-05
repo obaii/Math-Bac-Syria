@@ -45,6 +45,38 @@ async function assertVisibleControlsHaveNames(page, context) {
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
+    // Recommendation quality: ignore tiny samples, then show a grounded suggestion at five answers.
+    const dashboardPage = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+    await dashboardPage.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await dashboardPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
+    const recommendationTopic = await dashboardPage.locator("#topic-grid [data-topic]").first().getAttribute("data-topic");
+    assert.ok(recommendationTopic, "the recommendation regression test should find a valid topic");
+    const seedRecommendationProgress = async answered => dashboardPage.evaluate(({ topic, answered }) => {
+      localStorage.setItem("mathBacSyriaProgressV1", JSON.stringify({
+        answered,
+        correct: Math.min(2, answered),
+        mistakes: {},
+        topicStats: { [topic]: { answered, correct: Math.min(2, answered) } },
+        attempts: [],
+        seenQuestions: {}
+      }));
+    }, { topic: recommendationTopic, answered });
+    await seedRecommendationProgress(4);
+    await dashboardPage.reload({ waitUntil: "domcontentloaded" });
+    await dashboardPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    assert.equal(await dashboardPage.locator("#weak-topic-recommendation").evaluate(element => element.hidden), true,
+      "a training recommendation should not be shown from fewer than five answers");
+    assert.match(await dashboardPage.locator("#dashboard-panel-weak-topic-recommendation .dashboard-empty-state").textContent(),
+      /إجابة إضافية/, "the empty recommendation state should explain the remaining sample needed");
+    await seedRecommendationProgress(5);
+    await dashboardPage.reload({ waitUntil: "domcontentloaded" });
+    await dashboardPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    assert.equal(await dashboardPage.locator("#weak-topic-recommendation").evaluate(element => element.hidden), false,
+      "a recommendation should appear once a topic has at least five answers");
+    assert.equal(await dashboardPage.locator("#weak-topic-name").textContent(), recommendationTopic,
+      "the recommendation should name the topic with a sufficient sample");
+    await dashboardPage.close();
+
 
     const documentInfo = await page.evaluate(() => ({
       lang: document.documentElement.lang,
