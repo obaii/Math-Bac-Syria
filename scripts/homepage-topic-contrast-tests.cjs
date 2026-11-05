@@ -5,10 +5,17 @@ const { chromium } = require("playwright");
 const assert = require("node:assert/strict");
 
 function parseColor(value) {
-  const match = String(value).trim().match(/^#([0-9a-f]{6})$/i);
-  assert.ok(match, `expected a six-digit hex color, received "${value}"`);
-  const hex = match[1];
-  return [0, 2, 4].map(index => parseInt(hex.slice(index, index + 2), 16) / 255);
+  const input = String(value).trim();
+  const hex = input.match(/^#([0-9a-f]{6})$/i);
+  if (hex) return [0, 2, 4].map(index => parseInt(hex[1].slice(index, index + 2), 16) / 255);
+
+  const rgb = input.match(/^rgba?\\(\\s*([\\d.]+)[, ]+([\\d.]+)[, ]+([\\d.]+)/i);
+  if (rgb) return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])].map(channel => channel / 255);
+
+  const srgb = input.match(/^color\\(srgb\\s+([\\d.]+)\\s+([\\d.]+)\\s+([\\d.]+)/i);
+  if (srgb) return [Number(srgb[1]), Number(srgb[2]), Number(srgb[3])];
+
+  assert.fail(`unsupported computed color format: "${value}"`);
 }
 
 function luminance(rgb) {
@@ -54,7 +61,23 @@ function contrastRatio(foreground, background) {
 
     assert.deepEqual(failures, [],
       "small colored labels on research cards should meet WCAG AA 4.5:1 contrast against both their card tint and icon background");
-    console.log("PASS: all 14 homepage research-card accent colors meet WCAG AA contrast against their light tint");
+    await page.evaluate(() => document.body.classList.add("dark-mode"));
+    const darkIcons = await page.locator("#topic-grid .topic-card .topic-subject-icon").evaluateAll(icons =>
+      icons.map(icon => ({
+        topic: icon.closest(".topic-card")?.dataset.topic || "",
+        foreground: getComputedStyle(icon).color,
+        background: getComputedStyle(icon).backgroundColor
+      }))
+    );
+    assert.equal(darkIcons.length, 14, "all fourteen topic icons should remain visible in dark mode");
+    const darkFailures = darkIcons.map(item => ({
+      ...item,
+      ratio: contrastRatio(item.foreground, item.background)
+    })).filter(item => item.ratio < 3);
+    assert.deepEqual(darkFailures, [],
+      "topic icons should meet the WCAG 1.4.11 non-text contrast threshold of 3:1 in dark mode");
+
+    console.log("PASS: all 14 topic cards meet WCAG AA text contrast in light mode and non-text contrast in dark mode");
   } finally {
     await browser.close();
   }
