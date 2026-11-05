@@ -516,7 +516,6 @@ const assert = require("node:assert/strict");
       return [next.getFullYear(), String(next.getMonth()+1).padStart(2,"0"), String(next.getDate()).padStart(2,"0")].join("-");
     }, planDate);
     await page.locator("#study-plan-edit-date").fill(revisedPlanDate);
-    page.once("dialog", dialog => dialog.accept());
     await page.locator("#study-plan-edit-form button[type=submit]").click();
     await page.locator("#study-plan-edit-form").waitFor({ state: "detached" });
     const editedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
