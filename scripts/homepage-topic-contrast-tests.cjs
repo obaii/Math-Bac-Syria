@@ -40,18 +40,20 @@ function contrastRatio(foreground, background) {
       cards.map(card => ({
         topic: card.dataset.topic,
         color: getComputedStyle(card).getPropertyValue("--topic-accent").trim(),
-        tint: getComputedStyle(card).getPropertyValue("--topic-tint").trim()
+        tint: getComputedStyle(card).getPropertyValue("--topic-tint").trim(),
+        soft: getComputedStyle(card).getPropertyValue("--topic-soft").trim()
       }))
     );
     assert.equal(palette.length, 14, "all fourteen research cards should expose a color palette");
 
     const failures = palette.map(item => ({
       ...item,
-      ratio: contrastRatio(item.color, item.tint)
-    })).filter(item => item.ratio < 4.5);
+      tintRatio: contrastRatio(item.color, item.tint),
+      softRatio: contrastRatio(item.color, item.soft)
+    })).filter(item => item.tintRatio < 4.5 || item.softRatio < 4.5);
 
     assert.deepEqual(failures, [],
-      "small colored labels on research cards should meet WCAG AA 4.5:1 contrast against their tint");
+      "small colored labels on research cards should meet WCAG AA 4.5:1 contrast against both their card tint and icon background");
     console.log("PASS: all 14 homepage research-card accent colors meet WCAG AA contrast against their light tint");
   } finally {
     await browser.close();
