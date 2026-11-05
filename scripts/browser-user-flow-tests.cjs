@@ -63,6 +63,13 @@ const assert = require("node:assert/strict");
       assert.equal(quickStartLinks.filter(link => link === href).length, 1,
         "the dashboard should expose exactly one shortcut for " + href + "; found: " + quickStartLinks.join(", "));
     }
+    assert.deepEqual(
+      await quickStart.locator(".quick-start-group-label").allInnerTexts(),
+      ["التعلّم والتدريب", "الاختبارات والمراجعة", "الأدوات الرياضية والمكتبات", "مساحتك التعليمية وتقدمك"],
+      "the section menu should group its shortcuts into four clear learning areas"
+    );
+    assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
+      "group headings should not replace or hide any existing section shortcut");
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
