@@ -516,6 +516,7 @@ function resumeTrainingSession(topic){
   index = saved.index; correctCount = saved.correctCount; answered = false;
   sessionMistakes = (Array.isArray(saved.mistakeKeys) ? saved.mistakeKeys : []).map(key => byKey.get(key)).filter(Boolean);
   try { localStorage.setItem(LAST_TOPIC_KEY, topic); } catch (_) {}
+  window.dispatchEvent(new CustomEvent("mathBacSyria:topic-opened", { detail: { topic } }));
   $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent = topic; updateResumeCard();
   if (index >= quizQuestions.length) { clearTrainingSession(); showResults(); }
@@ -601,6 +602,7 @@ function startQuiz(topic){
   const level = $("difficulty").value;
   quizQuestions = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level));
   if(!quizQuestions.length){ alert("لا توجد أسئلة في هذا المستوى لهذا البحث حالياً. اختر مستوى آخر."); return; }
+  window.dispatchEvent(new CustomEvent("mathBacSyria:topic-opened", { detail: { topic } }));
   clearTrainingSession();
   quizQuestions = [...quizQuestions].sort(()=>Math.random()-0.5);
   index=0; correctCount=0; answered=false; sessionMistakes=[];
