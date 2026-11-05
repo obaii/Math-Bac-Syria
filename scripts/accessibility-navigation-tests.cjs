@@ -129,6 +129,22 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator(".hero h1").evaluate(el => document.activeElement === el), false,
       "outside dismissal should not steal focus from the clicked page content");
 
+    const reducedMotionPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await reducedMotionPage.emulateMedia({ reducedMotion: "reduce" });
+    await reducedMotionPage.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await reducedMotionPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await reducedMotionPage.evaluate(() => {
+      window.__panelScrollBehaviors = [];
+      Element.prototype.scrollIntoView = function(options) {
+        window.__panelScrollBehaviors.push(options?.behavior || "auto");
+      };
+    });
+    await reducedMotionPage.locator("#section-menu-toggle").click();
+    await reducedMotionPage.locator('#section-menu [data-dashboard-target="home"]').click();
+    assert.deepEqual(await reducedMotionPage.evaluate(() => window.__panelScrollBehaviors), ["auto"],
+      "homepage panel navigation should avoid smooth scrolling when reduced motion is requested");
+    await reducedMotionPage.close();
+
     await assertVisibleControlsHaveNames(page, "home screen");
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,
       "all nine dashboard panels should be available to the menu");
