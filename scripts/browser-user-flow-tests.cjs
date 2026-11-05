@@ -400,8 +400,8 @@ const assert = require("node:assert/strict");
     const weakestTopicFixture = await page.evaluate(() => {
       const [strongTopic, weakTopic] = topics.slice(0, 2);
       progressData.topicStats = {
-        [strongTopic]: { answered: 2, correct: 2 },
-        [weakTopic]: { answered: 2, correct: 0 }
+        [strongTopic]: { answered: 5, correct: 5 },
+        [weakTopic]: { answered: 5, correct: 0 }
       };
       refreshDashboard();
       return weakTopic;

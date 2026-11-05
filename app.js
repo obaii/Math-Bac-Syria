@@ -228,20 +228,45 @@ function renderWeakTopicRecommendation(){
   const detail = $("weak-topic-detail");
   const button = $("weak-topic-button");
   if (!section || !name || !rateNode || !detail || !button) return;
-  const candidates = (Array.isArray(topics) ? topics : []).map(topic => {
+
+  // لا نصدر حكماً على مستوى الطالب من عينة صغيرة؛ نحتاج خمس إجابات على الأقل في البحث.
+  const minimumSample = 5;
+  const availableTopics = (Array.isArray(topics) ? topics : [])
+    .filter(topic => questions.some(question => question.topic === topic));
+  const startedTopics = availableTopics.map(topic => {
     const stat = progressData.topicStats && progressData.topicStats[topic];
     const answered = stat && Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
-    const correct = stat && Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+    const correct = stat && Number.isSafeInteger(stat.correct) && stat.correct >= 0
+      ? Math.min(stat.correct, answered) : 0;
     return { topic, answered, correct, rate: answered ? Math.round(correct / answered * 100) : 0 };
-  }).filter(item => item.answered > 0 && questions.some(q => q.topic === item.topic));
+  }).filter(item => item.answered > 0);
+  const candidates = startedTopics.filter(item => item.answered >= minimumSample);
   candidates.sort((a, b) => a.rate - b.rate || b.answered - a.answered || a.topic.localeCompare(b.topic, "ar"));
   const weakest = candidates[0];
   section.hidden = !weakest;
-  if (!weakest) return;
+
+  const panel = section.closest(".dashboard-dynamic-panel");
+  const emptyState = panel && panel.querySelector(".dashboard-empty-state");
+  if (!weakest) {
+    if (emptyState) {
+      if (!startedTopics.length) {
+        emptyState.textContent = "ابدأ بحل الأسئلة في أحد الأبحاث، وسنقترح عليك ما يستحق المراجعة.";
+      } else {
+        const bestSample = Math.max(...startedTopics.map(item => item.answered));
+        const remaining = Math.max(1, minimumSample - bestSample);
+        emptyState.textContent = "أجب عن " + remaining.toLocaleString("ar") +
+          " إجابة إضافية على الأقل في أحد الأبحاث حتى نبني اقتراح المراجعة على عينة كافية.";
+      }
+    }
+    return;
+  }
+
   name.textContent = weakest.topic;
   rateNode.textContent = weakest.rate.toLocaleString("ar") + "٪";
-  detail.textContent = weakest.answered.toLocaleString("ar") + " إجابة مسجلة، منها " +
-    weakest.correct.toLocaleString("ar") + " صحيحة. هذا البحث هو الأقل في نسبة الإجابات الصحيحة بين الأبحاث التي بدأت بها.";
+  detail.textContent = weakest.answered.toLocaleString("ar") + " إجابات مسجلة، منها " +
+    weakest.correct.toLocaleString("ar") + " صحيحة. اخترنا هذا البحث لأنه الأقل في نسبة الإجابات الصحيحة بين الأبحاث التي تدربت عليها، بعد عينة لا تقل عن " +
+    minimumSample.toLocaleString("ar") + " إجابات.";
+  button.setAttribute("aria-label", "ابدأ مراجعة البحث " + weakest.topic);
   button.onclick = () => startQuiz(weakest.topic);
 }
 
