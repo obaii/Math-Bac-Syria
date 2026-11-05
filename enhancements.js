@@ -1918,6 +1918,10 @@
       menu?.classList.remove("is-opening", "is-closing");
     };
     const reducedMotionRequested = () => window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+    const scrollPanelIntoView = panel => panel.scrollIntoView({
+      behavior: reducedMotionRequested() ? "auto" : "smooth",
+      block: "start"
+    });
     const setMenuOpen = open => {
       if (!menu) return;
       clearMenuAnimation();
@@ -2020,7 +2024,7 @@
         panel.hidden = false;
         panel.setAttribute("tabindex", "-1");
         panel.focus({ preventScroll: true });
-        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        scrollPanelIntoView(panel);
       }, true);
       document.documentElement.dataset.panelToggleBound = "true";
     }
@@ -2050,7 +2054,7 @@
             if (menu) setMenuOpen(false);
             panel.setAttribute("tabindex", "-1");
             panel.focus({ preventScroll: true });
-            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+            scrollPanelIntoView(panel);
             return;
           }
         }
