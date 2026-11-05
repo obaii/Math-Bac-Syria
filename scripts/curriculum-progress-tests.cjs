@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+"use strict";
+const fs = require("node:fs");
+const path = require("node:path");
+const root = path.resolve(__dirname, "..");
+const map = JSON.parse(fs.readFileSync(path.join(root, "curriculum-map.json"), "utf8"));
+const script = fs.readFileSync(path.join(root, "curriculum-progress.js"), "utf8");
+const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const sw = fs.readFileSync(path.join(root, "sw.js"), "utf8");
+const assert = require("node:assert/strict");
+assert.equal(map.lessonCount, 63);
+assert.equal(map.units.length, 14);
+assert.equal(map.units.reduce((sum, unit) => sum + unit.lessons.length, 0), 63);
+assert.ok(script.includes('const STORAGE_KEY = "mathBacSyriaLastLessonByTopicV1"'));
+assert.ok(script.includes('lessonsFor(topic)'));
+assert.ok(script.includes('lessonsFor(unit.topic)'));
+assert.ok(script.includes('lessons.includes(selections[unit.topic])'));
+assert.ok(script.includes('new MutationObserver(refreshCardLabels)'));
+assert.ok(html.includes('curriculum-progress.css'));
+assert.ok(html.includes('curriculum-progress.js'));
+assert.ok(sw.includes('"./curriculum-progress.js"') && sw.includes('"./curriculum-progress.css"'));
+console.log("Curriculum per-topic last-lesson tests passed.");
