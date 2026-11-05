@@ -1414,9 +1414,9 @@ body.dark-mode .dashboard-empty-state{border-color:#40516b;background:rgba(125,1
 }
 #topic-grid .topic-card[data-topic-color="limits"] { --topic-accent:#315edb; --topic-soft:#edf2ff; --topic-border:#dce6ff; }
 #topic-grid .topic-card[data-topic-color="derivatives"] { --topic-accent:#087f8c; --topic-soft:#e7f7f7; --topic-border:#c8ebec; }
-#topic-grid .topic-card[data-topic-color="logarithm"] { --topic-accent:#8b5cf6; --topic-soft:#f2edff; --topic-border:#e1d7ff; }
-#topic-grid .topic-card[data-topic-color="exponential"] { --topic-accent:#b56a12; --topic-soft:#fff4e5; --topic-border:#f5dfbd; }
-#topic-grid .topic-card[data-topic-color="integration"] { --topic-accent:#16845b; --topic-soft:#e9f7ef; --topic-border:#cdebd9; }
+#topic-grid .topic-card[data-topic-color="logarithm"] { --topic-accent:#7c3aed; --topic-soft:#f2edff; --topic-border:#e1d7ff; }
+#topic-grid .topic-card[data-topic-color="exponential"] { --topic-accent:#9a4d0b; --topic-soft:#fff4e5; --topic-border:#f5dfbd; }
+#topic-grid .topic-card[data-topic-color="integration"] { --topic-accent:#047857; --topic-soft:#e9f7ef; --topic-border:#cdebd9; }
 #topic-grid .topic-card[data-topic-color="sequences"] { --topic-accent:#bd4c75; --topic-soft:#fff0f5; --topic-border:#f4d5e1; }
 #topic-grid .topic-card[data-topic-color="sequence-limits"] { --topic-accent:#0f766e; --topic-soft:#e6f6f3; --topic-border:#c2e8df; }
 #topic-grid .topic-card[data-topic-color="vectors"] { --topic-accent:#7c3aed; --topic-soft:#f1ebff; --topic-border:#ddd0ff; }
@@ -1424,7 +1424,7 @@ body.dark-mode .dashboard-empty-state{border-color:#40516b;background:rgba(125,1
 #topic-grid .topic-card[data-topic-color="lines-planes"] { --topic-accent:#a16207; --topic-soft:#fbf3df; --topic-border:#ecdfb9; }
 #topic-grid .topic-card[data-topic-color="complex"] { --topic-accent:#be123c; --topic-soft:#fff0f2; --topic-border:#f5cbd4; }
 #topic-grid .topic-card[data-topic-color="complex-geometry"] { --topic-accent:#4f46e5; --topic-soft:#eeedff; --topic-border:#d8d7ff; }
-#topic-grid .topic-card[data-topic-color="combinatorics"] { --topic-accent:#0d9488; --topic-soft:#e6f8f5; --topic-border:#c6eee7; }
+#topic-grid .topic-card[data-topic-color="combinatorics"] { --topic-accent:#4d7c0f; --topic-soft:#e6f8f5; --topic-border:#c6eee7; }
 #topic-grid .topic-card[data-topic-color="probability"] { --topic-accent:#9333ea; --topic-soft:#f5edff; --topic-border:#e6d4fb; }
 #topic-grid .topic-card::before {
   height: 3px;
