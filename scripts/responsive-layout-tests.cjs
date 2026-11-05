@@ -72,7 +72,7 @@ const assert = require("node:assert/strict");
       const expectedColumns = viewport.width <= 540 ? 1 : viewport.width <= 850 ? 2 : 3;
       if (viewport.width <= 600) {
         const filterTargets = await page.evaluate(() => ({
-          clearSearch: (() => { const rect = document.querySelector("#clear-topic-search").getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
+          clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
           resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })()
         }));
         assert.ok(filterTargets.clearSearch.width >= 44 && filterTargets.clearSearch.height >= 44,
