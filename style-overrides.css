@@ -1488,3 +1488,32 @@ body.dark-mode #topic-grid .topic-number {
   #topic-grid .topic-mastery > span { transition: none !important; }
   #topic-grid .topic-card:hover:not(:disabled) { transform: none; }
 }
+
+/* Organize the section menu into clear learning, assessment, tools, and progress groups. */
+#section-menu .quick-start-group-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 2px 1px;
+  color: var(--muted, #718096);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+#section-menu .quick-start-group-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line, #e5eaf2);
+}
+#section-menu .quick-start-group-label:first-child { margin-top: 2px; }
+body.dark-mode #section-menu .quick-start-group-label::after {
+  background: #34445d;
+}
+@media (max-width: 600px) {
+  #section-menu .quick-start-group-label {
+    margin-top: 7px;
+    font-size: 11px;
+  }
+}
