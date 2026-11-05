@@ -45,6 +45,8 @@ jobs:
           done
           cat /tmp/math-bac-http.log
           exit 1
+      - name: Run first-visit guide browser tests
+        run: node scripts/first-visit-guide-tests.cjs
       - name: Run student progress regression tests
         run: node scripts/student-progress-tests.cjs
       - name: Run formula library regression tests
