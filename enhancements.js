@@ -163,7 +163,13 @@
     const future = plan.days.filter(day => day.date >= today);
     pending.forEach((task, index) => {
       if (!future.length) return;
-      future[index % future.length].tasks.push({ ...task, id:task.id+"-moved-"+today });
+      const destination = future[index % future.length];
+      // A moved task keeps its original identity across later rebalances.
+      // Changing the ID every day would grow it indefinitely and eventually
+      // cause normalizeStudyPlan() to discard the task after reload.
+      if (!destination.tasks.some(existing => existing.id === task.id)) {
+        destination.tasks.push({ ...task });
+      }
     });
     plan.lastRebalancedDate = today;
     persistExtras();
