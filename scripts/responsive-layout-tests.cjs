@@ -70,6 +70,17 @@ const assert = require("node:assert/strict");
       );
       assert.equal(layout.topicCardCount, 14, "the home page should retain all 14 curriculum research cards");
       const expectedColumns = viewport.width <= 540 ? 1 : viewport.width <= 850 ? 2 : 3;
+      if (viewport.width <= 600) {
+        const filterTargets = await page.evaluate(() => ({
+          clearSearch: (() => { const rect = document.querySelector("#clear-topic-search").getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
+          resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })()
+        }));
+        assert.ok(filterTargets.clearSearch.width >= 44 && filterTargets.clearSearch.height >= 44,
+          "the mobile clear-search control should meet the 44px touch-target size");
+        assert.ok(filterTargets.resetFilters.height >= 44,
+          "the mobile reset-filters control should meet the 44px touch-target size");
+      }
+
       assert.equal(layout.topicGridColumns, expectedColumns,
         `research cards should use ${expectedColumns} columns at ${viewport.width}px`);
       for (const card of layout.cardBounds) {
