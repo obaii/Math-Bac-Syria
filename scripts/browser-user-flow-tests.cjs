@@ -70,6 +70,10 @@ const assert = require("node:assert/strict");
     );
     assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
       "group headings should not replace or hide any existing section shortcut");
+    const menuIcons = await quickStart.locator("a.quick-start-card .quick-start-icon").allInnerTexts();
+    assert.equal(menuIcons.length, 19, "every section shortcut should display its own icon");
+    assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 19,
+      "all 19 section shortcuts should use distinct visual icons");
 
     // A new homepage destination should show one update marker until the learner opens it.
     await page.locator("#section-menu-toggle").click();
