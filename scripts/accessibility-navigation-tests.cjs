@@ -98,6 +98,17 @@ async function assertVisibleControlsHaveNames(page, context) {
     await assertVisibleControlsHaveNames(page, "home screen");
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,
       "all nine dashboard panels should be available to the menu");
+    const dashboardShortcutLinks = page.locator("#section-menu [data-dashboard-target]");
+    assert.equal(await dashboardShortcutLinks.count(), 9,
+      "all nine dashboard shortcuts should be available");
+    const dashboardRelationships = await dashboardShortcutLinks.evaluateAll(links => links.map(link => ({
+      controls: link.getAttribute("aria-controls"),
+      expanded: link.getAttribute("aria-expanded"),
+      targetExists: Boolean(link.getAttribute("aria-controls") && document.getElementById(link.getAttribute("aria-controls"))),
+      targetMatches: link.getAttribute("aria-controls") === "dashboard-panel-" + link.dataset.dashboardTarget
+    })));
+    assert.equal(dashboardRelationships.every(item => item.targetExists && item.targetMatches && item.expanded === "false"), true,
+      "every dashboard shortcut should identify its real panel and start collapsed");
     assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 0,
       "dashboard panels should not clutter the initial homepage");
     await page.locator("#section-menu-toggle").click();
