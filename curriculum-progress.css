@@ -1,7 +1,7 @@
 .curriculum-progress-picker {
   display: grid;
   gap: 12px;
-  margin: 0 0 18px;
+  margin: 16px 0 0;
   padding: 16px 18px;
   border: 1px solid var(--line);
   border-radius: 18px;
