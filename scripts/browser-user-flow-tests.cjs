@@ -48,7 +48,8 @@ const assert = require("node:assert/strict");
       "the selected lesson should be stored against its own topic");
     await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
     await page.locator("#curriculum-lesson-select").selectOption("المتحوّلات العشوائيّة");
-    const restoredPage = await page.context().newPage();
+    const restoredContext = await browser.newContext({ storageState: await page.context().storageState() });
+    const restoredPage = await restoredContext.newPage();
     await restoredPage.setDefaultTimeout(10000);
     await restoredPage.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await restoredPage.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
@@ -60,7 +61,7 @@ const assert = require("node:assert/strict");
     await restoredPage.locator("#curriculum-topic-select").selectOption("الاحتمالات");
     assert.equal(await restoredPage.locator("#curriculum-lesson-select").inputValue(), "المتحوّلات العشوائيّة",
       "switching topics should restore that topic's own saved lesson");
-    await restoredPage.close();
+    await restoredContext.close();
 
     assert.equal(await page.evaluate(() => typeof window.bootstrap), "undefined",
       "the homepage should not download the unused Bootstrap JavaScript bundle");
