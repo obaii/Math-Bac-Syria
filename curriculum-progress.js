@@ -13,9 +13,9 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(value)); return true; }
     catch (_) { return false; }
   };
-  const escapeText = value => String(value ?? "");
   let curriculum = null;
   let selections = {};
+  let activeTopic = "";
 
   function lessonsFor(topic) {
     const unit = curriculum?.units?.find(item => item.topic === topic);
@@ -100,8 +100,10 @@
     panel.append(heading, controls, status);
     grid.insertAdjacentElement("beforebegin", panel);
 
-    let lastTopic = "";
-    try { lastTopic = localStorage.getItem(LAST_TOPIC_KEY) || ""; } catch (_) {}
+    let lastTopic = activeTopic;
+    if (!lastTopic) {
+      try { lastTopic = localStorage.getItem(LAST_TOPIC_KEY) || ""; } catch (_) {}
+    }
     if (lessonsFor(lastTopic).length) topicSelect.value = lastTopic;
     updateLessonOptions(topicSelect, lessonSelect, status);
     topicSelect.addEventListener("change", () => updateLessonOptions(topicSelect, lessonSelect, status));
@@ -121,6 +123,20 @@
     });
     refreshCardLabels();
   }
+  function syncActiveTopic(topic) {
+    if (typeof topic !== "string" || !topic) return;
+    activeTopic = topic;
+    if (!curriculum || !lessonsFor(topic).length) return;
+    const topicSelect = document.getElementById("curriculum-topic-select");
+    const lessonSelect = document.getElementById("curriculum-lesson-select");
+    const status = document.getElementById("curriculum-progress-status");
+    if (!topicSelect || !lessonSelect || !status) return;
+    topicSelect.value = topic;
+    updateLessonOptions(topicSelect, lessonSelect, status);
+  }
+  window.addEventListener("mathBacSyria:topic-opened", event => {
+    syncActiveTopic(event?.detail?.topic);
+  });
   async function initialize() {
     try {
       const response = await fetch("./curriculum-map.json", { cache: "no-cache" });
