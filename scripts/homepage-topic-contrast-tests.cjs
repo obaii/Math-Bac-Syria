@@ -9,10 +9,10 @@ function parseColor(value) {
   const hex = input.match(/^#([0-9a-f]{6})$/i);
   if (hex) return [0, 2, 4].map(index => parseInt(hex[1].slice(index, index + 2), 16) / 255);
 
-  const rgb = input.match(/^rgba?\\(\\s*([\\d.]+)[, ]+([\\d.]+)[, ]+([\\d.]+)/i);
+  const rgb = input.match(/^rgba?\(\s*([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)/i);
   if (rgb) return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])].map(channel => channel / 255);
 
-  const srgb = input.match(/^color\\(srgb\\s+([\\d.]+)\\s+([\\d.]+)\\s+([\\d.]+)/i);
+  const srgb = input.match(/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/i);
   if (srgb) return [Number(srgb[1]), Number(srgb[2]), Number(srgb[3])];
 
   assert.fail(`unsupported computed color format: "${value}"`);
