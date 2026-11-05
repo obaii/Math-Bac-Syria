@@ -394,13 +394,13 @@ const assert = require("node:assert/strict");
       "each research topic should have a distinct visual symbol");
     const firstTopicIdentity = topicIdentity[0];
     await page.locator("#topic-search").fill(firstTopicIdentity.topic);
-    await expect(page.locator("#topic-grid [data-topic]")).toHaveCount(1);
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 1);
     assert.equal(await page.locator("#topic-grid [data-topic]").getAttribute("data-topic-color"), firstTopicIdentity.color,
       "filtering should not change a topic's assigned color");
     assert.equal(await page.locator("#topic-grid [data-topic] .topic-subject-icon").innerText(), firstTopicIdentity.icon,
       "filtering should not change a topic's assigned icon");
     await page.locator("#topic-search").fill("");
-    await expect(topicButtons).toHaveCount(14);
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9, "the section menu should contain nine separate dashboard panels");
     const initiallyVisibleDashboardPanels = await page.locator("[data-dashboard-panel]:visible").evaluateAll(elements => elements.map(element => element.dataset.dashboardPanel));
     assert.deepEqual(initiallyVisibleDashboardPanels, [], "dashboard panels should be hidden on the initial homepage; visible: " + initiallyVisibleDashboardPanels.join(", "));
