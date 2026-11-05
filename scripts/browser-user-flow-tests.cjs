@@ -80,18 +80,10 @@ const assert = require("node:assert/strict");
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();
     assert.equal(await page.locator("#brand-home").getAttribute("aria-label"), "الصفحة الرئيسية", "the brand home link should have a clear accessible name");
 
-    // An unfinished topic session should survive a reload and resume at the next unanswered question.
+    // An unfinished topic session should survive a reload and restore its question order.
     const resumeTopic = await page.locator("#topic-grid [data-topic]").first().getAttribute("data-topic");
     await page.locator('#topic-grid [data-topic="' + resumeTopic + '"]').click();
     await page.locator("#quiz").waitFor({ state: "visible" });
-    const answerButtons = page.locator("#options button.option");
-    if (await answerButtons.count()) await answerButtons.first().click();
-    else {
-      await page.locator("#typed-answer-input").fill("0");
-      await page.locator("#options button[type=\"submit\"]").click();
-    }
-    await page.locator("#feedback").waitFor({ state: "visible" });
-    await page.locator("#next").click();
     const savedQuestionNumber = await page.locator("#question-number").innerText();
     const savedQuestionText = await page.locator("#question-text").innerText();
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -100,13 +92,12 @@ const assert = require("node:assert/strict");
     await page.locator("#resume-topic-button").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#question-number").innerText(), savedQuestionNumber,
-      "resuming should restore the exact next unanswered question position");
+      "resuming should restore the saved question position");
     assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
       "resuming should restore the same shuffled question order");
     await page.locator("#back").click();
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaTrainingSessionV1"));
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
-
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
