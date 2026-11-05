@@ -1881,7 +1881,7 @@ main [id], main section[id], footer[id] { scroll-margin-top: var(--homepage-anch
 
 
 /* Give the no-results state a clear recovery action without hiding the explanation. */
-#no-topics { display: grid; justify-items: center; gap: 12px; }
+#no-topics:not(.hidden) { display: grid; justify-items: center; gap: 12px; }
 #no-topics p { margin: 0; }
 #no-topics button { min-height: 44px; padding: 9px 16px; border-radius: 11px; }
 body.dark-mode #no-topics { color: #a7b5ca; }
