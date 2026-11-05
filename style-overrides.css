@@ -1836,3 +1836,33 @@ body.dark-mode .topic-card .topic-status { color: var(--muted); }
   .topic-card, .topic-card:hover:not(:disabled) { transform: none; }
 }
 
+
+
+/* Keep the two post-answer actions together, including on narrow phones. */
+#quiz .actions #next,
+#quiz .actions #similar-practice-start {
+  flex: 1 1 124px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 370px) {
+  #quiz .actions #next,
+  #quiz .actions #similar-practice-start {
+    flex-basis: 120px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #quiz .actions #next,
+  #quiz .actions #similar-practice-start {
+    transition: none !important;
+  }
+}
+
+
+/* Align both post-answer actions to the same row height on narrow screens. */
+#quiz .actions { align-items: stretch; }

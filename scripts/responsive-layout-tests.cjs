@@ -99,6 +99,52 @@ const assert = require("node:assert/strict");
       }
     }
 
+    // The next-question and similar-practice actions should remain side by side after an answer.
+    for (const width of [320, 360, 390]) {
+      await page.setViewportSize({ width, height: 800 });
+      await page.evaluate(() => {
+        const topic = topics[0];
+        quizQuestions = [{
+          topic,
+          q: "اختبار ترتيب أزرار التدريب",
+          options: ["الخيار الأول", "الخيار الثاني"],
+          answer: 0,
+          solution: "حل تجريبي لاختبار تخطيط الأزرار."
+        }];
+        currentTopic = topic;
+        index = 0;
+        correctCount = 0;
+        answered = false;
+        reviewMode = false;
+        sessionMistakes = [];
+        document.getElementById("home").classList.add("hidden");
+        document.getElementById("results").classList.add("hidden");
+        document.getElementById("quiz").classList.remove("hidden");
+        showQuestion();
+      });
+      await page.locator('#options [data-option="0"]').click();
+      await page.locator("#similar-practice-start").waitFor({ state: "visible" });
+      const actionLayout = await page.evaluate(() => {
+        const next = document.getElementById("next").getBoundingClientRect();
+        const similar = document.getElementById("similar-practice-start").getBoundingClientRect();
+        return {
+          viewport: document.documentElement.clientWidth,
+          actionWidth: document.querySelector("#quiz .actions").clientWidth,
+          next: { left: next.left, right: next.right, top: next.top, bottom: next.bottom, width: next.width },
+          similar: { left: similar.left, right: similar.right, top: similar.top, bottom: similar.bottom, width: similar.width },
+          pageWidth: document.documentElement.scrollWidth
+        };
+      });
+      assert.ok(actionLayout.next.width > 0 && actionLayout.similar.width > 0,
+        `both post-answer actions should be visible at ${width}px: ${JSON.stringify(actionLayout)}`);
+      assert.ok(Math.abs(actionLayout.next.top - actionLayout.similar.top) <= 2,
+        `the next and similar-practice buttons should share one row at ${width}px: ${JSON.stringify(actionLayout)}`);
+      assert.ok(actionLayout.next.left >= -1 && actionLayout.similar.left >= -1 &&
+        actionLayout.next.right <= width + 1 && actionLayout.similar.right <= width + 1 &&
+        actionLayout.pageWidth <= width + 1,
+        `post-answer buttons should not overflow at ${width}px: ${JSON.stringify(actionLayout)}`);
+    }
+
     assert.deepEqual(errors, [], "responsive viewport checks should not produce browser errors");
     console.log("PASS: responsive layout at 320px, 360px, 390px, and 768px without horizontal overflow or clipped visible controls");
   } finally {
