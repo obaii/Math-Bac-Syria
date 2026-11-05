@@ -48,6 +48,8 @@
   };
   // Load the student-tool state before any setup function can render or read it.
   let extras = loadExtras();
+  // Keep the expanded/collapsed state while the study plan re-renders after task updates.
+  let studyPlanExpanded = false;
   const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); return true; } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); return false; } };
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
@@ -120,6 +122,7 @@
       .flatMap(day => Array.isArray(day.tasks) ? day.tasks : [])
       .filter(task => task && task.done === true && typeof task.id === "string")
       .map(task => [task.id, task.target]));
+    studyPlanExpanded = false;
     const days = [];
     for (let offset=0; offset<daysCount; offset++) {
       const date = new Date(today.getFullYear(), today.getMonth(), today.getDate()+offset);
@@ -181,16 +184,26 @@
       const completedDays = plan.days.filter(day => day.tasks.length && day.tasks.every(task => task.done)).length;
       const remainingDays = Math.max(0, calendarDayOrdinal(parseLocalDate(plan.examDate)) - calendarDayOrdinal(new Date()) + 1);
       const todayPlan = plan.days.find(day => day.date === today);
-      const upcoming = plan.days.filter(day => day.date > today).slice(0,3);
+      const allUpcoming = plan.days.filter(day => day.date > today);
+      const upcoming = studyPlanExpanded ? allUpcoming : allUpcoming.slice(0,3);
+      const upcomingToggleMarkup = allUpcoming.length > 3
+        ? '<button type="button" class="study-plan-upcoming-toggle" id="study-plan-upcoming-toggle" aria-controls="study-plan-upcoming" aria-expanded="'+String(studyPlanExpanded)+'">'+(studyPlanExpanded ? "إخفاء الأيام اللاحقة" : "عرض بقية الخطة ("+(allUpcoming.length - 3).toLocaleString("ar")+" أيام)")+'</button>'
+        : "";
       const renderDay = (day, label) => '<section class="study-plan-day"><h4>'+label+' · '+escapeHtml(day.date)+'</h4><ul>'+day.tasks.map(task =>
         '<li><label><input type="checkbox" data-study-task="'+escapeHtml(task.id)+'" '+(task.done?'checked':'')+'><span><strong>'+escapeHtml(task.title)+'</strong><small>'+(task.kind==="practice" ? task.target+" سؤالاً" : "حتى "+task.target+" أسئلة")+'</small></span></label><button type="button" data-study-open="'+task.kind+'" data-study-topic="'+escapeHtml(task.topic || "")+'" data-study-target="'+task.target+'">'+(task.kind==="practice" ? "ابدأ التدريب" : "افتح المراجعة")+'</button></li>'
       ).join("")+'</ul></section>';
       const dueReviewCount = getScheduledReviews().filter(item => item.due <= Date.now()).length;
       const dueReviewTask = dueReviewCount ? '<section class="study-plan-day study-plan-due-review"><h4>مراجعة ذكية مستحقة اليوم</h4><p>لديك '+dueReviewCount.toLocaleString("ar")+' سؤالاً حان موعد مراجعته. أُضيفت هذه المهمة تلقائياً من جدول المراجعة دون إنشاء مهام مكررة أو تغيير إنجازاتك السابقة.</p><button type="button" id="study-plan-due-review">ابدأ مراجعة الأسئلة المستحقة</button></section>' : '<p class="study-plan-note">لا توجد مراجعات متباعدة مستحقة اليوم.</p>';
       const editDateValue = plan.examDate < today ? today : plan.examDate;
-      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit" aria-controls="study-plan-edit-form" aria-expanded="false">تعديل الخطة</button></div><form id="study-plan-edit-form" class="study-plan-form study-plan-edit-form" hidden><label for="study-plan-edit-date">موعد الامتحان الجديد<input id="study-plan-edit-date" type="date" min="'+today+'" value="'+escapeHtml(editDateValue)+'" required></label><label for="study-plan-edit-target">عدد الأسئلة يومياً<input id="study-plan-edit-target" type="number" min="5" max="30" step="5" value="'+plan.dailyTarget+'" required></label><div class="study-plan-edit-actions"><button type="submit">حفظ التعديلات</button><button type="button" id="study-plan-edit-cancel" class="study-plan-cancel">إلغاء</button></div><p class="study-plan-note">ستُحفظ المهام المكتملة المطابقة، وتُعاد جدولة المهام التي تغيرت.</p></form><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+dueReviewTask+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
+      panel.innerHTML = '<div class="study-plan-heading"><div><h3>خطة دراستي</h3><p>موعد الامتحان: <strong>'+escapeHtml(plan.examDate)+'</strong></p></div><button type="button" id="study-plan-edit" aria-controls="study-plan-edit-form" aria-expanded="false">تعديل الخطة</button></div><form id="study-plan-edit-form" class="study-plan-form study-plan-edit-form" hidden><label for="study-plan-edit-date">موعد الامتحان الجديد<input id="study-plan-edit-date" type="date" min="'+today+'" value="'+escapeHtml(editDateValue)+'" required></label><label for="study-plan-edit-target">عدد الأسئلة يومياً<input id="study-plan-edit-target" type="number" min="5" max="30" step="5" value="'+plan.dailyTarget+'" required></label><div class="study-plan-edit-actions"><button type="submit">حفظ التعديلات</button><button type="button" id="study-plan-edit-cancel" class="study-plan-cancel">إلغاء</button></div><p class="study-plan-note">ستُحفظ المهام المكتملة المطابقة، وتُعاد جدولة المهام التي تغيرت.</p></form><div class="study-plan-metrics"><div><strong>'+remainingDays.toLocaleString("ar")+'</strong><span>يوماً متبقياً</span></div><div><strong>'+percent.toLocaleString("ar")+'٪</strong><span>إنجاز الخطة</span></div><div><strong>'+completedDays.toLocaleString("ar")+'</strong><span>أيام مكتملة</span></div></div><div class="study-plan-track" role="progressbar" aria-label="نسبة إنجاز خطة الدراسة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+percent+'"><span style="width:'+percent+'%"></span></div>'+(todayPlan ? renderDay(todayPlan,"مهام اليوم") : '<p>انتهت أيام الخطة المحددة. يمكنك تعديل موعد الامتحان لإنشاء جدول جديد.</p>')+dueReviewTask+'<div id="study-plan-upcoming">'+upcoming.map((day,index)=>renderDay(day,"اليوم القادم "+(index+1))).join("")+'</div>'+upcomingToggleMarkup+'<p class="study-plan-note">تُعاد جدولة المهام غير المكتملة تلقائياً عند فوات يوم، مع الاحتفاظ بالمهام التي أنجزتها. تُعطى الأولوية للأبحاث التي يظهر فيها عدد أكبر من الأخطاء أو دقة أقل.</p>';
       const dueReviewButton = document.getElementById("study-plan-due-review");
       if (dueReviewButton) dueReviewButton.addEventListener("click", startSmartReview);
+       const upcomingToggle = document.getElementById("study-plan-upcoming-toggle");
+       if (upcomingToggle) upcomingToggle.addEventListener("click", () => {
+         studyPlanExpanded = !studyPlanExpanded;
+         renderStudyPlan();
+         document.getElementById("study-plan-upcoming-toggle")?.focus();
+       });
       const edit = document.getElementById("study-plan-edit");
       const editForm = document.getElementById("study-plan-edit-form");
       const editDate = document.getElementById("study-plan-edit-date");
@@ -282,6 +295,8 @@
       .study-plan h3{margin:0 0 6px}.study-plan p{line-height:1.8}.study-plan-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end}
       .study-plan-form label{display:grid;gap:6px;font-size:13px}.study-plan-form input{font:inherit;min-width:0;width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg,#fff);color:var(--ink);min-height:42px}
       .study-plan button{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card-bg,white);color:var(--ink);cursor:pointer;min-height:42px}
+       .study-plan-upcoming-toggle{display:block;width:100%;margin-top:12px;font-weight:700}
+       .study-plan-upcoming-toggle:focus-visible{outline:3px solid var(--focus-ring,#8aa8ff);outline-offset:3px}
       .study-plan-heading,.study-plan-metrics{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.study-plan-metrics{margin:12px 0}.study-plan-metrics>div{display:grid;gap:3px;padding:10px;border:1px solid var(--line);border-radius:10px;min-width:100px}.study-plan-metrics strong{font-size:20px}.study-plan-metrics span,.study-plan-day small,.study-plan-note{font-size:12px;color:var(--muted)}
       .study-plan-track{height:9px;border-radius:99px;overflow:hidden;background:var(--line);margin:12px 0 16px}.study-plan-track span{display:block;height:100%;background:var(--success,#2f9e72)}
       .study-plan-day{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px}.study-plan-day h4{margin:0 0 8px}.study-plan-day ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}.study-plan-day li label{display:flex;align-items:flex-start;gap:9px;cursor:pointer}.study-plan-day input{margin-top:5px;flex:0 0 auto}.study-plan-day li span{display:grid;gap:3px}.study-plan-note{margin-top:12px}
