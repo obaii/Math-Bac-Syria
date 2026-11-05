@@ -534,6 +534,8 @@ function renderTopics(){
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
   const clearSearchButton = $("clear-topic-search");
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
+  const clearAllFiltersButton = $("clear-all-topic-filters");
+  if (clearAllFiltersButton) clearAllFiltersButton.hidden = !search && level === "الكل";
   const availableTopics = topics.filter(topic => window.MathSearchUtils.matches(topic, search));
   // Count available and previously seen questions in one pass instead of
   // scanning the complete question bank twice for each of the 14 topic cards.
@@ -1155,6 +1157,13 @@ topicSearchInput.addEventListener("input",saveHomepageFilters);
 topicSearchInput.addEventListener("input",renderTopics);
 $("clear-topic-search").addEventListener("click",()=>{
   topicSearchInput.value = "";
+  saveHomepageFilters();
+  renderTopics();
+  topicSearchInput.focus();
+});
+$("clear-all-topic-filters").addEventListener("click",()=>{
+  topicSearchInput.value = "";
+  $("difficulty").value = "الكل";
   saveHomepageFilters();
   renderTopics();
   topicSearchInput.focus();
