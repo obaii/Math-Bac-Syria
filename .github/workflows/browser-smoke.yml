@@ -49,6 +49,8 @@ jobs:
         run: node scripts/first-visit-guide-tests.cjs
       - name: Run student progress regression tests
         run: node scripts/student-progress-tests.cjs
+      - name: Run homepage topic rendering performance tests
+        run: node scripts/homepage-topic-performance-tests.cjs
       - name: Run formula library regression tests
         run: node scripts/formula-library-tests.cjs
       - name: Run solved examples library regression tests
