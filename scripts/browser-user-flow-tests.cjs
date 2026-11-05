@@ -497,6 +497,22 @@ const assert = require("node:assert/strict");
     assert.equal(generatedPlan.examDate, planDate, "study plan should save the selected exam date");
     assert.equal(generatedPlan.dailyTarget, 15, "study plan should save the daily question target");
     assert.ok(generatedPlan.days.length >= 5, "study plan should distribute study tasks across the days before the exam");
+    assert.equal(await page.locator("#study-plan-upcoming .study-plan-day").count(), 3,
+      "study plan should show the next three days initially rather than a long uncollapsed schedule");
+    const upcomingToggle = page.locator("#study-plan-upcoming-toggle");
+    assert.ok(await upcomingToggle.isVisible(), "long study plans should provide a control to reveal the remaining days");
+    await upcomingToggle.click();
+    assert.equal(await page.locator("#study-plan-upcoming .study-plan-day").count(), generatedPlan.days.length - 1,
+      "expanding the study plan should reveal every remaining day through the selected exam date");
+    assert.equal(await upcomingToggle.getAttribute("aria-expanded"), "true",
+      "the full-schedule control should expose its expanded state");
+    assert.equal(await page.evaluate(() => document.activeElement?.id || null), "study-plan-upcoming-toggle",
+      "expanding the schedule should preserve keyboard focus on its toggle");
+    await upcomingToggle.click();
+    assert.equal(await page.locator("#study-plan-upcoming .study-plan-day").count(), 3,
+      "collapsing the schedule should restore the concise three-day preview");
+    assert.equal(await page.locator("#study-plan-upcoming-toggle").getAttribute("aria-expanded"), "false",
+      "the full-schedule control should expose its collapsed state");
     const firstTask = page.locator("#study-plan [data-study-task]").first();
     const firstTaskId = await firstTask.getAttribute("data-study-task");
     await firstTask.check();
