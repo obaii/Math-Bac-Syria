@@ -18,5 +18,5 @@ assert.ok(script.includes('lessons.includes(selections[unit.topic])'));
 assert.ok(script.includes('new MutationObserver(refreshCardLabels)'));
 assert.ok(html.includes('curriculum-progress.css'));
 assert.ok(html.includes('curriculum-progress.js'));
-assert.ok(sw.includes('"./curriculum-progress.js"') && sw.includes('"./curriculum-progress.css"'));
+assert.ok(sw.includes('"./curriculum-progress.js"') && sw.includes('"./curriculum-progress.css"') && sw.includes('"./curriculum-map.json"'));
 console.log("Curriculum per-topic last-lesson tests passed.");
