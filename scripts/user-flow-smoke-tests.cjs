@@ -69,7 +69,17 @@ const checks = [
   ["flashcards are cached for offline study", fs.readFileSync(path.join(root, "sw.js"), "utf8").includes('"./flashcards.js"')],
   ["exam setup exposes start, question count, difficulty, and duration", ["start-exam", "exam-question-count", "exam-difficulty", "exam-duration"].every(id => ids.includes(id))],
   ["browser scripts load question data and helpers before the app", scriptPaths.indexOf("questions.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("questions_typed_additional.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("solution-guides.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("question-diagrams.js") < scriptPaths.indexOf("app.js") && scriptPaths.indexOf("app.js") < scriptPaths.indexOf("enhancements.js")],
-  ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && scriptPaths.indexOf("merge-questions.js") < scriptPaths.indexOf("app.js") && mrg.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
+  ["question assembly assigns stable IDs, provenance, and curriculum-unit metadata", (() => {
+    const source = mrg;
+    return source.includes("QUESTION_SCHEMA_VERSION = 1") &&
+      source.includes("hashText(canonicalText)") &&
+      source.includes("questions_vectors_additional.js") &&
+      source.includes("questions_typed_additional.js") &&
+      source.includes('lessonMappingStatus = question.lessonId ? "lesson-mapped" : "topic-only"') &&
+      source.includes("normalizeText(question.q)");
+  })()],
+  ["question metadata validation is tied to the 63-lesson curriculum map", fs.readFileSync(path.join(root, "scripts", "validate-question-bank.cjs"), "utf8").includes("unitsByTopic.get(q.topic)") && fs.readFileSync(path.join(root, "scripts", "validate-question-bank.cjs"), "utf8").includes("validSources[q.source.file]")],
+    ["topic selection, search, and difficulty changes are wired in the app", app.includes('document.querySelectorAll("[data-topic]")') && scriptPaths.indexOf("merge-questions.js") < scriptPaths.indexOf("app.js") && mrg.includes("typedQuestionsAdditional") && app.includes("startQuiz(btn.dataset.topic)") && /\$\("topic-search"\)|topicSearchInput\.addEventListener\("input",renderTopics\)/.test(app) && app.includes('$("difficulty").addEventListener("change",renderTopics)')],
   ["answer feedback, solution rendering, and progress persistence are wired", app.includes("function chooseAnswer(") && app.includes('$("feedback").innerHTML') && app.includes("function saveProgress(") && app.includes("progressData.seenQuestions[questionKey(q)] = true")],
   ["exam and student-tool click handlers exist", enhancements.includes("startButton.onclick = () =>") && enhancements.includes("startExam();") && enhancements.includes('bindClick("bookmark-review", toggleBookmarkList)') && enhancements.includes('bindClick("toggle-dark-mode", toggleDarkMode)')],
   ["overdue study-plan tasks keep stable IDs and overflow is retained in a visible backlog", (() => {
