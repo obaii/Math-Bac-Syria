@@ -533,7 +533,9 @@ function renderTopics(){
   const latestAttempts = getLatestTopicAttempts();
   const lastOpenedTopic = getLastOpenedTopic();
   $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
-  $("topic-grid").innerHTML = availableTopics.map((topic, displayIndex)=>{
+  const topicGrid = $("topic-grid");
+  topicGrid.setAttribute("aria-busy", "true");
+  topicGrid.innerHTML = availableTopics.map((topic, displayIndex)=>{
     const i = topics.indexOf(topic);
     const count = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level)).length;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
@@ -556,6 +558,7 @@ function renderTopics(){
       <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}"><span style="width:${coverageRate}%"></span></span>
     </button>`;
   }).join("");
+  topicGrid.setAttribute("aria-busy", "false");
   $("no-topics").classList.toggle("hidden", availableTopics.length !== 0);
   document.querySelectorAll("[data-topic]").forEach(btn=>btn.addEventListener("click",()=>startQuiz(btn.dataset.topic)));
   refreshDashboard();
