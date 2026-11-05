@@ -42,7 +42,16 @@ const assert = require("node:assert/strict");
           expected.set(question.topic, counts);
         }
 
-        return [...document.querySelectorAll("#topic-grid .topic-card")].map(card => {
+        const cards = [...document.querySelectorAll("#topic-grid .topic-card")];
+        const visibleQuestionCount = cards.reduce((total, card) =>
+          total + (expected.get(card.dataset.topic)?.total || 0), 0);
+        const summary = document.querySelector("#total-count");
+        const expectedSummary = `${visibleQuestionCount.toLocaleString("ar")} سؤال متاح في ${cards.length.toLocaleString("ar")} بحث`;
+        return {
+          summary: summary.textContent,
+          expectedSummary,
+          summaryLive: summary.getAttribute("aria-live"),
+          cards: cards.map(card => {
           const counts = expected.get(card.dataset.topic) || { total: 0, seen: 0 };
           const coverage = counts.total
             ? Math.min(100, Math.round(counts.seen / counts.total * 100))
@@ -58,11 +67,16 @@ const assert = require("node:assert/strict");
             expectedDisabled: counts.total === 0,
             actualDisabled: card.disabled
           };
-        });
+          })
+        };
       });
 
-      assert.equal(result.length, 14, `all 14 topics should remain visible for level "${level}"`);
-      for (const card of result) {
+      assert.equal(result.summaryLive, "polite",
+        "the filtered question total should be announced politely to assistive technology");
+      assert.equal(result.summary, result.expectedSummary,
+        `the summary should match visible topics and available questions at level "${level}"`);
+      assert.equal(result.cards.length, 14, `all 14 topics should remain visible for level "${level}"`);
+      for (const card of result.cards) {
         assert.equal(card.actualCount, card.expectedCount,
           `question count should remain correct for ${card.topic} at level "${level}"`);
         assert.equal(card.actualSeen, card.expectedSeen,
@@ -73,6 +87,20 @@ const assert = require("node:assert/strict");
           `empty topic cards should remain disabled for ${card.topic} at level "${level}"`);
       }
     }
+
+    const firstTopic = await page.evaluate(() => topics[0]);
+    await page.locator("#topic-search").fill(firstTopic);
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    const searchSummary = await page.locator("#total-count").textContent();
+    const searchedTopicCount = await page.locator("#topic-grid .topic-card").count();
+    const searchedQuestionCount = await page.locator("#topic-grid .topic-card .topic-meta").textContent();
+    assert.equal(searchedTopicCount, 1, "searching an exact topic name should leave one matching topic");
+    assert.equal(searchSummary, `${searchedQuestionCount.replace(" سؤال متاح", "")} سؤال متاح في ${searchedTopicCount.toLocaleString("ar")} بحث`,
+      "the summary should update to the search-filtered topic and question count");
+    await page.locator("#clear-topic-search").click();
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "clearing the topic search should restore all fourteen topics");
 
     assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");

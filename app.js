@@ -543,7 +543,9 @@ function renderTopics(){
   }
   const latestAttempts = getLatestTopicAttempts();
   const lastOpenedTopic = getLastOpenedTopic();
-  $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
+  const availableQuestionCount = availableTopics.reduce((total, topic) =>
+    total + (topicQuestionCounts.get(topic)?.total || 0), 0);
+  $("total-count").textContent = `${availableQuestionCount.toLocaleString("ar")} سؤال متاح في ${availableTopics.length.toLocaleString("ar")} بحث`;
   const topicGrid = $("topic-grid");
   topicGrid.setAttribute("aria-busy", "true");
   topicGrid.innerHTML = availableTopics.map((topic, displayIndex)=>{
