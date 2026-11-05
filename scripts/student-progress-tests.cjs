@@ -7,6 +7,7 @@ const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const css = fs.readFileSync(path.join(root, "style-overrides.css"), "utf8");
+const studentCss = fs.readFileSync(path.join(root, "student-tools.css"), "utf8");
 const browser = fs.readFileSync(path.join(root, "scripts", "browser-user-flow-tests.cjs"), "utf8");
 const checks = [
   ["student tools reject arrays and malformed values in saved maps", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: normalizeSchedule\(x\.schedule\)/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
@@ -91,7 +92,7 @@ const checks = [
   ["study plan has mobile and dark-mode styling", /\.study-plan-metrics/.test(enhancements) && /body\.dark-mode \.study-plan/.test(enhancements) && /@media\(max-width:640px\)\{\.study-plan/.test(enhancements)],
   ["study plan uses an inline accessible editor instead of browser prompts", /study-plan-edit-form/.test(enhancements) && /study-plan-edit-date/.test(enhancements) && /aria-controls="study-plan-edit-form"/.test(enhancements) && !/prompt\("أدخل موعد الامتحان الجديد/.test(enhancements)],
   ["study plan preserves completion only for unchanged task IDs and targets", /previousCompletedTasks = new Map/.test(enhancements) && /previousCompletedTasks\.get\(practiceId\) === dailyTarget/.test(enhancements) && /previousCompletedTasks\.get\(mistakeId\) === mistakeTarget/.test(enhancements)],
-  ["study plan editor exposes mobile and dark-mode styling", /\.study-plan-edit-form/.test(css) && /body\.dark-mode \.study-plan-edit-form/.test(css) && /@media\(max-width:640px\)/.test(css)],
+  ["study plan editor exposes mobile and dark-mode styling", /\.study-plan-edit-form/.test(studentCss) && /body\.dark-mode \.study-plan-edit-form/.test(studentCss) && /@media\(max-width:640px\)/.test(studentCss)],
   ["study plan browser flow checks creation, persistence, and hidden-by-default behavior", /study-plan-toggle/.test(browser) && /study-plan-form/.test(browser) && /studyPlan/.test(browser) && /completed task should persist/.test(browser)],
   ["spaced review summary reports due, upcoming, mastered, and struggling questions", /const mastered = items\.filter\(item => item\.stage >= 3 && item\.lastResult === "correct"\)/.test(enhancements) && /const struggling = items\.filter\(item => item\.lastResult === "wrong"\)/.test(enhancements) && /review-plan-summary/.test(enhancements)],
   ["review questions expose understandable mastery stages and reset closer after mistakes", /يحتاج إلى تثبيت/.test(enhancements) && /متقن مبدئياً/.test(enhancements) && /قيد الإتقان/.test(enhancements) && /stage:0, due:addDays\(1\), lastResult:"wrong"/.test(enhancements)],
