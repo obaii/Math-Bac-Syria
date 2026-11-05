@@ -1,3 +1,6 @@
+function preferredScrollBehavior(){
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth";
+}
 let currentTopic = "";
 let quizQuestions = [];
 let index = 0;
@@ -522,7 +525,7 @@ function resumeTrainingSession(topic){
   $("quiz-title").textContent = topic; updateResumeCard();
   if (index >= quizQuestions.length) { clearTrainingSession(); showResults(); }
   else showQuestion();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: preferredScrollBehavior() });
   return true;
 }
 
@@ -625,7 +628,7 @@ function startQuiz(topic){
   showQuestion();
   saveTrainingSession();
   updateResumeCard();
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 function updateQuizProgress(completed){
   const total = Math.max(0, quizQuestions.length);
@@ -1055,7 +1058,7 @@ function showResults(){
     sessionPanel.append(retryMistakes);
   }
   if (reviewMode) $("quiz-title").textContent = "مراجعة الإجابات الخاطئة";
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({top:0,behavior:preferredScrollBehavior()});
   $("results").querySelector("h2").focus({ preventScroll: true });
 }
 function startSessionMistakeQuiz(){
@@ -1070,7 +1073,7 @@ function startSessionMistakeQuiz(){
   $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent=currentTopic;
   showQuestion();
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 function typeset(){
   if (!window.MathJax) return;
@@ -1089,7 +1092,7 @@ $("next").addEventListener("click",()=>{
   else {clearTrainingSession();showResults();}
   updateResumeCard();
 });
-$("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
+$("back").addEventListener("click",()=>{$("quiz").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:preferredScrollBehavior()});});
 $("retry").addEventListener("click",()=> reviewMode ? startReviewQuiz() : startQuiz(currentTopic));
 function focusTopicSelector(){
   const target = $("topic-section");
@@ -1156,7 +1159,7 @@ $("clear-topic-search").addEventListener("click",()=>{
   renderTopics();
   topicSearchInput.focus();
 });
-$("brand-home").addEventListener("click",e=>{e.preventDefault();$("quiz").classList.add("hidden");$("results").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:"smooth"});});
+$("brand-home").addEventListener("click",e=>{e.preventDefault();$("quiz").classList.add("hidden");$("results").classList.add("hidden");$("home").classList.remove("hidden");renderTopics();$("topic-section").focus({preventScroll:true});window.scrollTo({top:0,behavior:preferredScrollBehavior()});});
 function startReviewQuiz(){
   const mistakeMap = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
   // Rebuild review questions from the current bank so obsolete backup entries cannot break the quiz.
@@ -1172,7 +1175,7 @@ function startReviewQuiz(){
   $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent=currentTopic;
   showQuestion();
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 $("review-mistakes").addEventListener("click",startReviewQuiz);
 $("reset-progress").addEventListener("click",()=>{
