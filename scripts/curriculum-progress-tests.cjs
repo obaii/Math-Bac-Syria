@@ -13,7 +13,7 @@ assert.equal(map.units.length, 14);
 assert.equal(map.units.reduce((sum, unit) => sum + unit.lessons.length, 0), 63);
 assert.ok(script.includes('const STORAGE_KEY = "mathBacSyriaLastLessonByTopicV1"'));
 assert.ok(script.includes('lessonsFor(topic)'));
-assert.ok(script.includes('lessonsFor(unit.topic)'));
+assert.ok(script.includes("curriculum.units.forEach(unit =>"));
 assert.ok(script.includes('lessons.includes(selections[unit.topic])'));
 assert.ok(script.includes('new MutationObserver(refreshCardLabels)'));
 assert.ok(html.includes('curriculum-progress.css'));
