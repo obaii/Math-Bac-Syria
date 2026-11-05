@@ -506,6 +506,23 @@ const assert = require("node:assert/strict");
     const persistedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
     assert.ok(persistedStudyPlan.days.some(day => day.tasks.some(task => task.done)), "completed task should persist after reloading the page");
     assert.ok((await page.locator("#study-plan").innerText()).includes("إنجاز الخطة"), "study plan should render its completion summary");
+    await page.locator("#study-plan-edit").click();
+    await page.locator("#study-plan-edit-form").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#study-plan-edit").getAttribute("aria-expanded"), "true", "opening the inline editor should expose its expanded state");
+    assert.equal(await page.locator("#study-plan-edit-target").inputValue(), "15", "the inline editor should preload the saved daily target");
+    const revisedPlanDate = await page.evaluate(date => {
+      const next = new Date(date + "T12:00:00");
+      next.setDate(next.getDate() + 2);
+      return [next.getFullYear(), String(next.getMonth()+1).padStart(2,"0"), String(next.getDate()).padStart(2,"0")].join("-");
+    }, planDate);
+    await page.locator("#study-plan-edit-date").fill(revisedPlanDate);
+    await page.locator("#study-plan-edit-form button[type=submit]").click();
+    await page.locator("#study-plan-edit-form").waitFor({ state: "hidden" });
+    const editedStudyPlan = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "{}").studyPlan);
+    assert.equal(editedStudyPlan.examDate, revisedPlanDate, "inline editing should save the revised exam date");
+    assert.equal(editedStudyPlan.dailyTarget, 15, "inline editing should retain the saved daily target when unchanged");
+    assert.ok(editedStudyPlan.days[0].tasks.some(task => task.done), "reorganizing the plan should retain completed tasks whose IDs and targets did not change");
+
 
     // Intensive training creates a bounded, unique session and records it as normal practice.
     await page.locator("#student-tools").evaluate(panel => { panel.hidden = false; });

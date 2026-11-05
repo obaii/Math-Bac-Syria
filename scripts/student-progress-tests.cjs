@@ -7,6 +7,7 @@ const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const css = fs.readFileSync(path.join(root, "style-overrides.css"), "utf8");
+const studentCss = fs.readFileSync(path.join(root, "student-tools.css"), "utf8");
 const browser = fs.readFileSync(path.join(root, "scripts", "browser-user-flow-tests.cjs"), "utf8");
 const checks = [
   ["student tools reject arrays and malformed values in saved maps", /const isRecord = value => value !== null && typeof value === "object" && !Array\.isArray\(value\)/.test(enhancements) && /schedule: normalizeSchedule\(x\.schedule\)/.test(enhancements) && /reviewQuestions: isRecord\(x\.reviewQuestions\) \? x\.reviewQuestions : \{\}/.test(enhancements)],
@@ -45,7 +46,7 @@ const checks = [
   ["backup restores text and math display preferences", /nextExtras\.textScale = Number\.isFinite\(sourceTools\.textScale\)/.test(enhancements) && /nextExtras\.mathScale = Number\.isFinite\(sourceTools\.mathScale\)/.test(enhancements) && /extras = nextExtras;[\s\S]*?applyReadingSettings\(\);/.test(enhancements)],
   ["review schedule imports use a null-prototype map and reject dangerous property names", /const normalized = Object\.create\(null\)/.test(enhancements) && /key === "__proto__" \|\| key === "constructor" \|\| key === "prototype"/.test(enhancements)],
   ["extras persistence reports success or failure to callers", /const persistExtras = \(\) => \{ try \{ localStorage\.setItem\(EXTRA_KEY, JSON\.stringify\(extras\)\); return true; \} catch \(_\) \{[\s\S]*?return false; \} \};/.test(enhancements)],
-  ["student-tools and exam script cache version is bumped for updated deployment", /enhancements\.js\?v=20261104-[0-9]+/.test(html)],
+  ["student-tools and exam script cache version is bumped for updated deployment", /enhancements\.js\?v=20261105-[0-9]+/.test(html)],
   ["practice session counters clamp answered and remaining values to the question total", /const answeredCount = Math\.min\(Math\.max\(Number\(completed\) \|\| 0, 0\), total\)/.test(app) && /const remainingCount = Math\.max\(0, total - answeredCount\)/.test(app)],
   ["practice session accuracy uses only answered questions and never exceeds their count", /const correct = Math\.min\(Math\.max\(Number\(correctCount\) \|\| 0, 0\), answeredCount\)/.test(app) && /const accuracy = answeredCount \? Math\.round\(correct \/ answeredCount \* 100\) : 0/.test(app)],
   ["practice session summary exposes answered, remaining, and accuracy fields", ["session-answered", "session-remaining", "session-accuracy"].every(id => html.includes('id="' + id + '"')) && ["session-answered", "session-remaining", "session-accuracy"].every(id => app.includes('$("' + id + '")'))],
@@ -89,6 +90,9 @@ const checks = [
   ["study plan remains hidden until the student opens its dedicated control", /study-plan-toggle/.test(enhancements) && /studyPanel\.hidden = true/.test(enhancements) && /section\.hidden = !section\.hidden/.test(enhancements)],
   ["study plan backup import validates and restores saved plan data", /nextExtras\.studyPlan = normalizeStudyPlan\(sourceTools\.studyPlan\)/.test(enhancements) && /studyPlan: normalizeStudyPlan\(x\.studyPlan\)/.test(enhancements)],
   ["study plan has mobile and dark-mode styling", /\.study-plan-metrics/.test(enhancements) && /body\.dark-mode \.study-plan/.test(enhancements) && /@media\(max-width:640px\)\{\.study-plan/.test(enhancements)],
+  ["study plan uses an inline accessible editor instead of browser prompts", /study-plan-edit-form/.test(enhancements) && /study-plan-edit-date/.test(enhancements) && /aria-controls="study-plan-edit-form"/.test(enhancements) && !/prompt\("أدخل موعد الامتحان الجديد/.test(enhancements)],
+  ["study plan preserves completion only for unchanged task IDs and targets", /previousCompletedTasks = new Map/.test(enhancements) && /previousCompletedTasks\.get\(practiceId\) === dailyTarget/.test(enhancements) && /previousCompletedTasks\.get\(mistakeId\) === mistakeTarget/.test(enhancements)],
+  ["study plan editor exposes mobile and dark-mode styling", /\.study-plan-edit-form/.test(studentCss) && /body\.dark-mode \.study-plan-edit-form/.test(studentCss) && /@media\(max-width:640px\)/.test(studentCss)],
   ["study plan browser flow checks creation, persistence, and hidden-by-default behavior", /study-plan-toggle/.test(browser) && /study-plan-form/.test(browser) && /studyPlan/.test(browser) && /completed task should persist/.test(browser)],
   ["spaced review summary reports due, upcoming, mastered, and struggling questions", /const mastered = items\.filter\(item => item\.stage >= 3 && item\.lastResult === "correct"\)/.test(enhancements) && /const struggling = items\.filter\(item => item\.lastResult === "wrong"\)/.test(enhancements) && /review-plan-summary/.test(enhancements)],
   ["review questions expose understandable mastery stages and reset closer after mistakes", /يحتاج إلى تثبيت/.test(enhancements) && /متقن مبدئياً/.test(enhancements) && /قيد الإتقان/.test(enhancements) && /stage:0, due:addDays\(1\), lastResult:"wrong"/.test(enhancements)],
@@ -105,7 +109,7 @@ const checks = [
   ["intensive training deduplicates questions and uses Fisher–Yates without mutating the bank", /const unique = new Map\(\)/.test(enhancements) && /Fisher–Yates/.test(enhancements) && /const shuffled = \[\.\.\.pool\]/.test(enhancements)],
   ["intensive training records progress as a normal practice session", /currentTopic = "التدريب المكثف";[\s\S]*?reviewMode = false;[\s\S]*?quizQuestions = selected/.test(enhancements)],
   ["intensive training provides useful empty states for weak-topic and mistake pools", /لا توجد أخطاء محفوظة صالحة للتدريب حالياً/.test(enhancements) && /نحتاج إلى بعض نتائج التدريب أولاً/.test(enhancements)],
-  ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=20261104-[0-9]+/.test(html) && /math-bac-syria-v[0-9]+/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
+  ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=20261105-[0-9]+/.test(html) && /math-bac-syria-v[0-9]+/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
   ["browser flow verifies a bounded unique intensive session", /intensive-training-start/.test(browser) && /new Set\(quizQuestions\.map\(questionKey\)\)/.test(browser) && /reviewMode/.test(browser)]
 ];
 let failures = 0;
