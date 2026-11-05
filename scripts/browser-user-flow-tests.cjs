@@ -48,16 +48,19 @@ const assert = require("node:assert/strict");
       "the selected lesson should be stored against its own topic");
     await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
     await page.locator("#curriculum-lesson-select").selectOption("المتحوّلات العشوائيّة");
-    await page.reload({ waitUntil: "domcontentloaded" });
-    await page.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
-    await page.locator("#curriculum-topic-select").selectOption("الاشتقاق");
-    assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "تطبيقات الاشتقاق",
-      "the last lesson should be restored independently for each topic after reload");
-    assert.equal(await page.locator('#topic-grid [data-topic="الاشتقاق"] .topic-last-lesson').innerText(),
+    const restoredPage = await page.context().newPage();
+    await restoredPage.setDefaultTimeout(10000);
+    await restoredPage.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await restoredPage.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
+    await restoredPage.locator("#curriculum-topic-select").selectOption("الاشتقاق");
+    assert.equal(await restoredPage.locator("#curriculum-lesson-select").inputValue(), "تطبيقات الاشتقاق",
+      "a fresh page should restore the last lesson independently for each topic");
+    assert.equal(await restoredPage.locator('#topic-grid [data-topic="الاشتقاق"] .topic-last-lesson').innerText(),
       "آخر درس: تطبيقات الاشتقاق", "the topic card should show its saved lesson");
-    await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "المتحوّلات العشوائيّة",
+    await restoredPage.locator("#curriculum-topic-select").selectOption("الاحتمالات");
+    assert.equal(await restoredPage.locator("#curriculum-lesson-select").inputValue(), "المتحوّلات العشوائيّة",
       "switching topics should restore that topic's own saved lesson");
+    await restoredPage.close();
 
     assert.equal(await page.evaluate(() => typeof window.bootstrap), "undefined",
       "the homepage should not download the unused Bootstrap JavaScript bundle");
