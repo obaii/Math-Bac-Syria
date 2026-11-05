@@ -14,7 +14,7 @@ const assert = require("node:assert/strict");
     const panel = page.locator("#" + id);
     if (await panel.isVisible()) return;
     const menu = page.locator("#section-menu");
-    if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    if (await menu.isHidden() || await menu.evaluate(element => element.classList.contains("is-closing"))) await page.locator("#section-menu-toggle").click();
     const dashboardLink = page.locator('[data-dashboard-target="' + id + '"]');
     if (await dashboardLink.count()) {
       await dashboardLink.click();
