@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="solved-examples.css?v=20261102-1">
   <link rel="stylesheet" href="math-assistant.css?v=20261103-5">
-   <link rel="stylesheet" href="style-overrides.css?v=20261105-9">
+   <link rel="stylesheet" href="style-overrides.css?v=20261105-10">
   <link rel="stylesheet" href="student-tools.css?v=20261105-1">
   <script>
     window.MathJax = {
@@ -51,7 +51,7 @@
   <script defer src="merge-questions.js?v=20261105-2"></script>
   <script defer src="solution-guides.js?v=20261103-6"></script>
   <script defer src="question-diagrams.js?v=20261103-4"></script>
-  <script defer src="app.js?v=20261105-4"></script>
+  <script defer src="app.js?v=20261105-5"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
@@ -387,7 +387,7 @@
       <span class="filter-hint">اختر المستوى المناسب لك.</span>
       </div>
     </div>
-    <div id="topic-grid" class="topic-grid"></div>
+    <div id="topic-grid" class="topic-grid" aria-busy="true"><div class="topic-loading" role="status" aria-live="polite"><span class="topic-loading-spinner" aria-hidden="true"></span><span>جارٍ تجهيز الأبحاث الرياضية...</span></div></div>
     <div id="no-topics" class="empty-state hidden" role="status" aria-live="polite" aria-atomic="true">لا توجد أبحاث تطابق كلمات البحث أو المستوى المحدد.</div>
   </section>
   <section id="quiz" class="hidden">
