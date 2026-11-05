@@ -129,6 +129,19 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator(".hero h1").evaluate(el => document.activeElement === el), false,
       "outside dismissal should not steal focus from the clicked page content");
 
+    const reducedMotionQuizPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    await reducedMotionQuizPage.emulateMedia({ reducedMotion: "reduce" });
+    await reducedMotionQuizPage.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await reducedMotionQuizPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await reducedMotionQuizPage.evaluate(() => {
+      window.__pageScrollBehaviors = [];
+      window.scrollTo = options => window.__pageScrollBehaviors.push(options?.behavior || "auto");
+      startQuiz(topics[0]);
+    });
+    assert.deepEqual(await reducedMotionQuizPage.evaluate(() => window.__pageScrollBehaviors), ["auto"],
+      "starting a topic quiz should avoid animated page scrolling when reduced motion is requested");
+    await reducedMotionQuizPage.close();
+
     await assertVisibleControlsHaveNames(page, "home screen");
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,
       "all nine dashboard panels should be available to the menu");
