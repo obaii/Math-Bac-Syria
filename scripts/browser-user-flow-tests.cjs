@@ -35,10 +35,23 @@ const assert = require("node:assert/strict");
     }
     await panel.waitFor({ state: "visible" });
   };
+  const resetResumeUpdateMarker = async () => page.evaluate(() => {
+    const key = "mathBacSyriaSeenMenuUpdatesV1";
+    const seen = JSON.parse(localStorage.getItem(key) || "[]");
+    localStorage.setItem(key, JSON.stringify(seen.filter(value => value !== "resume-session-20261105")));
+  });
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
-    await page.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
+    await page.waitForSelector("#curriculum-topic-select", { state: "attached", timeout: 10000 });
+    assert.equal(await page.locator("#curriculum-progress-picker").isVisible(), false,
+      "the lesson tracker should stay inside the collapsed homepage menu destination");
+    assert.equal(await page.locator("#dashboard-panel-resume-session").isVisible(), false,
+      "student progress panels should not appear on the default homepage");
+    await openPanel("resume-session");
+    await resetResumeUpdateMarker();
+    assert.equal(await page.locator("#curriculum-progress-picker").isVisible(), true,
+      "the lesson tracker should appear when the learner opens the resume destination");
     assert.equal(await page.locator("#curriculum-topic-select option").count(), 14,
       "the curriculum selector should expose all 14 mapped topics");
     await page.locator("#curriculum-topic-select").selectOption("الاشتقاق");
@@ -49,7 +62,9 @@ const assert = require("node:assert/strict");
     await page.locator("#curriculum-topic-select").selectOption("الاحتمالات");
     await page.locator("#curriculum-lesson-select").selectOption("المتحوّلات العشوائيّة");
     await page.reload({ waitUntil: "domcontentloaded" });
-    await page.waitForSelector("#curriculum-topic-select", { timeout: 10000 });
+    await page.waitForSelector("#curriculum-topic-select", { state: "attached", timeout: 10000 });
+    await openPanel("resume-session");
+    await resetResumeUpdateMarker();
     await page.locator("#curriculum-topic-select").selectOption("الاشتقاق");
     assert.equal(await page.locator("#curriculum-lesson-select").inputValue(), "تطبيقات الاشتقاق",
       "the last lesson should be restored independently for each topic after reload");
