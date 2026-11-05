@@ -29,6 +29,11 @@
 
     startLink.addEventListener("click", function () {
       guide.hidden = true;
+      try {
+        window.localStorage.setItem(DISMISSED_KEY, "1");
+      } catch (error) {
+        // The guide stays hidden for this view when storage is unavailable.
+      }
       if (topicSearch) {
         window.setTimeout(function () {
           topicSearch.focus({ preventScroll: true });
