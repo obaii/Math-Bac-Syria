@@ -377,16 +377,16 @@
       </section>
     <div id="topic-section" class="section-heading" tabindex="-1"><div><p class="eyebrow">تدرّب خطوة بخطوة</p><h2>اختر البحث</h2><p class="section-subtitle">اختر أحد أبحاث المنهاج وابدأ حل الأسئلة فوراً. يتحدد الإتقان بعد 10 إجابات على الأقل: 85٪ فأكثر متقن، و60٪ إلى 84٪ جيد.</p></div><span id="total-count" class="count-pill" role="status" aria-live="polite" aria-atomic="true"></span></div>
     <div class="topic-tools">
-      <div class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي"><button type="button" id="clear-topic-search" class="search-clear" aria-label="مسح البحث" title="مسح البحث" hidden>×</button></div>
+      <div class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي" aria-controls="topic-grid" aria-describedby="topic-search-hint"><button type="button" id="clear-topic-search" class="search-clear" aria-label="مسح البحث" title="مسح البحث" hidden>×</button></div><span id="topic-search-hint" class="visually-hidden">اكتب جزءاً من اسم البحث لتصفية البطاقات، واستخدم زر مسح البحث لإظهار جميع الأبحاث.</span>
       <div class="filter-panel">
       <label for="difficulty">مستوى الأسئلة</label>
-      <select id="difficulty">
+      <select id="difficulty" aria-describedby="difficulty-hint">
         <option value="الكل">جميع المستويات</option>
         <option value="أساسي">أساسي</option>
         <option value="متوسط">متوسط</option>
         <option value="متقدم">متقدم</option>
       </select>
-      <span class="filter-hint">اختر المستوى المناسب لك.</span>
+      <span class="filter-hint" id="difficulty-hint">اختر المستوى المناسب لك.</span>
       </div>
     </div>
     <div id="topic-grid" class="topic-grid" aria-busy="true"><div class="topic-loading" role="status" aria-live="polite"><span class="topic-loading-spinner" aria-hidden="true"></span><span>جارٍ تجهيز الأبحاث الرياضية...</span></div></div>
