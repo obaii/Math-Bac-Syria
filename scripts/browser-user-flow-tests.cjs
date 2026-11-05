@@ -382,6 +382,25 @@ const assert = require("node:assert/strict");
 
     const topicButtons = page.locator("#topic-grid [data-topic]");
     assert.equal(await topicButtons.count(), 14, "the home page should display 14 research/topic cards");
+
+    const topicIdentity = await topicButtons.evaluateAll(cards => cards.map(card => ({
+      topic: card.dataset.topic,
+      color: card.dataset.topicColor,
+      icon: card.querySelector(".topic-subject-icon")?.textContent.trim()
+    })));
+    assert.equal(new Set(topicIdentity.map(item => item.color)).size, 14,
+      "each research topic should have its own stable color identity");
+    assert.equal(new Set(topicIdentity.map(item => item.icon)).size, 14,
+      "each research topic should have a distinct visual symbol");
+    const firstTopicIdentity = topicIdentity[0];
+    await page.locator("#topic-search").fill(firstTopicIdentity.topic);
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 1);
+    assert.equal(await page.locator("#topic-grid [data-topic]").getAttribute("data-topic-color"), firstTopicIdentity.color,
+      "filtering should not change a topic's assigned color");
+    assert.equal(await page.locator("#topic-grid [data-topic] .topic-subject-icon").innerText(), firstTopicIdentity.icon,
+      "filtering should not change a topic's assigned icon");
+    await page.locator("#topic-search").fill("");
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9, "the section menu should contain nine separate dashboard panels");
     const initiallyVisibleDashboardPanels = await page.locator("[data-dashboard-panel]:visible").evaluateAll(elements => elements.map(element => element.dataset.dashboardPanel));
     assert.deepEqual(initiallyVisibleDashboardPanels, [], "dashboard panels should be hidden on the initial homepage; visible: " + initiallyVisibleDashboardPanels.join(", "));
