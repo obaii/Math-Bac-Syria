@@ -531,6 +531,16 @@ function renderTopics(){
   const clearSearchButton = $("clear-topic-search");
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
   const availableTopics = topics.filter(topic => window.MathSearchUtils.matches(topic, search));
+  // Count available and previously seen questions in one pass instead of
+  // scanning the complete question bank twice for each of the 14 topic cards.
+  const topicQuestionCounts = new Map();
+  for (const question of questions) {
+    if (level !== "الكل" && question.level !== level) continue;
+    const counts = topicQuestionCounts.get(question.topic) || { total: 0, seen: 0 };
+    counts.total += 1;
+    if (progressData.seenQuestions[questionKey(question)]) counts.seen += 1;
+    topicQuestionCounts.set(question.topic, counts);
+  }
   const latestAttempts = getLatestTopicAttempts();
   const lastOpenedTopic = getLastOpenedTopic();
   $("total-count").textContent = `${questions.length.toLocaleString("ar")} سؤال تدريبي`;
@@ -538,10 +548,11 @@ function renderTopics(){
   topicGrid.setAttribute("aria-busy", "true");
   topicGrid.innerHTML = availableTopics.map((topic, displayIndex)=>{
     const i = topics.indexOf(topic);
-    const count = questions.filter(q=>q.topic===topic && (level==="الكل" || q.level===level)).length;
+    const questionCounts = topicQuestionCounts.get(topic) || { total: 0, seen: 0 };
+    const count = questionCounts.total;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
     const successRate = topicStat.answered ? Math.round(topicStat.correct/topicStat.answered*100) : 0;
-    const seenCount = questions.filter(q => q.topic === topic && (level === "الكل" || q.level === level) && progressData.seenQuestions[questionKey(q)]).length;
+    const seenCount = questionCounts.seen;
     const coverageRate = count ? Math.min(100, Math.round(seenCount/count*100)) : 0;
     const attempts = Number.isSafeInteger(topicStat.answered) && topicStat.answered > 0 ? topicStat.answered : 0;
     const correctAnswers = Number.isSafeInteger(topicStat.correct) && topicStat.correct > 0 ? Math.min(topicStat.correct, attempts) : 0;
