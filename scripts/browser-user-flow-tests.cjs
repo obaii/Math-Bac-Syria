@@ -14,8 +14,14 @@ const assert = require("node:assert/strict");
     const panel = page.locator("#" + id);
     if (await panel.isVisible()) return;
     const menu = page.locator("#section-menu");
-    if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
     const dashboardLink = page.locator('[data-dashboard-target="' + id + '"]');
+    const panelLink = page.locator('[data-panel-toggle="' + id + '"]');
+    const menuLink = await dashboardLink.count() ? dashboardLink : panelLink;
+    if (await menu.evaluate(element => element.classList.contains("is-closing"))) {
+      await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
+    }
+    if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    await menuLink.waitFor({ state: "visible" });
     if (await dashboardLink.count()) {
       await dashboardLink.click();
       const dashboardPanel = page.locator('[data-dashboard-panel="' + id + '"]');
@@ -70,6 +76,32 @@ const assert = require("node:assert/strict");
     );
     assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
       "group headings should not replace or hide any existing section shortcut");
+
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.locator("#section-menu-toggle").click();
+    assert.equal(await quickStart.evaluate(menu => getComputedStyle(menu).animationName), "homepage-section-menu-enter",
+      "the section menu should animate smoothly when opening");
+    await page.locator("#section-menu-toggle").click();
+    await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
+    assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false",
+      "closing the section menu should update its expanded state");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.locator("#section-menu-toggle").click();
+    assert.equal(await quickStart.evaluate(menu => getComputedStyle(menu).animationName), "none",
+      "menu transitions should be disabled for reduced-motion users");
+    await page.locator("#section-menu-toggle").click();
+    assert.ok(await quickStart.isHidden(), "reduced-motion menu closing should be immediate");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+
+    const loadingFixture = await page.evaluate(() => {
+      const grid = document.getElementById("topic-grid");
+      grid.innerHTML = '<div class="topic-loading" role="status">جارٍ تجهيز الأبحاث الرياضية...</div>';
+      grid.setAttribute("aria-busy", "true");
+      renderTopics();
+      return { busy: grid.getAttribute("aria-busy"), placeholders: grid.querySelectorAll(".topic-loading").length };
+    });
+    assert.equal(loadingFixture.busy, "false", "rendering the topic bank should clear its busy state");
+    assert.equal(loadingFixture.placeholders, 0, "rendering the topic bank should replace its loading feedback");
     const menuIcons = await quickStart.locator("a.quick-start-card .quick-start-icon").allInnerTexts();
     assert.equal(menuIcons.length, 19, "every section shortcut should display its own icon");
     assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 19,

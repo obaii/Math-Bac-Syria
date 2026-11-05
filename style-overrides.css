@@ -1707,3 +1707,54 @@ body.dark-mode #section-menu .quick-start-card.has-new-update { border-color: #7
 @media (max-width: 540px) {
   #section-menu .menu-update-badge { padding: 2px 6px; font-size: 9px; }
 }
+
+
+/* Smooth section-menu entry and exit, with a real loading state for the topic bank. */
+@keyframes homepage-section-menu-enter {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes homepage-section-menu-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-5px); }
+}
+#section-menu.is-opening { animation: homepage-section-menu-enter .18s ease both; }
+#section-menu.is-closing { animation: homepage-section-menu-exit .14s ease both; pointer-events: none; }
+.topic-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 118px;
+  padding: 22px;
+  border: 1px dashed #d6e1f2;
+  border-radius: 17px;
+  background: linear-gradient(135deg, #f8faff, #fff);
+  color: var(--muted, #718096);
+  font-size: 13px;
+  font-weight: 700;
+}
+.topic-loading-spinner {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border: 2px solid #dce6f8;
+  border-top-color: #315edb;
+  border-radius: 50%;
+  animation: homepage-topic-loading-spin .8s linear infinite;
+}
+@keyframes homepage-topic-loading-spin { to { transform: rotate(360deg); } }
+body.dark-mode .topic-loading {
+  border-color: #34445d;
+  background: linear-gradient(135deg, #182438, #142033);
+  color: #a7b5ca;
+}
+body.dark-mode .topic-loading-spinner {
+  border-color: #34445d;
+  border-top-color: #9bb5ff;
+}
+@media (prefers-reduced-motion: reduce) {
+  #section-menu.is-opening, #section-menu.is-closing,
+  .topic-loading-spinner { animation: none !important; }
+}

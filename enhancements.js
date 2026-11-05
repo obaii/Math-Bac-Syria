@@ -1911,11 +1911,36 @@
   const bindHomePanelToggles = () => {
     const menu = document.getElementById("section-menu");
     const menuButton = document.getElementById("section-menu-toggle");
+    let menuAnimationHandler = null;
+    const clearMenuAnimation = () => {
+      if (menu && menuAnimationHandler) menu.removeEventListener("animationend", menuAnimationHandler);
+      menuAnimationHandler = null;
+      menu?.classList.remove("is-opening", "is-closing");
+    };
+    const reducedMotionRequested = () => window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+    const setMenuOpen = open => {
+      if (!menu) return;
+      clearMenuAnimation();
+      if (open) menu.hidden = false;
+      if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      if (reducedMotionRequested()) {
+        menu.hidden = !open;
+        return;
+      }
+      menu.classList.add(open ? "is-opening" : "is-closing");
+      menuAnimationHandler = event => {
+        if (event.target !== menu) return;
+        const shouldHide = menu.classList.contains("is-closing");
+        clearMenuAnimation();
+        if (shouldHide) menu.hidden = true;
+      };
+      menu.addEventListener("animationend", menuAnimationHandler);
+    };
     if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
       menuButton.addEventListener("click", () => {
-        menu.hidden = !menu.hidden;
-        menuButton.setAttribute("aria-expanded", String(!menu.hidden));
-        if (!menu.hidden) {
+        const shouldOpen = menu.hidden || menu.classList.contains("is-closing");
+        setMenuOpen(shouldOpen);
+        if (shouldOpen) {
           refreshMenuUpdateBadges(menu);
           let recentKey = "";
           try { recentKey = localStorage.getItem("mathBacSyriaRecentMenuItemV1") || ""; } catch (_) {}
@@ -1935,8 +1960,7 @@
     if (menu && menuButton && document.documentElement.dataset.menuEscapeBound !== "true") {
       document.addEventListener("keydown", event => {
         if (event.key !== "Escape" || menu.hidden) return;
-        menu.hidden = true;
-        menuButton.setAttribute("aria-expanded", "false");
+        setMenuOpen(false);
         menuButton.focus({ preventScroll: true });
       });
       document.documentElement.dataset.menuEscapeBound = "true";
@@ -1948,8 +1972,7 @@
         if (menu.hidden) return;
         const target = event.target instanceof Element ? event.target : event.target?.parentElement;
         if (target && (menu.contains(target) || menuButton.contains(target))) return;
-        menu.hidden = true;
-        menuButton.setAttribute("aria-expanded", "false");
+        setMenuOpen(false);
       });
       document.documentElement.dataset.menuOutsideBound = "true";
     }
@@ -1979,9 +2002,8 @@
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
           item.setAttribute("aria-expanded", String(!shouldClose && item === link));
         });
-        currentMenu.hidden = true;
+        setMenuOpen(false);
         const currentMenuButton = document.getElementById("section-menu-toggle");
-        if (currentMenuButton) currentMenuButton.setAttribute("aria-expanded", "false");
         if (shouldClose) {
           // Closing a secondary panel returns the home view to its default topic selector.
           const defaultPanel = document.getElementById("topic-section");
@@ -2025,16 +2047,14 @@
             document.querySelectorAll("#section-menu [data-dashboard-target]").forEach(item => {
               item.setAttribute("aria-expanded", String(item === link));
             });
-            if (menu) menu.hidden = true;
-            if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+            if (menu) setMenuOpen(false);
             panel.setAttribute("tabindex", "-1");
             panel.focus({ preventScroll: true });
             panel.scrollIntoView({ behavior: "smooth", block: "start" });
             return;
           }
         }
-        if (menu) menu.hidden = true;
-        if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+        if (menu) setMenuOpen(false);
       });
       link.dataset.menuCloseBound = "true";
     });
