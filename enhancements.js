@@ -1820,6 +1820,16 @@
       });
       menuButton.dataset.menuBound = "true";
     }
+    // Escape closes the expanded navigation and returns keyboard focus to its trigger.
+    if (menu && menuButton && document.documentElement.dataset.menuEscapeBound !== "true") {
+      document.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || menu.hidden) return;
+        menu.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.focus({ preventScroll: true });
+      });
+      document.documentElement.dataset.menuEscapeBound = "true";
+    }
     // Capture at document level so dynamically inserted shortcuts always work,
     // regardless of which nested element receives the click.
     if (document.documentElement.dataset.panelToggleBound !== "true") {

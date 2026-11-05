@@ -76,6 +76,16 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("#topic-search").evaluate(el => document.activeElement === el), true,
       "keyboard navigation should continue to the topic search after the guide actions");
 
+    await page.locator("#section-menu-toggle").click();
+    await page.locator("#section-menu a").first().focus();
+    await page.keyboard.press("Escape");
+    assert.equal(await page.locator("#section-menu").evaluate(el => el.hidden), true,
+      "Escape should close the expanded section menu");
+    assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false",
+      "Escape should reset the menu trigger expanded state");
+    assert.equal(await page.locator("#section-menu-toggle").evaluate(el => document.activeElement === el), true,
+      "Escape should return keyboard focus to the menu trigger");
+
     await assertVisibleControlsHaveNames(page, "home screen");
     assert.equal(await page.locator("[data-dashboard-panel]").count(), 9,
       "all nine dashboard panels should be available to the menu");
