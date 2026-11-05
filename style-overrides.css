@@ -1934,5 +1934,5 @@ body.dark-mode .filter-reset-button { border-color: #425675; background: #22324b
 body.dark-mode .filter-reset-button:hover { background: #2a3d5c; }
 @media (max-width: 600px) {
   .filter-reset-button { width: 100%; min-height: 44px; }
-  .search-box #clear-topic-search { flex-basis: 44px; width: 44px; min-width: 44px; min-height: 44px; height: 44px; }
+  .search-box #clear-topic-search:not([hidden]) { flex: 0 0 44px; width: 44px; min-width: 44px; min-height: 44px; height: 44px; }
 }
