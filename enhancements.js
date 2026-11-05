@@ -2054,7 +2054,7 @@
             if (menu) setMenuOpen(false);
             panel.setAttribute("tabindex", "-1");
             panel.focus({ preventScroll: true });
-            panel.scrollIntoView({ behavior: "smooth", block: "start" });
+            scrollPanelIntoView(panel);
             return;
           }
         }
