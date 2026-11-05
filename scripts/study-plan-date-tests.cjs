@@ -17,7 +17,7 @@ assert.match(enhancements, /const daysCount = Math\.min\(366, calendarDayOrdinal
 assert.match(enhancements, /const remainingDays = Math\.max\(0, calendarDayOrdinal\(parseLocalDate\(plan\.examDate\)\) - calendarDayOrdinal\(new Date\(\)\) \+ 1\);/,
   "remaining-day metrics should use the same DST-safe calendar arithmetic");
 assert.match(html, /enhancements\.js\?v=20261105-5/, "the updated plan logic should have a refreshed asset URL");
-assert.match(sw, /math-bac-syria-v74/, "the offline cache should be refreshed for the updated plan logic");
+assert.match(sw, /math-bac-syria-v75/, "the offline cache should be refreshed for the updated plan logic");
 
 process.env.TZ = "America/Toronto";
 const helperExpression = helperMatch[0].replace("const calendarDayOrdinal = date =>", "return date =>").replace(/;$/, "");
