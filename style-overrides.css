@@ -1866,3 +1866,15 @@ body.dark-mode .topic-card .topic-status { color: var(--muted); }
 
 /* Align both post-answer actions to the same row height on narrow screens. */
 #quiz .actions { align-items: stretch; }
+
+
+/* Keep anchor destinations visible below the sticky site header. */
+:root { --homepage-anchor-offset: 96px; }
+html { scroll-padding-top: var(--homepage-anchor-offset); }
+main [id], main section[id], footer[id] { scroll-margin-top: var(--homepage-anchor-offset); }
+@media (max-width: 600px) {
+  :root { --homepage-anchor-offset: 82px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+}
