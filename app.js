@@ -369,6 +369,7 @@ function refreshDashboard(){
   renderActivityCalendar();
   renderAchievements();
   renderWeakTopicRecommendation();
+  updateResumeCard();
 }
 
 function topicIcon(topic){
