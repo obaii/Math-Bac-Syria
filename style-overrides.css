@@ -1811,7 +1811,7 @@ body.dark-mode .topic-loading-spinner {
 .topic-card[data-topic-color="dot-product"] { --topic-accent:#4338ca; --topic-tint:#eef2ff; }
 .topic-card[data-topic-color="lines-planes"] { --topic-accent:#0e7490; --topic-tint:#ecfeff; }
 .topic-card[data-topic-color="complex"] { --topic-accent:#9333ea; --topic-tint:#faf5ff; }
-.topic-card[data-topic-color="complex-geometry"] { --topic-accent:#c026d3; --topic-tint:#fdf4ff; }
+.topic-card[data-topic-color="complex-geometry"] { --topic-accent:#a21caf; --topic-tint:#fdf4ff; }
 .topic-card[data-topic-color="combinatorics"] { --topic-accent:#4d7c0f; --topic-tint:#f7fee7; }
 .topic-card[data-topic-color="probability"] { --topic-accent:#b45309; --topic-tint:#fffbeb; }
 
