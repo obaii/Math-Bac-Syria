@@ -1891,7 +1891,7 @@ body.dark-mode #no-topics { color: #a7b5ca; }
 
 
 /* Make the topic-search clear action comfortable to use on touch screens. */
-.search-box #clear-topic-search {
+.search-box #clear-topic-search:not([hidden]) {
   display: inline-grid;
   place-items: center;
   flex: 0 0 40px;
@@ -1912,3 +1912,5 @@ body.dark-mode #no-topics { color: #a7b5ca; }
 .search-box #clear-topic-search:focus-visible { outline: 3px solid var(--focus-ring, #8aa8ff); outline-offset: 1px; }
 body.dark-mode .search-box #clear-topic-search { color: #c4d0e2; }
 body.dark-mode .search-box #clear-topic-search:hover { background: #243653; color: #e7edf8; }
+
+.search-box #clear-topic-search[hidden] { display: none !important; }
