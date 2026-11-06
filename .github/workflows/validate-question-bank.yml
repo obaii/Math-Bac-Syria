@@ -75,7 +75,7 @@ jobs:
           node --check scripts/formula-library-tests.cjs
           node --check scripts/flashcards-tests.cjs
           node --check scripts/scientific-calculator-tests.cjs
-      - name: Check solved examples curriculum coverage and structure
+      - name: Check homepage design system tokens\n        run: node scripts/homepage-design-system-tests.cjs\n      - name: Check solved examples curriculum coverage and structure
         run: node scripts/solved-examples-tests.cjs
       - name: Verify independently reviewed limits and sequences solutions
         run: node scripts/limits-sequences-regression-tests.cjs
