@@ -23,4 +23,8 @@ assert.match(css, /#topic-grid \.topic-card \.topic-card-bottom\s*\{[^}]*border-
 assert.match(css, /#section-menu-toggle,\s*#section-menu a,\s*#topic-grid \.topic-card/s, "homepage navigation and research controls should share visible keyboard focus");
 assert.match(css, /#section-menu \.quick-start-card:active/, "navigation cards should provide a pressed state");
 assert.match(css, /#quiz \.actions button:active/, "post-answer actions should provide a pressed state");
-console.log("PASS: homepage design system, research cards, and interaction feedback");
+assert.match(css, /#feedback\.good[\s\S]*?background:\s*var\(--hp-success-bg\)/, "positive answer feedback should use the shared success palette");
+assert.match(css, /#feedback\.bad[\s\S]*?background:\s*var\(--hp-danger-bg\)/, "corrective answer feedback should use the shared danger palette");
+assert.match(css, /\.notice\s*\{[^}]*border-inline-start:\s*4px solid var\(--hp-brand\)/s, "informational notices should share the homepage accent system");
+assert.match(css, /\.empty-state,\s*\.topic-loading\s*\{/, "empty and loading states should use consistent surfaces");
+console.log("PASS: homepage design system, feedback states, and interaction feedback");
