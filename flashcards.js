@@ -12,6 +12,8 @@
   const formula = $("flashcard-formula"), note = $("flashcard-note");
   const counter = $("flashcard-counter"), progress = $("flashcard-progress");
   const status = $("flashcard-status"), flip = $("flashcard-flip");
+  status?.setAttribute("aria-live", "polite");
+  status?.setAttribute("aria-atomic", "true");
   const known = $("flashcard-known"), review = $("flashcard-review");
   const previous = $("flashcard-previous"), next = $("flashcard-next");
   let ratings = {}, selected = "all", index = 0, revealed = false, order = [];
