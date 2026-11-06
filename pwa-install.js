@@ -2,6 +2,8 @@
   "use strict";
   const button = document.getElementById("install-app-button");
   if (!button) return;
+  button.setAttribute("aria-live", "polite");
+  button.setAttribute("aria-atomic", "true");
 
   let installPrompt = null;
   const isStandalone = () =>
