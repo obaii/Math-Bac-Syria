@@ -169,3 +169,27 @@ body.dark-mode :where(
 ):focus-visible {
   box-shadow: 0 0 0 2px var(--hp-surface);
 }
+
+/* Keep homepage feedback subtle and consistent across pointer and keyboard use. */
+#section-menu .quick-start-card,
+#section-menu-toggle,
+#topic-grid .topic-card,
+#quiz .actions button {
+  transition-property: transform, box-shadow, border-color, background-color;
+  transition-duration: var(--hp-motion-normal);
+  transition-timing-function: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* Respect the operating system's reduced-motion preference throughout the home flow. */
+@media (prefers-reduced-motion: reduce) {
+  #section-menu .quick-start-card,
+  #section-menu-toggle,
+  #topic-grid .topic-card,
+  #quiz .actions button,
+  .topic-loading-spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+  #topic-grid .topic-card:hover { transform: none; }
+  html:focus-within { scroll-behavior: auto; }
+}
