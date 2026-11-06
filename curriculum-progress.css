@@ -32,3 +32,13 @@ body.dark-mode .curriculum-progress-picker { background: var(--card-bg, #17243a)
 @media (prefers-reduced-motion: reduce) {
   .curriculum-progress-picker, .topic-last-lesson { transition: none !important; }
 }
+
+/* Improve the saved-lesson label in both color schemes. */
+.topic-card .topic-last-lesson { min-width: 0; }
+body.dark-mode .topic-card .topic-last-lesson {
+  background: rgba(142, 173, 255, .14);
+  color: #c6d7ff;
+}
+@media (max-width: 520px) {
+  .topic-card .topic-last-lesson { font-size: .74rem; padding: 7px 8px; }
+}
