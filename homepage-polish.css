@@ -1,0 +1,36 @@
+/* Shared design tokens for the Math-Bac-Syria homepage. */
+:root {
+  --hp-brand: #315edb;
+  --hp-brand-strong: #244dbd;
+  --hp-ink: #19263b;
+  --hp-muted: #66758d;
+  --hp-surface: #ffffff;
+  --hp-surface-soft: #f6f8fc;
+  --hp-border: #e3e9f3;
+  --hp-focus: #315edb;
+  --hp-success: #16794b;
+  --hp-success-bg: #effbf4;
+  --hp-danger: #b42318;
+  --hp-danger-bg: #fff3f2;
+  --hp-radius-sm: 10px;
+  --hp-radius-md: 14px;
+  --hp-radius-lg: 20px;
+  --hp-shadow-sm: 0 3px 12px rgba(25, 48, 86, .045);
+  --hp-shadow-md: 0 12px 30px rgba(25, 48, 86, .075);
+  --hp-motion-fast: 150ms;
+  --hp-motion-normal: 200ms;
+}
+body.dark-mode {
+  --hp-ink: #e7edf8;
+  --hp-muted: #a7b5ca;
+  --hp-surface: #17243a;
+  --hp-surface-soft: #1b2a41;
+  --hp-border: #34445d;
+  --hp-focus: #9bb5ff;
+  --hp-success: #8bd5ad;
+  --hp-success-bg: #18372d;
+  --hp-danger: #ffaaa4;
+  --hp-danger-bg: #3b2429;
+  --hp-shadow-sm: 0 3px 12px rgba(0, 0, 0, .14);
+  --hp-shadow-md: 0 12px 30px rgba(0, 0, 0, .2);
+}
