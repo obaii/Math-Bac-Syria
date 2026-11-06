@@ -82,3 +82,15 @@ body.dark-mode .math-symbol-toolbar button{background:#22324b;border-color:#4055
 }
 .math-assistant-input-preview:empty{display:none}
 .math-assistant-input-preview mjx-container{direction:ltr;unicode-bidi:isolate}
+
+/* Keep assistant actions comfortable to tap and easy to locate by keyboard. */
+.math-assistant-suggestions button,
+.math-assistant-clear,
+.math-symbol-toolbar button { min-height: 44px; }
+.math-assistant-suggestions button:focus-visible,
+.math-assistant-clear:focus-visible,
+.math-symbol-toolbar button:focus-visible {
+  outline: 3px solid var(--focus, #8bb4ff);
+  outline-offset: 3px;
+}
+.math-assistant-response { min-width: 0; }
