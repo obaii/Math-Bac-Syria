@@ -34,3 +34,45 @@ body.dark-mode {
   --hp-shadow-sm: 0 3px 12px rgba(0, 0, 0, .14);
   --hp-shadow-md: 0 12px 30px rgba(0, 0, 0, .2);
 }
+
+/* Apply the shared surface, radius, and elevation system to homepage regions. */
+.dashboard,
+.first-visit-guide,
+#section-menu,
+#student-tools,
+#exam-tools,
+#quiz .question-card,
+#results .result-card {
+  border-radius: var(--hp-radius-lg);
+  border-color: var(--hp-border);
+  box-shadow: var(--hp-shadow-md);
+}
+.quick-start-card,
+.stat-card,
+.filter-panel,
+.search-box,
+.topic-card {
+  border-radius: var(--hp-radius-md);
+  border-color: var(--hp-border);
+}
+.quick-start-card,
+.stat-card,
+.search-box,
+.filter-panel {
+  background-color: var(--hp-surface);
+  color: var(--hp-ink);
+}
+.topic-card,
+.quick-start-card,
+.stat-card {
+  box-shadow: var(--hp-shadow-sm);
+}
+body.dark-mode .quick-start-card,
+body.dark-mode .stat-card,
+body.dark-mode .search-box,
+body.dark-mode .filter-panel,
+body.dark-mode .topic-card {
+  background-color: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
