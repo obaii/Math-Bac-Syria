@@ -1,6 +1,11 @@
 "use strict";
 const assert=require("node:assert/strict"),fs=require("node:fs"),vm=require("node:vm"),path=require("node:path");
 const source=fs.readFileSync(path.join(__dirname,"..","geometry-tools.js"),"utf8");
+const css=fs.readFileSync(path.join(__dirname,"..","style-overrides.css"),"utf8");
+assert.match(css,/\.geometry-controls select,\.geometry-controls button\{[^}]*min-height:44px/,"geometry controls should meet the 44px touch target");
+assert.match(css,/\.geometry-field input\{[^}]*min-height:44px/,"geometry input fields should meet the 44px touch target");
+assert.match(css,/\.geometry-input-panel button\{[^}]*min-height:44px/,"geometry calculate action should meet the 44px touch target");
+
 const context={window:{},document:{getElementById:()=>null}};
 vm.runInNewContext(source,context);
 const g=context.window.GeometryToolsMath,near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9, a+" differs from "+b);
