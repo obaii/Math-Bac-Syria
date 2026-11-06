@@ -1129,11 +1129,11 @@ body.dark-mode .calculator-keys .calculator-equals { background:#315edb; }
 .plotter-controls { display:grid;grid-template-columns:minmax(0,1fr) auto minmax(76px,.3fr) auto minmax(76px,.3fr) auto minmax(110px,.4fr) auto;align-items:end;gap:9px; }
 .plotter-controls label { font-size:12px;font-weight:700; }
 .plotter-controls input,.plotter-controls select {
-  min-width:0;width:100%;min-height:42px;padding:8px 10px;border:1px solid var(--border,#d9e1ed);
+  min-width:0;width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--border,#d9e1ed);
   border-radius:9px;background:var(--input-bg,#fff);color:inherit;font:inherit;
 }
 .plotter-controls #plotter-expression { grid-column:1/-1;direction:ltr;text-align:left;font-family:ui-monospace,monospace;font-size:16px; }
-.plotter-controls button { min-height:42px;padding:8px 15px;border:0;border-radius:9px;background:var(--primary,#315edb);color:#fff;font:inherit;font-weight:700;cursor:pointer; }
+.plotter-controls button { min-height:44px;padding:8px 15px;border:0;border-radius:9px;background:var(--primary,#315edb);color:#fff;font:inherit;font-weight:700;cursor:pointer; }
 .plotter-controls button:focus-visible,.plotter-controls input:focus-visible,.plotter-controls select:focus-visible { outline:3px solid #91aaff;outline-offset:2px; }
 .plotter-help,.plotter-message { color:var(--muted);font-size:12px;line-height:1.7; }
 .plotter-help { margin:9px 0 12px; }
