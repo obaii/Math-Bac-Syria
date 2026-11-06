@@ -36,6 +36,19 @@ const assert = require("node:assert/strict");
         `student review actions should provide 44px touch targets: ${JSON.stringify(reviewToolHeights)}`);
 
 
+      if (viewport.width <= 370) {
+        const compactHeader = await page.evaluate(() => ({
+          tagDisplay: getComputedStyle(document.querySelector(".top .tag")).display,
+          brand: (() => { const rect = document.querySelector(".top .brand").getBoundingClientRect(); return { left: rect.left, right: rect.right }; })(),
+          install: (() => { const rect = document.querySelector("#install-app-button").getBoundingClientRect(); return { left: rect.left, right: rect.right }; })(),
+          header: document.querySelector(".top").getBoundingClientRect().toJSON()
+        }));
+        assert.equal(compactHeader.tagDisplay, "none",
+          "the secondary curriculum tag should yield space to primary header controls on very narrow screens");
+        assert.ok(compactHeader.brand.left >= -1 && compactHeader.install.right <= viewport.width + 1,
+          `the brand and install action should remain within the compact header at ${viewport.width}px: ${JSON.stringify(compactHeader)}`);
+      }
+
       const layout = await page.evaluate(() => {
         const selectors = [
           ".top", ".top-actions", ".hero", ".quick-start",
