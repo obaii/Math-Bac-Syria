@@ -63,3 +63,16 @@ footer{margin-top:18px;background:#fff;padding:24px 15px 20px}.footer-brand{font
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(28, 57, 113, .08);
 }
+
+
+/* Let dashboard labels wrap cleanly instead of clipping on narrow screens or enlarged text. */
+@media (max-width: 600px) {
+  .stat-card { min-width: 0; }
+  .stat-label {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+  .stat-card strong { min-width: 0; }
+}
