@@ -23,4 +23,7 @@ assert.match(css, /#topic-grid \.topic-card \.topic-card-bottom\s*\{[^}]*border-
 assert.match(css, /#section-menu-toggle,\s*#section-menu a,\s*#topic-grid \.topic-card/s, "homepage navigation and research controls should share visible keyboard focus");
 assert.match(css, /#section-menu \.quick-start-card:active/, "navigation cards should provide a pressed state");
 assert.match(css, /#quiz \.actions button:active/, "post-answer actions should provide a pressed state");
-console.log("PASS: homepage design system, research cards, and interaction feedback");
+assert.match(css, /transition:\s*[\s\S]*var\(--hp-motion-normal\)/, "homepage surfaces should use the shared motion token");
+assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, "homepage transitions should respect reduced-motion preferences");
+assert.match(css, /\.quick-start-card,[\s\S]*animation:\s*none\s*!important/, "homepage navigation should disable animation for reduced-motion users");
+console.log("PASS: homepage design system, interaction feedback, and reduced-motion support");
