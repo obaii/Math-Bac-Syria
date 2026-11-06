@@ -20,6 +20,15 @@ const assert = require("node:assert/strict");
       { timeout: 15000 }
     );
 
+    const fontSetup = await page.evaluate(async () => ({
+      linkedFontStylesheets: document.querySelectorAll('link[rel="stylesheet"][href^="https://fonts.googleapis.com/css2?family=Cairo"]').length,
+      styleCss: await fetch("style.css").then(response => response.text())
+    }));
+    assert.equal(fontSetup.linkedFontStylesheets, 1,
+      "Cairo should be declared once in the document head");
+    assert.doesNotMatch(fontSetup.styleCss, /^\\s*@import\\s/m,
+      "style.css should not request a duplicate Cairo stylesheet");
+
     const levels = await page.locator("#difficulty option").evaluateAll(options =>
       options.map(option => option.value)
     );
