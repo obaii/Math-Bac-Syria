@@ -27,6 +27,15 @@ const assert = require("node:assert/strict");
         { timeout: 15000 }
       );
 
+      const reviewToolHeights = await page.evaluate(() => {
+        const section = document.querySelector('#student-tools');
+        section.hidden = false;
+        return [...section.querySelectorAll('.tools-actions button')].map(button => button.getBoundingClientRect().height);
+      });
+      assert.ok(reviewToolHeights.length > 0 && reviewToolHeights.every(height => height >= 44),
+        `student review actions should provide 44px touch targets: ${JSON.stringify(reviewToolHeights)}`);
+
+
       const layout = await page.evaluate(() => {
         const selectors = [
           ".top", ".top-actions", ".hero", ".quick-start",
