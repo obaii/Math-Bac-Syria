@@ -17,4 +17,7 @@ assert.match(css, /box-shadow:\s*var\(--hp-shadow-md\)/, "large homepage surface
 assert.match(css, /#section-menu \.quick-start-group-label\s*\{/, "navigation groups should have a distinct heading style");
 assert.match(css, /#section-menu \.quick-start-group-label::before/, "navigation group headings should have a consistent visual marker");
 assert.match(css, /#section-menu \.quick-start-card\s*\{[^}]*min-height:\s*72px/s, "navigation cards should have a consistent minimum height");
-console.log("PASS: homepage design tokens, shared surfaces, and navigation hierarchy");
+assert.match(css, /#topic-grid \.topic-card\s*\{[^}]*border-radius:\s*var\(--hp-radius-lg\)/s, "research cards should use the shared large radius");
+assert.match(css, /#topic-grid \.topic-card \.topic-meta,\s*#topic-grid \.topic-card \.topic-status\s*\{[^}]*color:\s*var\(--hp-muted\)/s, "topic metadata should use the shared muted text color");
+assert.match(css, /#topic-grid \.topic-card \.topic-card-bottom\s*\{[^}]*border-top-color:\s*var\(--hp-border\)/s, "topic card separators should use the shared border token");
+console.log("PASS: homepage design tokens, navigation hierarchy, and consistent research cards");
