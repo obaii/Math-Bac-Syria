@@ -29,7 +29,7 @@ const assert = require("node:assert/strict");
       "Cairo should be declared once in the document head");
     assert.doesNotMatch(fontSetup.styleCss, /^\\s*@import\\s/m,
       "style.css should not request a duplicate Cairo stylesheet");
-    const cdnPreconnects = [...fontSetup.indexHtml.matchAll(/<link\\s+rel="preconnect"\\s+href="https:\\/\\/cdn\\.jsdelivr\\.net"[^>]*>/g)];
+    const cdnPreconnects = [...fontSetup.indexHtml.matchAll(/<link\s+rel="preconnect"\s+href="https:\/\/cdn\.jsdelivr\.net"[^>]*>/g)];
     assert.equal(cdnPreconnects.length, 1,
       "the shared jsDelivr origin should be preconnected exactly once for Bootstrap and MathJax resources");
     assert.match(cdnPreconnects[0][0], /crossorigin/,
