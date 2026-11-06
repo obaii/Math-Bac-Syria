@@ -29,6 +29,11 @@ assert.throws(() => plot.evaluate("x+(", 1), /الأقواس|غير مكتمل/)
 assert.throws(() => plot.evaluate("x**2", 1), /الأقواس|غير مكتمل|صياغة/);
 assert.throws(() => plot.evaluate("", 1), /أدخل/);
 assert.throws(() => plot.evaluate("x", Infinity), /غير صالحة/);
+const css = fs.readFileSync(require("node:path").join(__dirname, "..", "style-overrides.css"), "utf8");
+assert.match(css, /\.plotter-controls input,\.plotter-controls select\s*\{[^}]*min-height:44px/,
+  "plotter input and selector controls should provide 44px touch targets");
+assert.match(css, /\.plotter-controls button\s*\{[^}]*min-height:44px/,
+  "plotter action buttons should provide 44px touch targets");
 const app = fs.readFileSync(require("node:path").join(__dirname, "..", "index.html"), "utf8");
 assert.ok(app.includes('id="function-plotter"'), "the graph panel should be present");
 assert.ok(app.includes('src="function-plotter.js?v=20261102-1"'), "the graph script should be loaded");
