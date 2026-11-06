@@ -20,4 +20,7 @@ assert.match(css, /#section-menu \.quick-start-card\s*\{[^}]*min-height:\s*72px/
 assert.match(css, /#topic-grid \.topic-card\s*\{[^}]*border-radius:\s*var\(--hp-radius-lg\)/s, "research cards should use the shared large radius");
 assert.match(css, /#topic-grid \.topic-card \.topic-meta,\s*#topic-grid \.topic-card \.topic-status\s*\{[^}]*color:\s*var\(--hp-muted\)/s, "topic metadata should use the shared muted text color");
 assert.match(css, /#topic-grid \.topic-card \.topic-card-bottom\s*\{[^}]*border-top-color:\s*var\(--hp-border\)/s, "topic card separators should use the shared border token");
-console.log("PASS: homepage design tokens, navigation hierarchy, and consistent research cards");
+assert.match(css, /#section-menu-toggle,\s*#section-menu a,\s*#topic-grid \.topic-card/s, "homepage navigation and research controls should share visible keyboard focus");
+assert.match(css, /#section-menu \.quick-start-card:active/, "navigation cards should provide a pressed state");
+assert.match(css, /#quiz \.actions button:active/, "post-answer actions should provide a pressed state");
+console.log("PASS: homepage design system, research cards, and interaction feedback");
