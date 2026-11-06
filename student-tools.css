@@ -65,3 +65,15 @@ body.dark-mode .study-plan-edit-form input {
   .study-plan-edit-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .study-plan-edit-actions button { width: 100%; }
 }
+
+/* Consistent keyboard focus and hover feedback across student tools. */
+#student-tools .tools-actions button:focus-visible,
+#exam-tools button:focus-visible,
+#exam-tools select:focus-visible,
+.study-plan-edit-actions button:focus-visible,
+.study-plan-edit-form input:focus-visible {
+  outline: 3px solid #8aa8ff;
+  outline-offset: 3px;
+}
+#student-tools .tools-actions button:hover:not(:disabled),
+#exam-tools button:hover:not(:disabled) { border-color: #9fb5d6; }
