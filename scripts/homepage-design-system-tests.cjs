@@ -31,6 +31,6 @@ assert.match(css, /#feedback\.good[\s\S]*?background:\s*var\(--hp-success-bg\)/,
 assert.match(css, /#feedback\.bad[\s\S]*?background:\s*var\(--hp-danger-bg\)/, "corrective answer feedback should use the shared danger palette");
 assert.match(css, /\.notice\s*\{[^}]*border-inline-start:\s*4px solid var\(--hp-brand\)/s, "informational notices should share the homepage accent system");
 assert.match(css, /\.empty-state,\s*\.topic-loading\s*\{/, "empty and loading states should use consistent surfaces");
-assert.match(css, /body\\.dark-mode #feedback\\.good,[\\s\\S]*?color:\\s*var\\(--hp-ink\\)/, "feedback text should retain the shared readable foreground in dark mode");
-assert.match(css, /body\\.dark-mode \\.notice,[\\s\\S]*?body\\.dark-mode \\.topic-loading/, "notice and loading states should explicitly support dark mode");
+assert.match(css, /body\.dark-mode #feedback\.good,[\s\S]*?color:\s*var\(--hp-ink\)/, "feedback text should retain the shared readable foreground in dark mode");
+assert.match(css, /body\.dark-mode \.notice,[\s\S]*?body\.dark-mode \.topic-loading/, "notice and loading states should explicitly support dark mode");
 console.log("PASS: homepage design system, feedback states, and dark-mode support");
