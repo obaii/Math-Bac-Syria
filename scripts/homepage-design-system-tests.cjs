@@ -26,8 +26,8 @@ assert.match(css, /#quiz \.actions button:active/, "post-answer actions should p
 assert.match(css, /transition-property:\s*transform, box-shadow, border-color, background-color/, "homepage controls should transition only visual feedback properties");
 assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, "homepage motion must respect reduced-motion preferences");
 assert.match(css, /\.topic-loading-spinner\s*\{[^}]*animation:\s*none\s*!important/s, "the loading indicator should stop animating for reduced-motion users");
-assert.match(css, /#feedback\\.good[\\s\\S]*?background:\\s*var\\(--hp-success-bg\\)/, "positive answer feedback should use the shared success palette");
-assert.match(css, /#feedback\\.bad[\\s\\S]*?background:\\s*var\\(--hp-danger-bg\\)/, "corrective answer feedback should use the shared danger palette");
-assert.match(css, /\\.notice\\s*\\{[^}]*border-inline-start:\\s*4px solid var\\(--hp-brand\\)/s, "informational notices should share the homepage accent system");
-assert.match(css, /\\.empty-state,\\s*\\.topic-loading\\s*\\{/, "empty and loading states should use consistent surfaces");
+assert.ok(css.includes("#feedback.good,\n.feedback.good {") && css.includes("background: var(--hp-success-bg)"), "positive answer feedback should use the shared success palette");
+assert.ok(css.includes("#feedback.bad,\n.feedback.bad {") && css.includes("background: var(--hp-danger-bg)"), "corrective answer feedback should use the shared danger palette");
+assert.ok(css.includes(".notice {") && css.includes("border-inline-start: 4px solid var(--hp-brand)"), "informational notices should share the homepage accent system");
+assert.ok(css.includes(".empty-state,\n.topic-loading {"), "empty and loading states should use consistent surfaces");
 console.log("PASS: homepage design system, feedback states, and interaction feedback");
