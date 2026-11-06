@@ -193,3 +193,28 @@ body.dark-mode :where(
   #topic-grid .topic-card:hover { transform: none; }
   html:focus-within { scroll-behavior: auto; }
 }
+
+
+/* Keep the learning dashboard readable and cohesive in the dark theme. */
+body.dark-mode .dashboard {
+  background: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+body.dark-mode .dashboard-intro h2,
+body.dark-mode .stat-card strong { color: var(--hp-ink); }
+body.dark-mode .dashboard-intro p,
+body.dark-mode .stat-label { color: var(--hp-muted); }
+body.dark-mode .stat-card {
+  min-width: 0;
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+}
+body.dark-mode .dashboard-actions .secondary {
+  background: #243653;
+  color: #c6d6ff;
+}
+body.dark-mode .dashboard-actions .secondary:hover:not(:disabled) {
+  background: #2c4163;
+}
+body.dark-mode .dashboard-actions .text-button { color: var(--hp-muted); }
