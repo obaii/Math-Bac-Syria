@@ -14,4 +14,7 @@ for (const selector of [".dashboard", ".first-visit-guide", "#section-menu", ".q
 }
 assert.match(css, /border-radius:\s*var\(--hp-radius-lg\)/, "large homepage surfaces should share the large radius token");
 assert.match(css, /box-shadow:\s*var\(--hp-shadow-md\)/, "large homepage surfaces should share the medium elevation token");
-console.log("PASS: homepage design tokens, stylesheet integration, and shared surface system");
+assert.match(css, /#section-menu \.quick-start-group-label\s*\{/, "navigation groups should have a distinct heading style");
+assert.match(css, /#section-menu \.quick-start-group-label::before/, "navigation group headings should have a consistent visual marker");
+assert.match(css, /#section-menu \.quick-start-card\s*\{[^}]*min-height:\s*72px/s, "navigation cards should have a consistent minimum height");
+console.log("PASS: homepage design tokens, shared surfaces, and navigation hierarchy");
