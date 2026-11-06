@@ -1,6 +1,10 @@
 "use strict";
 const assert=require("node:assert/strict"),fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
 const source=fs.readFileSync(path.join(__dirname,"..","formula-library.js"),"utf8");
+const css=fs.readFileSync(path.join(__dirname,"..","style-overrides.css"),"utf8");
+assert.match(css,/\.formula-copy\{[^}]*min-height:44px/,"formula copy action should provide a 44px touch target");
+assert.match(css,/\.flashcard-reset\{[^}]*min-height:44px/,"flashcard reset action should provide a 44px touch target");
+
 const context={window:{},document:{getElementById:()=>null}};
 vm.runInNewContext(source,context);
 const data=context.window.MathFormulaLibraryData;
