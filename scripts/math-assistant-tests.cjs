@@ -20,6 +20,7 @@ const assert = require("node:assert/strict");
     await shortcut.click();
     const panel=page.locator("#math-assistant");
     await panel.waitFor({state:"visible"});
+    assert.equal(await page.locator("#math-assistant-response").getAttribute("aria-live"), "polite", "assistant results should be announced without interrupting the user");
     assert.equal(await shortcut.getAttribute("aria-expanded"),"true","assistant shortcut should expose its expanded state");
     const prompt=page.locator("#math-assistant-question");
     assert.equal(await prompt.getAttribute("maxlength"),"3000","assistant should accept a complete long-form problem");
