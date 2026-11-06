@@ -71,6 +71,9 @@ const assert = require("node:assert/strict");
       assert.equal(layout.topicCardCount, 14, "the home page should retain all 14 curriculum research cards");
       const expectedColumns = viewport.width <= 540 ? 1 : viewport.width <= 850 ? 2 : 3;
       if (viewport.width <= 600) {
+        const menuToggle = await page.locator("#section-menu-toggle").boundingBox();
+        assert.ok(menuToggle && menuToggle.height >= 44,
+          `the mobile section-menu toggle should meet the 44px touch-target height at ${viewport.width}px: ${JSON.stringify(menuToggle)}`);
         const filterTargets = await page.evaluate(() => ({
           clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
           resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })()
