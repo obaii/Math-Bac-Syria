@@ -15,6 +15,8 @@ const serviceWorker = read("sw.js");
 const html = read("index.html");
 const installScript = read("pwa-install.js");
 const manifest = JSON.parse(read("manifest.webmanifest"));
+check(installScript.includes('button.setAttribute("aria-live", "polite")'), "install status changes should be announced to assistive technology");
+check(installScript.includes('button.setAttribute("aria-atomic", "true")'), "install status announcements should be read as a complete label");
 
 const coreMatch = serviceWorker.match(/const CORE_FILES = \[([\s\S]*?)\];/);
 check(Boolean(coreMatch), "CORE_FILES must be declared as a static array in sw.js");
