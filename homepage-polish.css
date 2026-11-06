@@ -106,3 +106,19 @@ body.dark-mode .topic-card {
 body.dark-mode #section-menu .quick-start-group-label { color: #c6d6ff; }
 body.dark-mode #section-menu .quick-start-copy strong { color: var(--hp-ink); }
 body.dark-mode #section-menu .quick-start-copy small { color: var(--hp-muted); }
+
+/* Bring all fourteen curriculum cards onto the shared visual system. */
+#topic-grid .topic-card {
+  border-radius: var(--hp-radius-lg);
+  border-color: color-mix(in srgb, var(--topic-accent, var(--hp-brand)) 22%, var(--hp-border));
+  box-shadow: var(--hp-shadow-sm);
+  color: var(--hp-ink);
+}
+#topic-grid .topic-card .topic-title { color: var(--hp-ink); }
+#topic-grid .topic-card .topic-meta,
+#topic-grid .topic-card .topic-status { color: var(--hp-muted); }
+#topic-grid .topic-card .topic-card-bottom { border-top-color: var(--hp-border); }
+#topic-grid .topic-card .topic-start { color: var(--topic-accent, var(--hp-brand)); }
+body.dark-mode #topic-grid .topic-card .topic-title { color: var(--hp-ink); }
+body.dark-mode #topic-grid .topic-card .topic-meta,
+body.dark-mode #topic-grid .topic-card .topic-status { color: var(--hp-muted); }
