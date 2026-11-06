@@ -31,6 +31,7 @@ const assert = require("node:assert/strict");
     await guide.waitFor({ state: "visible" });
     await page.getByRole("button", { name: "إخفاء هذا التوجيه" }).click();
     await guide.waitFor({ state: "hidden" });
+    await page.waitForFunction(() => document.activeElement?.id === "topic-section");
     assert.equal(await page.evaluate(() => localStorage.getItem("mathBacSyriaFirstVisitGuideDismissedV1")), "1",
       "dismissing the guide should persist for future visits");
     await page.reload({ waitUntil: "domcontentloaded" });
