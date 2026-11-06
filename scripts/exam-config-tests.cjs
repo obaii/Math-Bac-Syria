@@ -5,12 +5,14 @@ const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const source = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const css = fs.readFileSync(path.join(root, "style-overrides.css"), "utf8");
 const checks = [
   ["exam setup offers all curriculum difficulty levels", ["الكل", "أساسي", "متوسط", "متقدم"].every(level => html.includes(`<option value="${level}"`))],
   ["exam selection passes the selected difficulty to the question picker", /buildBalancedExam\(wanted, difficulty\)/.test(source)],
   ["exam question pool filters by the selected difficulty", /allQuestions\.filter\(q => q\.level === difficulty\)/.test(source)],
   ["balanced selection still caps the exam at available questions", /Math\.min\(count, bank\.length\)/.test(source)],
-  ["dynamically generated exam controls include the difficulty selector", /id="exam-difficulty"/.test(source)]
+  ["dynamically generated exam controls include the difficulty selector", /id="exam-difficulty"/.test(source)],
+  ["exam question navigation controls meet the 44px touch target", /#exam-mark-question \{[^}]*min-height:44px/.test(css) && /\.exam-nav-number \{[^}]*min-height:44px/.test(css)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
