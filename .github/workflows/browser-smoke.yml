@@ -65,5 +65,7 @@ jobs:
         run: node scripts/accessibility-navigation-tests.cjs
       - name: Run responsive mobile layout tests
         run: node scripts/responsive-layout-tests.cjs
+      - name: Run homepage small-screen text wrapping tests
+        run: node scripts/homepage-small-screen-text-tests.cjs
       - name: Run interactive math assistant tests
         run: node scripts/math-assistant-tests.cjs
