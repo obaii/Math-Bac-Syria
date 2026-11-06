@@ -76,3 +76,33 @@ body.dark-mode .topic-card {
   border-color: var(--hp-border);
   color: var(--hp-ink);
 }
+
+/* Strengthen the visual hierarchy of the grouped homepage navigation. */
+#section-menu .quick-start-group-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 2px;
+  padding: 5px 2px 7px;
+  border-bottom: 1px solid var(--hp-border);
+  color: var(--hp-brand-strong);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+#section-menu .quick-start-group-label::before {
+  content: "";
+  width: 4px;
+  height: 17px;
+  flex: 0 0 4px;
+  border-radius: 4px;
+  background: var(--hp-brand);
+}
+#section-menu .quick-start-group-label:first-child { margin-top: 0; }
+#section-menu .quick-start-card { min-height: 72px; }
+#section-menu .quick-start-copy strong { color: var(--hp-ink); }
+#section-menu .quick-start-copy small { color: var(--hp-muted); }
+body.dark-mode #section-menu .quick-start-group-label { color: #c6d6ff; }
+body.dark-mode #section-menu .quick-start-copy strong { color: var(--hp-ink); }
+body.dark-mode #section-menu .quick-start-copy small { color: var(--hp-muted); }
