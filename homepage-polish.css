@@ -193,3 +193,40 @@ body.dark-mode :where(
   #topic-grid .topic-card:hover { transform: none; }
   html:focus-within { scroll-behavior: auto; }
 }
+
+/* Present positive, corrective, and informational feedback as one coherent system. */
+#feedback.good,
+.feedback.good {
+  background: var(--hp-success-bg);
+  border: 1px solid color-mix(in srgb, var(--hp-success) 34%, var(--hp-border));
+  color: var(--hp-ink);
+}
+#feedback.bad,
+.feedback.bad {
+  background: var(--hp-danger-bg);
+  border: 1px solid color-mix(in srgb, var(--hp-danger) 34%, var(--hp-border));
+  color: var(--hp-ink);
+}
+.notice {
+  background: var(--hp-surface-soft);
+  border: 1px solid var(--hp-border);
+  border-inline-start: 4px solid var(--hp-brand);
+  border-radius: var(--hp-radius-md);
+  color: var(--hp-ink);
+}
+.empty-state,
+.topic-loading {
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+}
+body.dark-mode #feedback.good,
+body.dark-mode .feedback.good,
+body.dark-mode #feedback.bad,
+body.dark-mode .feedback.bad,
+body.dark-mode .notice,
+body.dark-mode .empty-state,
+body.dark-mode .topic-loading {
+  color: var(--hp-ink);
+}
