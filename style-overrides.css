@@ -1948,3 +1948,15 @@ body.dark-mode .filter-reset-button:hover { background: #2a3d5c; }
     border-color: #9eb5fa;
   }
 }
+
+
+/* Preserve the compact header on narrow devices and respect display safe areas. */
+@media (max-width: 370px) {
+  .top {
+    padding-inline-start: max(14px, env(safe-area-inset-right));
+    padding-inline-end: max(14px, env(safe-area-inset-left));
+  }
+  .top .tag { display: none; }
+  .top .brand,
+  .top .top-actions { min-width: 0; }
+}
