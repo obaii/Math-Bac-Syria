@@ -1000,10 +1000,10 @@ body.dark-mode .session-mistake-list li p { color:#a7b5ca; }
 .exam-question-nav[hidden] { display:none !important; }
 .exam-nav-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:11px; }
 .exam-nav-toolbar p { margin:0; color:#52627a; font-size:12px; font-weight:700; line-height:1.7; }
-#exam-mark-question { flex:0 0 auto; min-height:40px; padding:7px 10px; border:1px solid #cbd8f8; border-radius:9px; background:#fff; color:#3154b5; font:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+#exam-mark-question { flex:0 0 auto; min-height:44px; padding:7px 10px; border:1px solid #cbd8f8; border-radius:9px; background:#fff; color:#3154b5; font:inherit; font-size:12px; font-weight:700; cursor:pointer; }
 #exam-mark-question[aria-pressed="true"] { background:#fff5d9; border-color:#e8c66e; color:#825b08; }
 .exam-nav-grid { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); gap:7px; }
-.exam-nav-number { position:relative; min-width:0; min-height:38px; border:1px solid #d8e0ec; border-radius:9px; background:#fff; color:#40516a; font:inherit; font-size:12px; font-weight:800; cursor:pointer; }
+.exam-nav-number { position:relative; min-width:0; min-height:44px; border:1px solid #d8e0ec; border-radius:9px; background:#fff; color:#40516a; font:inherit; font-size:12px; font-weight:800; cursor:pointer; }
 .exam-nav-number.is-answered { background:#e9f6ee; border-color:#b8ddc5; color:#247447; }
 .exam-nav-number.is-marked::after { content:""; position:absolute; inset-block-start:4px; inset-inline-end:4px; width:6px; height:6px; border-radius:50%; background:#d39a22; }
 .exam-nav-number.is-current { outline:3px solid #8ca9ff; outline-offset:1px; border-color:#3154b5; }
@@ -1023,7 +1023,7 @@ body.dark-mode .exam-answer-skipped { color:#ffd58a; }
   .exam-nav-toolbar { align-items:stretch; flex-direction:column; }
   #exam-mark-question { width:100%; }
   .exam-nav-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
-  .exam-nav-number { min-height:42px; }
+  .exam-nav-number { min-height:44px; }
 }
 
 
