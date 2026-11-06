@@ -169,3 +169,38 @@ body.dark-mode :where(
 ):focus-visible {
   box-shadow: 0 0 0 2px var(--hp-surface);
 }
+
+
+/* Consistent, restrained transitions across the homepage design system. */
+:where(
+  .dashboard,
+  .first-visit-guide,
+  #section-menu,
+  .quick-start-card,
+  .stat-card,
+  .search-box,
+  .filter-panel,
+  #topic-grid .topic-card,
+  #no-topics
+) {
+  transition:
+    background-color var(--hp-motion-normal) ease,
+    border-color var(--hp-motion-normal) ease,
+    box-shadow var(--hp-motion-normal) ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    .dashboard,
+    .first-visit-guide,
+    #section-menu,
+    .quick-start-card,
+    .stat-card,
+    .search-box,
+    .filter-panel,
+    #topic-grid .topic-card,
+    #no-topics
+  ) {
+    transition: none !important;
+    animation: none !important;
+  }
+}
