@@ -1,11 +1,11 @@
 /* Styles for the student and exam tools, extracted from index.html. */
-    .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:38px}
+    .install-app-button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #9fb5d6;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:44px}
     body.dark-mode .install-app-button{background:#182438;color:#e7edf8;border-color:#34445d}
     #student-tools{margin:18px 0 26px;padding:18px;border:1px solid #d9e1ed;border-radius:16px;background:#fff;color:#17243b}
     #student-tools h3{margin:0 0 8px;font-size:18px}
     #student-tools p{margin:0 0 12px;color:#64748b;font-size:13px}
     #student-tools .tools-actions{display:flex;flex-wrap:wrap;gap:8px}
-    #student-tools .tools-actions button{font:inherit;font-size:13px;padding:9px 13px;border:1px solid #d9e1ed;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:42px}
+    #student-tools .tools-actions button{font:inherit;font-size:13px;padding:9px 13px;border:1px solid #d9e1ed;border-radius:10px;background:#fff;color:#17243b;cursor:pointer;min-height:44px}
     #student-tools .bookmark-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}
     #student-tools .progress-report{margin-top:12px;padding:12px;border:1px solid #d9e1ed;border-radius:12px}
     #exam-tools{margin-top:16px;padding:14px;border:1px solid #d9e1ed;border-radius:12px;background:#f8fafc;color:#17243b}

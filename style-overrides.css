@@ -569,7 +569,7 @@ body.dark-mode .solution-steps li::marker { color: #b8ccff; }
   }
   .privacy-note { display: none; }
   .install-app-button {
-    min-height: 40px;
+    min-height: 44px;
     padding: 7px 9px;
     white-space: nowrap;
   }
