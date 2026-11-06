@@ -33,7 +33,7 @@ select:focus-visible,
 @media (max-width: 600px) {
   .actions .primary, .actions .secondary { min-height: 44px; }
   .option { min-height: 46px; align-items: flex-start; }
-  .filter-panel select { min-height: 40px; }
+  .filter-panel select { min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
