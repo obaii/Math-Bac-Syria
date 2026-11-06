@@ -25,3 +25,13 @@ body.dark-mode .solved-example-idea,body.dark-mode .solved-examples-controls inp
 @media(max-width:700px){#solved-examples-library{padding:13px}.solved-examples-controls{grid-template-columns:1fr}.solved-example-meta{display:grid;gap:3px}.solved-example-card{padding:12px}}
 
 .solved-example-source{margin:4px 0 10px;padding:7px 10px;border-right:3px solid var(--accent,#4b70c9);border-radius:7px;background:var(--surface,#fff);font-size:13px;font-weight:700;color:var(--muted,#64748b)}
+
+/* Visible keyboard focus for the solved-example filters and cards. */
+.solved-examples-controls input:focus-visible,
+.solved-examples-controls select:focus-visible {
+  outline: 3px solid #8aa8ff;
+  outline-offset: 2px;
+  border-color: #315edb;
+}
+.solved-example-card:focus-within { border-color: #8aa8ff; }
+.solved-example-source { overflow-wrap: anywhere; }
