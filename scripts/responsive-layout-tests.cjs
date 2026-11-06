@@ -76,12 +76,15 @@ const assert = require("node:assert/strict");
           `the mobile section-menu toggle should meet the 44px touch-target height at ${viewport.width}px: ${JSON.stringify(menuToggle)}`);
         const filterTargets = await page.evaluate(() => ({
           clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
-          resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })()
+          resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
+          installButton: (() => { const button = document.querySelector("#install-app-button"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })()
         }));
         assert.ok(filterTargets.clearSearch.width >= 44 && filterTargets.clearSearch.height >= 44,
           "the mobile clear-search control should meet the 44px touch-target size");
         assert.ok(filterTargets.resetFilters.height >= 44,
           "the mobile reset-filters control should meet the 44px touch-target size");
+        assert.ok(filterTargets.installButton.height >= 44,
+          "the mobile install action should meet the 44px touch-target height");
       }
 
       assert.equal(layout.topicGridColumns, expectedColumns,
