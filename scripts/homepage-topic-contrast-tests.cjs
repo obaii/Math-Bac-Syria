@@ -77,6 +77,40 @@ function contrastRatio(foreground, background) {
     assert.deepEqual(darkFailures, [],
       "topic icons should meet the WCAG 1.4.11 non-text contrast threshold of 3:1 in dark mode");
 
+
+    // The learning dashboard should retain readable text and surfaces in dark mode.
+    await page.evaluate(() => {
+      document.body.classList.add("dark-mode");
+      const dashboard = document.querySelector("#dashboard-panel-home");
+      dashboard.hidden = false;
+    });
+    const dashboardPalette = await page.evaluate(() => {
+      const selectors = [".dashboard-intro h2", ".dashboard-intro p", ".stat-label", ".stat-card strong"];
+      const read = selector => {
+        const element = document.querySelector(selector);
+        const card = element.closest(".stat-card");
+        return {
+          selector,
+          foreground: getComputedStyle(element).color,
+          background: getComputedStyle(card || document.querySelector(".dashboard")).backgroundColor
+        };
+      };
+      return {
+        surface: getComputedStyle(document.querySelector(".dashboard")).backgroundColor,
+        card: getComputedStyle(document.querySelector(".stat-card")).backgroundColor,
+        text: selectors.map(read)
+      };
+    });
+    assert.notEqual(dashboardPalette.surface, "rgba(0, 0, 0, 0)",
+      "the dark dashboard should use a defined surface color");
+    assert.notEqual(dashboardPalette.card, "rgba(0, 0, 0, 0)",
+      "dashboard statistic cards should use a defined dark surface");
+    const dashboardFailures = dashboardPalette.text.map(item => ({
+      ...item, ratio: contrastRatio(item.foreground, item.background)
+    })).filter(item => item.ratio < 4.5);
+    assert.deepEqual(dashboardFailures, [],
+      "dashboard labels and values should meet WCAG AA text contrast in dark mode");
+
     console.log("PASS: all 14 topic cards meet WCAG AA text contrast in light mode and non-text contrast in dark mode");
   } finally {
     await browser.close();
