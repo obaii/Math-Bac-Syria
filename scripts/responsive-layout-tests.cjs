@@ -77,85 +77,6 @@ const assert = require("node:assert/strict");
         const filterTargets = await page.evaluate(() => ({
           clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
           resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
-          installButton: (() => { const button = document.querySelector("#install-app-button"); button.hidden = false; const rect = button.getBoundingClientRect(); #!/usr/bin/env node
-"use strict";
-
-const { chromium } = require("playwright");
-const assert = require("node:assert/strict");
-
-(async () => {
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
-  const errors = [];
-  page.on("pageerror", error => errors.push(error.message));
-
-  try {
-    for (const viewport of [
-      { width: 320, height: 740 },
-      { width: 360, height: 800 },
-      { width: 390, height: 844 },
-      { width: 768, height: 1024 }
-    ]) {
-      await page.setViewportSize(viewport);
-      await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", {
-        waitUntil: "domcontentloaded"
-      });
-      await page.waitForFunction(
-        () => document.querySelectorAll("#topic-grid [data-topic]").length > 0,
-        null,
-        { timeout: 15000 }
-      );
-
-      const layout = await page.evaluate(() => {
-        const selectors = [
-          ".top", ".top-actions", ".hero", ".quick-start",
-          "#topic-grid", "#student-tools", "#exam-tools"
-        ];
-        const elements = selectors.map(selector => {
-          const element = document.querySelector(selector);
-          if (!element) return { selector, missing: true };
-          const rect = element.getBoundingClientRect();
-          const style = getComputedStyle(element);
-          const visible = !element.hidden && style.display !== "none" &&
-            style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
-          return {
-            selector,
-            left: Math.round(rect.left),
-            right: Math.round(rect.right),
-            width: Math.round(rect.width),
-            visible
-          };
-        });
-        const cards = [...document.querySelectorAll("#topic-grid .topic-card")];
-        const cardBounds = cards.map(card => {
-          const rect = card.getBoundingClientRect();
-          return { left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width) };
-        });
-        return {
-          viewport: window.innerWidth,
-          documentWidth: document.documentElement.scrollWidth,
-          bodyWidth: document.body.scrollWidth,
-          topicCardCount: cards.length,
-          topicGridColumns: getComputedStyle(document.querySelector('#topic-grid')).gridTemplateColumns.split(' ').length,
-          cardBounds,
-          elements
-        };
-      });
-
-      assert.ok(
-        layout.documentWidth <= viewport.width + 1 &&
-        layout.bodyWidth <= viewport.width + 1,
-        `horizontal page overflow at ${viewport.width}px: ${JSON.stringify(layout)}`
-      );
-      assert.equal(layout.topicCardCount, 14, "the home page should retain all 14 curriculum research cards");
-      const expectedColumns = viewport.width <= 540 ? 1 : viewport.width <= 850 ? 2 : 3;
-      if (viewport.width <= 600) {
-        const menuToggle = await page.locator("#section-menu-toggle").boundingBox();
-        assert.ok(menuToggle && menuToggle.height >= 44,
-          `the mobile section-menu toggle should meet the 44px touch-target height at ${viewport.width}px: ${JSON.stringify(menuToggle)}`);
-        const filterTargets = await page.evaluate(() => ({
-          clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
-          resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
           installButton: (() => { const button = document.querySelector("#install-app-button"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height, minHeight: Number.parseFloat(getComputedStyle(button).minHeight) }; })()
         }));
         assert.ok(filterTargets.clearSearch.width >= 44 && filterTargets.clearSearch.height >= 44,
@@ -163,7 +84,7 @@ const assert = require("node:assert/strict");
         assert.ok(filterTargets.resetFilters.height >= 44,
           "the mobile reset-filters control should meet the 44px touch-target size");
         assert.ok(filterTargets.installButton.minHeight >= 44,
-          "the mobile install action should meet the 44px touch-target height");
+          "the mobile install action should meet the 44px touch-target minimum");
       }
 
       assert.equal(layout.topicGridColumns, expectedColumns,
