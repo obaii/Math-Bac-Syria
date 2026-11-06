@@ -10,6 +10,8 @@ assert.ok(formulas.every(x=>x.title&&x.tex&&x.note&&x.category),"every formula s
 assert.ok(formulas.some(x=>x.level==="prior")&&formulas.some(x=>x.level==="bac"),"flashcards should include both prerequisite and baccalaureate knowledge");
 assert.ok(formulas.some(x=>x.unit==="الاحتمالات"&&x.title==="قانون ثنائي الحدين"),"advanced probability cards should be included");
 const flash=fs.readFileSync("flashcards.js","utf8");
+assert.ok(flash.includes('status?.setAttribute("aria-live", "polite")'),"flashcard status updates should be announced politely");
+assert.ok(flash.includes('status?.setAttribute("aria-atomic", "true")'),"flashcard status should be announced as a complete message");
 for(const token of ["mathBacSyriaFlashcardsV1","MathFormulaLibraryData","flashcard-known","flashcard-review","flashcard-shuffle","flashcard-reset","typesetPromise"]) assert.ok(flash.includes(token),"flashcard module should support "+token);
 assert.ok(!/eval\s*\(|new Function/.test(flash),"flashcard module must not execute dynamic code");
 console.log("PASS: flashcards can consume the expanded "+formulas.length+"-entry curriculum library");
