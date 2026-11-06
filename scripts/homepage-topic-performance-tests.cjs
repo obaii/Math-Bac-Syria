@@ -22,12 +22,18 @@ const assert = require("node:assert/strict");
 
     const fontSetup = await page.evaluate(async () => ({
       linkedFontStylesheets: document.querySelectorAll('link[rel="stylesheet"][href^="https://fonts.googleapis.com/css2?family=Cairo"]').length,
-      styleCss: await fetch("style.css").then(response => response.text())
+      styleCss: await fetch("style.css").then(response => response.text()),
+      indexHtml: await fetch("index.html").then(response => response.text())
     }));
     assert.equal(fontSetup.linkedFontStylesheets, 1,
       "Cairo should be declared once in the document head");
     assert.doesNotMatch(fontSetup.styleCss, /^\\s*@import\\s/m,
       "style.css should not request a duplicate Cairo stylesheet");
+    const cdnPreconnects = [...fontSetup.indexHtml.matchAll(/<link\s+rel="preconnect"\s+href="https:\/\/cdn\.jsdelivr\.net"[^>]*>/g)];
+    assert.equal(cdnPreconnects.length, 1,
+      "the shared jsDelivr origin should be preconnected exactly once for Bootstrap and MathJax resources");
+    assert.match(cdnPreconnects[0][0], /crossorigin/,
+      "the CDN preconnect should use the crossorigin mode required for anonymous resource fetches");
 
     const levels = await page.locator("#difficulty option").evaluateAll(options =>
       options.map(option => option.value)
