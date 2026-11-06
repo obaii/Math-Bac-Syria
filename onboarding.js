@@ -20,6 +20,12 @@
 
     dismissButton.addEventListener("click", function () {
       guide.hidden = true;
+      const topicSection = document.getElementById("topic-section");
+      if (topicSection) {
+        window.setTimeout(function () {
+          topicSection.focus({ preventScroll: true });
+        }, 0);
+      }
       try {
         window.localStorage.setItem(DISMISSED_KEY, "1");
       } catch (error) {
