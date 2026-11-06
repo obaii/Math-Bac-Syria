@@ -8,6 +8,8 @@
   const preview = document.getElementById("math-assistant-input-preview");
   const clear = document.getElementById("math-assistant-clear");
   if (!form || !input || !response) return;
+  response.setAttribute("aria-live", "polite");
+  response.setAttribute("aria-atomic", "false");
   input.maxLength = 3000;
 
   const normalize = value => window.MathSearchUtils.normalize(value);
