@@ -1936,3 +1936,15 @@ body.dark-mode .filter-reset-button:hover { background: #2a3d5c; }
   .filter-reset-button { width: 100%; min-height: 44px; }
   .search-box #clear-topic-search:not([hidden]) { flex: 0 0 44px; width: 44px; min-width: 44px; min-height: 44px; height: 44px; }
 }
+
+/* Avoid sticky hover transforms on touch screens; provide clear press feedback. */
+@media (hover: none) and (pointer: coarse) {
+  .quick-start-card:hover {
+    transform: none;
+    box-shadow: 0 5px 18px rgba(25,48,86,.035);
+  }
+  .quick-start-card:active {
+    transform: scale(.99);
+    border-color: #9eb5fa;
+  }
+}
