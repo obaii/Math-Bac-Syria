@@ -26,4 +26,8 @@ assert.match(css, /#quiz \.actions button:active/, "post-answer actions should p
 assert.match(css, /transition-property:\s*transform, box-shadow, border-color, background-color/, "homepage controls should transition only visual feedback properties");
 assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, "homepage motion must respect reduced-motion preferences");
 assert.match(css, /\.topic-loading-spinner\s*\{[^}]*animation:\s*none\s*!important/s, "the loading indicator should stop animating for reduced-motion users");
-console.log("PASS: homepage design system, interaction feedback, and reduced-motion support");
+
+assert.match(css, /\.top-actions\\s*\\{[^}]*flex-wrap:\\s*wrap/s, "header actions should wrap instead of overflowing");
+assert.match(css, /@media \\(max-width: 600px\\)[\\s\\S]*?\.top\\s*\\{[^}]*height:\\s*auto/s, "the sticky header should adapt its height on mobile");
+assert.match(css, /\.install-app-button\\s*\\{[^}]*min-height:\\s*40px/s, "the mobile install control should retain a usable touch target");
+console.log("PASS: homepage design system, responsive header, interaction feedback, and reduced-motion support");
