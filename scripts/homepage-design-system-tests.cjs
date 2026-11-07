@@ -35,4 +35,5 @@ assert.ok(css.includes("height: auto;"), "the sticky header should adapt its hei
 assert.ok(css.includes("min-height: 40px;"), "the mobile install control should retain a usable touch target");
 assert.ok(css.includes("overflow-wrap: anywhere;"), "research card labels should wrap instead of overflowing");
 assert.ok(css.includes("flex: 1 1 100%;"), "topic filters should occupy a full row when space is limited");
+assert.ok(css.includes("#dashboard-panel-home .stat-grid"), "dashboard statistics should have a dedicated responsive grid");
 console.log("PASS: homepage design system, responsive header, interaction feedback, and reduced-motion support");
