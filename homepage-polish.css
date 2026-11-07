@@ -378,3 +378,15 @@ body.dark-mode .topic-loading {
   .topic-tools .filter-panel { width: 100%; }
   .topic-tools .filter-panel select { flex: 1 1 100%; min-height: 44px; }
 }
+
+
+/* Batch 7/10: prevent dashboard statistics from becoming cramped on tablets. */
+#dashboard-panel-home .stat-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 760px) {
+  #dashboard-panel-home .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 360px) {
+  #dashboard-panel-home .stat-grid { grid-template-columns: minmax(0, 1fr); }
+}
