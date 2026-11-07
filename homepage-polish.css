@@ -409,3 +409,20 @@ body.dark-mode .topic-loading {
   }
   #dashboard-panel-home .dashboard-actions > * { width: 100%; }
 }
+
+
+/* Batch 9/10: make first-use dashboard guidance distinct without looking like an error. */
+.dashboard-empty-state {
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  border: 1px dashed var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.9;
+}
+body.dark-mode .dashboard-empty-state {
+  border-color: var(--hp-border);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+}
