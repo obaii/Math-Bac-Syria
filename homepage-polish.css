@@ -4328,3 +4328,283 @@ body.dark-mode #dashboard-panel-question-coverage-title {
     border: 1px solid CanvasText;
   }
 }
+
+
+/* Batch 420-429: final homepage consistency, clarity, and accessibility refinements. */
+
+/* 420: Align section headings and supporting copy with one readable type scale. */
+#main-content :is(.section-heading, .dashboard-intro, .achievement-heading) h2,
+#main-content :is(.section-heading, .dashboard-intro, .achievement-heading) h3 {
+  color: var(--hp-ink);
+  line-height: 1.55;
+  text-wrap: balance;
+}
+#main-content :is(.section-heading, .dashboard-intro, .achievement-heading) p {
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#main-content :is(h2, h3) { scroll-margin-top: 18px; }
+
+/* 421: Keep the top bar calm and usable when its actions wrap. */
+.top {
+  min-width: 0;
+  height: auto;
+  min-height: 68px;
+  gap: 12px;
+}
+.top .brand { min-width: 0; }
+.top .top-actions {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.top .privacy-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: var(--hp-muted);
+  line-height: 1.5;
+}
+.top .privacy-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--hp-success);
+}
+@media (max-width: 640px) {
+  .top { align-items: flex-start; flex-wrap: wrap; padding-block: 12px; }
+  .top .top-actions { justify-content: flex-start; width: 100%; }
+}
+
+/* 422: Improve hero hierarchy while keeping its decorative mark behind content. */
+.hero { isolation: isolate; }
+.hero .hero-mark { z-index: -1; pointer-events: none; }
+.hero > :not(.hero-mark) { position: relative; z-index: 1; }
+.hero h1 { max-width: 20ch; text-wrap: balance; }
+.hero > p:not(.eyebrow) { line-height: 1.9; }
+.hero .hero-stats { align-items: stretch; }
+.hero .hero-stats span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  line-height: 1.55;
+}
+
+/* 423: Make the first-visit guide easier to scan and its steps consistent. */
+#first-visit-guide {
+  min-width: 0;
+  padding: clamp(16px, 3vw, 26px);
+  border: 1px solid var(--hp-border);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+}
+#first-visit-guide h2 {
+  max-width: 28ch;
+  margin-block: 4px 8px;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+#first-visit-guide #first-visit-guide-description {
+  max-width: 72ch;
+  color: var(--hp-muted);
+  line-height: 1.9;
+}
+#first-visit-guide .first-visit-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+}
+#first-visit-guide .first-visit-steps li {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+}
+#first-visit-guide .first-visit-steps span { color: var(--hp-muted); line-height: 1.7; }
+#first-visit-guide .first-visit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+@media (max-width: 640px) {
+  #first-visit-guide .first-visit-steps { grid-template-columns: 1fr; }
+  #first-visit-guide .first-visit-actions > * { min-height: 44px; }
+}
+
+/* 424: Unify quick-start navigation hover, focus, and touch feedback. */
+#section-menu .quick-start-card {
+  min-width: 0;
+  border: 1px solid var(--hp-border);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  text-decoration: none;
+}
+#section-menu .quick-start-card .quick-start-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-brand);
+}
+#section-menu .quick-start-card .quick-start-copy { min-width: 0; }
+#section-menu .quick-start-card .quick-start-copy :is(strong, small) {
+  display: block;
+  overflow-wrap: anywhere;
+}
+#section-menu .quick-start-card:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  #section-menu .quick-start-card:hover {
+    border-color: var(--hp-brand);
+    background: var(--hp-surface-soft);
+  }
+}
+
+/* 425: Standardize dashboard summary spacing and action wrapping. */
+.dashboard {
+  min-width: 0;
+  padding: clamp(14px, 2.5vw, 22px);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+}
+.dashboard .dashboard-intro { min-width: 0; }
+.dashboard .dashboard-actions {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dashboard .dashboard-actions :is(button, a) {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.dashboard .stat-card {
+  min-width: 0;
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+.dashboard .stat-card :is(strong, .stat-label) { overflow-wrap: anywhere; }
+body.dark-mode .dashboard .stat-card {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+}
+
+/* 426: Give search and filter controls a consistent, visible interaction state. */
+#topic-section .topic-tools { min-width: 0; }
+#topic-section .search-box {
+  min-width: 0;
+  border-color: var(--hp-border);
+  background: var(--hp-surface);
+}
+#topic-section .search-box input {
+  min-width: 0;
+  color: var(--hp-ink);
+  font: inherit;
+}
+#topic-section .filter-panel {
+  min-width: 0;
+  border-color: var(--hp-border);
+  background: var(--hp-surface);
+}
+#topic-section .filter-panel :is(label, .filter-hint) { color: var(--hp-muted); }
+#topic-section .filter-panel select {
+  min-width: 0;
+  min-height: 44px;
+  border-color: var(--hp-border);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#topic-section :is(.search-box, .filter-panel):focus-within {
+  border-color: var(--hp-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hp-focus) 16%, transparent);
+}
+
+/* 427: Make answer feedback states distinct in both light and dark themes. */
+#quiz #feedback.good {
+  border: 1px solid color-mix(in srgb, var(--hp-success) 35%, var(--hp-border));
+  background: var(--hp-success-bg);
+  color: var(--hp-ink);
+}
+#quiz #feedback.bad {
+  border: 1px solid color-mix(in srgb, var(--hp-danger) 35%, var(--hp-border));
+  background: var(--hp-danger-bg);
+  color: var(--hp-ink);
+}
+#quiz #feedback :is(strong, b) { color: var(--hp-ink); }
+#quiz #question-hint-text { border-inline-start-color: var(--hp-brand); }
+#quiz :is(#feedback, #question-hint-text) a {
+  color: var(--hp-brand);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+body.dark-mode #quiz :is(#feedback, #question-hint-text) a { color: #b8caff; }
+
+/* 428: Improve footer readability and keep links comfortable to activate. */
+footer {
+  min-width: 0;
+  padding: 24px max(20px, calc((100% - 1100px) / 2));
+  color: var(--hp-muted);
+  line-height: 1.9;
+}
+footer p { max-width: 82ch; margin-inline: auto; overflow-wrap: anywhere; }
+footer .footer-brand { color: var(--hp-ink); line-height: 1.8; }
+footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
+  color: var(--hp-brand);
+  overflow-wrap: anywhere;
+  text-underline-offset: 3px;
+}
+body.dark-mode footer { color: var(--hp-muted); }
+body.dark-mode footer .footer-brand { color: var(--hp-ink); }
+body.dark-mode footer a { color: #b8caff; }
+
+/* 429: Clarify disabled controls and preserve contrast in high-contrast modes. */
+#main-content button:disabled,
+#main-content [aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: .62;
+  filter: saturate(.72);
+}
+@media (forced-colors: active) {
+  #first-visit-guide .first-visit-steps li,
+  #section-menu .quick-start-card,
+  .dashboard .stat-card,
+  #topic-section .search-box,
+  #topic-section .filter-panel,
+  #quiz #feedback.good,
+  #quiz #feedback.bad {
+    border: 1px solid CanvasText;
+  }
+  #section-menu .quick-start-card:focus-visible,
+  #topic-section :is(input, select):focus-visible,
+  footer a:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 3px;
+  }
+}
