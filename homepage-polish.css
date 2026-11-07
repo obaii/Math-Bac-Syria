@@ -5623,3 +5623,85 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
 }
 #formula-library #formula-search:focus-visible { outline: 3px solid var(--hp-focus); outline-offset: 2px; }
 #formula-library #formula-search::placeholder { color: var(--hp-muted); opacity: .85; }
+
+
+/* Homepage refinement batch 480–489. */
+
+/* 480: Give formula filter controls a subtle pointer-hover cue. */
+#formula-library .formula-filters select:hover {
+  border-color: var(--hp-brand);
+  background: var(--hp-surface-soft);
+}
+
+/* 481: Provide a consistent, visible keyboard focus for every formula filter. */
+#formula-library .formula-filters select:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-color: var(--hp-brand);
+}
+
+/* 482: Make source links in the formula library clearly keyboard-accessible. */
+#formula-library .formula-library-sources a:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* 483: Show the learner's positive flashcard self-assessment state. */
+#flashcards #flashcard-known[aria-pressed="true"] {
+  border-color: var(--hp-success);
+  background: var(--hp-success-bg);
+  color: var(--hp-success);
+  font-weight: 800;
+}
+
+/* 484: Distinguish flashcards explicitly marked for further review. */
+#flashcards #flashcard-review[aria-pressed="true"] {
+  border-color: var(--hp-warning);
+  background: var(--hp-warning-bg);
+  color: var(--hp-warning-ink);
+  font-weight: 800;
+}
+
+/* 485: Make the flashcard reveal action reflect its expanded state. */
+#flashcards #flashcard-flip[aria-expanded="true"] {
+  border-color: var(--hp-brand);
+  background: var(--hp-brand-soft);
+  color: var(--hp-brand-strong);
+}
+
+/* 486: Clarify unavailable flashcard navigation controls. */
+#flashcards .flashcard-navigation button:disabled {
+  cursor: not-allowed;
+  opacity: .52;
+  filter: saturate(.55);
+  box-shadow: none;
+}
+
+/* 487: Add a strong keyboard focus indicator to the exam duration selector. */
+#exam-tools #exam-duration:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-color: var(--hp-brand);
+}
+
+/* 488: Distinguish progress export and backup import actions in the student tools. */
+#student-tools :is(#export-progress, #import-progress-button) {
+  border: 1px solid var(--hp-border);
+  background: var(--hp-surface-soft);
+  color: var(--hp-brand-strong);
+  font-weight: 750;
+}
+#student-tools :is(#export-progress, #import-progress-button):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 489: Keep the current question index easy to scan in long practice sessions. */
+#quiz #question-number {
+  display: inline-block;
+  min-width: 1.6em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 850;
+  text-align: center;
+}
