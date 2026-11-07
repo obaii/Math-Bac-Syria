@@ -1807,3 +1807,263 @@ body.dark-mode .dashboard #resume-session {
 @media (prefers-reduced-motion: reduce) {
   .hero::after { scroll-behavior: auto; }
 }
+
+/* Batch 350-359: refine learning-history panels and the interactive math assistant. */
+
+/* 350: Give all dashboard history sections a consistent readable heading rhythm. */
+.recent-activity-heading,
+.performance-trend-heading,
+.activity-calendar-heading,
+.achievement-heading {
+  min-width: 0;
+  margin-bottom: 14px;
+}
+.recent-activity-heading h3,
+.performance-trend-heading h3,
+.activity-calendar-heading h3,
+.achievement-heading h3 {
+  margin-block: 5px 8px;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+.recent-activity-heading p,
+.performance-trend-heading p,
+.activity-calendar-heading p,
+.achievement-heading p {
+  max-width: 68ch;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 351: Make the history data-limit note distinct but calm and readable. */
+.dashboard-history-note {
+  margin-top: 8px;
+  padding: 9px 12px;
+  border-inline-start: 3px solid var(--hp-border);
+  border-radius: 0 var(--hp-radius-sm) var(--hp-radius-sm) 0;
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  font-size: .88rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+body.dark-mode .dashboard-history-note {
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+}
+
+/* 352: Clarify recent activity rows and give their return action a clear focus. */
+.recent-activity-item {
+  transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+}
+.recent-activity-details strong {
+  color: var(--hp-ink);
+  line-height: 1.6;
+}
+.recent-activity-details small,
+.recent-activity-details span {
+  color: var(--hp-muted);
+  line-height: 1.65;
+}
+.recent-activity-button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 9px 13px;
+  border-radius: 10px;
+  white-space: normal;
+}
+.recent-activity-button:focus-visible {
+  outline: 3px solid var(--hp-brand);
+  outline-offset: 3px;
+}
+@media (hover: hover) {
+  .recent-activity-item:hover {
+    border-color: var(--hp-brand);
+    box-shadow: var(--hp-shadow-sm);
+  }
+}
+
+/* 353: Turn each seven-day chart column into a stable, readable mini-panel. */
+.performance-trend-chart > li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  min-height: 112px;
+  padding: 8px 4px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  text-align: center;
+}
+.performance-trend-chart > li > * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+body.dark-mode .performance-trend-chart > li {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+}
+@media (max-width: 420px) {
+  .performance-trend-chart > li {
+    min-height: 96px;
+    padding-inline: 2px;
+    font-size: .78rem;
+  }
+}
+
+/* 354: Keep each calendar day distinguishable without relying on color alone. */
+.activity-calendar-day {
+  border: 1px solid var(--hp-border);
+  outline-offset: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.activity-calendar-grid {
+  padding: 4px;
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+}
+body.dark-mode .activity-calendar-day {
+  border-color: color-mix(in srgb, var(--hp-border) 80%, var(--hp-ink));
+}
+
+/* 355: Align the activity legend swatches and prevent them from collapsing. */
+.activity-calendar-legend {
+  align-items: center;
+  margin-top: 12px;
+}
+.activity-calendar-legend i {
+  display: inline-block;
+  flex: 0 0 13px;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--hp-border);
+  border-radius: 3px;
+}
+
+/* 356: Separate the achievement total from its explanatory heading. */
+.achievement-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+.achievement-heading > div {
+  flex: 1 1 250px;
+  min-width: 0;
+}
+#achievement-summary {
+  flex: 0 1 auto;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 357: Improve achievement icon balance and keyboard-visible card feedback. */
+.achievement-card {
+  align-items: flex-start;
+  min-height: 82px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.achievement-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--hp-surface-soft);
+  font-size: 1.2rem;
+}
+.achievement-status {
+  max-width: 100%;
+  line-height: 1.6;
+}
+@media (hover: hover) {
+  .achievement-card:hover {
+    border-color: var(--hp-brand);
+    box-shadow: var(--hp-shadow-sm);
+  }
+}
+
+/* 358: Make the assistant's question field comfortable for longer Arabic input. */
+#math-assistant-question {
+  width: 100%;
+  min-width: 0;
+  min-height: 132px;
+  padding: 13px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+  line-height: 1.9;
+  resize: vertical;
+}
+#math-assistant-question:focus-visible {
+  outline: 3px solid var(--hp-brand);
+  outline-offset: 2px;
+}
+body.dark-mode #math-assistant-question {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+
+/* 359: Improve math-symbol controls and the assistant's response reading area. */
+.math-symbol-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+.math-symbol-toolbar button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 7px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: 10px;
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+.math-symbol-toolbar button:focus-visible,
+.math-symbol-toolbar button:hover {
+  border-color: var(--hp-brand);
+}
+#math-assistant-response {
+  min-width: 0;
+  padding: clamp(13px, 2.5vw, 20px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#math-assistant-response > * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+body.dark-mode #math-assistant-response,
+body.dark-mode .math-symbol-toolbar button {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 520px) {
+  .achievement-heading { align-items: stretch; }
+  #achievement-summary { align-self: flex-start; border-radius: var(--hp-radius-md); }
+  .recent-activity-button { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .recent-activity-item,
+  .achievement-card { transition: none; }
+}
