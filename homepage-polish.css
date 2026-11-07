@@ -256,3 +256,40 @@ body.dark-mode .empty-state,
 body.dark-mode .topic-loading {
   color: var(--hp-ink);
 }
+
+
+/* Batch 1/10: keep the sticky brand header usable on narrow screens. */
+.top {
+  min-width: 0;
+  gap: 12px;
+}
+.top-actions {
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.privacy-note {
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .top {
+    height: auto;
+    min-height: 62px;
+    padding: 9px 14px;
+    flex-wrap: wrap;
+    row-gap: 7px;
+  }
+  .top-actions {
+    gap: 7px 10px;
+  }
+  .install-app-button {
+    min-height: 44px;
+    padding-inline: 12px;
+  }
+}
+@media (max-width: 380px) {
+  .top-actions { width: 100%; justify-content: space-between; }
+  .privacy-note { font-size: 10px; }
+}

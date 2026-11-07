@@ -59,6 +59,8 @@ jobs:
         run: node scripts/solved-examples-tests.cjs
       - name: Run study plan calendar regression tests
         run: node scripts/study-plan-date-tests.cjs
+      - name: Run homepage design system regression tests
+        run: node scripts/homepage-design-system-tests.cjs
       - name: Run browser smoke tests
         run: node scripts/browser-user-flow-tests.cjs
       - name: Run accessibility and keyboard navigation tests
