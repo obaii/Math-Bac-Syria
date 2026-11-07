@@ -701,3 +701,157 @@ footer a {
     background: Highlight;
   }
 }
+
+/* Batch 300-309: refine the existing topic discovery and progress cards. */
+
+/* 300: Keep topic-card header items readable when badges compete for space. */
+#topic-grid .topic-card-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+}
+
+/* 301: Let long curriculum titles wrap without pushing icons or card edges. */
+#topic-grid .topic-card-content,
+#topic-grid .topic-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#topic-grid .topic-title {
+  text-wrap: pretty;
+}
+
+/* 302: Keep topic metadata readable on cards with longer Arabic labels. */
+#topic-grid .topic-meta,
+#topic-grid .topic-status,
+#topic-grid .topic-card-performance,
+#topic-grid .topic-last-activity {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+}
+
+/* 303: Separate the performance summary from the action row visually. */
+#topic-grid .topic-card-performance {
+  display: block;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid color-mix(in srgb, var(--line, #e5eaf2) 75%, transparent);
+  color: var(--muted, #64748b);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+body.dark-mode #topic-grid .topic-card-performance {
+  border-top-color: #34445d;
+  color: #b4c1d4;
+}
+
+/* 304: Give the mastery indicator a consistent visible track. */
+#topic-grid .topic-mastery {
+  display: block;
+  min-height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+#topic-grid .topic-mastery > span {
+  display: block;
+  min-height: 7px;
+  border-radius: inherit;
+}
+
+/* 305: Keep topic-state labels distinct from surrounding metadata. */
+#topic-grid .topic-state {
+  max-width: 100%;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+#topic-grid .topic-state.not-started {
+  background: #f1f5f9;
+  color: #475569;
+}
+#topic-grid .topic-state.in-progress {
+  background: #fff7e6;
+  color: #8a5700;
+}
+#topic-grid .topic-state.covered {
+  background: #e8f7ef;
+  color: #176b43;
+}
+body.dark-mode #topic-grid .topic-state.not-started {
+  background: #29384d;
+  color: #d0d9e7;
+}
+body.dark-mode #topic-grid .topic-state.in-progress {
+  background: #49391f;
+  color: #ffdc9b;
+}
+body.dark-mode #topic-grid .topic-state.covered {
+  background: #173d32;
+  color: #a8e6c8;
+}
+
+/* 306: Make the topic search and level selector comfortable touch targets. */
+#topic-search,
+#difficulty {
+  min-height: 44px;
+}
+#topic-search {
+  min-width: 0;
+  line-height: 1.5;
+}
+#difficulty {
+  max-width: 100%;
+  padding-block: 8px;
+}
+
+/* 307: Prevent filter controls from overflowing compact phone layouts. */
+.topic-tools,
+.topic-tools .filter-panel,
+.topic-tools .search-box {
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .topic-tools .filter-panel {
+    gap: 9px;
+  }
+  .topic-tools .filter-panel > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* 308: Make the no-results recovery message easier to scan and act on. */
+#no-topics {
+  max-width: 620px;
+  margin-inline: auto;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px dashed var(--hp-border, #d8e2f0);
+  border-radius: 16px;
+  text-align: center;
+}
+#no-topics p {
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+body.dark-mode #no-topics {
+  border-color: #425675;
+  background: #182438;
+}
+
+/* 309: Keep topic-card motion calm for reduced-motion and coarse-pointer users. */
+@media (prefers-reduced-motion: reduce), (hover: none) and (pointer: coarse) {
+  #topic-grid .topic-card,
+  #topic-grid .topic-card:hover,
+  #topic-grid .topic-card:active {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
