@@ -4173,7 +4173,7 @@ body.dark-mode #dashboard-panel-question-coverage-title {
   opacity: .65;
 }
 @media (max-width: 420px) {
-  #student-tools .tools-actions { grid-template-columns: minmax(0, 1fr); }
+  #student-tools .tools-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* 415: Organize formula-library filters for predictable wrapping and touch use. */
