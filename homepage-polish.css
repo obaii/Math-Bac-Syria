@@ -5705,3 +5705,105 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   font-weight: 850;
   text-align: center;
 }
+
+
+/* Homepage refinement batch 490–499. */
+
+/* 490: Give homepage shortcuts a clear hover response without shifting the layout. */
+#section-menu .quick-start-card:hover {
+  border-color: var(--hp-brand);
+  background: var(--hp-surface-soft);
+  box-shadow: 0 5px 16px rgb(25 55 100 / 9%);
+}
+
+/* 491: Keep keyboard focus unmistakable on every homepage shortcut. */
+#section-menu .quick-start-card:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+  border-color: var(--hp-brand);
+}
+
+/* 492: Separate shortcut groups with a consistent readable label treatment. */
+#section-menu .quick-start-group-label {
+  margin: 16px 2px 5px;
+  color: var(--hp-muted);
+  font-size: .88rem;
+  font-weight: 850;
+  letter-spacing: .01em;
+}
+
+/* 493: Improve hierarchy and wrapping in the student dashboard introduction. */
+#dashboard-panel-home .dashboard-intro :is(h2, p) {
+  max-width: 68ch;
+  overflow-wrap: anywhere;
+}
+#dashboard-panel-home .dashboard-intro h2 {
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+/* 494: Keep dashboard statistics aligned when Arabic-Indic values change width. */
+#dashboard-panel-home .stat-card > strong {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* 495: Add a restrained pointer cue to the four student progress statistics. */
+#dashboard-panel-home .stat-card {
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+#dashboard-panel-home .stat-card:hover {
+  border-color: var(--hp-brand);
+  box-shadow: 0 5px 16px rgb(25 55 100 / 8%);
+}
+
+/* 496: Make progress explanations easier to read below both dashboard meters. */
+#dashboard-panel-learning-progress-title .learning-progress-caption,
+#dashboard-panel-question-coverage-title .learning-progress-caption {
+  max-width: 76ch;
+  margin-block: 10px 0;
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 497: Animate dashboard progress fills gently while respecting reduced motion. */
+#dashboard-panel-learning-progress-title .learning-progress-track > span,
+#dashboard-panel-question-coverage-title .learning-progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width .35s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #dashboard-panel-home .stat-card,
+  #dashboard-panel-learning-progress-title .learning-progress-track > span,
+  #dashboard-panel-question-coverage-title .learning-progress-track > span {
+    transition: none;
+  }
+}
+
+/* 498: Make the topic-search clear control easy to find and operate by keyboard. */
+#topic-section .search-box #clear-topic-search {
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--hp-radius-sm);
+}
+#topic-section .search-box #clear-topic-search:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 499: Give the no-results recovery action a reliable touch target and focus state. */
+#topic-section #no-topics button {
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 9px 14px;
+}
+#topic-section #no-topics button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
