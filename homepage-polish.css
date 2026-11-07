@@ -312,3 +312,22 @@ body.dark-mode .topic-loading {
   .hero h1 { max-width: 100%; font-size: clamp(1.65rem, 7vw, 2.1rem); }
   .hero > p:not(.eyebrow) { font-size: 14px; }
 }
+
+
+/* Batch 3/10: keep hero benefit chips aligned and easy to scan. */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 9px;
+}
+.hero-stats span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  line-height: 1.6;
+}
+@media (max-width: 420px) {
+  .hero-stats span { flex: 1 1 auto; text-align: center; }
+}
