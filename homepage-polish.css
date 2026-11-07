@@ -357,3 +357,24 @@ body.dark-mode .topic-loading {
 }
 #topic-grid .topic-card-bottom { min-width: 0; align-items: flex-start; }
 #topic-grid .topic-start { overflow-wrap: anywhere; }
+
+
+/* Batch 6/10: make the topic search and difficulty filter reflow cleanly. */
+.topic-tools {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.topic-tools .search-box {
+  min-width: min(100%, 220px);
+  max-width: none;
+}
+.topic-tools .filter-panel {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.topic-tools .filter-panel select { max-width: 100%; }
+@media (max-width: 600px) {
+  .topic-tools .search-box,
+  .topic-tools .filter-panel { width: 100%; }
+  .topic-tools .filter-panel select { flex: 1 1 100%; min-height: 44px; }
+}
