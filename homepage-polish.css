@@ -1280,3 +1280,255 @@ body.dark-mode .math-symbol-toolbar button {
     transition: none !important;
   }
 }
+
+
+/* Batch 330-339: refine navigation, curriculum discovery, and progress actions. */
+
+/* 330: Balance the grouped section menu and prevent card content from shrinking. */
+#section-menu {
+  min-width: 0;
+  gap: 10px;
+  align-items: stretch;
+}
+#section-menu .quick-start-card {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 12px 14px;
+}
+#section-menu .quick-start-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.55;
+}
+#section-menu .quick-start-copy strong,
+#section-menu .quick-start-copy small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+/* 331: Make navigation icons and directional cues align consistently. */
+#section-menu .quick-start-icon,
+#section-menu .quick-start-arrow {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+}
+#section-menu .quick-start-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-brand);
+}
+#section-menu .quick-start-arrow {
+  min-width: 24px;
+  min-height: 32px;
+  color: var(--hp-muted);
+}
+body.dark-mode #section-menu .quick-start-icon {
+  background: #263956;
+  color: #c6d6ff;
+}
+
+/* 332: Clarify hover and keyboard focus states for section shortcuts. */
+#section-menu .quick-start-card:hover {
+  border-color: color-mix(in srgb, var(--hp-brand) 45%, var(--hp-border));
+  box-shadow: var(--hp-shadow-md);
+}
+#section-menu .quick-start-card:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #section-menu .quick-start-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* 333: Keep the curriculum search field visually grouped with its clear action. */
+.topic-tools .search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding-inline: 12px;
+}
+.topic-tools .search-box input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 42px;
+  border: 0;
+  background: transparent;
+  color: var(--hp-ink);
+  box-shadow: none;
+}
+.topic-tools .search-box input:focus-visible {
+  outline: 2px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 334: Make filter labels and hints easier to scan in Arabic layouts. */
+.topic-tools .filter-panel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  min-width: 0;
+  padding: 10px 13px;
+}
+.topic-tools .filter-panel label {
+  font-weight: 800;
+  color: var(--hp-ink);
+}
+.topic-tools .filter-hint {
+  flex-basis: 100%;
+  color: var(--hp-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* 335: Give reset controls a clear but secondary visual priority. */
+#clear-topic-search,
+#clear-all-topic-filters {
+  min-width: 42px;
+  min-height: 42px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font-weight: 800;
+}
+#clear-all-topic-filters {
+  padding: 8px 14px;
+  line-height: 1.5;
+}
+#clear-topic-search:hover,
+#clear-all-topic-filters:hover {
+  border-color: var(--hp-brand);
+  color: var(--hp-brand);
+}
+
+/* 336: Improve the hierarchy of the empty curriculum search state. */
+#no-topics {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  line-height: 1.8;
+}
+#no-topics[hidden] { display: none; }
+#no-topics strong,
+#no-topics h3 {
+  color: var(--hp-ink);
+  line-height: 1.55;
+}
+#no-topics button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* 337: Align dashboard progress headings and totals without crowding. */
+.learning-progress-heading,
+.question-coverage-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  min-width: 0;
+}
+.learning-progress-heading > div,
+.question-coverage-heading > div {
+  min-width: 0;
+}
+.learning-progress-heading h3,
+.question-coverage-heading h3,
+.learning-progress-heading p,
+.question-coverage-heading p {
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+}
+.learning-progress-total,
+.question-coverage-total {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 3px;
+  text-align: center;
+  min-width: 76px;
+}
+
+/* 338: Make dashboard progress tracks more legible and resilient to narrow widths. */
+.learning-progress-track {
+  width: 100%;
+  min-width: 0;
+  height: 12px;
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+}
+.learning-progress-track > span {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+}
+.learning-progress-caption {
+  margin: 10px 0 0;
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 339: Separate dashboard actions and preserve comfortable touch targets. */
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  min-width: 0;
+  margin-top: 16px;
+}
+.dashboard-actions button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.6;
+}
+.dashboard-actions #review-mistakes {
+  flex: 1 1 220px;
+}
+.dashboard-actions #reset-progress {
+  flex: 0 1 auto;
+}
+body.dark-mode .topic-tools .search-box,
+body.dark-mode .topic-tools .filter-panel,
+body.dark-mode #clear-topic-search,
+body.dark-mode #clear-all-topic-filters,
+body.dark-mode .learning-progress-track {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 600px) {
+  #section-menu { grid-template-columns: minmax(0, 1fr); }
+  #section-menu .quick-start-card { min-height: 68px; }
+  .topic-tools .filter-panel { width: 100%; }
+  .topic-tools .filter-panel select { flex: 1 1 100%; min-width: 0; }
+  .learning-progress-heading,
+  .question-coverage-heading { align-items: stretch; }
+  .dashboard-actions { align-items: stretch; }
+  .dashboard-actions button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #section-menu .quick-start-card,
+  #clear-topic-search,
+  #clear-all-topic-filters,
+  .dashboard-actions button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
