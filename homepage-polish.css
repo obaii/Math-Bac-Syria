@@ -4027,3 +4027,304 @@ body.dark-mode #dashboard-panel-question-coverage-title {
 @media (max-width: 420px) {
   #results .result-card .actions button { flex-basis: 100%; }
 }
+
+
+/* Batch 410-419: strengthen the learner workspace and interactive study tools. */
+
+/* 410: Give the performance trend a stable, readable chart layout. */
+#dashboard-panel-performance-trend,
+#dashboard-panel-activity-calendar,
+#dashboard-panel-achievement-section {
+  min-width: 0;
+  padding: clamp(14px, 2.5vw, 22px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  box-shadow: var(--hp-shadow-sm);
+}
+#performance-trend-chart {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(5px, 1.4vw, 12px);
+  min-width: 0;
+  padding: 12px 0;
+}
+#performance-trend-chart > li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* 411: Keep the 28-day activity calendar usable on compact screens. */
+#activity-calendar .activity-calendar-heading,
+#activity-calendar .activity-calendar-legend {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+#activity-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(4px, 1vw, 8px);
+  min-width: 0;
+  padding: 0;
+  list-style: none;
+}
+#activity-calendar-grid > li {
+  min-width: 0;
+  aspect-ratio: 1;
+  border-radius: 5px;
+}
+#activity-calendar .activity-calendar-legend i {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: 3px;
+}
+
+/* 412: Make achievement tiles scan consistently without hiding their state. */
+#achievement-section .achievement-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+#achievement-section .achievement-heading > div { min-width: 0; }
+#achievement-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+#achievement-list > li {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+/* 413: Improve the assistant's question composer and mathematical symbol toolbar. */
+#math-assistant-form {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+#math-assistant-question {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 120px;
+  padding: 12px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+  line-height: 1.9;
+  resize: vertical;
+}
+#math-assistant-question:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#math-assistant .math-symbol-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+#math-assistant .math-symbol-toolbar button {
+  min-width: 42px;
+  min-height: 42px;
+  padding: 7px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+}
+
+/* 414: Keep the review workspace actions balanced as labels wrap. */
+#student-tools .tools-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+#student-tools .tools-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+#student-tools .tools-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}
+@media (max-width: 420px) {
+  #student-tools .tools-actions { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 415: Organize formula-library filters for predictable wrapping and touch use. */
+#formula-library .formula-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+  align-items: center;
+  min-width: 0;
+}
+#formula-library .formula-filters label {
+  min-width: 0;
+  color: var(--hp-muted);
+  font-weight: 700;
+  line-height: 1.6;
+}
+#formula-library .formula-filters input,
+#formula-library .formula-filters select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#formula-library #formula-list { min-width: 0; }
+@media (max-width: 520px) {
+  #formula-library .formula-filters { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 416: Keep formula references and long mathematical expressions readable. */
+#formula-library .formula-library-sources,
+#formula-library .formula-status {
+  max-width: 88ch;
+  color: var(--hp-muted);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#formula-library #formula-list > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#formula-library #formula-list mjx-container,
+#formula-library #formula-list .MathJax {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#formula-library #formula-list button {
+  min-height: 42px;
+  max-width: 100%;
+}
+
+/* 417: Make flashcard navigation and self-assessment controls adapt to small widths. */
+#flashcards .flashcard-actions,
+#flashcards .flashcard-navigation {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#flashcards .flashcard-actions button,
+#flashcards .flashcard-navigation button {
+  min-width: 0;
+  min-height: 44px;
+  flex: 1 1 125px;
+  overflow-wrap: anywhere;
+}
+#flashcards #flashcard-counter,
+#flashcards #flashcard-progress {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 380px) {
+  #flashcards .flashcard-actions,
+  #flashcards .flashcard-navigation { display: grid; grid-template-columns: 1fr; }
+}
+
+/* 418: Improve calculator key spacing and keep the display from overflowing. */
+#scientific-calculator .calculator-keys {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+#scientific-calculator .calculator-keys button {
+  min-width: 0;
+  min-height: 46px;
+  padding: 8px 5px;
+  overflow-wrap: anywhere;
+}
+#scientific-calculator .calculator-output {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-width: 0;
+  margin-block: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+}
+#scientific-calculator #calculator-result {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 419: Keep graphing and geometry workspaces contained on narrow screens. */
+#function-plotter .plotter-controls,
+#geometry-tools .geometry-calculator-layout {
+  min-width: 0;
+  gap: 10px;
+}
+#function-plotter .plotter-controls input,
+#function-plotter .plotter-controls select,
+#function-plotter .plotter-controls button,
+#geometry-tools .geometry-input-panel select,
+#geometry-tools .geometry-input-panel button {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+}
+#function-plotter .plotter-graph-wrap,
+#geometry-tools .geometry-board-wrap,
+#geometry-tools .geometry-output-panel {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+#function-plotter #function-plotter-graph,
+#geometry-tools #geometry-board {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+@media (max-width: 600px) {
+  #geometry-tools .geometry-calculator-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (forced-colors: active) {
+  #achievement-list > li,
+  #formula-library .formula-filters input,
+  #formula-library .formula-filters select,
+  #scientific-calculator .calculator-output {
+    border: 1px solid CanvasText;
+  }
+}
