@@ -4608,3 +4608,246 @@ body.dark-mode footer a { color: #b8caff; }
     outline-offset: 3px;
   }
 }
+
+
+/* Batch 430-439: finish responsive clarity and keyboard usability across core study flows. */
+
+/* 430: Make the skip-to-content link unmistakable when keyboard users reach it. */
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed;
+  inset-block-start: 12px;
+  inset-inline-start: 12px;
+  z-index: 10000;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 2px solid var(--hp-focus);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  box-shadow: 0 4px 18px rgb(0 0 0 / 18%);
+}
+
+/* 431: Keep the topic heading and live topic count aligned without squeezing Arabic text. */
+#topic-section {
+  min-width: 0;
+  gap: 12px;
+}
+#topic-section > div:first-child { min-width: 0; }
+#topic-section .section-subtitle {
+  max-width: 76ch;
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#topic-section #total-count {
+  flex: 0 0 auto;
+  align-self: center;
+  min-width: 2.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 520px) {
+  #topic-section { align-items: flex-start; }
+  #topic-section #total-count { margin-block-start: 4px; }
+}
+
+/* 432: Give the clear-search control a reliable touch target and visible focus. */
+#topic-section .search-box #clear-topic-search {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+  font-size: 1.25rem;
+}
+#topic-section .search-box #clear-topic-search:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 433: Keep the topic loading and empty states readable and visually consistent. */
+#topic-grid .topic-loading,
+#no-topics.empty-state {
+  min-width: 0;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-muted);
+  line-height: 1.85;
+  text-align: center;
+}
+#topic-grid .topic-loading-spinner {
+  flex: 0 0 auto;
+  border-color: var(--hp-border);
+  border-inline-start-color: var(--hp-brand);
+}
+#no-topics.empty-state p { margin-block: 0 12px; }
+#no-topics.empty-state button { min-height: 44px; }
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-loading-spinner { animation: none; }
+}
+
+/* 434: Make the session summary scan cleanly on narrow screens and at high zoom. */
+#quiz .session-progress-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+#quiz .session-progress-summary > div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+}
+#quiz .session-progress-summary span,
+#quiz .session-progress-summary strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+#quiz .session-progress-summary span {
+  color: var(--hp-muted);
+  line-height: 1.6;
+}
+#quiz .session-progress-summary strong {
+  margin-block-start: 4px;
+  color: var(--hp-ink);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 420px) {
+  #quiz .session-progress-summary { grid-template-columns: 1fr; }
+}
+
+/* 435: Protect long question text and rendered equations from widening the page. */
+#quiz .question-card,
+#quiz #question-text,
+#quiz #options {
+  min-width: 0;
+  max-width: 100%;
+}
+#quiz #question-text {
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+#quiz #question-text :is(img, svg, table) {
+  max-width: 100%;
+}
+#quiz #question-text mjx-container,
+#quiz #question-text .MathJax {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* 436: Keep answer choices comfortably tappable while allowing long Arabic labels to wrap. */
+#quiz #options > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+}
+#quiz #options :is(button, label) {
+  min-height: 44px;
+  text-align: start;
+}
+#quiz #options :is(button, input, label):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 437: Make exam configuration fields consistent and prevent cramped labels. */
+#exam-tools .exam-config {
+  min-width: 0;
+  align-items: end;
+  gap: 12px;
+}
+#exam-tools .exam-config label {
+  min-width: 0;
+  color: var(--hp-muted);
+  line-height: 1.7;
+}
+#exam-tools .exam-config select,
+#exam-tools .exam-config button {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  font: inherit;
+}
+#exam-tools .exam-note {
+  max-width: 80ch;
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+/* 438: Improve the activity calendar's layout and keyboard focus on each day. */
+#activity-calendar #activity-calendar-grid {
+  min-width: 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(3px, 1vw, 7px);
+}
+#activity-calendar #activity-calendar-grid > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#activity-calendar #activity-calendar-grid :is(button, a):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#activity-calendar .activity-calendar-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--hp-muted);
+}
+#activity-calendar .activity-calendar-summary {
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 439: Give flashcards a clear keyboard focus and stable content sizing. */
+#flashcards #flashcard:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 4px;
+}
+#flashcards #flashcard,
+#flashcards .flashcard-face {
+  min-width: 0;
+  max-width: 100%;
+}
+#flashcards .flashcard-face :is(h4, p, span, div) {
+  overflow-wrap: anywhere;
+}
+#flashcards #flashcard-formula {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#flashcards .flashcard-status,
+#flashcards .flashcard-progress {
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  #flashcards #flashcard,
+  #quiz .question-card,
+  #exam-tools .exam-config {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
