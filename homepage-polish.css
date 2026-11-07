@@ -442,3 +442,150 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+
+/* Batch 280-289: homepage refinements, scoped to existing components. */
+
+/* 280: Keep section headings aligned when counts wrap on narrow screens. */
+.section-heading {
+  min-width: 0;
+  align-items: flex-end;
+  gap: 14px;
+}
+.section-heading > div { min-width: 0; }
+.section-heading h2 { line-height: 1.45; text-wrap: balance; }
+@media (max-width: 520px) {
+  .section-heading { align-items: flex-start; flex-direction: column; }
+}
+
+/* 281: Make the available-topic count readable without competing with the title. */
+.count-pill {
+  flex: 0 0 auto;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 282: Clarify filter labels and spacing for keyboard and touch users. */
+.topic-tools .filter-panel label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--hp-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.topic-tools .filter-panel select {
+  min-height: 44px;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background-color: var(--hp-surface);
+  color: var(--hp-ink);
+}
+
+/* 283: Give the search clear control a reliable touch target. */
+#clear-topic-search {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 10px;
+}
+#topic-search { min-width: 0; color: var(--hp-ink); }
+#topic-search::placeholder { color: var(--hp-muted); opacity: .85; }
+
+/* 284: Improve the visibility and semantics of topic-level mastery bars. */
+.topic-mastery {
+  height: 7px;
+  border: 1px solid var(--hp-border);
+}
+.topic-mastery > span { min-width: 0; }
+body.dark-mode .topic-mastery { border-color: var(--hp-border); }
+
+/* 285: Separate dashboard subpanels while preserving a consistent surface. */
+.dashboard-menu-panel + .dashboard-menu-panel {
+  margin-top: 14px;
+}
+.dashboard-menu-panel:not([hidden]) {
+  min-width: 0;
+  scroll-margin-top: 112px;
+}
+.dashboard-menu-panel > section,
+.dashboard-menu-panel > .dashboard-empty-state {
+  min-width: 0;
+}
+
+/* 286: Prevent long progress labels and totals from overflowing. */
+.learning-progress-heading,
+.question-coverage-heading {
+  min-width: 0;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.learning-progress-heading > div,
+.question-coverage-heading > div { min-width: 0; }
+.learning-progress-total,
+.question-coverage-total { flex: 0 0 auto; }
+@media (max-width: 420px) {
+  .learning-progress-total,
+  .question-coverage-total { margin-inline-start: 0; }
+}
+
+/* 287: Make progress tracks and their fill legible in both themes. */
+.learning-progress-track {
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+}
+.learning-progress-track > span {
+  display: block;
+  min-height: 9px;
+  border-radius: inherit;
+}
+body.dark-mode .learning-progress-track {
+  border-color: var(--hp-border);
+  background: #263750;
+}
+
+/* 288: Improve readability of empty and history guidance messages. */
+.dashboard-history-note,
+.learning-progress-caption {
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.dashboard-empty-state {
+  overflow-wrap: anywhere;
+}
+
+/* 289: Strengthen action consistency and footer readability on small screens. */
+.dashboard-actions button,
+.weak-topic-action button,
+.resume-topic-button {
+  min-height: 44px;
+  max-width: 100%;
+}
+footer {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+footer .notice {
+  max-width: 850px;
+  margin-inline: auto;
+}
+@media (max-width: 600px) {
+  footer { padding-inline: 16px; }
+  footer .notice { text-align: start; }
+}
+body.dark-mode .count-pill,
+body.dark-mode .topic-tools .filter-panel select {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
