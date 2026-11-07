@@ -293,3 +293,22 @@ body.dark-mode .topic-loading {
   .top-actions { width: 100%; justify-content: space-between; }
   .privacy-note { font-size: 10px; }
 }
+
+
+/* Batch 2/10: make the hero message readable at every viewport size. */
+.hero h1 {
+  max-width: 18ch;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.45;
+  text-wrap: balance;
+}
+.hero > p:not(.eyebrow) {
+  max-width: 62ch;
+  line-height: 1.9;
+  text-wrap: pretty;
+}
+.hero-mark { pointer-events: none; }
+@media (max-width: 600px) {
+  .hero h1 { max-width: 100%; font-size: clamp(1.65rem, 7vw, 2.1rem); }
+  .hero > p:not(.eyebrow) { font-size: 14px; }
+}
