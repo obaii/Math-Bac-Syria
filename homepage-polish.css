@@ -589,3 +589,115 @@ body.dark-mode .topic-tools .filter-panel select {
   border-color: var(--hp-border);
   color: var(--hp-ink);
 }
+
+
+/* Batch 290-299: final homepage usability refinements, limited to existing UI. */
+
+/* 290: Give the quick-start destinations a consistent, comfortable touch area. */
+#section-menu .quick-start-card {
+  min-height: 76px;
+  padding-block: 14px;
+}
+#section-menu .quick-start-copy {
+  flex: 1 1 auto;
+}
+
+/* 291: Keep the curriculum grid balanced as viewport width changes. */
+#topic-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  align-items: stretch;
+}
+
+/* 292: Avoid persistent hover movement on touch-only devices. */
+@media (hover: none) {
+  #topic-grid .topic-card:hover,
+  #section-menu .quick-start-card:hover {
+    transform: none;
+    box-shadow: var(--hp-shadow-sm);
+  }
+}
+
+/* 293: Make progress totals easier to compare at a glance. */
+.learning-progress-total strong,
+.question-coverage-total strong,
+#unique-question-count,
+#total-bank-question-count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 294: Preserve readable spacing when dashboard panels contain long Arabic labels. */
+.dashboard-menu-panel h3,
+.dashboard-menu-panel h4 {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.dashboard-menu-panel p {
+  line-height: 1.85;
+}
+
+/* 295: Ensure exam configuration labels remain readable in compact layouts. */
+#exam-tools .exam-config label {
+  min-width: 0;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+#exam-tools .exam-config select {
+  max-width: 100%;
+}
+
+/* 296: Give homepage notices and empty states consistent text wrapping. */
+.first-visit-guide,
+.first-visit-guide p,
+.notice,
+.empty-state {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.85;
+}
+
+/* 297: Make keyboard focus visible on the homepage's form controls. */
+#topic-grid ~ *,
+#section-menu,
+#dashboard-panel-home,
+#exam-tools {
+  --hp-local-focus: var(--hp-focus);
+}
+#topic-search:focus-visible,
+#difficulty:focus-visible,
+#exam-tools select:focus-visible,
+#exam-tools button:focus-visible,
+#student-tools button:focus-visible {
+  outline: 3px solid var(--hp-local-focus, var(--hp-focus));
+  outline-offset: 2px;
+}
+
+/* 298: Keep footer links easy to tap and distinguish when grouped on phones. */
+footer a {
+  display: inline-block;
+  min-height: 32px;
+  padding-block: 3px;
+  text-underline-offset: 3px;
+}
+@media (max-width: 600px) {
+  footer { text-align: center; }
+  footer a { margin-inline: 3px; }
+}
+
+/* 299: Preserve progress and card boundaries in high-contrast display modes. */
+@media (forced-colors: active) {
+  #topic-grid .topic-card,
+  #section-menu .quick-start-card,
+  .learning-progress,
+  .question-coverage,
+  .dashboard-empty-state {
+    border: 1px solid CanvasText;
+  }
+  .learning-progress-track,
+  .topic-mastery {
+    border: 1px solid CanvasText;
+  }
+  .learning-progress-track > span,
+  .topic-mastery > span {
+    background: Highlight;
+  }
+}
