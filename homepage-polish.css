@@ -285,7 +285,7 @@ body.dark-mode .topic-loading {
     gap: 7px 10px;
   }
   .install-app-button {
-    min-height: 40px;
+    min-height: 44px;
     padding-inline: 12px;
   }
 }
