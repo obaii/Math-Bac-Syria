@@ -28,6 +28,7 @@ assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, "homepage mot
 assert.match(css, /\.topic-loading-spinner\s*\{[^}]*animation:\s*none\s*!important/s, "the loading indicator should stop animating for reduced-motion users");
 
 assert.ok(css.includes("text-wrap: balance;"), "hero heading should use balanced wrapping");
+assert.ok(css.includes("min-height: 34px;"), "hero statistic chips should have a consistent readable height");
 assert.ok(css.includes("flex-wrap: wrap;"), "header actions should wrap instead of overflowing");
 assert.ok(css.includes("height: auto;"), "the sticky header should adapt its height on mobile");
 assert.ok(css.includes("min-height: 44px;"), "the mobile install control should retain a usable touch target");
