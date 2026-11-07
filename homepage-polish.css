@@ -855,3 +855,231 @@ body.dark-mode #no-topics {
     transition: none !important;
   }
 }
+
+
+/* Batch 310-319: improve the home introduction and learner dashboard. */
+/* 310: Keep the hero copy and mark balanced on medium and narrow screens. */
+.hero {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.hero h1,
+.hero > p:not(.eyebrow) {
+  max-width:  min(100%, 760px);
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* 311: Let the hero benefit labels wrap as readable individual items. */
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 12px;
+}
+.hero-stats > span {
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.55;
+}
+
+/* 312: Keep the hero call-to-action usable when the note and menu wrap. */
+.hero-note-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 0;
+}
+.hero-note,
+#section-menu-toggle {
+  max-width: 100%;
+  min-height: 44px;
+}
+.hero-note { line-height: 1.6; }
+
+/* 313: Present first-visit instructions as distinct, responsive steps. */
+.first-visit-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-inline-start: 0;
+  list-style-position: inside;
+}
+.first-visit-steps li {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  line-height: 1.6;
+}
+.first-visit-steps li strong,
+.first-visit-steps li span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.first-visit-steps li span {
+  margin-top: 5px;
+  color: var(--hp-muted);
+}
+
+/* 314: Prevent long dashboard introductions from colliding with actions. */
+.dashboard-intro,
+.dashboard-intro > *,
+.dashboard-actions {
+  min-width: 0;
+}
+.dashboard-intro h2,
+.dashboard-intro p {
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+.dashboard-intro p {
+  max-width: 72ch;
+  line-height: 1.75;
+}
+
+/* 315: Give dashboard statistics a stable grid at every content width. */
+#dashboard-panel-home .stat-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr));
+  align-items: stretch;
+}
+#dashboard-panel-home .stat-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+#dashboard-panel-home .stat-card strong,
+#dashboard-panel-home .stat-label {
+  overflow-wrap: anywhere;
+}
+
+/* 316: Clarify the weak-topic recommendation and keep its action reachable. */
+.weak-topic-recommendation,
+.weak-topic-copy,
+.weak-topic-action {
+  min-width: 0;
+}
+.weak-topic-copy,
+.weak-topic-detail {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+.weak-topic-action button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* 317: Make recent activity rows scannable without horizontal overflow. */
+.recent-activity-list {
+  display: grid;
+  gap: 9px;
+  padding-inline-start: 0;
+}
+.recent-activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+.recent-activity-details {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.recent-activity-details > * {
+  overflow-wrap: anywhere;
+}
+.recent-activity-button {
+  min-height: 42px;
+  flex: 0 0 auto;
+}
+
+/* 318: Keep the activity calendar legible and responsive in narrow panels. */
+.activity-calendar-grid {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(3px, 1vw, 7px);
+}
+.activity-calendar-day {
+  min-width: 0;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  font-size: clamp(10px, 2.5vw, 13px);
+}
+.activity-calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  line-height: 1.5;
+}
+
+/* 319: Align achievement cards and let status text wrap naturally. */
+.achievement-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 10px;
+  padding-inline-start: 0;
+}
+.achievement-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+.achievement-copy {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.achievement-copy > *,
+.achievement-status {
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+.achievement-icon,
+.achievement-status { flex: 0 0 auto; }
+body.dark-mode .first-visit-steps li,
+body.dark-mode .recent-activity-item,
+body.dark-mode .achievement-card {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 640px) {
+  .first-visit-steps { grid-template-columns: minmax(0, 1fr); }
+  .hero-note-group { align-items: stretch; }
+  #section-menu-toggle { width: 100%; }
+  .recent-activity-item { align-items: stretch; }
+  .recent-activity-button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero *,
+  .first-visit-guide *,
+  .recent-activity-item,
+  .achievement-card {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
