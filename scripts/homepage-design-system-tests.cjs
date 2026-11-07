@@ -38,4 +38,5 @@ assert.ok(css.includes("flex: 1 1 100%;"), "topic filters should occupy a full r
 assert.ok(css.includes("#dashboard-panel-home .stat-grid"), "dashboard statistics should have a dedicated responsive grid");
 assert.ok(css.includes("#dashboard-panel-home .dashboard-actions button"), "dashboard actions should provide a comfortable touch target");
 assert.ok(css.includes(".dashboard-empty-state {"), "empty dashboard panels should have a clear first-use state");
+assert.ok(css.includes("scroll-padding-top: 96px;"), "anchor navigation should account for the sticky header");
 console.log("PASS: homepage design system, responsive header, interaction feedback, and reduced-motion support");
