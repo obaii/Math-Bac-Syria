@@ -426,3 +426,19 @@ body.dark-mode .dashboard-empty-state {
   background: var(--hp-surface-soft);
   color: var(--hp-muted);
 }
+
+
+/* Batch 10/10: keep anchor destinations visible below the sticky header. */
+html {
+  scroll-padding-top: 96px;
+}
+:target {
+  scroll-margin-top: 96px;
+}
+@media (max-width: 600px) {
+  html { scroll-padding-top: 112px; }
+  :target { scroll-margin-top: 112px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
