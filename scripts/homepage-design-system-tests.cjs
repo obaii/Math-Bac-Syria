@@ -31,5 +31,5 @@ assert.ok(css.includes("text-wrap: balance;"), "hero heading should use balanced
 assert.ok(css.includes("min-height: 34px;"), "hero statistic chips should have a consistent readable height");
 assert.ok(css.includes("flex-wrap: wrap;"), "header actions should wrap instead of overflowing");
 assert.ok(css.includes("height: auto;"), "the sticky header should adapt its height on mobile");
-assert.ok(css.includes("min-height: 40px;"), "the mobile install control should retain a usable touch target");
+assert.ok(css.includes("min-height: 44px;"), "the mobile install control should retain a usable touch target");
 console.log("PASS: homepage design system, responsive header, interaction feedback, and reduced-motion support");
