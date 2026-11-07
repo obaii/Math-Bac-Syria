@@ -390,3 +390,22 @@ body.dark-mode .topic-loading {
 @media (max-width: 360px) {
   #dashboard-panel-home .stat-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+
+/* Batch 8/10: make dashboard actions comfortable and predictable on touch screens. */
+#dashboard-panel-home .dashboard-actions button {
+  min-height: 44px;
+  max-width: 100%;
+}
+#dashboard-panel-home .dashboard-actions .secondary {
+  justify-content: center;
+  text-align: center;
+}
+@media (max-width: 420px) {
+  #dashboard-panel-home .dashboard-actions {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #dashboard-panel-home .dashboard-actions > * { width: 100%; }
+}
