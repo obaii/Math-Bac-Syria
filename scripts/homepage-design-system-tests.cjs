@@ -37,4 +37,5 @@ assert.ok(css.includes("overflow-wrap: anywhere;"), "research card labels should
 assert.ok(css.includes("flex: 1 1 100%;"), "topic filters should occupy a full row when space is limited");
 assert.ok(css.includes("#dashboard-panel-home .stat-grid"), "dashboard statistics should have a dedicated responsive grid");
 assert.ok(css.includes("#dashboard-panel-home .dashboard-actions button"), "dashboard actions should provide a comfortable touch target");
+assert.ok(css.includes(".dashboard-empty-state {"), "empty dashboard panels should have a clear first-use state");
 console.log("PASS: homepage design system, responsive header, interaction feedback, and reduced-motion support");
