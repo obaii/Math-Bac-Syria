@@ -1393,8 +1393,8 @@ body.dark-mode #section-menu .quick-start-icon {
 /* 335: Give reset controls a clear but secondary visual priority. */
 #clear-topic-search,
 #clear-all-topic-filters {
-  min-width: 42px;
-  min-height: 42px;
+  min-width: 44px;
+  min-height: 44px;
   border: 1px solid var(--hp-border);
   border-radius: var(--hp-radius-sm);
   background: var(--hp-surface-soft);
