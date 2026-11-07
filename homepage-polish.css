@@ -331,3 +331,17 @@ body.dark-mode .topic-loading {
 @media (max-width: 420px) {
   .hero-stats span { flex: 1 1 auto; text-align: center; }
 }
+
+
+/* Batch 4/10: give grouped navigation cards enough room for their labels. */
+@media (min-width: 761px) {
+  #section-menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+  #section-menu .quick-start-group-label { grid-column: 1 / -1; }
+}
+#section-menu .quick-start-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
