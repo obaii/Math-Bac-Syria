@@ -5305,3 +5305,253 @@ body.dark-mode footer a { color: #b8caff; }
 @media (max-width: 380px) {
   #exam-tools .exam-config { grid-template-columns: minmax(0, 1fr); }
 }
+
+
+/* 460: Organize student review actions into a balanced, responsive action grid. */
+#student-tools .tools-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 10px;
+}
+#student-tools .tools-actions button {
+  min-width: 0;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+#student-tools .tools-actions #toggle-dark-mode { grid-column: 1 / -1; }
+@media (max-width: 420px) {
+  #student-tools .tools-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  #student-tools .tools-actions #toggle-dark-mode { grid-column: 1 / -1; }
+}
+
+/* 461: Make connection and backup feedback visible without dominating review tools. */
+#student-tools .offline-status {
+  min-width: 0;
+  margin-block: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#student-tools #import-progress-file { max-width: 100%; }
+#student-tools :is(#bookmark-list, #guided-question-list) {
+  min-width: 0;
+  padding-inline-start: 1.4em;
+}
+#student-tools :is(#bookmark-list, #guided-question-list) > li {
+  min-width: 0;
+  margin-block: 7px;
+  overflow-wrap: anywhere;
+}
+
+/* 462: Give the calculator's expression field and angle mode a clear control hierarchy. */
+#scientific-calculator .calculator-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+#scientific-calculator #calculator-angle {
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#scientific-calculator .calculator-display {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 54px;
+  padding: 12px 14px;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+#scientific-calculator .calculator-display:focus-visible,
+#scientific-calculator #calculator-angle:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 463: Keep calculator keypad targets uniform and adapt the grid to compact phones. */
+#scientific-calculator .calculator-keys {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+#scientific-calculator .calculator-keys button {
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 5px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+#scientific-calculator .calculator-keys button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#scientific-calculator .calculator-keys .calculator-equals { grid-column: 1 / -1; }
+@media (max-width: 340px) {
+  #scientific-calculator .calculator-keys { gap: 5px; }
+  #scientific-calculator .calculator-keys button { min-height: 44px; }
+}
+
+/* 464: Make the function plotter graph preserve its full viewBox on small displays. */
+#function-plotter .plotter-graph-wrap {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#function-plotter #function-plotter-graph {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+}
+#function-plotter .plotter-help {
+  max-width: 78ch;
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 465: Improve geometry shape selection and measurement-field grouping. */
+#geometry-tools #geometry-shape {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 46px;
+  padding: 9px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#geometry-tools .geometry-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+#geometry-tools .geometry-fields label { min-width: 0; display: grid; gap: 6px; }
+#geometry-tools .geometry-fields :is(input, select) { min-width: 0; width: 100%; }
+@media (max-width: 420px) {
+  #geometry-tools .geometry-fields { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 466: Clarify the geometry drawing board and prevent horizontal overflow. */
+#geometry-tools .geometry-board-wrap {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#geometry-tools #geometry-board {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+#geometry-tools .geometry-message {
+  min-height: 1.8em;
+  padding: 8px 10px;
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 467: Make activity-calendar cells readable and operable at touch-screen sizes. */
+#activity-calendar #activity-calendar-grid > * {
+  min-width: 0;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
+#activity-calendar #activity-calendar-grid :is(button, a) {
+  min-width: 34px;
+  min-height: 34px;
+}
+#activity-calendar #activity-calendar-grid :is(button, a):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#activity-calendar .activity-calendar-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  line-height: 1.6;
+}
+
+/* 468: Keep achievement tiles balanced and their descriptions easy to read. */
+#achievement-section .achievement-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  align-items: stretch;
+  gap: 10px;
+}
+#achievement-section .achievement-list > li {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+#achievement-section .achievement-list > li :is(strong, span, p) { min-width: 0; overflow-wrap: anywhere; }
+
+/* 469: Improve the final information area and feedback link's touch target. */
+footer {
+  min-width: 0;
+  padding-inline: clamp(14px, 3vw, 28px);
+  text-align: center;
+}
+footer .notice {
+  max-width: 84ch;
+  margin-inline: auto;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+footer .footer-privacy,
+footer .footer-disclaimer {
+  max-width: 78ch;
+  margin-inline: auto;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+footer a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--hp-radius-sm);
+}
+footer a:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
