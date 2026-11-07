@@ -3671,3 +3671,359 @@ body.dark-mode #dashboard-panel-question-coverage-title {
   #achievement-section .achievement-heading { flex-direction: column; }
   #achievement-section .achievement-list { grid-template-columns: minmax(0, 1fr); }
 }
+
+
+/* Batch 400-409: refine curriculum discovery and the practice-to-results flow. */
+
+/* 400: Strengthen the curriculum section heading and its supporting context. */
+#topic-section .section-heading {
+  align-items: flex-end;
+  gap: 12px 18px;
+  margin-block: 20px 16px;
+}
+#topic-section .section-heading > div { min-width: 0; }
+#topic-section .section-heading h2 {
+  margin-block: 0 5px;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+#topic-section .section-subtitle {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#topic-section #total-count {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  #topic-section .section-heading { align-items: flex-start; flex-direction: column; }
+}
+
+/* 401: Improve the topic-search field's visual affordance and keyboard focus. */
+.topic-tools .search-box {
+  min-width: 0;
+  min-height: 48px;
+  gap: 9px;
+  padding: 5px 10px;
+  border: 1px solid var(--hp-border);
+  background: var(--hp-surface);
+}
+.topic-tools #topic-search {
+  min-width: 0;
+  min-height: 40px;
+  flex: 1 1 auto;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--hp-ink);
+  font: inherit;
+  line-height: 1.6;
+}
+.topic-tools #topic-search::placeholder { color: var(--hp-muted); opacity: 1; }
+.topic-tools .search-box:focus-within {
+  border-color: var(--hp-focus);
+  outline: 3px solid color-mix(in srgb, var(--hp-focus) 24%, transparent);
+  outline-offset: 1px;
+}
+.topic-tools #clear-topic-search {
+  min-width: 40px;
+  min-height: 40px;
+  flex: 0 0 auto;
+  border-radius: var(--hp-radius-sm);
+}
+
+/* 402: Make difficulty selection and filter reset easier to operate on touch screens. */
+.topic-tools .filter-panel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  background: var(--hp-surface);
+}
+.topic-tools .filter-panel label {
+  margin: 0;
+  color: var(--hp-ink);
+  font-weight: 700;
+}
+.topic-tools .filter-panel select {
+  min-width: min(100%, 180px);
+  min-height: 44px;
+  flex: 1 1 180px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+.topic-tools .filter-hint {
+  flex: 1 1 100%;
+  color: var(--hp-muted);
+  font-size: .88em;
+  line-height: 1.6;
+}
+.topic-tools #clear-all-topic-filters,
+.topic-tools #reset-topic-filters {
+  min-height: 44px;
+  padding: 9px 14px;
+}
+@media (max-width: 520px) {
+  .topic-tools .filter-panel select { flex-basis: 100%; }
+}
+
+/* 403: Keep the curriculum card grid evenly spaced as content and text scale change. */
+#topic-grid.topic-grid {
+  min-width: 0;
+  align-items: stretch;
+  gap: clamp(12px, 2vw, 18px);
+}
+#topic-grid .topic-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: clamp(14px, 2.2vw, 20px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+}
+#topic-grid .topic-card :is(h3, h4, p, span) { overflow-wrap: anywhere; }
+#topic-grid .topic-card p {
+  color: var(--hp-muted);
+  line-height: 1.75;
+}
+#topic-grid .topic-card .topic-start {
+  min-height: 44px;
+  margin-top: auto;
+}
+
+/* 404: Provide clear hover, focus, and pressed states for topic choices. */
+#topic-grid .topic-card {
+  transition: border-color var(--hp-motion-fast) ease, box-shadow var(--hp-motion-fast) ease, transform var(--hp-motion-fast) ease;
+}
+#topic-grid .topic-card:focus-within {
+  border-color: var(--hp-focus);
+  outline: 2px solid color-mix(in srgb, var(--hp-focus) 22%, transparent);
+  outline-offset: 2px;
+}
+#topic-grid .topic-card :is(a, button):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+#topic-grid .topic-card .topic-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 14px;
+  line-height: 1.6;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  #topic-grid .topic-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--hp-brand);
+    box-shadow: var(--hp-shadow-md);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-card { transition: none; }
+}
+
+/* 405: Make loading and no-match states distinct, readable, and actionable. */
+#topic-grid[aria-busy="true"] .topic-loading,
+#no-topics:not(.hidden) {
+  min-width: 0;
+  margin-block: 12px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px dashed var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.85;
+  text-align: center;
+}
+#topic-grid .topic-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+#no-topics p {
+  max-width: 56ch;
+  margin: 0 auto 12px;
+}
+#no-topics button {
+  min-height: 44px;
+  padding: 9px 16px;
+}
+#topic-grid[aria-busy="true"] .topic-loading-spinner { flex: 0 0 auto; }
+
+/* 406: Make the active practice header and return action easier to scan. */
+#quiz > #back {
+  min-height: 44px;
+  margin-bottom: 14px;
+  padding: 9px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-brand);
+  font: inherit;
+  font-weight: 700;
+}
+#quiz > #back:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+#quiz .quiz-head {
+  min-width: 0;
+  padding-block: 5px 10px;
+}
+#quiz .quiz-head .eyebrow { margin-bottom: 4px; color: var(--hp-brand); }
+#quiz .quiz-head > div { flex: 1 1 220px; }
+#quiz #quiz-title { margin: 0; text-wrap: balance; }
+#quiz #progress-percent {
+  padding: 5px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font-weight: 800;
+}
+
+/* 407: Protect mathematical question content from clipping and improve reading rhythm. */
+#quiz .question-card {
+  min-width: 0;
+  overflow: visible;
+}
+#quiz .question-card .question-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-brand);
+  font-weight: 800;
+  line-height: 1.6;
+}
+#quiz #question-text {
+  min-width: 0;
+  max-width: 100%;
+  margin-block: 8px 18px;
+  color: var(--hp-ink);
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  line-height: 2;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+#quiz #question-text :is(img, svg, table) {
+  max-width: 100%;
+}
+#quiz #question-text :is(.katex, .MathJax, mjx-container) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* 408: Separate learning hints and immediate correction into calm, readable panels. */
+#quiz #question-hints { min-width: 0; }
+#quiz #question-hint-text {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--hp-border);
+  border-inline-start: 4px solid var(--hp-brand);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#quiz #feedback {
+  min-width: 0;
+  margin-block: 14px;
+  padding: 14px 16px;
+  border-radius: var(--hp-radius-md);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#quiz #feedback :is(p, li, strong) { line-height: inherit; }
+#quiz #feedback :is(img, svg, table) { max-width: 100%; }
+#quiz .question-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+#quiz .question-card .actions button {
+  min-width: min(100%, 160px);
+  min-height: 46px;
+  flex: 1 1 160px;
+}
+@media (max-width: 420px) {
+  #quiz .question-card .actions button { flex-basis: 100%; }
+}
+
+/* 409: Give the completed-practice summary a clear score hierarchy and usable actions. */
+#results .result-card {
+  min-width: 0;
+  padding: clamp(18px, 4vw, 34px);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  text-align: center;
+}
+#results .result-card .result-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: 50%;
+  background: var(--hp-surface-soft);
+  color: var(--hp-success);
+  font-size: 1.4rem;
+}
+#results .result-card h2 {
+  margin-block: 6px 12px;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+#results #score {
+  margin-block: 12px;
+  font-size: clamp(2rem, 7vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+#results #score-detail {
+  max-width: 68ch;
+  margin: 0 auto 18px;
+  color: var(--hp-muted);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#results .result-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+#results .result-card .actions button {
+  min-width: min(100%, 160px);
+  min-height: 46px;
+  flex: 1 1 160px;
+}
+@media (max-width: 420px) {
+  #results .result-card .actions button { flex-basis: 100%; }
+}
