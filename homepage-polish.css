@@ -4851,3 +4851,276 @@ body.dark-mode footer a { color: #b8caff; }
     animation-duration: 0.01ms !important;
   }
 }
+
+
+/* Batch 440-449: final consistency pass for learner navigation, feedback and tool outputs. */
+
+/* 440: Keep the grouped navigation compact and readable at tablet and desktop widths. */
+#section-menu {
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+#section-menu .quick-start-group-label { margin-block-start: 14px; }
+#section-menu .quick-start-card {
+  min-height: 68px;
+  padding: 12px;
+  gap: 10px;
+}
+#section-menu .quick-start-arrow {
+  flex: 0 0 auto;
+  color: var(--hp-brand);
+}
+@media (max-width: 520px) {
+  #section-menu { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 441: Distinguish dynamic dashboard empty states from populated learning panels. */
+.dashboard-menu-panel {
+  min-width: 0;
+  scroll-margin-block: 16px;
+}
+.dashboard-menu-panel > .dashboard-empty-state {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px dashed var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.dashboard-menu-panel > section {
+  min-width: 0;
+  max-width: 100%;
+}
+.dashboard-menu-panel :is(h3, p, strong, span) { overflow-wrap: anywhere; }
+
+/* 442: Make the assistant's suggested prompts easier to discover and activate. */
+#math-assistant .math-assistant-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  margin-block: 12px;
+}
+#math-assistant .math-assistant-suggestions button {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+#math-assistant .math-assistant-suggestions button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 443: Improve the assistant response region for long explanations and equations. */
+#math-assistant #math-assistant-response {
+  min-width: 0;
+  max-width: 100%;
+  padding: clamp(12px, 2vw, 18px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#math-assistant #math-assistant-response :is(p, li, h4, h5) {
+  max-width: 78ch;
+  line-height: 1.9;
+}
+#math-assistant #math-assistant-response :is(mjx-container, .MathJax) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#math-assistant #math-assistant-clear { min-height: 44px; }
+
+/* 444: Make review and backup actions easier to distinguish by priority. */
+#student-tools .tools-actions {
+  gap: 9px;
+}
+#student-tools .tools-actions button {
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+  line-height: 1.65;
+}
+#student-tools .tools-actions button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#student-tools #toggle-dark-mode[aria-pressed="true"] {
+  border-color: var(--hp-brand);
+  background: var(--hp-surface-soft);
+}
+
+/* 445: Keep the review assistant status and generated plan visually separated. */
+#student-tools #review-assistant-panel {
+  min-width: 0;
+  margin-block: 14px;
+  padding: clamp(12px, 2.5vw, 18px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+}
+#student-tools #review-assistant-status {
+  padding: 9px 12px;
+  border-inline-start: 3px solid var(--hp-brand);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.8;
+}
+#student-tools #review-assistant-output {
+  min-width: 0;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#student-tools #review-assistant-output :is(li, p, strong) { overflow-wrap: anywhere; }
+
+/* 446: Make calculator history readable without letting long expressions expand the panel. */
+#scientific-calculator .calculator-history-wrap {
+  min-width: 0;
+  margin-block-start: 14px;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#scientific-calculator #calculator-history {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding-inline-start: 1.5em;
+}
+#scientific-calculator #calculator-history > li {
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+#scientific-calculator .calculator-message {
+  min-width: 0;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 447: Clarify graphing input groups and status messages before and after plotting. */
+#function-plotter .plotter-heading { min-width: 0; }
+#function-plotter .plotter-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+}
+#function-plotter .plotter-controls label {
+  min-width: 0;
+  color: var(--hp-muted);
+  line-height: 1.6;
+}
+#function-plotter .plotter-controls input,
+#function-plotter .plotter-controls select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#function-plotter #plotter-message {
+  min-height: 1.8em;
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 420px) {
+  #function-plotter .plotter-controls { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 448: Make geometry measurements and result summaries easier to scan. */
+#geometry-tools .geometry-input-panel,
+#geometry-tools .geometry-output-panel {
+  min-width: 0;
+  padding: clamp(12px, 2vw, 18px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+}
+#geometry-tools .geometry-input-panel :is(label, input, select) {
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.7;
+}
+#geometry-tools .geometry-input-panel :is(input, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#geometry-tools #geometry-metrics,
+#geometry-tools #geometry-laws {
+  min-width: 0;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+/* 449: Make final result details and next-step actions prominent but calm. */
+#results .result-card {
+  min-width: 0;
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid var(--hp-border);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  text-align: center;
+}
+#results #score,
+#results #score-detail {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#results #score {
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+#results .result-card .actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+#results .result-card .actions button {
+  min-width: 0;
+  min-height: 46px;
+  flex: 1 1 150px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 420px) {
+  #results .result-card .actions { display: grid; grid-template-columns: 1fr; }
+}
