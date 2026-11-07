@@ -2795,3 +2795,22 @@ body.dark-mode #flashcards {
   #flashcards .flashcard-navigation button,
   #flashcards .flashcard-reset { width: 100%; }
 }
+
+
+/* Responsive correction for batch 370-379: keep post-answer actions side by side on narrow phones. */
+@media (max-width: 480px) {
+  #quiz .actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+  #quiz .actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    padding-inline: 6px;
+    font-size: .86rem;
+    overflow-wrap: anywhere;
+  }
+}
