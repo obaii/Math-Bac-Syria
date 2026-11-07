@@ -2392,3 +2392,425 @@ body.dark-mode #geometry-tools .geometry-board-wrap {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Batch 370-379: improve practice flow, exam setup, and active-recall learning. */
+
+/* 370: Clarify the topic discovery row and keep its controls aligned. */
+.topic-tools {
+  align-items: stretch;
+  gap: 12px;
+}
+.topic-tools .search-box {
+  min-height: 46px;
+  border-radius: var(--hp-radius-md);
+}
+.topic-tools .search-box input {
+  min-width: 0;
+  line-height: 1.6;
+}
+.topic-tools .filter-panel {
+  align-items: center;
+  gap: 8px 12px;
+  min-width: 0;
+  padding: 8px 12px;
+}
+.topic-tools .filter-panel select {
+  min-height: 44px;
+  max-width: 100%;
+}
+#clear-all-topic-filters {
+  align-self: center;
+}
+@media (max-width: 600px) {
+  .topic-tools { gap: 9px; }
+  .topic-tools .filter-panel { align-items: stretch; }
+  .topic-tools .filter-panel label { align-self: center; }
+}
+
+/* 371: Make topic cards easier to scan and distinguish by keyboard. */
+#topic-grid .topic-card {
+  min-width: 0;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+#topic-grid .topic-card:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+  border-color: var(--hp-brand);
+}
+#topic-grid .topic-card .topic-title {
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+#topic-grid .topic-card .topic-meta {
+  line-height: 1.65;
+}
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-card { transition: none !important; }
+}
+
+/* 372: Give the exam simulator configuration a clear grouped layout. */
+#exam-tools {
+  min-width: 0;
+  padding: clamp(14px, 2.5vw, 22px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  box-shadow: var(--hp-shadow-sm);
+}
+#exam-tools .exam-tools-heading {
+  max-width: 70ch;
+  line-height: 1.85;
+}
+#exam-tools .exam-config {
+  align-items: end;
+  gap: 12px;
+  margin-top: 14px;
+}
+#exam-tools .exam-config label {
+  flex: 1 1 150px;
+  min-width: 0;
+  gap: 7px;
+  font-weight: 700;
+}
+#exam-tools .exam-config select {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#exam-tools #start-exam {
+  min-height: 46px;
+  white-space: normal;
+}
+#exam-tools .exam-note {
+  margin: 13px 0 0;
+  color: var(--hp-muted);
+  font-size: .88rem;
+  line-height: 1.8;
+}
+body.dark-mode #exam-tools {
+  background: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 520px) {
+  #exam-tools .exam-config { display: grid; grid-template-columns: 1fr; }
+  #exam-tools .exam-config label,
+  #exam-tools #start-exam { width: 100%; }
+}
+
+/* 373: Make the active quiz header and progress percentage more legible. */
+#quiz .quiz-head {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px 14px;
+}
+#quiz .quiz-head > div { min-width: 0; }
+#quiz #quiz-title {
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+#quiz #progress,
+#quiz #progress-percent {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#quiz #quiz-progress-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--hp-border);
+  overflow: hidden;
+}
+#quiz #progress-bar {
+  min-width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--hp-brand);
+  transition: width .22s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #quiz #progress-bar { transition: none; }
+}
+
+/* 374: Present session counters as compact, consistent learning indicators. */
+#quiz .session-progress-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 12px 0 16px;
+}
+#quiz .session-progress-summary > div {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  text-align: center;
+}
+#quiz .session-progress-summary span {
+  display: block;
+  color: var(--hp-muted);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+#quiz .session-progress-summary strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--hp-ink);
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 420px) {
+  #quiz .session-progress-summary { gap: 6px; }
+  #quiz .session-progress-summary > div { padding: 8px 5px; }
+  #quiz .session-progress-summary span { font-size: .7rem; }
+}
+
+/* 375: Improve question-card reading width and math-content overflow. */
+#quiz .question-card {
+  min-width: 0;
+  padding: clamp(16px, 3.5vw, 30px);
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  box-shadow: var(--hp-shadow-md);
+}
+#quiz #question-text {
+  max-width: 78ch;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+#quiz #question-text mjx-container,
+#quiz .feedback mjx-container {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#quiz .question-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-brand);
+}
+
+/* 376: Increase answer-option clarity without changing correctness states. */
+#quiz .options { gap: 10px; }
+#quiz .options .option {
+  min-width: 0;
+  min-height: 54px;
+  padding: 12px 14px;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#quiz .options .option:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#quiz .options .option:disabled { opacity: 1; }
+body.dark-mode #quiz .options .option {
+  background: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+
+/* 377: Separate hint and answer feedback while preserving their live regions. */
+#quiz #question-hints {
+  margin-top: 14px;
+}
+#quiz #show-hint {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--hp-brand);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-brand);
+  font: inherit;
+  font-weight: 700;
+}
+#quiz #question-hint-text {
+  margin: 9px 0 0;
+  padding: 12px 14px;
+  border-inline-start: 3px solid var(--hp-brand);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  line-height: 1.9;
+}
+#quiz #feedback {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#quiz #feedback .solution {
+  line-height: 2;
+}
+body.dark-mode #quiz #question-hint-text {
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+}
+
+/* 378: Keep quiz actions consistent and easy to reach on touch screens. */
+#quiz .actions {
+  align-items: stretch;
+  gap: 9px;
+}
+#quiz .actions button {
+  min-height: 46px;
+  max-width: 100%;
+  padding: 10px 16px;
+  white-space: normal;
+  line-height: 1.6;
+}
+#quiz .actions button:focus-visible,
+#quiz #show-hint:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  #quiz .actions { display: grid; grid-template-columns: 1fr; }
+  #quiz .actions button { width: 100%; }
+}
+
+/* 379: Make active-recall flashcards readable, responsive, and accessible. */
+#flashcards {
+  min-width: 0;
+  padding: clamp(14px, 2.5vw, 22px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  box-shadow: var(--hp-shadow-md);
+}
+#flashcards .flashcards-heading h3 {
+  margin: 0 0 7px;
+  line-height: 1.55;
+}
+#flashcards .flashcards-heading p:not(.eyebrow) {
+  max-width: 72ch;
+  color: var(--hp-muted);
+  line-height: 1.85;
+}
+#flashcards .flashcards-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px 12px;
+  margin: 14px 0;
+}
+#flashcards .flashcards-controls select {
+  min-width: min(100%, 220px);
+  min-height: 44px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#flashcards .flashcard {
+  min-width: 0;
+  min-height: 210px;
+  padding: clamp(18px, 4vw, 30px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+#flashcards .flashcard:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+#flashcards .flashcard-face {
+  min-width: 0;
+  line-height: 1.9;
+}
+#flashcards .flashcard-face[hidden] { display: none !important; }
+#flashcards .flashcard-formula {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 12px 8px;
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  text-align: center;
+}
+#flashcards .flashcard-actions,
+#flashcards .flashcard-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 12px;
+}
+#flashcards .flashcard-actions button,
+#flashcards .flashcard-navigation button,
+#flashcards .flashcard-reset {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#flashcards .flashcard-actions button:focus-visible,
+#flashcards .flashcard-navigation button:focus-visible,
+#flashcards .flashcard-reset:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#flashcards .flashcard-progress {
+  margin-top: 12px;
+  line-height: 1.8;
+}
+#flashcards .flashcard-status {
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+body.dark-mode #flashcards {
+  background: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 520px) {
+  #flashcards .flashcards-controls { align-items: stretch; }
+  #flashcards .flashcards-controls select { width: 100%; }
+  #flashcards .flashcard-actions,
+  #flashcards .flashcard-navigation { display: grid; grid-template-columns: 1fr 1fr; }
+  #flashcards .flashcard-actions button,
+  #flashcards .flashcard-navigation button,
+  #flashcards .flashcard-reset { width: 100%; }
+}
+
+
+/* Responsive correction for batch 370-379: keep post-answer actions side by side on narrow phones. */
+@media (max-width: 480px) {
+  #quiz .actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+  #quiz .actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    padding-inline: 6px;
+    font-size: .86rem;
+    overflow-wrap: anywhere;
+  }
+}
