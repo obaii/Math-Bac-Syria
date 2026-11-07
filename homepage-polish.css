@@ -5124,3 +5124,184 @@ body.dark-mode footer a { color: #b8caff; }
 @media (max-width: 420px) {
   #results .result-card .actions { display: grid; grid-template-columns: 1fr; }
 }
+
+
+/* Batch 450-459: curriculum reference, active recall and assessment flow refinements. */
+
+/* 450: Keep the formula reference filters aligned and readable on narrow screens. */
+#formula-library .formula-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 10px 12px;
+}
+#formula-library .formula-filters :is(label, input, select) { min-width: 0; }
+#formula-library .formula-filters :is(input, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  font: inherit;
+}
+@media (max-width: 520px) {
+  #formula-library .formula-filters { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 451: Make curriculum source notes legible without competing with the formulas. */
+#formula-library .formula-library-sources {
+  max-width: 88ch;
+  padding: 12px 14px;
+  border-inline-start: 3px solid var(--hp-brand);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#formula-library .formula-library-sources a {
+  color: var(--hp-brand);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* 452: Give live formula search feedback a stable, readable space. */
+#formula-library #formula-status {
+  min-height: 1.8em;
+  margin-block: 10px;
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 453: Prevent long formula entries from stretching the reference column. */
+#formula-library #formula-list {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+#formula-library #formula-list > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#formula-library #formula-list :is(code, mjx-container, .MathJax) {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* 454: Keep flashcard topic selection and card count easy to scan. */
+#flashcards .flashcards-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+}
+#flashcards .flashcards-controls :is(label, select, #flashcard-counter) { min-width: 0; }
+#flashcards .flashcards-controls select {
+  min-height: 44px;
+  max-width: 100%;
+  font: inherit;
+}
+@media (max-width: 420px) {
+  #flashcards .flashcards-controls { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 455: Improve keyboard focus visibility on the active-recall card. */
+#flashcards #flashcard:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 4px;
+}
+#flashcards #flashcard {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  scroll-margin-block: 18px;
+}
+
+/* 456: Make flashcard confidence actions consistent touch targets. */
+#flashcards .flashcard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+#flashcards .flashcard-actions button {
+  min-width: 0;
+  min-height: 46px;
+  flex: 1 1 130px;
+  padding: 10px 12px;
+  font: inherit;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* 457: Separate card navigation from confidence marking. */
+#flashcards .flashcard-navigation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+#flashcards .flashcard-navigation button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 8px;
+  font: inherit;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 360px) {
+  #flashcards .flashcard-navigation { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 458: Make flashcard progress and status messages distinct and persistent in layout. */
+#flashcards :is(#flashcard-progress, #flashcard-status) {
+  min-height: 1.8em;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#flashcards #flashcard-status {
+  padding: 8px 12px;
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+}
+
+/* 459: Improve exam setup controls and keep the disclaimer easy to notice. */
+#exam-tools .exam-config {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 12px;
+}
+#exam-tools .exam-config label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--hp-muted);
+  line-height: 1.6;
+}
+#exam-tools .exam-config select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#exam-tools .exam-config button { min-height: 46px; }
+#exam-tools .exam-note {
+  margin-block-start: 12px;
+  padding: 10px 12px;
+  border-inline-start: 3px solid var(--hp-border);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  #exam-tools .exam-config { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 380px) {
+  #exam-tools .exam-config { grid-template-columns: minmax(0, 1fr); }
+}
