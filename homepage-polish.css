@@ -2067,3 +2067,328 @@ body.dark-mode .math-symbol-toolbar button {
   .recent-activity-item,
   .achievement-card { transition: none; }
 }
+
+
+/* Batch 360-369: polish student tools and interactive mathematics workspaces. */
+
+/* 360: Give the student-tools area a clearer title-to-action hierarchy. */
+#student-tools {
+  min-width: 0;
+  box-shadow: var(--hp-shadow-md);
+}
+#student-tools > h3 {
+  line-height: 1.5;
+  text-wrap: balance;
+}
+#student-tools > p {
+  max-width: 72ch;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+/* 361: Keep the review, backup, and appearance actions easy to scan. */
+#student-tools .tools-actions {
+  align-items: stretch;
+  gap: 9px;
+}
+#student-tools .tools-actions button {
+  max-width: 100%;
+  line-height: 1.55;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#student-tools .tools-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .62;
+}
+#student-tools .tools-actions button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+
+/* 362: Present saved and guided questions as readable, separated list items. */
+#student-tools .bookmark-list:not([hidden]) {
+  display: grid;
+  gap: 9px;
+  margin-top: 14px;
+}
+#student-tools .bookmark-list > li {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#student-tools .bookmark-list button {
+  min-height: 42px;
+  max-width: 100%;
+  margin: 5px 4px 0 0;
+  white-space: normal;
+}
+body.dark-mode #student-tools .bookmark-list > li {
+  background: var(--hp-surface);
+  border-color: var(--hp-border);
+}
+
+/* 363: Make the per-topic progress report comfortable to read and scroll. */
+#student-tools .progress-report:not([hidden]) {
+  min-width: 0;
+  margin-top: 14px;
+  padding: clamp(12px, 2vw, 18px);
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#student-tools .progress-report table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#student-tools .progress-report th,
+#student-tools .progress-report td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--hp-border);
+  text-align: start;
+  vertical-align: middle;
+}
+#student-tools .progress-report th { color: var(--hp-muted); }
+@media (max-width: 520px) {
+  #student-tools .progress-report { overflow-x: auto; }
+  #student-tools .progress-report table { min-width: 420px; }
+}
+
+/* 364: Distinguish review-plan status, disclosure, and generated recommendations. */
+#review-assistant-panel {
+  min-width: 0;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#review-assistant-panel .review-assistant-disclosure {
+  padding: 10px 12px;
+  border-inline-start: 3px solid var(--hp-brand);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface);
+  line-height: 1.8;
+}
+#review-assistant-status {
+  color: var(--hp-muted);
+  font-weight: 600;
+}
+#review-assistant-output {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+body.dark-mode #review-assistant-panel .review-assistant-disclosure {
+  background: var(--hp-surface);
+}
+
+/* 365: Make the online/offline message visible without dominating the tools panel. */
+#offline-status {
+  margin-top: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  font-size: .88rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+#offline-status:empty { display: none; }
+#offline-status:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 366: Give the scientific calculator a stable, responsive work surface. */
+#scientific-calculator {
+  min-width: 0;
+  padding: clamp(14px, 2.5vw, 22px);
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-lg);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  box-shadow: var(--hp-shadow-md);
+}
+#scientific-calculator .calculator-heading {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+#scientific-calculator .calculator-display {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font-variant-numeric: tabular-nums;
+}
+#scientific-calculator .calculator-output {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+body.dark-mode #scientific-calculator {
+  background: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+
+/* 367: Keep calculator keys evenly sized and comfortably tappable. */
+#scientific-calculator .calculator-keys {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+#scientific-calculator .calculator-keys button {
+  min-width: 0;
+  min-height: 46px;
+  padding: 8px 5px;
+  border: 1px solid var(--hp-border);
+  border-radius: 10px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+}
+#scientific-calculator .calculator-keys button:focus-visible,
+#scientific-calculator .calculator-heading button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+#scientific-calculator .calculator-keys .calculator-equals {
+  grid-column: 1 / -1;
+  background: var(--hp-brand);
+  border-color: var(--hp-brand);
+  color: #fff;
+}
+@media (max-width: 360px) {
+  #scientific-calculator .calculator-keys { gap: 5px; }
+  #scientific-calculator .calculator-keys button { min-height: 44px; font-size: .9rem; }
+}
+
+/* 368: Align plotter inputs and keep its graph legible on small screens. */
+#function-plotter,
+#function-plotter .plotter-controls,
+#function-plotter .plotter-graph-wrap {
+  min-width: 0;
+}
+#function-plotter .plotter-controls {
+  gap: 10px;
+  align-items: end;
+}
+#function-plotter .plotter-controls input,
+#function-plotter .plotter-controls select {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+}
+#function-plotter .plotter-controls button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+#function-plotter .plotter-graph-wrap {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#function-plotter-graph {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 180px;
+}
+#function-plotter .plotter-help,
+#function-plotter .plotter-message {
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 520px) {
+  #function-plotter .plotter-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #function-plotter .plotter-expression-label,
+  #function-plotter #plotter-expression,
+  #function-plotter .plotter-controls button {
+    grid-column: 1 / -1;
+  }
+}
+
+/* 369: Balance geometry and formula-library controls across themes and viewports. */
+#geometry-tools,
+#formula-library {
+  min-width: 0;
+}
+#geometry-tools .geometry-calculator-layout {
+  align-items: start;
+  gap: clamp(12px, 2vw, 20px);
+}
+#geometry-tools .geometry-input-panel,
+#geometry-tools .geometry-output-panel {
+  min-width: 0;
+  border-color: var(--hp-border);
+  border-radius: var(--hp-radius-md);
+}
+#geometry-tools .geometry-board-wrap {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#geometry-tools #geometry-board {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+#geometry-tools input,
+#geometry-tools select,
+#geometry-tools button,
+#formula-library .formula-filters input,
+#formula-library .formula-filters select {
+  max-width: 100%;
+  min-height: 44px;
+}
+#formula-library .formula-library-heading,
+#formula-library .formula-filters {
+  min-width: 0;
+}
+#formula-library .formula-library-sources,
+#formula-library .formula-status {
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#formula-library .formula-filters {
+  gap: 10px 12px;
+}
+body.dark-mode #geometry-tools .geometry-board-wrap {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+}
+@media (max-width: 640px) {
+  #geometry-tools .geometry-calculator-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #geometry-tools .geometry-input-panel,
+  #geometry-tools .geometry-output-panel {
+    width: 100%;
+  }
+  #formula-library .formula-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
