@@ -83,4 +83,7 @@ assert.ok(css.includes("body.dark-mode #coverage-filter"),
 assert.ok(css.includes("@media (max-width: 600px)") && css.includes(".topic-tools .coverage-filter-panel"),
   "the coverage filter should reflow on narrow mobile screens");
 
+assert.ok(css.includes("grid-template-columns: minmax(220px, 1.25fr) repeat(3, minmax(0, 1fr))"),
+  "desktop topic search and all three filters should have dedicated responsive columns");
+
 console.log("PASS: homepage design system, typography, controls, responsive header, interaction feedback, and reduced-motion support");
