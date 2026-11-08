@@ -6413,3 +6413,86 @@ footer :is(.footer-brand, .footer-privacy, .footer-disclaimer) {
 }
 footer a:focus-visible { outline: 3px solid var(--hp-focus); outline-offset: 3px; border-radius: 4px; }
 @media (max-width: 420px) { footer { padding-inline: 14px; text-wrap: pretty; } }
+
+
+/* Homepage refinement batch 560–569: reliable section entry and restored hero contrast. */
+
+/* 560: Reserve space for the sticky header on every in-page destination. */
+:root { --hp-anchor-offset: 92px; }
+html { scroll-padding-top: var(--hp-anchor-offset); }
+main :is(section, [id], .section-heading, [data-dashboard-panel]) {
+  scroll-margin-top: var(--hp-anchor-offset);
+}
+
+/* 561: Restore the strong blue identity of the homepage introduction. */
+.hero {
+  background: linear-gradient(115deg, #102b55 0%, #17458f 52%, #285fce 100%) !important;
+  color: #fff;
+  border-color: #28539d;
+  box-shadow: 0 20px 48px rgba(20, 58, 125, .24);
+}
+
+/* 562: Keep the hero title, lead, and eyebrow clearly legible on blue. */
+.hero h1 { color: #fff; }
+.hero > p:not(.eyebrow) { color: #f0f5ff; }
+.hero .eyebrow { color: #d6e4ff; }
+
+/* 563: Restore contrast for the hero benefit chips and explanatory cue. */
+.hero .hero-stats > span {
+  color: #fff;
+  background: rgba(255, 255, 255, .13);
+  border-color: rgba(255, 255, 255, .42);
+}
+.hero .hero-note { color: #f0f5ff; }
+.hero .hero-note-icon { background: rgba(255, 255, 255, .2); color: #fff; }
+
+/* 564: Give the menu trigger a high-contrast treatment against the blue hero. */
+.hero .section-menu-toggle {
+  color: #173f86;
+  background: #fff;
+  border-color: #fff;
+  font-weight: 800;
+}
+.hero .section-menu-toggle:hover,
+.hero .section-menu-toggle:focus-visible {
+  color: #102b55;
+  background: #eaf1ff;
+  border-color: #eaf1ff;
+}
+
+/* 565: Preserve the blue hero identity in dark mode instead of a pale surface. */
+body.dark-mode .hero {
+  background: linear-gradient(115deg, #0d2141 0%, #14396f 52%, #214fa8 100%) !important;
+  color: #fff;
+  border-color: #355d9e;
+}
+body.dark-mode .hero h1,
+body.dark-mode .hero > p:not(.eyebrow),
+body.dark-mode .hero .hero-note,
+body.dark-mode .hero .hero-stats > span { color: #fff; }
+
+/* 566: Keep in-page targets clear of the sticky header on compact screens. */
+@media (max-width: 600px) {
+  :root { --hp-anchor-offset: 80px; }
+  .top { scroll-margin-top: 0; }
+}
+
+/* 567: Make all destination headings visible when keyboard focus moves to a panel. */
+main :is(section, .section-heading, [data-dashboard-panel]):focus {
+  outline: none;
+}
+main :is(section, .section-heading, [data-dashboard-panel]):focus-visible {
+  outline: 2px solid var(--hp-focus);
+  outline-offset: 4px;
+}
+
+/* 568: Ensure anchor navigation respects reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+}
+
+/* 569: Keep the blue hero text and controls readable at narrow widths. */
+@media (max-width: 420px) {
+  .hero .hero-stats > span { min-height: 36px; }
+  .hero .section-menu-toggle { min-height: 44px; }
+}
