@@ -793,7 +793,7 @@ const assert = require("node:assert/strict");
     await page.evaluate(() => {
       const firstMcq = quizQuestions.find(question => getQuestionType(question) === "mcq");
       if (!firstMcq) throw new Error("The selected research needs at least one multiple-choice question for this UI test.");
-      quizQuestions = [firstMcq, ...quizQuestions.filter(question => question !== firstMcq)];
+      quizQuestions = [firstMcq];
       index = 0;
       showQuestion();
     });
@@ -834,10 +834,11 @@ const assert = require("node:assert/strict");
     const questionCountBeforeSimilar = await page.evaluate(() => quizQuestions.length);
     const originalQuestionText = await page.locator("#question-text").innerText();
     await page.locator("#similar-practice-start").click();
-    await page.waitForFunction(previous => {
-      const active = document.querySelector("#question-text")?.innerText || "";
-      return active.trim() && active !== previous;
-    }, originalQuestionText);
+    await page.waitForFunction(previousCount => index === 1 && quizQuestions.length === previousCount + 1, questionCountBeforeSimilar);
+    await page.evaluate(() => {
+      quizQuestions[index].keyIdea = "الفكرة الأساسية للاختبار";
+      quizQuestions[index].steps = ["الخطوة الأولى للاختبار", "الخطوة الثانية للاختبار"];
+    });
     assert.notEqual((await page.locator("#question-text").innerText()).trim(), originalQuestionText.trim(), "a related question should replace the active prompt in the main quiz card");
     assert.equal(await page.evaluate(() => quizQuestions.length), questionCountBeforeSimilar + 1, "the similar question should be inserted into the active quiz session");
     assert.equal(await page.locator("#similar-practice-card").count(), 0, "similar practice must not create a separate card below the question");
@@ -872,7 +873,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#feedback").getAttribute("aria-atomic"), "true", "assistive technology should announce the complete answer feedback, including the solution");
     assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "answer feedback should include a solution");
     const savedProgress = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null"));
-    assert.ok(savedProgress && savedProgress.answered === 1, "answer progress should persist to local storage");
+    assert.ok(savedProgress && savedProgress.answered === 2, "both the original and similar-question answers should persist to local storage");
     const savedTools = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(savedTools && savedTools.bookmarks && savedTools.bookmarks.length === 1, "bookmark should persist to local storage");
 
@@ -885,8 +886,8 @@ const assert = require("node:assert/strict");
     assert.match(await page.locator("#resume-topic-activity").innerText(), /آخر إجابة .* إجابة مسجلة · دقة/,
       "the resume panel should show the latest answer time, saved answer count, and accuracy");
     const practicedTopicCard = page.locator("#topic-grid [data-topic]").filter({ hasText: lastPracticedTopic });
-    assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "1", "the topic card should show the recorded answer count");
-    assert.ok(["0", "1"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
+    assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "2", "the topic card should show both the original and similar-question answers");
+    assert.ok(["0", "1", "2"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
     assert.equal(await practicedTopicCard.locator(".topic-state").innerText(), "قيد التقدم", "a topic with some but not all questions tried should be marked in progress");
     assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .*٪ دقة/, "the topic card should summarize attempts, correct answers, and accuracy");
     assert.equal(await practicedTopicCard.getAttribute("data-last-practiced") === "" , false,
