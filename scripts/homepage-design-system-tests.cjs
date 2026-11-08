@@ -61,4 +61,15 @@ assert.match(css, /#topic-grid \.topic-mastery-status \+ \.topic-mastery/,
 assert.match(css, /#topic-grid \.topic-card:focus-visible \.topic-mastery-status/,
   "the mastery badge should remain clear when its research card receives keyboard focus");
 
+assert.match(html, /<label for="mastery-filter">حالة الإتقان<\\/label>/,
+  "the mastery filter should have an explicit Arabic label");
+assert.match(html, /<select id="mastery-filter"[^>]*aria-describedby="mastery-filter-hint"/,
+  "the mastery filter should expose its explanatory hint to assistive technology");
+assert.match(css, /#mastery-filter\\s*\\{[^}]*min-height:\\s*44px/s,
+  "the mastery filter should retain an accessible touch target");
+assert.match(css, /body\\.dark-mode #mastery-filter/,
+  "the mastery filter should have a defined dark-mode appearance");
+assert.match(css, /@media \\(max-width: 600px\\)[\\s\\S]*mastery-filter-panel/,
+  "the mastery filter should reflow on narrow mobile screens");
+
 console.log("PASS: homepage design system, typography, controls, responsive header, interaction feedback, and reduced-motion support");
