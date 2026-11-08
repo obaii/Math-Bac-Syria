@@ -1956,8 +1956,60 @@
       menu.hidden = true;
       if (menuButton) menuButton.setAttribute("aria-expanded", "false");
     };
+
+    const getActiveHomePanel = () => {
+      const dashboardPanel = [...document.querySelectorAll("[data-dashboard-panel]")].find(panel => !panel.hidden);
+      if (dashboardPanel) return dashboardPanel;
+      const panelIds = [...(menu?.querySelectorAll("[data-panel-toggle]") || [])]
+        .map(item => item.dataset.panelToggle)
+        .filter(id => id && id !== "topic-section");
+      return [...new Set(panelIds)].map(id => document.getElementById(id))
+        .find(panel => panel && !panel.hidden) || null;
+    };
+    const ensurePanelCloseButton = panel => {
+      if (!panel || panel.querySelector(":scope > .section-panel-close")) return;
+      const closeButton = document.createElement("button");
+      closeButton.type = "button";
+      closeButton.className = "section-panel-close";
+      closeButton.textContent = "إغلاق";
+      closeButton.setAttribute("aria-label", "إغلاق القسم والعودة إلى قائمة أقسام المنصة");
+      closeButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeActiveHomePanel(true);
+      });
+      panel.append(closeButton);
+    };
+    const closeActiveHomePanel = showMenu => {
+      const activePanel = getActiveHomePanel();
+      if (!activePanel) return false;
+      const panelIds = [...(menu?.querySelectorAll("[data-panel-toggle]") || [])]
+        .map(item => item.dataset.panelToggle)
+        .filter(id => id && id !== "topic-section");
+      for (const id of new Set(panelIds)) {
+        const panel = document.getElementById(id);
+        if (panel) panel.hidden = true;
+      }
+      document.querySelectorAll("[data-dashboard-panel]").forEach(panel => { panel.hidden = true; });
+      document.querySelectorAll("[data-panel-toggle], #section-menu [data-dashboard-target]").forEach(item => {
+        item.setAttribute("aria-expanded", "false");
+      });
+      const researchSection = document.getElementById("topic-section");
+      if (researchSection) researchSection.hidden = false;
+      closeMenuForNavigation();
+      if (showMenu) {
+        setMenuOpen(true);
+        menuButton?.focus({ preventScroll: true });
+      }
+      return true;
+    };
     if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
       menuButton.addEventListener("click", () => {
+        // The top menu control doubles as a quick way back from any open destination.
+        if (getActiveHomePanel()) {
+          closeActiveHomePanel(false);
+          return;
+        }
         const shouldOpen = menu.hidden || menu.classList.contains("is-closing");
         setMenuOpen(shouldOpen);
         if (shouldOpen) {
@@ -1989,8 +2041,14 @@
     // stealing focus from the control they intentionally clicked.
     if (menu && menuButton && document.documentElement.dataset.menuOutsideBound !== "true") {
       document.addEventListener("click", event => {
-        if (menu.hidden) return;
         const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+        const activePanel = getActiveHomePanel();
+        if (activePanel) {
+          if (target && (activePanel.contains(target) || menu.contains(target) || menuButton.contains(target))) return;
+          closeActiveHomePanel(false);
+          return;
+        }
+        if (menu.hidden) return;
         if (target && (menu.contains(target) || menuButton.contains(target))) return;
         setMenuOpen(false);
       });
@@ -2038,6 +2096,7 @@
           return;
         }
         panel.hidden = false;
+        ensurePanelCloseButton(panel);
         panel.setAttribute("tabindex", "-1");
         panel.focus({ preventScroll: true });
         scrollPanelIntoView(panel);
@@ -2064,6 +2123,7 @@
             }
             document.querySelectorAll("[data-panel-toggle]").forEach(item => item.setAttribute("aria-expanded", "false"));
             panel.hidden = false;
+            ensurePanelCloseButton(panel);
             document.querySelectorAll("#section-menu [data-dashboard-target]").forEach(item => {
               item.setAttribute("aria-expanded", String(item === link));
             });
