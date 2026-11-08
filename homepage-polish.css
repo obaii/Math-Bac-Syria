@@ -6501,3 +6501,65 @@ main :is(section, .section-heading, [data-dashboard-panel]):focus-visible {
   .hero .hero-stats > span { min-height: 36px; }
   .hero .section-menu-toggle { min-height: 44px; }
 }
+
+
+/* 570: Keep the theme switch beside app installation in the sticky header. */
+.top-actions .theme-toggle-button,
+.top-actions .install-app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 7px 12px;
+  border: 1px solid var(--hp-brand, #315edb);
+  border-radius: 10px;
+  background: #fff;
+  color: #214a9a;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.top-actions .theme-toggle-button:hover,
+.top-actions .install-app-button:hover {
+  background: #edf3ff;
+  border-color: #214a9a;
+}
+.top-actions :is(.theme-toggle-button, .install-app-button):focus-visible {
+  outline: 3px solid var(--hp-focus, #8bb2ff);
+  outline-offset: 3px;
+}
+body.dark-mode .top-actions .theme-toggle-button,
+body.dark-mode .top-actions .install-app-button {
+  background: #1c2d49;
+  border-color: #668bd1;
+  color: #f2f6ff;
+}
+body.dark-mode .top-actions .theme-toggle-button:hover,
+body.dark-mode .top-actions .install-app-button:hover {
+  background: #29436b;
+}
+@media (max-width: 600px) {
+  .top-actions {
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+  .top-actions > .tag,
+  .top-actions > .privacy-note {
+    display: none;
+  }
+  .top-actions .theme-toggle-button,
+  .top-actions .install-app-button {
+    min-height: 36px;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 370px) {
+  .top .brand > span:last-child {
+    display: none;
+  }
+}
