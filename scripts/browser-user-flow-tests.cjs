@@ -161,9 +161,40 @@ const assert = require("node:assert/strict");
     assert.ok(await resumeUpdateBadge.isHidden(), "the update marker should stay dismissed after the learner opens the destination");
     await page.locator("#section-menu-toggle").click();
 
-    // The section menu should remember and visibly mark the last destination used.
+    // Section menu lifecycle: gray open state, single-panel mode, explicit close and outside dismissal.
+    await page.locator("#section-menu-toggle").click();
+    assert.equal(await page.locator("#section-menu-toggle").evaluate(node => getComputedStyle(node).backgroundColor), "rgb(107, 114, 128)",
+      "the open section-menu button should be gray");
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    assert.ok(await page.locator("#scientific-calculator").isVisible(), "choosing a destination should open its panel");
+    assert.ok(await quickStart.isHidden(), "choosing a destination should hide the menu");
+    assert.ok(await page.locator("#scientific-calculator .section-panel-close").isVisible(),
+      "the open panel should expose a close button at its bottom");
+    await page.locator("#section-menu-toggle").click();
+    assert.ok(await page.locator("#scientific-calculator").isHidden(),
+      "the top menu control should close the active destination");
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "closing a destination should return to the research list");
+    assert.ok(await quickStart.isHidden(),
+      "using the top menu control to leave a panel should not unexpectedly open the menu");
     await page.locator("#section-menu-toggle").click();
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#scientific-calculator .section-panel-close").click();
+    assert.ok(await page.locator("#scientific-calculator").isHidden(),
+      "the explicit close action should hide the selected panel");
+    assert.ok(await quickStart.isVisible(),
+      "the explicit close action should show the section menu again");
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "the explicit close action should restore the research list");
+    await page.locator("h1").click();
+    await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "clicking outside the open section menu should leave only the research view");
+    await page.locator("#section-menu-toggle").click();
+
+    // The section menu should remember and visibly mark the last destination used.
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#section-menu-toggle").click();
     assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').getAttribute("data-recent-label"), "استُخدم مؤخراً",
       "the menu should mark the most recently used destination");
