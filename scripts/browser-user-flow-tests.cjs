@@ -926,9 +926,9 @@ const assert = require("node:assert/strict");
       "the topic card should summarize total, correct, incorrect answers, and accuracy");
     assert.equal(await practicedTopicCard.locator(".topic-card-levels span").count(), 3,
       "each research card should show counts for basic, intermediate, and advanced questions");
-    assert.match(await practicedTopicCard.locator(".topic-card-levels").innerText(), /أساسي .* متوسط .* متقدم/,
+    assert.match((await practicedTopicCard.locator(".topic-card-levels").innerText()).replace(/\\s+/g, " "), /أساسي .* متوسط .* متقدم/,
       "the difficulty distribution should retain the three curriculum level labels");
-    assert.match(await practicedTopicCard.locator(".topic-coverage-summary").innerText(), /٪ من الأسئلة جُرّبت.*متبقي/,
+    assert.match((await practicedTopicCard.locator(".topic-coverage-summary").innerText()).replace(/\\s+/g, " "), /٪ من الأسئلة جُرّبت.*متبقي/,
       "the card should show a visible completion percentage and remaining question count");
     assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /إنجاز.*متبقي/,
       "the coverage progress bar should announce its percentage and remaining questions accessibly");
