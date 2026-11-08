@@ -268,6 +268,12 @@ const assert = require("node:assert/strict");
       "removing the search chip should preserve the mastery state");
     assert.equal(await activeFilterRegion.locator("button").count(), 2,
       "removing one chip should leave the other active filters visible");
+    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      "إزالة فلتر مستوى الأسئلة",
+      "keyboard focus should move to the next remaining chip after removal");
+    assert.ok((await activeFilterRegion.locator("button[aria-label='إزالة فلتر حالة الإتقان']").textContent())
+      .includes("الإتقان: يحتاج إلى تدريب"),
+      "the mastery chip should use its stable Arabic label without the changing count suffix");
 
     await activeFilterRegion.locator("button[aria-label='إزالة فلتر مستوى الأسئلة']").click();
     assert.equal(await page.locator("#difficulty").inputValue(), "الكل",
@@ -276,14 +282,33 @@ const assert = require("node:assert/strict");
       "removing the difficulty chip should preserve the mastery selector");
     assert.equal(await activeFilterRegion.locator("button").count(), 1,
       "only the mastery chip should remain after removing the difficulty filter");
+    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("aria-label")),
+      "إزالة فلتر حالة الإتقان",
+      "keyboard focus should move to the remaining mastery chip");
 
     await activeFilterRegion.locator("button[aria-label='إزالة فلتر حالة الإتقان']").click();
     assert.equal(await masteryFilter.inputValue(), "الكل",
       "removing the mastery chip should reset the mastery selector");
     assert.equal(await activeFilterRegion.isVisible(), false,
       "the active-filter region should hide when all individual filters are cleared");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "mastery-filter",
+      "keyboard focus should return to the related filter control when the final chip is removed");
     assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
       "removing all chips individually should restore all fourteen topics");
+
+    // Verify long Arabic search labels wrap within a narrow mobile viewport.
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.locator("#topic-search").fill("بحث".repeat(30));
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    const chipLayout = await page.evaluate(() => ({
+      viewport: window.innerWidth,
+      document: document.documentElement.scrollWidth,
+      chip: document.querySelector(".active-topic-filter-chip")?.getBoundingClientRect().width || 0
+    }));
+    assert.ok(chipLayout.chip <= chipLayout.viewport,
+      "a long Arabic filter chip should fit within a 320px mobile viewport");
+    assert.ok(chipLayout.document <= chipLayout.viewport,
+      "long active-filter labels should not create horizontal page overflow");
 
     await masteryFilter.selectOption("mastered");
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -293,6 +318,8 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#active-topic-filters button").getAttribute("aria-label"),
       "إزالة فلتر حالة الإتقان",
       "the restored chip should retain its accessible label");
+    assert.ok((await page.locator("#active-topic-filters button").textContent()).includes("الإتقان: متقن"),
+      "the restored mastery chip should retain the correct Arabic label without a count suffix");
 
         assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");
