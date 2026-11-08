@@ -2043,7 +2043,14 @@
     // Escape closes the expanded navigation and returns keyboard focus to its trigger.
     if (menu && menuButton && document.documentElement.dataset.menuEscapeBound !== "true") {
       document.addEventListener("keydown", event => {
-        if (event.key !== "Escape" || menu.hidden) return;
+        if (event.key !== "Escape") return;
+        // Escape should also dismiss an active destination even though its menu is hidden.
+        if (getActiveHomePanel()) {
+          closeActiveHomePanel(false);
+          menuButton.focus({ preventScroll: true });
+          return;
+        }
+        if (menu.hidden) return;
         setMenuOpen(false);
         menuButton.focus({ preventScroll: true });
       });
