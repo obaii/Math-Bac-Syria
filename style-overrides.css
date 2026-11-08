@@ -1948,3 +1948,61 @@ body.dark-mode .filter-reset-button:hover { background: #2a3d5c; }
     border-color: #9eb5fa;
   }
 }
+
+/* 701–710: Make research-card coverage, level mix, and saved-session state immediately readable. */
+#topic-grid .topic-card-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+}
+#topic-grid .topic-card-levels span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  border: 1px solid var(--topic-border, var(--line));
+  border-radius: 999px;
+  background: var(--topic-soft, #f3f6fc);
+  color: var(--topic-accent, var(--muted));
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+#topic-grid .topic-coverage-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 5px 10px;
+  margin-top: 5px;
+  color: var(--muted, #718096);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+#topic-grid .topic-start {
+  font-weight: 800;
+}
+#topic-grid .topic-card[data-can-resume="true"] .topic-start {
+  color: var(--topic-accent, #315edb);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+body.dark-mode #topic-grid .topic-card-levels span {
+  background: color-mix(in srgb, var(--topic-accent, #8aa8ff) 16%, #182438);
+  border-color: color-mix(in srgb, var(--topic-accent, #8aa8ff) 32%, #34445d);
+  color: #dce7ff;
+}
+body.dark-mode #topic-grid .topic-coverage-summary {
+  color: #a7b5ca;
+}
+@media (max-width: 540px) {
+  #topic-grid .topic-card-levels { gap: 4px; }
+  #topic-grid .topic-card-levels span { min-height: 21px; padding-inline: 6px; font-size: 9px; }
+  #topic-grid .topic-coverage-summary { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-card-levels span,
+  #topic-grid .topic-coverage-summary { transition: none !important; }
+}

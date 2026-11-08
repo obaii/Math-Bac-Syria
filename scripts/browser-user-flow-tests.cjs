@@ -232,6 +232,25 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
       "resuming should restore the same shuffled question order");
     await page.locator("#back").click();
+    const sectionMenuButton = page.locator("#section-menu-toggle");
+    const sectionMenu = page.locator("#section-menu");
+    const resumeDashboardPanel = page.locator("#dashboard-panel-resume-session");
+    if (!(await resumeDashboardPanel.isHidden())) await sectionMenuButton.click();
+    if (!(await sectionMenu.isHidden())) await sectionMenuButton.click();
+    await resumeDashboardPanel.waitFor({ state: "hidden" });
+    await sectionMenu.waitFor({ state: "hidden" });
+    const resumableTopicCard = page.locator('#topic-grid [data-topic="' + resumeTopic + '"]');
+    assert.equal(await resumableTopicCard.getAttribute("data-can-resume"), "true",
+      "the last research card should identify its unfinished saved session");
+    assert.match(await resumableTopicCard.locator(".topic-start").innerText(), /استئناف التدريب/,
+      "the saved research card should offer to resume rather than restart");
+    await resumableTopicCard.click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#question-number").innerText(), savedQuestionNumber,
+      "opening the saved research card should restore the saved question position");
+    assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
+      "opening the saved research card should restore the original shuffled question order");
+    await page.locator("#back").click();
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaTrainingSessionV1"));
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
 
@@ -577,6 +596,25 @@ const assert = require("node:assert/strict");
     assert.equal(await topicButtons.first().getAttribute("data-topic-attempts"), "0", "an untouched topic should show zero recorded answers");
     assert.equal(await topicButtons.first().locator(".topic-state").innerText(), "لم تبدأ بعد", "an untouched topic should have a not-started label");
     assert.equal(await topicButtons.first().locator(".topic-card-performance").innerText(), "لم تسجل إجابات بعد", "an untouched topic should explain that no answers have been recorded");
+    const firstCardLevelCounts = await topicButtons.first().evaluate(card => {
+      const counts = { "أساسي": 0, "متوسط": 0, "متقدم": 0 };
+      for (const question of questions) {
+        if (question.topic === card.dataset.topic && Object.prototype.hasOwnProperty.call(counts, question.level)) {
+          counts[question.level] += 1;
+        }
+      }
+      return counts;
+    });
+    assert.deepEqual(
+      await topicButtons.first().locator(".topic-card-levels span").allInnerTexts(),
+      ["أساسي " + firstCardLevelCounts["أساسي"].toLocaleString("ar"),
+       "متوسط " + firstCardLevelCounts["متوسط"].toLocaleString("ar"),
+       "متقدم " + firstCardLevelCounts["متقدم"].toLocaleString("ar")],
+      "the card should show the full question-bank distribution for all three levels"
+    );
+    const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
+    assert.match(serviceWorkerSource, /math-bac-syria-v109/,
+      "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
     assert.equal(await clearSearch.isVisible(), false, "the clear-search control should stay hidden when the search is empty");
@@ -889,7 +927,20 @@ const assert = require("node:assert/strict");
     assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "2", "the topic card should show both the original and similar-question answers");
     assert.ok(["0", "1", "2"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
     assert.equal(await practicedTopicCard.locator(".topic-state").innerText(), "قيد التقدم", "a topic with some but not all questions tried should be marked in progress");
-    assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .*٪ دقة/, "the topic card should summarize attempts, correct answers, and accuracy");
+    assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .* خاطئة · .*٪ دقة/,
+      "the topic card should summarize total, correct, incorrect answers, and accuracy");
+    assert.equal(await practicedTopicCard.locator(".topic-card-levels span").count(), 3,
+      "each research card should show counts for basic, intermediate, and advanced questions");
+    assert.match((await practicedTopicCard.locator(".topic-card-levels").innerText()).replace(/\s+/g, " "), /أساسي .* متوسط .* متقدم/,
+      "the difficulty distribution should retain the three curriculum level labels");
+    assert.match((await practicedTopicCard.locator(".topic-coverage-summary").innerText()).replace(/\s+/g, " "), /٪ من الأسئلة جُرّبت.*متبقي/,
+      "the card should show a visible completion percentage and remaining question count");
+    assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /إنجاز.*متبقي/,
+      "the coverage progress bar should announce its percentage and remaining questions accessibly");
+    assert.match(await practicedTopicCard.getAttribute("aria-label"), /إنجاز/,
+      "each research card should expose a concise accessible progress summary");
+    assert.ok((await practicedTopicCard.locator(".topic-last-activity").getAttribute("title")).length > 0,
+      "the relative last-practice label should provide an exact timestamp on demand");
     assert.equal(await practicedTopicCard.getAttribute("data-last-practiced") === "" , false,
       "the topic card should store a valid last-practice timestamp");
     assert.ok(Number.isFinite(Date.parse(await practicedTopicCard.getAttribute("data-last-practiced"))),
