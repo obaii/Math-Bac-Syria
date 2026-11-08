@@ -1918,10 +1918,18 @@
       menu?.classList.remove("is-opening", "is-closing");
     };
     const reducedMotionRequested = () => window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
-    const scrollPanelIntoView = panel => panel.scrollIntoView({
-      behavior: reducedMotionRequested() ? "auto" : "smooth",
-      block: "start"
-    });
+    // Scroll only after the navigation menu has been removed from layout.
+    // This avoids the page shifting after scrollIntoView and leaving the panel mid-screen.
+    const scrollPanelIntoView = panel => {
+      const behavior = reducedMotionRequested() ? "auto" : "smooth";
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (!panel?.isConnected || panel.hidden) return;
+        const stickyHeader = document.querySelector(".top");
+        const headerOffset = stickyHeader ? Math.ceil(stickyHeader.getBoundingClientRect().height) : 0;
+        const targetTop = Math.max(0, window.scrollY + panel.getBoundingClientRect().top - headerOffset - 12);
+        window.scrollTo({ top: targetTop, behavior });
+      }));
+    };
     const setMenuOpen = open => {
       if (!menu) return;
       clearMenuAnimation();
@@ -1939,6 +1947,14 @@
         if (shouldHide) menu.hidden = true;
       };
       menu.addEventListener("animationend", menuAnimationHandler);
+    };
+    // Navigation must hide the menu synchronously before calculating the destination.
+    // Waiting for the closing animation changes document height after the scroll.
+    const closeMenuForNavigation = () => {
+      if (!menu) return;
+      clearMenuAnimation();
+      menu.hidden = true;
+      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
     };
     if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
       menuButton.addEventListener("click", () => {
@@ -2006,7 +2022,7 @@
         document.querySelectorAll("[data-panel-toggle]").forEach(item => {
           item.setAttribute("aria-expanded", String(!shouldClose && item === link));
         });
-        setMenuOpen(false);
+        closeMenuForNavigation();
         const currentMenuButton = document.getElementById("section-menu-toggle");
         if (shouldClose) {
           // Closing a secondary panel returns the home view to its default topic selector.
@@ -2051,7 +2067,7 @@
             document.querySelectorAll("#section-menu [data-dashboard-target]").forEach(item => {
               item.setAttribute("aria-expanded", String(item === link));
             });
-            if (menu) setMenuOpen(false);
+            closeMenuForNavigation();
             panel.setAttribute("tabindex", "-1");
             panel.focus({ preventScroll: true });
             scrollPanelIntoView(panel);
