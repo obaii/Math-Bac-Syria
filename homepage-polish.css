@@ -7236,3 +7236,31 @@ body.dark-mode #mastery-filter {
     z-index: 1;
   }
 }
+
+
+/* Give tablet search its own row so the clear button cannot overlap either filter. */
+@media (min-width: 601px) and (max-width: 850px) {
+  .topic-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 12px;
+  }
+  .topic-tools .search-box {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .topic-tools .filter-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    flex: initial;
+    box-sizing: border-box;
+  }
+  #clear-all-topic-filters {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
