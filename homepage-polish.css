@@ -6208,3 +6208,145 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums;
 }
+
+
+/* Homepage refinement batch 530–539. */
+
+/* 530: Improve the dashboard intro hierarchy and keep long Arabic text readable. */
+.dashboard-intro {
+  max-width: 82ch;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.dashboard-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  line-height: 1.6;
+}
+
+/* 531: Make dashboard shortcuts comfortable to tap and resilient to long labels. */
+.dashboard-shortcut {
+  min-width: 0;
+  min-height: 48px;
+  padding: 11px 13px;
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+.dashboard-shortcut:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+
+/* 532: Improve the weak-topic recommendation's text and action alignment. */
+#weak-topic-recommendation .weak-topic-copy {
+  min-width: 0;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#weak-topic-recommendation #weak-topic-button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* 533: Give resume-session details a clearer visual grouping. */
+#resume-session {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#resume-session :is(#resume-topic-name, #resume-topic-activity) {
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* 534: Improve recent-activity list spacing and date readability. */
+#recent-activity-list > * {
+  min-width: 0;
+  padding-block: 9px;
+  border-bottom: 1px solid var(--hp-border);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+#recent-activity-list > *:last-child {
+  border-bottom: 0;
+}
+
+/* 535: Make the performance trend summary easy to read beside its chart. */
+#performance-trend-summary {
+  max-width: 76ch;
+  margin-block-start: 10px;
+  line-height: 1.85;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* 536: Strengthen the progress report panel's reading flow. */
+#progress-report {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+#progress-report :is(button, a) {
+  min-height: 44px;
+}
+
+/* 537: Improve formula search and filter control sizing on touch screens. */
+#formula-library .formula-filters :is(input, select, button) {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+}
+#formula-library #formula-search {
+  width: 100%;
+  line-height: 1.6;
+}
+
+/* 538: Keep flashcard controls organized when the viewport narrows. */
+#flashcards .flashcards-controls,
+#flashcards .flashcard-navigation,
+#flashcards .flashcard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+#flashcards :is(.flashcards-controls, .flashcard-navigation, .flashcard-actions) button {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* 539: Improve topic search feedback and filter discoverability. */
+#topic-section #topic-search-hint,
+#topic-section #difficulty-hint {
+  max-width: 76ch;
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#topic-section #clear-topic-search,
+#topic-section #clear-all-topic-filters,
+#topic-section #reset-topic-filters {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+}
+@media (max-width: 420px) {
+  #topic-section .topic-tools {
+    gap: 9px;
+  }
+  #topic-section .topic-tools :is(input, select, button) {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
