@@ -7183,3 +7183,28 @@ body.dark-mode #mastery-filter {
     transition: none;
   }
 }
+
+
+/* Keep the search box and stacked filter panels in separate mobile layout rows. */
+@media (max-width: 600px) {
+  .topic-tools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+  }
+  .topic-tools .search-box,
+  .topic-tools .filter-panel {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+  }
+  .topic-tools .search-box {
+    min-height: 44px;
+  }
+  .topic-tools .filter-panel {
+    box-sizing: border-box;
+  }
+}
