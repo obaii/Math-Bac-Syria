@@ -232,6 +232,20 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
       "resuming should restore the same shuffled question order");
     await page.locator("#back").click();
+    await page.locator("#section-menu-toggle").click();
+    await page.waitForFunction(() => document.querySelector("#resume-session")?.hidden === true);
+    const resumableTopicCard = page.locator('#topic-grid [data-topic="' + resumeTopic + '"]');
+    assert.equal(await resumableTopicCard.getAttribute("data-can-resume"), "true",
+      "the last research card should identify its unfinished saved session");
+    assert.match(await resumableTopicCard.locator(".topic-start").innerText(), /استئناف التدريب/,
+      "the saved research card should offer to resume rather than restart");
+    await resumableTopicCard.click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#question-number").innerText(), savedQuestionNumber,
+      "opening the saved research card should restore the saved question position");
+    assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
+      "opening the saved research card should restore the original shuffled question order");
+    await page.locator("#back").click();
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaTrainingSessionV1"));
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
 
