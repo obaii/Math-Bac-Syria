@@ -2054,14 +2054,19 @@
     if (menu && menuButton && document.documentElement.dataset.menuOutsideBound !== "true") {
       document.addEventListener("click", event => {
         const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+        // Use the original event path: an in-panel action may replace its own DOM
+        // (for example, expanding a study plan) before this document listener runs.
+        const path = typeof event.composedPath === "function" ? event.composedPath() : [target];
+        const isWithin = element => Boolean(element && (path.includes(element) ||
+          path.some(node => node instanceof Node && element.contains(node))));
         const activePanel = getActiveHomePanel();
         if (activePanel) {
-          if (target && (activePanel.contains(target) || menu.contains(target) || menuButton.contains(target))) return;
+          if (isWithin(activePanel) || isWithin(menu) || isWithin(menuButton)) return;
           closeActiveHomePanel(false);
           return;
         }
         if (menu.hidden) return;
-        if (target && (menu.contains(target) || menuButton.contains(target))) return;
+        if (isWithin(menu) || isWithin(menuButton)) return;
         setMenuOpen(false);
       });
       document.documentElement.dataset.menuOutsideBound = "true";
