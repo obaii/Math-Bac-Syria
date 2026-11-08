@@ -174,6 +174,23 @@ const assert = require("node:assert/strict");
       renderTopics();
     }, masteryStates);
 
+    const masteryOptionCounts = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#topic-grid .topic-card")];
+      const counts = { "الكل": cards.length };
+      for (const card of cards) {
+        const key = card.dataset.mastery;
+        counts[key] = (counts[key] || 0) + 1;
+      }
+      return [...document.querySelectorAll("#mastery-filter option")].map(option => ({
+        value: option.value,
+        label: option.textContent.trim(),
+        expected: counts[option.value] || 0
+      }));
+    });
+    assert.equal(masteryOptionCounts.every(item =>
+      item.label.endsWith("(" + item.expected.toLocaleString("ar") + ")")
+    ), true, "each mastery option should display the live number of matching research topics");
+
     const masteryFilter = page.locator("#mastery-filter");
     assert.equal(await masteryFilter.count(), 1,
       "the homepage should provide one accessible mastery-state filter");
