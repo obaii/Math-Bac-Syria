@@ -531,7 +531,21 @@ function resumeTrainingSession(topic){
 
 function renderTopics(){
   const level = $("difficulty").value;
-  const masteryFilter = $("mastery-filter")?.value || "الكل";
+  const masterySelect = $("mastery-filter");
+  const masteryFilter = masterySelect?.value || "الكل";
+  if (masterySelect) {
+    const masteryCounts = new Map([["الكل", topics.length]]);
+    for (const topic of topics) {
+      const state = getTopicMastery(progressData.topicStats[topic] || { answered: 0, correct: 0 }).key;
+      masteryCounts.set(state, (masteryCounts.get(state) || 0) + 1);
+    }
+    for (const option of masterySelect.options) {
+      const baseLabel = option.dataset.baseLabel || option.textContent;
+      option.dataset.baseLabel = baseLabel;
+      const count = masteryCounts.get(option.value) || 0;
+      option.textContent = `${baseLabel} (${count.toLocaleString("ar")})`;
+    }
+  }
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
   const clearSearchButton = $("clear-topic-search");
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
