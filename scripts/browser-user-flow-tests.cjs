@@ -591,6 +591,25 @@ const assert = require("node:assert/strict");
     assert.equal(await topicButtons.first().getAttribute("data-topic-attempts"), "0", "an untouched topic should show zero recorded answers");
     assert.equal(await topicButtons.first().locator(".topic-state").innerText(), "لم تبدأ بعد", "an untouched topic should have a not-started label");
     assert.equal(await topicButtons.first().locator(".topic-card-performance").innerText(), "لم تسجل إجابات بعد", "an untouched topic should explain that no answers have been recorded");
+    const firstCardLevelCounts = await topicButtons.first().evaluate(card => {
+      const counts = { "أساسي": 0, "متوسط": 0, "متقدم": 0 };
+      for (const question of questions) {
+        if (question.topic === card.dataset.topic && Object.prototype.hasOwnProperty.call(counts, question.level)) {
+          counts[question.level] += 1;
+        }
+      }
+      return counts;
+    });
+    assert.deepEqual(
+      await topicButtons.first().locator(".topic-card-levels span").allInnerTexts(),
+      ["أساسي " + firstCardLevelCounts["أساسي"].toLocaleString("ar"),
+       "متوسط " + firstCardLevelCounts["متوسط"].toLocaleString("ar"),
+       "متقدم " + firstCardLevelCounts["متقدم"].toLocaleString("ar")],
+      "the card should show the full question-bank distribution for all three levels"
+    );
+    const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
+    assert.match(serviceWorkerSource, /math-bac-syria-v109/,
+      "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
     assert.equal(await clearSearch.isVisible(), false, "the clear-search control should stay hidden when the search is empty");
