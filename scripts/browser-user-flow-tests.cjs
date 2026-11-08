@@ -656,9 +656,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), true, "night mode should toggle on");
     await page.getByRole("button", { name: /إيقاف الوضع الليلي/ }).click();
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), false, "night mode should toggle off");
+    assert.equal(await page.locator("#student-tools").isVisible(), false,
+      "using the global theme control outside the open section should dismiss that section");
+    await openPanel("student-tools");
 
     // Reading preferences scale text and mathematical notation independently and persist locally.
-    assert.equal(await page.locator("#reading-settings").isVisible(), true, "reading settings should be available in student tools");
+    assert.equal(await page.locator("#reading-settings").isVisible(), true, "reading settings should be available after reopening student tools");
     await page.locator("#text-scale").evaluate(el => { el.value = "120"; el.dispatchEvent(new Event("input", { bubbles: true })); });
     await page.locator("#math-scale").evaluate(el => { el.value = "130"; el.dispatchEvent(new Event("input", { bubbles: true })); });
     const readingPreferences = await page.evaluate(() => ({
