@@ -85,7 +85,7 @@ const assert = require("node:assert/strict");
           `the mobile section-menu toggle should meet the 44px touch-target height at ${viewport.width}px: ${JSON.stringify(menuToggle)}`);
         const filterTargets = await page.evaluate(() => ({
           clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
-          filterRows: ["#topic-tools .search-box", ".topic-tools .filter-panel", ".topic-tools .mastery-filter-panel"].map(selector => {
+          filterRows: [.topic-tools .search-box", ".topic-tools .filter-panel", ".topic-tools .mastery-filter-panel"].map(selector => {
             const element = document.querySelector(selector);
             const rect = element.getBoundingClientRect();
             return { selector, top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right };
