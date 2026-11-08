@@ -7088,3 +7088,179 @@ body.dark-mode #topic-grid .topic-mastery-status.mastered {
     animation: none;
   }
 }
+
+
+/* Batch 651–660: filter research cards by mastery state. */
+
+/* 651: Give the mastery selector the same clear hierarchy as the level selector. */
+.topic-tools .mastery-filter-panel {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+/* 652: Keep both filter labels and hints readable in Arabic layouts. */
+.topic-tools .filter-panel label {
+  display: block;
+  margin-block-end: 6px;
+  color: var(--hp-ink);
+  font-size: .82rem;
+  font-weight: 800;
+}
+.topic-tools .filter-panel .filter-hint {
+  display: block;
+  margin-block-start: 5px;
+  color: var(--hp-muted);
+  font-size: .7rem;
+  line-height: 1.6;
+}
+
+/* 653: Make the mastery selector a full-width, predictable control. */
+#mastery-filter {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--hp-control-border, var(--hp-border));
+  border-radius: var(--hp-control-radius, 12px);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+  line-height: 1.5;
+}
+
+/* 654: Keep focus visible when students navigate the additional filter by keyboard. */
+#mastery-filter:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 2px var(--hp-surface);
+}
+
+/* 655: Preserve the selector's contrast and surface in dark mode. */
+body.dark-mode #mastery-filter {
+  border-color: var(--hp-border);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+}
+
+/* 656: Align the two filter panels without squeezing their Arabic labels. */
+@media (min-width: 761px) {
+  .topic-tools .filter-panel {
+    flex: 1 1 220px;
+  }
+}
+
+/* 657: Stack search and filters cleanly on compact screens. */
+@media (max-width: 600px) {
+  .topic-tools .mastery-filter-panel {
+    width: 100%;
+  }
+  #mastery-filter {
+    min-height: 46px;
+  }
+}
+
+/* 658: Keep the clear-all action easy to tap when any filter is active. */
+#clear-all-topic-filters {
+  min-width: 44px;
+  min-height: 44px;
+  align-self: end;
+  white-space: normal;
+}
+
+/* 659: Prevent long filter option labels from widening the page. */
+#mastery-filter,
+#mastery-filter option {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* 660: Respect reduced-motion preferences for filter feedback. */
+@media (prefers-reduced-motion: reduce) {
+  #mastery-filter,
+  #clear-all-topic-filters {
+    transition: none;
+  }
+}
+
+
+/* Keep the search box and stacked filter panels in separate mobile layout rows. */
+@media (max-width: 600px) {
+  .topic-tools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+  }
+  .topic-tools .search-box,
+  .topic-tools .filter-panel {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+  }
+  .topic-tools .search-box {
+    min-height: 44px;
+  }
+  .topic-tools .filter-panel {
+    box-sizing: border-box;
+  }
+}
+
+
+/* Keep the clear-search control inside its flex row beside the text input. */
+@media (max-width: 600px) {
+  .topic-tools .search-box {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+  }
+  .topic-tools .search-box input {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+  }
+  .topic-tools .search-box #clear-topic-search:not([hidden]) {
+    position: relative;
+    z-index: 3;
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .topic-tools .filter-panel {
+    z-index: 1;
+  }
+}
+
+
+/* Give tablet search its own row so the clear button cannot overlap either filter. */
+@media (min-width: 601px) and (max-width: 850px) {
+  .topic-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 12px;
+  }
+  .topic-tools .search-box {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .topic-tools .filter-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    flex: initial;
+    box-sizing: border-box;
+  }
+  #clear-all-topic-filters {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

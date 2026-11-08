@@ -85,16 +85,28 @@ const assert = require("node:assert/strict");
           `the mobile section-menu toggle should meet the 44px touch-target height at ${viewport.width}px: ${JSON.stringify(menuToggle)}`);
         const filterTargets = await page.evaluate(() => ({
           clearSearch: (() => { const button = document.querySelector("#clear-topic-search"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
+          filterRows: [".topic-tools .search-box", ".topic-tools .filter-panel", ".topic-tools .mastery-filter-panel"].map(selector => {
+            const element = document.querySelector(selector);
+            const rect = element.getBoundingClientRect();
+            return { selector, top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right };
+          }),
           resetFilters: (() => { const button = document.querySelector("#clear-all-topic-filters"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
           difficultySelect: (() => { const select = document.querySelector("#difficulty"); const rect = select.getBoundingClientRect(); return { width: rect.width, height: rect.height }; })(),
+          masterySelect: (() => { const select = document.querySelector("#mastery-filter"); const rect = select.getBoundingClientRect(); return { left: rect.left, right: rect.right, width: rect.width, height: rect.height }; })(),
           installButton: (() => { const button = document.querySelector("#install-app-button"); button.hidden = false; const rect = button.getBoundingClientRect(); return { width: rect.width, height: rect.height, minHeight: Number.parseFloat(getComputedStyle(button).minHeight) }; })()
         }));
         assert.ok(filterTargets.clearSearch.width >= 44 && filterTargets.clearSearch.height >= 44,
           "the mobile clear-search control should meet the 44px touch-target size");
+        assert.ok(filterTargets.filterRows[0].bottom <= filterTargets.filterRows[1].top + 1 &&
+          filterTargets.filterRows[1].bottom <= filterTargets.filterRows[2].top + 1,
+          "the mobile search and filter panels should occupy separate rows without overlapping");
         assert.ok(filterTargets.resetFilters.height >= 44,
           "the mobile reset-filters control should meet the 44px touch-target size");
         assert.ok(filterTargets.difficultySelect.height >= 44,
           "the mobile difficulty selector should meet the 44px touch-target height");
+        assert.ok(filterTargets.masterySelect.height >= 44 &&
+          filterTargets.masterySelect.left >= -1 && filterTargets.masterySelect.right <= viewport.width + 1,
+          "the mobile mastery selector should meet the touch-target size without overlapping the viewport");
         assert.ok(filterTargets.installButton.minHeight >= 44,
           "the mobile install action should declare a 44px touch target");
       }
