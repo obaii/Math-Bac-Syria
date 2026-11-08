@@ -700,7 +700,7 @@ const assert = require("node:assert/strict");
       "clear-all should reset the topic search");
     await coverageFilter.selectOption("in-progress");
     await page.reload({ waitUntil: "domcontentloaded" });
-    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length >= 0);
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
     assert.equal(await page.locator("#coverage-filter").inputValue(), "in-progress",
       "the selected coverage state should be restored after reloading the homepage");
     assert.equal(await topicButtons.evaluateAll(cards => cards.every(card => card.dataset.coverage === "in-progress")), true,
