@@ -192,6 +192,8 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
       "choosing the educational space should reveal only its dashboard panel");
     await page.locator("#section-menu-toggle").click();
+    // The first click leaves an open dashboard panel; the next click opens the menu.
+    if (await page.locator("#section-menu").isHidden()) await page.locator("#section-menu-toggle").click();
     await page.locator('#section-menu [data-dashboard-target="question-coverage-title"]').click();
     await page.locator('[data-dashboard-panel="question-coverage-title"]').waitFor({ state: "visible" });
     assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
@@ -200,6 +202,10 @@ async function assertVisibleControlsHaveNames(page, context) {
     const sectionMenuButton = page.locator("#section-menu-toggle");
     await sectionMenuButton.focus();
     await page.keyboard.press("Enter");
+    if (await page.locator("#section-menu").isHidden()) {
+      await sectionMenuButton.focus();
+      await page.keyboard.press("Enter");
+    }
     const calculatorShortcut = page.locator('#section-menu [data-panel-toggle="scientific-calculator"]');
     await calculatorShortcut.waitFor({ state: "visible" });
     await calculatorShortcut.focus();
@@ -212,8 +218,6 @@ async function assertVisibleControlsHaveNames(page, context) {
     await assertVisibleControlsHaveNames(page, "scientific calculator panel");
     await sectionMenuButton.focus();
     await page.keyboard.press("Enter");
-    await calculatorShortcut.waitFor({ state: "visible" });
-    await calculatorShortcut.click();
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
     await page.locator("#topic-section").waitFor({ state: "visible" });
     assert.equal(await page.locator("#topic-section").evaluate(el => el.hidden), false,

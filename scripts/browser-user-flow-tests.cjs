@@ -20,7 +20,12 @@ const assert = require("node:assert/strict");
     if (await menu.evaluate(element => element.classList.contains("is-closing"))) {
       await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
     }
-    if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    if (await menu.isHidden()) {
+      await page.locator("#section-menu-toggle").click();
+      // If a different destination is open, the first click intentionally closes it;
+      // the second click then opens the section menu for the requested destination.
+      if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    }
     await menuLink.waitFor({ state: "visible" });
     if (await dashboardLink.count()) {
       await dashboardLink.click();
@@ -161,9 +166,50 @@ const assert = require("node:assert/strict");
     assert.ok(await resumeUpdateBadge.isHidden(), "the update marker should stay dismissed after the learner opens the destination");
     await page.locator("#section-menu-toggle").click();
 
-    // The section menu should remember and visibly mark the last destination used.
+    // Section menu lifecycle: gray open state, single-panel mode, explicit close and outside dismissal.
+    await page.locator("#section-menu-toggle").click();
+    await page.waitForFunction(() =>
+      getComputedStyle(document.querySelector("#section-menu-toggle")).backgroundColor === "rgb(107, 114, 128)",
+      null, { timeout: 2000 });
+    assert.equal(await page.locator("#section-menu-toggle").evaluate(node => getComputedStyle(node).backgroundColor), "rgb(107, 114, 128)",
+      "the open section-menu button should settle to its gray state after the transition");
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    assert.ok(await page.locator("#scientific-calculator").isVisible(), "choosing a destination should open its panel");
+    assert.ok(await quickStart.isHidden(), "choosing a destination should hide the menu");
+    assert.ok(await page.locator("#scientific-calculator .section-panel-close").isVisible(),
+      "the open panel should expose a close button at its bottom");
+    await page.locator("#section-menu-toggle").click();
+    assert.ok(await page.locator("#scientific-calculator").isHidden(),
+      "the top menu control should close the active destination");
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "closing a destination should return to the research list");
+    assert.ok(await quickStart.isHidden(),
+      "using the top menu control to leave a panel should not unexpectedly open the menu");
     await page.locator("#section-menu-toggle").click();
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#scientific-calculator .section-panel-close").click();
+    assert.ok(await page.locator("#scientific-calculator").isHidden(),
+      "the explicit close action should hide the selected panel");
+    assert.ok(await quickStart.isVisible(),
+      "the explicit close action should show the section menu again");
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "the explicit close action should restore the research list");
+    await page.locator("h1").click();
+    await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "clicking outside the open section menu should leave only the research view");
+    await page.locator("#section-menu-toggle").click();
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("h1").click();
+    assert.ok(await page.locator("#scientific-calculator").isHidden(),
+      "clicking outside an active destination should close that section");
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "outside dismissal from a section should restore the research list");
+    await page.locator("#section-menu-toggle").click();
+
+    // The section menu should remember and visibly mark the last destination used.
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#section-menu-toggle").click();
     assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').getAttribute("data-recent-label"), "استُخدم مؤخراً",
       "the menu should mark the most recently used destination");
@@ -610,9 +656,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), true, "night mode should toggle on");
     await page.getByRole("button", { name: /إيقاف الوضع الليلي/ }).click();
     assert.equal(await page.locator("body").evaluate(el => el.classList.contains("dark-mode")), false, "night mode should toggle off");
+    assert.equal(await page.locator("#student-tools").isVisible(), false,
+      "using the global theme control outside the open section should dismiss that section");
+    await openPanel("student-tools");
 
     // Reading preferences scale text and mathematical notation independently and persist locally.
-    assert.equal(await page.locator("#reading-settings").isVisible(), true, "reading settings should be available in student tools");
+    assert.equal(await page.locator("#reading-settings").isVisible(), true, "reading settings should be available after reopening student tools");
     await page.locator("#text-scale").evaluate(el => { el.value = "120"; el.dispatchEvent(new Event("input", { bubbles: true })); });
     await page.locator("#math-scale").evaluate(el => { el.value = "130"; el.dispatchEvent(new Event("input", { bubbles: true })); });
     const readingPreferences = await page.evaluate(() => ({
@@ -725,6 +774,8 @@ const assert = require("node:assert/strict");
         date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 0, 0, 0, 0).toISOString()
       }));
     });
+    // Returning from the quiz is an outside click, so reopen the review section before using its report.
+    await openPanel("student-tools");
     await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
     const rhythm = page.locator("#progress-report .study-rhythm");
     await rhythm.waitFor({ state: "visible" });
