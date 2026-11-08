@@ -395,10 +395,21 @@
       </select>
       <span class="filter-hint" id="difficulty-hint">اختر المستوى المناسب لك.</span>
       </div>
+      <div class="filter-panel mastery-filter-panel">
+      <label for="mastery-filter">حالة الإتقان</label>
+      <select id="mastery-filter" aria-describedby="mastery-filter-hint">
+        <option value="الكل">جميع حالات الإتقان</option>
+        <option value="not-started">لم يبدأ بعد</option>
+        <option value="practice">يحتاج إلى تدريب</option>
+        <option value="good">جيد</option>
+        <option value="mastered">متقن</option>
+      </select>
+      <span class="filter-hint" id="mastery-filter-hint">اعرض الأبحاث حسب مستوى إتقانك الحالي.</span>
+      </div>
       <button type="button" id="clear-all-topic-filters" class="filter-reset-button" data-feedback-message="تمت إعادة ضبط جميع الفلاتر." data-feedback-kind="info" hidden>إعادة ضبط الفلاتر</button>
     </div>
     <div id="topic-grid" class="topic-grid" aria-busy="true"><div class="topic-loading" role="status" aria-live="polite"><span class="topic-loading-spinner" aria-hidden="true"></span><span>جارٍ تجهيز الأبحاث الرياضية...</span></div></div>
-    <div id="no-topics" class="empty-state hidden" role="status" aria-live="polite" aria-atomic="true"><p>لا توجد أبحاث تطابق كلمات البحث أو المستوى المحدد.</p><button type="button" id="reset-topic-filters" class="secondary">إظهار جميع الأبحاث</button></div>
+    <div id="no-topics" class="empty-state hidden" role="status" aria-live="polite" aria-atomic="true"><p>لا توجد أبحاث تطابق البحث أو مستوى الأسئلة أو حالة الإتقان المحددة.</p><button type="button" id="reset-topic-filters" class="secondary">إظهار جميع الأبحاث</button></div>
   </section>
   <section id="quiz" class="hidden">
     <button id="back" class="back">→ العودة إلى الأبحاث</button>
