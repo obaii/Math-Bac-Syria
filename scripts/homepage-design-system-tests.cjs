@@ -39,4 +39,13 @@ assert.ok(css.includes("#dashboard-panel-home .stat-grid"), "dashboard statistic
 assert.ok(css.includes("#dashboard-panel-home .dashboard-actions button"), "dashboard actions should provide a comfortable touch target");
 assert.ok(css.includes(".dashboard-empty-state {"), "empty dashboard panels should have a clear first-use state");
 assert.ok(css.includes("scroll-padding-top: 96px;"), "anchor navigation should account for the sticky header");
-console.log("PASS: homepage design system, responsive header, interaction feedback, and reduced-motion support");
+
+assert.ok(css.includes("--hp-font-family"), "homepage should use one shared Arabic-friendly font stack");
+assert.ok(css.includes("--hp-space-4"), "homepage spacing tokens should be centralized");
+assert.ok(css.includes("--hp-control-radius"), "interactive controls should share one radius token");
+assert.match(css, /body\\s*\\{[^}]*font-family:\\s*var\\(--hp-font-family\\)/s, "the homepage should apply the shared font stack");
+assert.match(css, /:where\\(\\.section-heading h2, \\.quiz-head h2, \\.dashboard-intro h2, \\.first-visit-guide h2\\)/, "homepage headings should share a consistent typographic hierarchy");
+assert.match(css, /body\\.dark-mode :where\\(\\.section-heading h2/, "heading colors should remain token-driven in dark mode");
+assert.match(css, /:where\\(\\.dashboard-actions button, #quiz \\.actions button, #exam-tools button\\)\\s*\\{[^}]*min-height:\\s*44px/s, "primary learning actions should retain accessible touch targets");
+
+console.log("PASS: homepage design system, typography, controls, responsive header, interaction feedback, and reduced-motion support");
