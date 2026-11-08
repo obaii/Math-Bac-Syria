@@ -6552,8 +6552,9 @@ body.dark-mode .top-actions .install-app-button:hover {
   }
   .top-actions .theme-toggle-button,
   .top-actions .install-app-button {
-    min-height: 36px;
-    padding: 5px 8px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 6px 8px;
     border-radius: 8px;
     font-size: 10px;
   }
