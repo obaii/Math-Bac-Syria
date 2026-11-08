@@ -309,6 +309,9 @@ const assert = require("node:assert/strict");
       "a long Arabic filter chip should fit within a 320px mobile viewport");
     assert.ok(chipLayout.document <= chipLayout.viewport,
       "long active-filter labels should not create horizontal page overflow");
+    await page.locator("#active-topic-filters button[aria-label='إزالة فلتر البحث']").click();
+    assert.equal(await page.locator("#topic-search").inputValue(), "",
+      "the long-search mobile test should leave the saved filters clear for the restoration checks");
 
     await masteryFilter.selectOption("mastered");
     await page.reload({ waitUntil: "domcontentloaded" });
