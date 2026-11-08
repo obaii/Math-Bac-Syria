@@ -20,6 +20,60 @@ const assert = require("node:assert/strict");
       { timeout: 15000 }
     );
 
+    // 691–700: Lock down the section-menu open/close and destination-return behavior.
+    await page.waitForFunction(() =>
+      document.querySelector("#section-menu-toggle")?.dataset.menuBound === "true"
+    );
+    const menuButton = page.locator("#section-menu-toggle");
+    const sectionMenu = page.locator("#section-menu");
+    await menuButton.click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === false);
+    assert.equal(await menuButton.getAttribute("aria-expanded"), "true",
+      "opening the section menu should expose its expanded state");
+    assert.equal(await sectionMenu.isVisible(), true,
+      "opening the section menu should make the navigation list visible");
+    assert.equal(await menuButton.evaluate(button => getComputedStyle(button).backgroundColor), "rgb(107, 114, 128)",
+      "the open section-menu trigger should use the requested gray treatment");
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "section-menu-search",
+      "opening the section menu should move focus to its search field");
+
+    await menuButton.click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === true);
+    assert.equal(await menuButton.getAttribute("aria-expanded"), "false",
+      "clicking the menu trigger again should close the open menu");
+    assert.equal(await sectionMenu.isVisible(), false,
+      "the section menu should be hidden after its close transition");
+
+    await menuButton.click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === false);
+    await page.locator('#section-menu a[data-panel-toggle="formula-library"]').click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === true);
+    assert.equal(await page.locator("#formula-library").isVisible(), true,
+      "choosing a section should open its destination panel");
+    assert.equal(await menuButton.getAttribute("aria-expanded"), "false",
+      "choosing a section should close the navigation menu state");
+
+    await menuButton.click();
+    await page.waitForFunction(() => document.querySelector("#formula-library")?.hidden === true);
+    assert.equal(await page.locator("#topic-section").isVisible(), true,
+      "clicking the menu trigger from an open destination should close that destination and return to the research list");
+    assert.equal(await page.locator("#formula-library").isVisible(), false,
+      "closing a destination from the menu trigger should hide the previous panel");
+
+    await menuButton.click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === false);
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === true);
+    assert.equal(await page.evaluate(() => document.activeElement?.id), "section-menu-toggle",
+      "Escape should close the menu and restore focus to its trigger");
+
+    await menuButton.click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === false);
+    await page.locator(".hero h1").click();
+    await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === true);
+    assert.equal(await menuButton.getAttribute("aria-expanded"), "false",
+      "clicking outside the menu should dismiss it and clear the expanded state");
+
     const fontSetup = await page.evaluate(async () => ({
       linkedFontStylesheets: document.querySelectorAll('link[rel="stylesheet"][href^="https://fonts.googleapis.com/css2?family=Cairo"]').length,
       styleCss: await fetch("style.css").then(response => response.text()),
