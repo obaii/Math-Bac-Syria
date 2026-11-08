@@ -7208,3 +7208,31 @@ body.dark-mode #mastery-filter {
     box-sizing: border-box;
   }
 }
+
+
+/* Keep the clear-search control inside its flex row beside the text input. */
+@media (max-width: 600px) {
+  .topic-tools .search-box {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+  }
+  .topic-tools .search-box input {
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
+  }
+  .topic-tools .search-box #clear-topic-search:not([hidden]) {
+    position: relative;
+    z-index: 3;
+    flex: 0 0 44px;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .topic-tools .filter-panel {
+    z-index: 1;
+  }
+}
