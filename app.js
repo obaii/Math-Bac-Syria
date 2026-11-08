@@ -552,6 +552,44 @@ function renderTopics(){
   const clearAllFiltersButton = $("clear-all-topic-filters");
   if (clearAllFiltersButton) clearAllFiltersButton.hidden =
     !search && level === "الكل" && masteryFilter === "الكل";
+
+  // 671–675: Show each active topic filter as a removable, accessible chip.
+  const activeFilters = $("active-topic-filters");
+  if (activeFilters) {
+    activeFilters.replaceChildren();
+    const addFilterChip = (label, description, clearFilter) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "active-topic-filter-chip";
+      chip.setAttribute("aria-label", "إزالة فلتر " + description);
+      const text = document.createElement("span");
+      text.textContent = label;
+      const remove = document.createElement("span");
+      remove.className = "active-topic-filter-remove";
+      remove.setAttribute("aria-hidden", "true");
+      remove.textContent = "×";
+      chip.append(text, remove);
+      chip.addEventListener("click", () => {
+        clearFilter();
+        saveHomepageFilters();
+        renderTopics();
+      });
+      activeFilters.append(chip);
+    };
+    const rawSearch = ($("topic-search")?.value || "").trim();
+    if (rawSearch) addFilterChip("البحث: " + rawSearch, "البحث", () => {
+      $("topic-search").value = "";
+      $("topic-search").focus();
+    });
+    if (level !== "الكل") addFilterChip("المستوى: " + $("difficulty").selectedOptions[0].textContent.trim(),
+      "مستوى الأسئلة", () => { $("difficulty").value = "الكل"; });
+    if (masteryFilter !== "الكل") {
+      const masteryOption = masterySelect?.selectedOptions[0];
+      const masteryLabel = masteryOption?.dataset.baseLabel || masteryOption?.textContent.replace(/\\s*\\([^)]*\\)\\s*$/, "").trim() || masteryFilter;
+      addFilterChip("الإتقان: " + masteryLabel, "حالة الإتقان", () => { masterySelect.value = "الكل"; });
+    }
+    activeFilters.hidden = activeFilters.childElementCount === 0;
+  }
   const availableTopics = topics.filter(topic => {
     if (!window.MathSearchUtils.matches(topic, search)) return false;
     return masteryFilter === "الكل" ||
