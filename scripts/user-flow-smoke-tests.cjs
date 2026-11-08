@@ -6,6 +6,7 @@ const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const css = fs.readFileSync(path.join(root, "style-overrides.css"), "utf8");
+const baseCss = fs.readFileSync(path.join(root, "style.css"), "utf8");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 const flashcards = fs.readFileSync(path.join(root, "flashcards.js"), "utf8");
 const enhancements = fs.readFileSync(path.join(root, "enhancements.js"), "utf8");
@@ -58,7 +59,8 @@ const checks = [
   ["homepage menu has reduced-motion-aware entry/exit and topic bank exposes an accessible loading state", html.includes('aria-busy="true"') && html.includes('class="topic-loading"') && app.includes('topicGrid.setAttribute("aria-busy", "false")') && enhancements.includes("is-opening") && enhancements.includes("setMenuOpen") && css.includes("@keyframes homepage-section-menu-exit") && css.includes("@keyframes homepage-topic-loading-spin")],
   ["new homepage destinations show a dismissible update badge", html.includes('data-update-key="resume-session-20261105"') && html.includes('class="menu-update-badge"') && enhancements.includes("MENU_UPDATE_STORAGE_KEY") && enhancements.includes("markMenuUpdateSeen")],
   ["all dashboard menu labels are present", ["مساحتك التعليمية","خطوتك التالية","تقدمك في بنك الأسئلة","اقتراح للتدريب","أكمل رحلتك","سجل التعلم","مؤشر التقدم","انتظامك في الدراسة","إنجازاتك"].every(label => html.includes(`<strong>${label}</strong>`))],
-  ["one reusable similar-practice button shares the next-question action row", html.includes('id="similar-practice-start"') && /similarPracticeAction\.onclick\s*=\s*\(\)\s*=>\s*showSimilarPracticeQuestion/.test(app) && /similarPracticeAction\.hidden\s*=\s*false/.test(app) && /similarPracticeButton\.hidden\s*=\s*true/.test(app)],
+  ["one reusable similar-practice button inserts a new question into the active quiz flow", html.includes('id="similar-practice-start"') && /similarPracticeAction\.onclick\s*=\s*\(\)\s*=>\s*\{\s*if\s*\(!startSimilarPracticeQuestion\(q\)\)/.test(app) && /quizQuestions\.splice\(index\s*\+\s*1,\s*0,\s*similarQuestion\)/.test(app) && /alreadyInSession\.has\(questionKey\(candidate\)\)/.test(app) && /similarPracticeButton\.disabled\s*=\s*false/.test(app)],
+  ["active question card scrolls into view after each render and reserves top spacing", /card\.scrollIntoView\(\{\s*behavior:\s*preferredScrollBehavior\(\),\s*block:\s*"start"\s*\}\)/.test(app) && baseCss.includes(".question-card{scroll-margin-top:1rem}")],
   ["HTML element IDs are unique", duplicateIds.length === 0],
   ["topic search, difficulty filter, and topic grid are present", ["topic-search", "difficulty", "topic-grid", "no-topics"].every(id => ids.includes(id))],
   ["homepage filters describe their purpose and controlled results to assistive technology", (() => { const search = html.match(/<input id="topic-search"[^>]*>/)?.[0] || ""; const difficulty = html.match(/<select id="difficulty"[^>]*>/)?.[0] || ""; return /aria-controls="topic-grid"/.test(search) && /aria-describedby="topic-search-hint"/.test(search) && html.includes('id="topic-search-hint"') && /aria-describedby="difficulty-hint"/.test(difficulty) && html.includes('id="difficulty-hint"'); })()],
