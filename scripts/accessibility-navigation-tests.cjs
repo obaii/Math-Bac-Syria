@@ -341,6 +341,36 @@ async function assertVisibleControlsHaveNames(page, context) {
       true, "returning home should restore focus to the topic selector");
 
     await assertVisibleControlsHaveNames(page, "home after quiz");
+
+    // Long section navigation remains independently scrollable on short mobile screens.
+    const mobileMenuPage = await browser.newPage({ viewport: { width: 360, height: 640 } });
+    await mobileMenuPage.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    await mobileMenuPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    await mobileMenuPage.locator("#section-menu-toggle").click();
+    const mobileMenu = mobileMenuPage.locator("#section-menu");
+    await mobileMenu.waitFor({ state: "visible" });
+    const menuLayout = await mobileMenu.evaluate(element => ({
+      overflowY: getComputedStyle(element).overflowY,
+      maxHeight: getComputedStyle(element).maxHeight,
+      scrollHeight: element.scrollHeight,
+      clientHeight: element.clientHeight
+    }));
+    assert.equal(menuLayout.overflowY, "auto",
+      "the section menu should support independent vertical scrolling on mobile");
+    assert.notEqual(menuLayout.maxHeight, "none",
+      "the mobile section menu should be constrained by the available viewport height");
+    assert.ok(menuLayout.scrollHeight > menuLayout.clientHeight,
+      "the long section menu should scroll internally instead of extending beyond the viewport");
+    await mobileMenu.evaluate(element => { element.scrollTop = element.scrollHeight; });
+    assert.ok(await mobileMenu.evaluate(element => element.scrollTop > 0),
+      "the section menu should allow reaching its final shortcuts");
+    await mobileMenuPage.locator(".hero h1").click();
+    await mobileMenuPage.locator("#section-menu-toggle").click();
+    await mobileMenu.waitFor({ state: "visible" });
+    assert.equal(await mobileMenu.evaluate(element => element.scrollTop), 0,
+      "reopening the section menu should return to its first group");
+    await mobileMenuPage.close();
+
     assert.deepEqual(pageErrors, [], "accessibility navigation should not produce uncaught browser errors");
     console.log("PASS: semantic landmarks, skip link, named controls, keyboard panel toggles, quiz focus, answer submission, and results navigation");
   } finally {

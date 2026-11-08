@@ -1933,7 +1933,11 @@
     const setMenuOpen = open => {
       if (!menu) return;
       clearMenuAnimation();
-      if (open) menu.hidden = false;
+      if (open) {
+        menu.hidden = false;
+        // Reopening the long shortcut list always starts at its first group.
+        menu.scrollTop = 0;
+      }
       if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
       if (reducedMotionRequested()) {
         menu.hidden = !open;
