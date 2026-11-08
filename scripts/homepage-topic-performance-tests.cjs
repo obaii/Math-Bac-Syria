@@ -157,6 +157,79 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#clear-all-topic-filters").isVisible(), false,
       "the clear-all action should hide when no filters remain");
 
+    const masteryStates = [
+      { key: "not-started", answered: 0, correct: 0 },
+      { key: "practice", answered: 5, correct: 4 },
+      { key: "mastered", answered: 12, correct: 11 },
+      { key: "good", answered: 12, correct: 9 }
+    ];
+    await page.evaluate(states => {
+      states.forEach((state, index) => {
+        progressData.topicStats[topics[index]] = {
+          answered: state.answered,
+          correct: state.correct
+        };
+      });
+      saveProgress();
+      renderTopics();
+    }, masteryStates);
+
+    const masteryFilter = page.locator("#mastery-filter");
+    assert.equal(await masteryFilter.count(), 1,
+      "the homepage should provide one accessible mastery-state filter");
+    const masteryOptions = await masteryFilter.locator("option").evaluateAll(options =>
+      options.map(option => option.value)
+    );
+    assert.deepEqual(masteryOptions, ["الكل", "not-started", "practice", "good", "mastered"],
+      "the mastery filter should expose all four mastery states and the all-states option");
+
+    for (const state of masteryStates) {
+      await masteryFilter.selectOption(state.key);
+      await page.waitForFunction(() =>
+        document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false"
+      );
+      const result = await page.locator("#topic-grid .topic-card").evaluateAll(cards => ({
+        count: cards.length,
+        states: cards.map(card => card.dataset.mastery),
+        summary: document.querySelector("#total-count")?.textContent || ""
+      }));
+      assert.ok(result.count > 0, "the mastery filter should return topics for state " + state.key);
+      assert.equal(result.states.every(value => value === state.key), true,
+        "every visible research card should match mastery state " + state.key);
+      assert.ok(result.summary.includes(result.count.toLocaleString("ar") + " بحث"),
+        "the live result summary should reflect the filtered research count");
+    }
+
+    await masteryFilter.selectOption("mastered");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() =>
+      document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false"
+    );
+    assert.equal(await masteryFilter.inputValue(), "mastered",
+      "the selected mastery state should be restored after reloading the homepage");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 1,
+      "the restored mastery filter should be applied before topic cards render");
+    assert.equal(await page.locator("#clear-all-topic-filters").isVisible(), true,
+      "the clear-all control should appear when only the mastery filter is active");
+    await page.locator("#clear-all-topic-filters").click();
+    assert.equal(await masteryFilter.inputValue(), "الكل",
+      "clear-all should reset the mastery filter");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "clear-all should restore all fourteen research cards");
+
+    await masteryFilter.selectOption("practice");
+    await page.locator("#topic-search").fill("لا يوجد بحث بهذا الاسم");
+    await page.waitForFunction(() =>
+      document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false"
+    );
+    assert.equal(await page.locator("#no-topics").isVisible(), true,
+      "a combined search and mastery filter with no matches should show the empty state");
+    await page.locator("#reset-topic-filters").click();
+    assert.equal(await masteryFilter.inputValue(), "الكل",
+      "the empty-state recovery action should reset mastery filtering too");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "the empty-state recovery action should restore every topic");
+
     assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");
   } finally {
