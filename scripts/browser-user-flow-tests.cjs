@@ -163,8 +163,11 @@ const assert = require("node:assert/strict");
 
     // Section menu lifecycle: gray open state, single-panel mode, explicit close and outside dismissal.
     await page.locator("#section-menu-toggle").click();
+    await page.waitForFunction(() =>
+      getComputedStyle(document.querySelector("#section-menu-toggle")).backgroundColor === "rgb(107, 114, 128)",
+      null, { timeout: 2000 });
     assert.equal(await page.locator("#section-menu-toggle").evaluate(node => getComputedStyle(node).backgroundColor), "rgb(107, 114, 128)",
-      "the open section-menu button should be gray");
+      "the open section-menu button should settle to its gray state after the transition");
     await page.locator('[data-panel-toggle="scientific-calculator"]').click();
     assert.ok(await page.locator("#scientific-calculator").isVisible(), "choosing a destination should open its panel");
     assert.ok(await quickStart.isHidden(), "choosing a destination should hide the menu");
@@ -190,6 +193,13 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
     assert.ok(await page.locator("#topic-section").isVisible(),
       "clicking outside the open section menu should leave only the research view");
+    await page.locator("#section-menu-toggle").click();
+    await page.locator('[data-panel-toggle="scientific-calculator"]').click();
+    await page.locator("h1").click();
+    assert.ok(await page.locator("#scientific-calculator").isHidden(),
+      "clicking outside an active destination should close that section");
+    assert.ok(await page.locator("#topic-section").isVisible(),
+      "outside dismissal from a section should restore the research list");
     await page.locator("#section-menu-toggle").click();
 
     // The section menu should remember and visibly mark the last destination used.
