@@ -366,7 +366,7 @@ async function assertVisibleControlsHaveNames(page, context) {
     await menuSearch.press("Escape");
     assert.equal(await menuSearch.inputValue(), "",
       "Escape in the search field should clear the query without closing the menu");
-    assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 15,
+    assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 19,
       "clearing the search should restore all section shortcuts");
     const menuLayout = await mobileMenu.evaluate(element => ({
       overflowY: getComputedStyle(element).overflowY,
