@@ -533,6 +533,33 @@ function renderTopics(){
   const level = $("difficulty").value;
   const masterySelect = $("mastery-filter");
   const masteryFilter = masterySelect?.value || "الكل";
+  const coverageSelect = $("coverage-filter");
+  const coverageFilter = coverageSelect?.value || "الكل";
+  // 711–713: Derive coverage from the complete question bank, independent of the selected difficulty.
+  const coverageStats = new Map(topics.map(topic => [topic, { total: 0, seen: 0 }]));
+  for (const question of questions) {
+    const stats = coverageStats.get(question.topic);
+    if (!stats) continue;
+    stats.total += 1;
+    if (progressData.seenQuestions[questionKey(question)]) stats.seen += 1;
+  }
+  const getCoverageState = topic => {
+    const stats = coverageStats.get(topic);
+    if (!stats || !stats.total || stats.seen === 0) return "not-started";
+    return stats.seen >= stats.total ? "completed" : "in-progress";
+  };
+  if (coverageSelect) {
+    const coverageCounts = new Map([["الكل", topics.length]]);
+    for (const topic of topics) {
+      const state = getCoverageState(topic);
+      coverageCounts.set(state, (coverageCounts.get(state) || 0) + 1);
+    }
+    for (const option of coverageSelect.options) {
+      const baseLabel = option.dataset.baseLabel || option.textContent;
+      option.dataset.baseLabel = baseLabel;
+      option.textContent = baseLabel + " (" + (coverageCounts.get(option.value) || 0).toLocaleString("ar") + ")";
+    }
+  }
   if (masterySelect) {
     const masteryCounts = new Map([["الكل", topics.length]]);
     for (const topic of topics) {
@@ -551,7 +578,7 @@ function renderTopics(){
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
   const clearAllFiltersButton = $("clear-all-topic-filters");
   if (clearAllFiltersButton) clearAllFiltersButton.hidden =
-    !search && level === "الكل" && masteryFilter === "الكل";
+    !search && level === "الكل" && masteryFilter === "الكل" && coverageFilter === "الكل";
 
   // 671–675: Show each active topic filter as a removable, accessible chip.
   const activeFilters = $("active-topic-filters");
@@ -571,7 +598,8 @@ function renderTopics(){
       chip.append(text, remove);
       // 681–683: Keep keyboard focus predictable after a chip removes itself.
       const filterControlId = description === "البحث" ? "topic-search" :
-        description === "مستوى الأسئلة" ? "difficulty" : "mastery-filter";
+        description === "مستوى الأسئلة" ? "difficulty" :
+        description === "حالة التغطية" ? "coverage-filter" : "mastery-filter";
       chip.addEventListener("click", () => {
         const chipIndex = Array.from(activeFilters.children).indexOf(chip);
         clearFilter();
@@ -597,12 +625,19 @@ function renderTopics(){
       const masteryLabel = masteryOption?.dataset.baseLabel || masteryFilter;
       addFilterChip("الإتقان: " + masteryLabel, "حالة الإتقان", () => { masterySelect.value = "الكل"; });
     }
+    if (coverageFilter !== "الكل") {
+      const coverageOption = coverageSelect?.selectedOptions[0];
+      const coverageLabel = coverageOption?.dataset.baseLabel || coverageFilter;
+      addFilterChip("التغطية: " + coverageLabel, "حالة التغطية", () => { coverageSelect.value = "الكل"; });
+    }
     activeFilters.hidden = activeFilters.childElementCount === 0;
   }
+  // 714–716: Combine search, difficulty, mastery, and coverage without one filter overriding another.
   const availableTopics = topics.filter(topic => {
     if (!window.MathSearchUtils.matches(topic, search)) return false;
-    return masteryFilter === "الكل" ||
-      getTopicMastery(progressData.topicStats[topic] || { answered: 0, correct: 0 }).key === masteryFilter;
+    if (masteryFilter !== "الكل" &&
+        getTopicMastery(progressData.topicStats[topic] || { answered: 0, correct: 0 }).key !== masteryFilter) return false;
+    return coverageFilter === "الكل" || getCoverageState(topic) === coverageFilter;
   });
   // Count available and previously seen questions in one pass instead of
   // scanning the complete question bank twice for each of the 14 topic cards.
@@ -654,7 +689,7 @@ function renderTopics(){
     const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
     const levelCounts = questionCounts.levels;
     const cardLabel = `${topic}، ${count.toLocaleString("ar")} سؤال متاح، ${seenCount.toLocaleString("ar")} سؤالاً جُرّب، ${coverageRate.toLocaleString("ar")}٪ إنجاز، ${mastery.label}${canResumeTopic ? "، توجد جلسة تدريب محفوظة" : ""}`;
-    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" data-can-resume="${canResumeTopic}" aria-label="${cardLabel}" style="--topic-order:${displayIndex}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
+    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" data-can-resume="${canResumeTopic}" data-coverage="${getCoverageState(topic)}" aria-label="${cardLabel}" style="--topic-order:${displayIndex}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
       <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span>${isLastOpenedTopic ? `<span class="topic-resume-badge">${canResumeTopic ? "جلسة محفوظة" : "آخر بحث فتحته"}</span>` : ""}<span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-levels" aria-label="توزيع الأسئلة حسب المستوى"><span>أساسي ${levelCounts["أساسي"].toLocaleString("ar")}</span><span>متوسط ${levelCounts["متوسط"].toLocaleString("ar")}</span><span>متقدم ${levelCounts["متقدم"].toLocaleString("ar")}</span></span>
@@ -1280,7 +1315,8 @@ function readHomepageFilters(){
     return {
       level: typeof saved.level === "string" ? saved.level : "",
       search: typeof saved.search === "string" ? saved.search.slice(0, 100) : "",
-      mastery: typeof saved.mastery === "string" ? saved.mastery : "الكل"
+      mastery: typeof saved.mastery === "string" ? saved.mastery : "الكل",
+      coverage: typeof saved.coverage === "string" ? saved.coverage : "الكل"
     };
   } catch (_) { return null; }
 }
@@ -1289,7 +1325,8 @@ function saveHomepageFilters(){
     localStorage.setItem(HOMEPAGE_FILTERS_KEY, JSON.stringify({
       level: $("difficulty").value,
       search: topicSearchInput.value.slice(0, 100),
-      mastery: $("mastery-filter")?.value || "الكل"
+      mastery: $("mastery-filter")?.value || "الكل",
+      coverage: $("coverage-filter")?.value || "الكل"
     }));
   } catch (_) {}
 }
@@ -1301,12 +1338,18 @@ if (savedHomepageFilters) {
   if (availableMasteryStates.includes(savedHomepageFilters.mastery)) {
     $("mastery-filter").value = savedHomepageFilters.mastery;
   }
+  const availableCoverageStates = [...$("coverage-filter").options].map(option => option.value);
+  if (availableCoverageStates.includes(savedHomepageFilters.coverage)) {
+    $("coverage-filter").value = savedHomepageFilters.coverage;
+  }
   topicSearchInput.value = savedHomepageFilters.search;
 }
 $("difficulty").addEventListener("change",saveHomepageFilters);
 $("difficulty").addEventListener("change",renderTopics);
 $("mastery-filter").addEventListener("change",saveHomepageFilters);
 $("mastery-filter").addEventListener("change",renderTopics);
+$("coverage-filter").addEventListener("change",saveHomepageFilters);
+$("coverage-filter").addEventListener("change",renderTopics);
 topicSearchInput.addEventListener("input",saveHomepageFilters);
 topicSearchInput.addEventListener("input",renderTopics);
 document.addEventListener("keydown",event=>{
@@ -1336,6 +1379,7 @@ $("clear-all-topic-filters").addEventListener("click",()=>{
   topicSearchInput.value = "";
   $("difficulty").value = "الكل";
   $("mastery-filter").value = "الكل";
+  $("coverage-filter").value = "الكل";
   saveHomepageFilters();
   renderTopics();
   topicSearchInput.focus();
@@ -1344,6 +1388,7 @@ $("reset-topic-filters").addEventListener("click",()=>{
   topicSearchInput.value = "";
   $("difficulty").value = "الكل";
   $("mastery-filter").value = "الكل";
+  $("coverage-filter").value = "الكل";
   saveHomepageFilters();
   renderTopics();
   topicSearchInput.focus();
