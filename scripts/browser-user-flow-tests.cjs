@@ -233,7 +233,7 @@ const assert = require("node:assert/strict");
       "resuming should restore the same shuffled question order");
     await page.locator("#back").click();
     await page.locator("#section-menu-toggle").click();
-    await page.waitForFunction(() => document.querySelector("#resume-session")?.hidden === true);
+    await page.waitForFunction(() => document.querySelector("#dashboard-panel-resume-session")?.hidden === true);
     const resumableTopicCard = page.locator('#topic-grid [data-topic="' + resumeTopic + '"]');
     assert.equal(await resumableTopicCard.getAttribute("data-can-resume"), "true",
       "the last research card should identify its unfinished saved session");
