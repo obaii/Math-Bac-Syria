@@ -7408,3 +7408,34 @@ body.dark-mode #coverage-filter {
     scroll-behavior: auto;
   }
 }
+
+
+/* 717–720: Allocate a stable desktop column to search when all three filters are present. */
+@media (min-width: 851px) {
+  #topic-section .topic-tools {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.25fr) repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 12px;
+  }
+  #topic-section .topic-tools .search-box {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+  }
+  #topic-section .topic-tools .filter-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+    align-items: stretch;
+    align-content: start;
+  }
+  #topic-section .topic-tools .filter-panel select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
