@@ -793,7 +793,7 @@ const assert = require("node:assert/strict");
     await page.evaluate(() => {
       const firstMcq = quizQuestions.find(question => getQuestionType(question) === "mcq");
       if (!firstMcq) throw new Error("The selected research needs at least one multiple-choice question for this UI test.");
-      quizQuestions = [firstMcq, ...quizQuestions.filter(question => question !== firstMcq)];
+      quizQuestions = [firstMcq];
       index = 0;
       showQuestion();
     });
@@ -831,13 +831,27 @@ const assert = require("node:assert/strict");
     await page.locator("#feedback").waitFor({ state: "visible" });
 
     const similarCountBefore = await page.locator("#session-answered").innerText();
+    const questionCountBeforeSimilar = await page.evaluate(() => quizQuestions.length);
+    const originalQuestionText = await page.locator("#question-text").innerText();
     await page.locator("#similar-practice-start").click();
-    await page.locator("#similar-practice-card").waitFor({ state: "visible" });
-    assert.notEqual(await page.locator("#similar-practice-card .similar-practice-question").innerText(), "", "a related practice question should be displayed");
-    await page.locator("#similar-practice-card .similar-practice-option").first().click();
-    await page.locator("#similar-practice-feedback").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#session-answered").innerText(), similarCountBefore, "similar practice must not alter the main quiz answer count");
-    assert.equal(await page.locator("#similar-practice-card .similar-practice-solution").isVisible(), true, "the similar practice solution should appear after the attempt");
+    await page.waitForFunction(previousCount => index === 1 && quizQuestions.length === previousCount + 1, questionCountBeforeSimilar);
+    await page.evaluate(() => {
+      quizQuestions[index].keyIdea = "الفكرة الأساسية للاختبار";
+      quizQuestions[index].steps = ["الخطوة الأولى للاختبار", "الخطوة الثانية للاختبار"];
+    });
+    assert.notEqual((await page.locator("#question-text").innerText()).trim(), originalQuestionText.trim(), "a related question should replace the active prompt in the main quiz card");
+    assert.equal(await page.evaluate(() => quizQuestions.length), questionCountBeforeSimilar + 1, "the similar question should be inserted into the active quiz session");
+    assert.equal(await page.locator("#similar-practice-card").count(), 0, "similar practice must not create a separate card below the question");
+    assert.equal(await page.locator("#options [data-option]").count(), 4, "the similar MCQ should use the standard answer controls");
+    await page.locator("#options [data-option]").first().click();
+    await page.locator("#feedback").waitFor({ state: "visible" });
+    assert.notEqual(await page.locator("#session-answered").innerText(), similarCountBefore, "answering the similar question should count in the active session");
+    assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "the similar question should use the standard solution feedback");
+    const activeQuestionPosition = await page.locator("#question-text").evaluate(el => {
+      const card = el.closest(".question-card");
+      return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
+    });
+    assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2, "the active question card should be positioned in the upper half of the viewport");
 
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
@@ -852,14 +866,14 @@ const assert = require("node:assert/strict");
     assert.ok((await solutionPanel.locator(".key-idea").innerText()).includes("الفكرة الأساسية للاختبار"), "the key idea should appear in its own highlighted panel");
     assert.equal(await solutionPanel.locator(".solution-steps li").count(), 2, "guided solution steps should appear as separate numbered items");
     assert.equal(await solutionPanel.locator(".solution-steps li").first().innerText(), "الخطوة الأولى للاختبار", "the solution steps should retain their original order and text");
-    const expectedProgress = String(Math.round(100 / Number((await page.locator("#question-number").innerText()).split(" من ")[1])));
+    const expectedProgress = String(Math.round((await page.evaluate(() => index + 1)) / (await page.evaluate(() => quizQuestions.length)) * 100));
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("aria-valuenow"), expectedProgress, "answering a question should update the accessible progress value");
     assert.match(await page.locator("#progress-percent").innerText(), /مكتمل/, "answering a question should update the visible completion label");
     assert.equal(await page.locator("#feedback").getAttribute("aria-live"), "polite", "answer feedback should be announced without interrupting the current task");
     assert.equal(await page.locator("#feedback").getAttribute("aria-atomic"), "true", "assistive technology should announce the complete answer feedback, including the solution");
     assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "answer feedback should include a solution");
     const savedProgress = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null"));
-    assert.ok(savedProgress && savedProgress.answered === 1, "answer progress should persist to local storage");
+    assert.ok(savedProgress && savedProgress.answered === 2, "both the original and similar-question answers should persist to local storage");
     const savedTools = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(savedTools && savedTools.bookmarks && savedTools.bookmarks.length === 1, "bookmark should persist to local storage");
 
@@ -872,8 +886,8 @@ const assert = require("node:assert/strict");
     assert.match(await page.locator("#resume-topic-activity").innerText(), /آخر إجابة .* إجابة مسجلة · دقة/,
       "the resume panel should show the latest answer time, saved answer count, and accuracy");
     const practicedTopicCard = page.locator("#topic-grid [data-topic]").filter({ hasText: lastPracticedTopic });
-    assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "1", "the topic card should show the recorded answer count");
-    assert.ok(["0", "1"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
+    assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "2", "the topic card should show both the original and similar-question answers");
+    assert.ok(["0", "1", "2"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
     assert.equal(await practicedTopicCard.locator(".topic-state").innerText(), "قيد التقدم", "a topic with some but not all questions tried should be marked in progress");
     assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .*٪ دقة/, "the topic card should summarize attempts, correct answers, and accuracy");
     assert.equal(await practicedTopicCard.getAttribute("data-last-practiced") === "" , false,
