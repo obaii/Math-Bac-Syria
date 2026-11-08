@@ -2022,7 +2022,7 @@
     const menuSearch = document.getElementById("section-menu-search");
     const menuSearchStatus = document.getElementById("section-menu-search-status");
     const menuSearchEmpty = document.getElementById("section-menu-search-empty");
-    const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar").replace(/ى/g, "ي").trim();
+    const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar").replace(/[\u064B-\u065F\u0670\u0640]/g, "").replace(/[\u0622\u0623\u0625]/g, "ا").replace(/ى/g, "ي").trim();
     const filterSectionMenu = () => {
       if (!menu || !menuSearch) return;
       const query = normalizeMenuSearch(menuSearch.value);
