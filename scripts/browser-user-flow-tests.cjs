@@ -831,13 +831,26 @@ const assert = require("node:assert/strict");
     await page.locator("#feedback").waitFor({ state: "visible" });
 
     const similarCountBefore = await page.locator("#session-answered").innerText();
+    const questionCountBeforeSimilar = await page.evaluate(() => quizQuestions.length);
+    const originalQuestionText = await page.locator("#question-text").innerText();
     await page.locator("#similar-practice-start").click();
-    await page.locator("#similar-practice-card").waitFor({ state: "visible" });
-    assert.notEqual(await page.locator("#similar-practice-card .similar-practice-question").innerText(), "", "a related practice question should be displayed");
-    await page.locator("#similar-practice-card .similar-practice-option").first().click();
-    await page.locator("#similar-practice-feedback").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#session-answered").innerText(), similarCountBefore, "similar practice must not alter the main quiz answer count");
-    assert.equal(await page.locator("#similar-practice-card .similar-practice-solution").isVisible(), true, "the similar practice solution should appear after the attempt");
+    await page.waitForFunction(previous => {
+      const active = document.querySelector("#question-text")?.innerText || "";
+      return active.trim() && active !== previous;
+    }, originalQuestionText);
+    assert.notEqual((await page.locator("#question-text").innerText()).trim(), originalQuestionText.trim(), "a related question should replace the active prompt in the main quiz card");
+    assert.equal(await page.evaluate(() => quizQuestions.length), questionCountBeforeSimilar + 1, "the similar question should be inserted into the active quiz session");
+    assert.equal(await page.locator("#similar-practice-card").count(), 0, "similar practice must not create a separate card below the question");
+    assert.equal(await page.locator("#options [data-option]").count(), 4, "the similar MCQ should use the standard answer controls");
+    await page.locator("#options [data-option]").first().click();
+    await page.locator("#feedback").waitFor({ state: "visible" });
+    assert.notEqual(await page.locator("#session-answered").innerText(), similarCountBefore, "answering the similar question should count in the active session");
+    assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "the similar question should use the standard solution feedback");
+    const activeQuestionPosition = await page.locator("#question-text").evaluate(el => {
+      const card = el.closest(".question-card");
+      return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
+    });
+    assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2, "the active question card should be positioned in the upper half of the viewport");
 
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
