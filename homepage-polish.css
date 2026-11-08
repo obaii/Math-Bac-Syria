@@ -6987,3 +6987,104 @@ body.dark-mode #section-menu-search {
     transform: none;
   }
 }
+
+
+/* Batch 641–650: make topic mastery status explicit, consistent, and accessible. */
+
+/* 641: Present mastery as a distinct status badge beneath each research summary. */
+#topic-grid .topic-mastery-status {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 28px;
+  margin-block-start: 8px;
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: .74rem;
+  font-weight: 800;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* 642: Use a neutral, readable treatment when a student has not started. */
+#topic-grid .topic-mastery-status.not-started {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* 643: Highlight topics that need more practice without relying on color alone. */
+#topic-grid .topic-mastery-status.practice {
+  border-color: #f2d39a;
+  background: #fff7e6;
+  color: #8a5700;
+}
+
+/* 644: Distinguish good progress from mastery with separate status colors. */
+#topic-grid .topic-mastery-status.good {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+#topic-grid .topic-mastery-status.mastered {
+  border-color: #b7e4ca;
+  background: #e8f7ef;
+  color: #176b43;
+}
+
+/* 645: Preserve strong badge contrast on dark surfaces. */
+body.dark-mode #topic-grid .topic-mastery-status.not-started {
+  border-color: #53657e;
+  background: #29384d;
+  color: #d0d9e7;
+}
+body.dark-mode #topic-grid .topic-mastery-status.practice {
+  border-color: #806238;
+  background: #49391f;
+  color: #ffdc9b;
+}
+body.dark-mode #topic-grid .topic-mastery-status.good {
+  border-color: #49658f;
+  background: #1d3459;
+  color: #a9c7ff;
+}
+body.dark-mode #topic-grid .topic-mastery-status.mastered {
+  border-color: #326b54;
+  background: #173d32;
+  color: #a8e6c8;
+}
+
+/* 646: Keep badge text and borders legible when the card narrows. */
+#topic-grid .topic-mastery-status {
+  box-sizing: border-box;
+  white-space: normal;
+  text-align: start;
+}
+
+/* 647: Keep the mastery badge separated from the coverage progress track. */
+#topic-grid .topic-mastery-status + .topic-mastery {
+  margin-block-start: 8px;
+}
+
+/* 648: Do not dim status information on unavailable or disabled topic cards. */
+#topic-grid .topic-card:disabled .topic-mastery-status {
+  opacity: 1;
+}
+
+/* 649: Maintain a clear focus ring around the complete research card. */
+#topic-grid .topic-card:focus-visible .topic-mastery-status {
+  outline: 1px solid currentColor;
+  outline-offset: 1px;
+}
+
+/* 650: Avoid decorative motion in mastery indicators for reduced-motion users. */
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-mastery-status,
+  #topic-grid .topic-mastery-status::before {
+    transition: none;
+    animation: none;
+  }
+}
