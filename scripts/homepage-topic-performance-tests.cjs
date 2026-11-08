@@ -32,8 +32,11 @@ const assert = require("node:assert/strict");
       "opening the section menu should expose its expanded state");
     assert.equal(await sectionMenu.isVisible(), true,
       "opening the section menu should make the navigation list visible");
+    await page.waitForFunction(() =>
+      getComputedStyle(document.querySelector("#section-menu-toggle")).backgroundColor === "rgb(107, 114, 128)"
+    );
     assert.equal(await menuButton.evaluate(button => getComputedStyle(button).backgroundColor), "rgb(107, 114, 128)",
-      "the open section-menu trigger should use the requested gray treatment");
+      "the open section-menu trigger should settle on the requested gray treatment after its visual transition");
     assert.equal(await page.evaluate(() => document.activeElement?.id), "section-menu-search",
       "opening the section menu should move focus to its search field");
 
