@@ -937,6 +937,33 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#session-result-review .session-mistake-list li").count(), 0, "a correctly retried question should no longer appear as a session mistake");
     assert.equal(await page.locator("#retry-session-mistakes").count(), 0, "the retry action should be absent when the session has no mistakes");
 
+    // Result feedback is both visible and exposed as a bounded accessible progress value.
+    assert.equal(await page.locator("#score-meter").getAttribute("aria-valuenow"), "100",
+      "a fully correct retry should expose 100 percent in the result meter");
+    assert.equal(await page.locator("#score-meter-fill").evaluate(node => getComputedStyle(node).width === "0px"), false,
+      "the result meter should visibly fill when the score is non-zero");
+    assert.ok((await page.locator("#score-feedback").innerText()).trim().length > 0,
+      "the result should provide a useful next-step message");
+
+    await page.evaluate(() => {
+      quizQuestions = questions.slice(0, 2);
+      correctCount = 0;
+      sessionMistakes = [];
+      reviewMode = false;
+      showResults();
+    });
+    assert.equal(await page.locator("#score-meter").getAttribute("aria-valuenow"), "0",
+      "a zero score should remain within the accessible progress range");
+    await page.waitForFunction(() => {
+      const fill = document.getElementById("score-meter-fill");
+      return fill && fill.getBoundingClientRect().width < 1;
+    }, null, { timeout: 2000 });
+    assert.ok(await page.locator("#score-meter-fill").evaluate(node => node.getBoundingClientRect().width < 1),
+      "a zero score should not display a misleading filled meter after its transition completes");
+    assert.ok((await page.locator("#score-feedback").innerText()).includes("فرصة للتعلم"),
+      "a low score should receive supportive, actionable feedback");
+
+
     // Responsive regression checks at common phone widths.
     await page.setViewportSize({ width: 360, height: 800 });
     await page.reload({ waitUntil: "domcontentloaded" });

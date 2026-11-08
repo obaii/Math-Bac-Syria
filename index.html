@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261106-1">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261108-581">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261108-591">
   <script>
     window.MathJax = {
       tex: {
@@ -53,7 +53,7 @@
   <script defer src="merge-questions.js?v=20261105-2"></script>
   <script defer src="solution-guides.js?v=20261103-6"></script>
   <script defer src="question-diagrams.js?v=20261103-4"></script>
-  <script defer src="app.js?v=20261105-11"></script>
+  <script defer src="app.js?v=20261108-591"></script>
   <script defer src="curriculum-progress.js?v=20261105-2"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
@@ -424,6 +424,8 @@
       <div class="result-icon">✓</div><p class="eyebrow">انتهى الاختبار</p>
       <h2 tabindex="-1">أحسنت، أنهيت التدريب!</h2>
       <div id="score" class="score"></div>
+      <div id="score-meter" class="score-meter" role="progressbar" aria-label="نسبة الإجابات الصحيحة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="٠٪ من الإجابات صحيحة"><span id="score-meter-fill"></span></div>
+      <p id="score-feedback" class="score-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
       <p id="score-detail" class="muted"></p>
       <div class="actions center"><button id="retry" class="primary">إعادة الاختبار</button><button id="to-home" class="secondary">اختيار بحث آخر</button></div>
     </div>

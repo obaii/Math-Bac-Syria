@@ -984,6 +984,9 @@ function submitQuestionAnswer(response){
   updateQuizProgress(index + 1);
   const fb=$("feedback");
   fb.className="feedback " + (isCorrect?"good":"bad");
+  fb.setAttribute("role", "status");
+  fb.setAttribute("aria-live", "polite");
+  fb.setAttribute("aria-atomic", "true");
   const escapeSolutionText = value => String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -1024,6 +1027,25 @@ function showResults(){
   const wrongCount=Math.max(0, total-correctCount);
   const percent=total ? Math.round(correctCount/total*100) : 0;
   $("score").textContent=`${correctCount} / ${total} (${percent}٪)`;
+  const scoreMeter = $("score-meter");
+  const scoreMeterFill = $("score-meter-fill");
+  if (scoreMeter) {
+    scoreMeter.setAttribute("aria-valuenow", String(percent));
+    scoreMeter.setAttribute("aria-valuetext", percent.toLocaleString("ar") + "٪ من الإجابات صحيحة");
+  }
+  if (scoreMeterFill) scoreMeterFill.style.width = percent + "%";
+  const scoreFeedback = $("score-feedback");
+  if (scoreFeedback) {
+    scoreFeedback.textContent = total === 0
+      ? "لم تتضمن هذه الجلسة أسئلة مكتملة لاحتساب النتيجة."
+      : percent === 100
+        ? "إتقان كامل في هذه الجلسة؛ واصل مراجعة الأفكار للحفاظ على فهمك."
+        : percent >= 80
+          ? "أداء قوي. راجع أي نقطة غير واضحة لتعزيز ثبات الحل."
+          : percent >= 60
+            ? "تقدم جيد. مراجعة الحلول ستساعدك على تثبيت الخطوات."
+            : "كل جلسة فرصة للتعلم. ابدأ بمراجعة الحلول ثم جرّب مرة أخرى.";
+  }
   $("score-detail").textContent=`إجابات صحيحة: ${correctCount} · إجابات خاطئة: ${wrongCount} · ${reviewMode ? "مراجعة الأخطاء" : "البحث: "+currentTopic}`;
   const resultCard = $("results").querySelector(".result-card");
   let sessionPanel = $("session-result-review");
