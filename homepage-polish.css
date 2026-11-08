@@ -6342,7 +6342,7 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   white-space: normal;
 }
 @media (max-width: 420px) {
-  #topic-section .topic-tools {
+  .topic-tools {
     gap: 9px;
   }
   #topic-section .topic-tools :is(input, select, button) {
