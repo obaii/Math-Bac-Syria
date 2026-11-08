@@ -954,8 +954,12 @@ const assert = require("node:assert/strict");
     });
     assert.equal(await page.locator("#score-meter").getAttribute("aria-valuenow"), "0",
       "a zero score should remain within the accessible progress range");
-    assert.equal(await page.locator("#score-meter-fill").evaluate(node => getComputedStyle(node).width), "0px",
-      "a zero score should not display a misleading filled meter");
+    await page.waitForFunction(() => {
+      const fill = document.getElementById("score-meter-fill");
+      return fill && fill.getBoundingClientRect().width < 1;
+    }, null, { timeout: 2000 });
+    assert.ok(await page.locator("#score-meter-fill").evaluate(node => node.getBoundingClientRect().width < 1),
+      "a zero score should not display a misleading filled meter after its transition completes");
     assert.ok((await page.locator("#score-feedback").innerText()).includes("فرصة للتعلم"),
       "a low score should receive supportive, actionable feedback");
 
