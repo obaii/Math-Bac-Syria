@@ -353,7 +353,7 @@ async function assertVisibleControlsHaveNames(page, context) {
     await menuSearch.waitFor({ state: "visible" });
     assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
       "opening the section menu should focus its shortcut search field");
-    await menuSearch.fill("القوانين");
+    await menuSearch.fill("مكتبة القوانين");
     assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 1,
       "Arabic menu search should filter shortcuts by their visible label");
     assert.equal(await mobileMenuPage.locator("#section-menu-search-status").innerText(),
