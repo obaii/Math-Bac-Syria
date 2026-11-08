@@ -1958,6 +1958,18 @@
     };
 
     const getActiveHomePanel = () => {
+      // The expanded shortcut is the source of truth; dashboard widgets may contain
+      // nested, temporarily visible content that is not the active top-level section.
+      const selectedPanelLink = menu?.querySelector('a[data-panel-toggle][aria-expanded="true"]');
+      if (selectedPanelLink && selectedPanelLink.dataset.panelToggle !== "topic-section") {
+        const selectedPanel = document.getElementById(selectedPanelLink.dataset.panelToggle);
+        if (selectedPanel && !selectedPanel.hidden) return selectedPanel;
+      }
+      const selectedDashboardLink = menu?.querySelector('a[data-dashboard-target][aria-expanded="true"]');
+      if (selectedDashboardLink) {
+        const selectedDashboard = document.getElementById("dashboard-panel-" + selectedDashboardLink.dataset.dashboardTarget);
+        if (selectedDashboard && !selectedDashboard.hidden) return selectedDashboard;
+      }
       const dashboardPanel = [...document.querySelectorAll("[data-dashboard-panel]")].find(panel => !panel.hidden);
       if (dashboardPanel) return dashboardPanel;
       const panelIds = [...(menu?.querySelectorAll("[data-panel-toggle]") || [])]
