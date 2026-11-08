@@ -216,6 +216,17 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await calculatorShortcut.getAttribute("aria-expanded"), "true",
       "an open panel shortcut should expose aria-expanded=true");
     await assertVisibleControlsHaveNames(page, "scientific calculator panel");
+    await page.keyboard.press("Escape");
+    await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
+    await page.locator("#topic-section").waitFor({ state: "visible" });
+    assert.equal(await sectionMenuButton.getAttribute("aria-expanded"), "false",
+      "Escape should dismiss an active section without reopening the menu");
+    assert.equal(await sectionMenuButton.evaluate(el => document.activeElement === el), true,
+      "Escape from an active section should restore focus to the menu trigger");
+    await sectionMenuButton.click();
+    await calculatorShortcut.waitFor({ state: "visible" });
+    await calculatorShortcut.click();
+    await page.locator("#scientific-calculator").waitFor({ state: "visible" });
     await sectionMenuButton.focus();
     await page.keyboard.press("Enter");
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
