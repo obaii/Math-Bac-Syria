@@ -6350,3 +6350,66 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
     max-width: 100%;
   }
 }
+
+
+/* Homepage refinement batch 540–549. */
+
+/* 540: Keep dashboard content panels aligned and prevent grid children from overflowing. */
+#dashboard-panel-home :is(.dashboard-menu-panel, .dashboard-intro, .stat-grid) { min-width: 0; }
+#dashboard-panel-home .stat-grid > * { min-width: 0; overflow-wrap: anywhere; }
+
+/* 541: Improve the visual separation and reading width of student-tool sections. */
+#student-tools > section,
+#student-tools > .tools-panel {
+  min-width: 0; margin-block: 12px; padding: 14px;
+  border: 1px solid var(--hp-border); border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+#student-tools :is(h3, h4, p) { line-height: 1.8; overflow-wrap: anywhere; }
+
+/* 542: Make activity-calendar headings and controls adapt to narrow widths. */
+#activity-calendar :is(.activity-calendar-heading, .calendar-heading) {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; min-width: 0;
+}
+#activity-calendar :is(button, select) { min-height: 40px; max-width: 100%; }
+
+/* 543: Keep achievement cards readable and consistently spaced. */
+#achievement-section .achievement-list { gap: 10px; }
+#achievement-section .achievement-list > li {
+  min-width: 0; padding: 12px; border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md); background: var(--hp-surface); overflow-wrap: anywhere;
+}
+#achievement-section .achievement-list > li :is(strong, span, p) { min-width: 0; }
+
+/* 544: Improve formula result action alignment and formula readability. */
+#formula-library #formula-list :is(button, a) { min-height: 40px; max-width: 100%; overflow-wrap: anywhere; }
+#formula-library #formula-list [dir="ltr"] { max-width: 100%; overflow-x: auto; padding-block: 3px; }
+
+/* 545: Make the flashcard face and answer content resilient to long formulas. */
+#flashcards .flashcard-face { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+#flashcards #flashcard-formula { max-width: 100%; overflow-x: auto; line-height: 1.9; padding-block: 5px; }
+
+/* 546: Improve exam configuration focus, spacing, and narrow-screen layout. */
+#exam-tools .exam-config :is(select, button) { min-width: 0; min-height: 44px; max-width: 100%; }
+#exam-tools .exam-config button:focus-visible { outline: 3px solid var(--hp-focus); outline-offset: 3px; }
+@media (max-width: 420px) { #exam-tools .exam-config { grid-template-columns: minmax(0, 1fr); } }
+
+/* 547: Give question feedback and hint panels a stable readable surface. */
+#quiz :is(#feedback, #question-hint-text) {
+  min-width: 0; padding: 11px 13px; border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md); line-height: 1.9; overflow-wrap: anywhere;
+}
+#quiz #question-hint-text { background: var(--hp-surface-soft); color: var(--hp-ink); }
+
+/* 548: Keep result summary and score content legible in both color themes. */
+#results .result-card { min-width: 0; overflow-wrap: anywhere; }
+#results :is(#score, #score-detail) { font-variant-numeric: tabular-nums; line-height: 1.9; }
+body.dark-mode #results .result-card { background: var(--hp-surface); border-color: var(--hp-border); color: var(--hp-ink); }
+
+/* 549: Improve footer reading rhythm and link visibility on compact devices. */
+footer :is(.footer-brand, .footer-privacy, .footer-disclaimer) {
+  max-width: 78ch; margin-inline: auto; line-height: 1.9; overflow-wrap: anywhere;
+}
+footer a:focus-visible { outline: 3px solid var(--hp-focus); outline-offset: 3px; border-radius: 4px; }
+@media (max-width: 420px) { footer { padding-inline: 14px; text-wrap: pretty; } }
