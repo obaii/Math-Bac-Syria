@@ -7116,8 +7116,10 @@ body.dark-mode #topic-grid .topic-mastery-status.mastered {
 
 /* 653: Make the mastery selector a full-width, predictable control. */
 #mastery-filter {
-  width: 100%;
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
+  max-width: 100%;
   min-height: 44px;
   padding: 8px 12px;
   border: 1px solid var(--hp-control-border, var(--hp-border));
