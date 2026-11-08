@@ -7367,3 +7367,10 @@ body.dark-mode .active-topic-filter-chip {
     color: ButtonFace;
   }
 }
+
+/* 692: Keep the section-menu trigger visibly neutral while its menu is open. */
+.hero .section-menu-toggle[aria-expanded="true"] {
+  background-color: #6b7280;
+  border-color: #6b7280;
+  color: #fff;
+}
