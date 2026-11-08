@@ -4512,7 +4512,7 @@ body.dark-mode .dashboard .stat-card {
 }
 
 /* 426: Give search and filter controls a consistent, visible interaction state. */
-#topic-section .topic-tools { min-width: 0; }
+.topic-tools { min-width: 0; }
 #topic-section .search-box {
   min-width: 0;
   border-color: var(--hp-border);
@@ -7418,13 +7418,13 @@ body.dark-mode #coverage-filter {
     align-items: stretch;
     gap: 12px;
   }
-  #topic-section .topic-tools .search-box {
+  .topic-tools .search-box {
     width: 100%;
     min-width: 0;
     max-width: none;
     box-sizing: border-box;
   }
-  #topic-section .topic-tools .filter-panel {
+  .topic-tools .filter-panel {
     width: 100%;
     min-width: 0;
     max-width: none;
@@ -7432,7 +7432,7 @@ body.dark-mode #coverage-filter {
     align-items: stretch;
     align-content: start;
   }
-  #topic-section .topic-tools .filter-panel select {
+  .topic-tools .filter-panel select {
     width: 100%;
     min-width: 0;
     max-width: 100%;
