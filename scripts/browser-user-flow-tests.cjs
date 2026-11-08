@@ -232,8 +232,13 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#question-text").innerText(), savedQuestionText,
       "resuming should restore the same shuffled question order");
     await page.locator("#back").click();
-    await page.locator("#section-menu-toggle").click();
-    await page.waitForFunction(() => document.querySelector("#dashboard-panel-resume-session")?.hidden === true);
+    const sectionMenuButton = page.locator("#section-menu-toggle");
+    const sectionMenu = page.locator("#section-menu");
+    const resumeDashboardPanel = page.locator("#dashboard-panel-resume-session");
+    if (!(await resumeDashboardPanel.isHidden())) await sectionMenuButton.click();
+    if (!(await sectionMenu.isHidden())) await sectionMenuButton.click();
+    await resumeDashboardPanel.waitFor({ state: "hidden" });
+    await sectionMenu.waitFor({ state: "hidden" });
     const resumableTopicCard = page.locator('#topic-grid [data-topic="' + resumeTopic + '"]');
     assert.equal(await resumableTopicCard.getAttribute("data-can-resume"), "true",
       "the last research card should identify its unfinished saved session");
