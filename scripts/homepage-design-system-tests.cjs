@@ -72,4 +72,15 @@ assert.ok(css.includes("body.dark-mode #mastery-filter"),
 assert.ok(css.includes("@media (max-width: 600px)") && css.includes(".topic-tools .mastery-filter-panel"),
   "the mastery filter should reflow on narrow mobile screens");
 
+assert.ok(html.includes('<label for="coverage-filter">حالة التغطية</label>'),
+  "the coverage filter should have an explicit Arabic label");
+assert.ok(html.includes('id="coverage-filter" aria-describedby="coverage-filter-hint"'),
+  "the coverage filter should expose its explanatory hint to assistive technology");
+assert.ok(css.includes("#coverage-filter {") && css.includes("min-height: 44px;"),
+  "the coverage filter should retain an accessible touch target");
+assert.ok(css.includes("body.dark-mode #coverage-filter"),
+  "the coverage filter should have a defined dark-mode appearance");
+assert.ok(css.includes("@media (max-width: 600px)") && css.includes(".topic-tools .coverage-filter-panel"),
+  "the coverage filter should reflow on narrow mobile screens");
+
 console.log("PASS: homepage design system, typography, controls, responsive header, interaction feedback, and reduced-motion support");
