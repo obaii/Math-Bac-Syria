@@ -48,4 +48,17 @@ assert.match(css, /:where\(\.section-heading h2, \.quiz-head h2, \.dashboard-int
 assert.match(css, /body\.dark-mode :where\(\.section-heading h2/, "heading colors should remain token-driven in dark mode");
 assert.match(css, /:where\(\.dashboard-actions button, #quiz \.actions button, #exam-tools button\)\s*\{[^}]*min-height:\s*44px/s, "primary learning actions should retain accessible touch targets");
 
+assert.match(css, /#topic-grid \.topic-mastery-status\s*\{[^}]*min-height:\s*28px/s,
+  "topic mastery should have a consistent readable status badge");
+for (const state of ["not-started", "practice", "good", "mastered"]) {
+  assert.ok(css.includes("#topic-grid .topic-mastery-status." + state),
+    "topic mastery badge should have a distinct style for " + state);
+  assert.ok(css.includes("body.dark-mode #topic-grid .topic-mastery-status." + state),
+    "topic mastery badge should retain its state styling in dark mode: " + state);
+}
+assert.match(css, /#topic-grid \.topic-mastery-status \+ \.topic-mastery/,
+  "the mastery label should remain visually separated from the coverage bar");
+assert.match(css, /#topic-grid \.topic-card:focus-visible \.topic-mastery-status/,
+  "the mastery badge should remain clear when its research card receives keyboard focus");
+
 console.log("PASS: homepage design system, typography, controls, responsive header, interaction feedback, and reduced-motion support");
