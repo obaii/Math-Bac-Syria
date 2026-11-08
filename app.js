@@ -569,10 +569,18 @@ function renderTopics(){
       remove.setAttribute("aria-hidden", "true");
       remove.textContent = "×";
       chip.append(text, remove);
+      // 681–683: Keep keyboard focus predictable after a chip removes itself.
+      const filterControlId = description === "البحث" ? "topic-search" :
+        description === "مستوى الأسئلة" ? "difficulty" : "mastery-filter";
       chip.addEventListener("click", () => {
+        const chipIndex = Array.from(activeFilters.children).indexOf(chip);
         clearFilter();
         saveHomepageFilters();
         renderTopics();
+        const remainingChips = activeFilters.querySelectorAll("button");
+        const nextChip = remainingChips[Math.min(chipIndex, remainingChips.length - 1)];
+        if (nextChip) nextChip.focus();
+        else $(filterControlId)?.focus();
       });
       activeFilters.append(chip);
     };
@@ -585,7 +593,8 @@ function renderTopics(){
       "مستوى الأسئلة", () => { $("difficulty").value = "الكل"; });
     if (masteryFilter !== "الكل") {
       const masteryOption = masterySelect?.selectedOptions[0];
-      const masteryLabel = masteryOption?.dataset.baseLabel || masteryOption?.textContent.replace(/\\s*\\([^)]*\\)\\s*$/, "").trim() || masteryFilter;
+      // 684–686: Use the stable untranslated option label, not its live count suffix.
+      const masteryLabel = masteryOption?.dataset.baseLabel || masteryFilter;
       addFilterChip("الإتقان: " + masteryLabel, "حالة الإتقان", () => { masterySelect.value = "الكل"; });
     }
     activeFilters.hidden = activeFilters.childElementCount === 0;
