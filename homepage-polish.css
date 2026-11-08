@@ -6875,3 +6875,115 @@ body.dark-mode #section-menu-search {
 @media (max-width: 600px) {
   .section-menu-search-wrap { padding: 9px; }
 }
+
+
+/* Recovered batch 550–559: research discovery cards. */
+
+/* 550: Give each research card a stable content width for long Arabic titles. */
+#topic-grid .topic-card,
+#topic-grid .topic-card-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* 551: Clarify the status label on each research card. */
+#topic-grid .topic-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 3px 9px;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+/* 552: Make the resume marker visible without overpowering the research title. */
+#topic-grid .topic-resume-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--hp-brand-soft);
+  color: var(--hp-brand-strong);
+  font-size: .7rem;
+  font-weight: 800;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* 553: Keep research-card performance details distinct from the primary action. */
+#topic-grid .topic-card-performance {
+  display: block;
+  margin-block-start: 9px;
+  padding-block-start: 8px;
+  border-top: 1px dashed var(--hp-border);
+  color: var(--hp-muted);
+  font-size: .76rem;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* 554: Make last-practiced dates easy to find but visually secondary. */
+#topic-grid .topic-last-activity {
+  display: block;
+  margin-block-start: 5px;
+  color: var(--hp-muted);
+  font-size: .7rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+/* 555: Keep topic card action labels readable when the viewport is narrow. */
+#topic-grid .topic-card-bottom :is(.topic-status, .topic-start) {
+  min-width: 0;
+  line-height: 1.65;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* 556: Improve the research subject icon's alignment and visual consistency. */
+#topic-grid .topic-subject-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  margin-block-end: 5px;
+  border-radius: 12px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-brand-strong);
+  font-size: 1.15rem;
+}
+
+/* 557: Provide clear focus feedback for cards without relying on hover. */
+#topic-grid .topic-card:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+  border-color: var(--hp-brand);
+}
+
+/* 558: Preserve readable contrast for unavailable research cards. */
+#topic-grid .topic-card:disabled {
+  color: var(--hp-muted);
+  border-style: dashed;
+  background: var(--hp-surface-soft);
+  opacity: .82;
+  filter: none;
+}
+
+/* 559: Respect reduced-motion preferences for research-card interactions. */
+@media (prefers-reduced-motion: reduce) {
+  #topic-grid .topic-card,
+  #topic-grid .topic-card .topic-arrow {
+    transition: none;
+    transform: none;
+  }
+}
