@@ -192,6 +192,8 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
       "choosing the educational space should reveal only its dashboard panel");
     await page.locator("#section-menu-toggle").click();
+    // The first click leaves an open dashboard panel; the next click opens the menu.
+    if (await page.locator("#section-menu").isHidden()) await page.locator("#section-menu-toggle").click();
     await page.locator('#section-menu [data-dashboard-target="question-coverage-title"]').click();
     await page.locator('[data-dashboard-panel="question-coverage-title"]').waitFor({ state: "visible" });
     assert.equal(await page.locator("[data-dashboard-panel]:visible").count(), 1,
