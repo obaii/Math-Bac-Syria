@@ -1225,6 +1225,7 @@ $("clear-all-topic-filters").addEventListener("click",()=>{
 $("reset-topic-filters").addEventListener("click",()=>{
   topicSearchInput.value = "";
   $("difficulty").value = "الكل";
+  $("mastery-filter").value = "الكل";
   saveHomepageFilters();
   renderTopics();
   topicSearchInput.focus();
