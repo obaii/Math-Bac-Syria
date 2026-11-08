@@ -7282,7 +7282,8 @@ body.dark-mode #mastery-filter {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 36px;
+  min-width: 0;
+  min-height: 44px;
   max-width: 100%;
   padding: 6px 11px;
   border: 1px solid var(--hp-control-border, var(--hp-border));
@@ -7334,5 +7335,35 @@ body.dark-mode .active-topic-filter-chip {
 @media (prefers-reduced-motion: reduce) {
   .active-topic-filter-chip {
     transition: none;
+  }
+}
+
+/* Batch 681–690: resilient chip labels, touch targets, and high-contrast focus. */
+/* 687–688: Give every removable chip a comfortable touch target. */
+.active-topic-filter-chip > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: start;
+}
+/* 689: Keep long Arabic search labels inside narrow screens. */
+@media (max-width: 600px) {
+  .active-topic-filter-chip {
+    width: fit-content;
+    max-width: 100%;
+    min-height: 44px;
+  }
+}
+/* 690: Preserve visible chip boundaries and focus in forced-colors mode. */
+@media (forced-colors: active) {
+  .active-topic-filter-chip {
+    border: 1px solid ButtonText;
+  }
+  .active-topic-filter-chip:focus-visible {
+    outline: 3px solid Highlight;
+  }
+  .active-topic-filter-remove {
+    background: ButtonText;
+    color: ButtonFace;
   }
 }
