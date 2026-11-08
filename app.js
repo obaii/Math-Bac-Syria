@@ -675,7 +675,7 @@ function updateResumeCard(){
   }
   section.hidden = false;
   const savedSession = readTrainingSession();
-  const canResume = savedSession && savedSession.topic === lastTopic && savedSession.questionKeys.length > 0;
+  const canResume = savedSession && savedSession.topic === lastTopic && savedSession.questionKeys.length > 0 && savedSession.index < savedSession.questionKeys.length;
   button.textContent = canResume ? "استئناف جلسة التدريب" : "ابدأ التدريب مجدداً";
   button.onclick = () => { if (!canResume || !resumeTrainingSession(lastTopic)) startQuiz(lastTopic); };
 }
