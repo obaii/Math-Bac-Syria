@@ -135,12 +135,13 @@ async function assertVisibleControlsHaveNames(page, context) {
     await reducedMotionPage.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     await reducedMotionPage.evaluate(() => {
       window.__panelScrollBehaviors = [];
-      Element.prototype.scrollIntoView = function(options) {
+      window.scrollTo = options => {
         window.__panelScrollBehaviors.push(options?.behavior || "auto");
       };
     });
     await reducedMotionPage.locator("#section-menu-toggle").click();
     await reducedMotionPage.locator('#section-menu [data-dashboard-target="home"]').click();
+    await reducedMotionPage.waitForFunction(() => window.__panelScrollBehaviors.length > 0);
     assert.deepEqual(await reducedMotionPage.evaluate(() => window.__panelScrollBehaviors), ["auto"],
       "homepage panel navigation should avoid smooth scrolling when reduced motion is requested");
     await reducedMotionPage.close();
