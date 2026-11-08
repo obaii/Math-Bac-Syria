@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261106-1">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261108-570">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261108-581">
   <script>
     window.MathJax = {
       tex: {
@@ -61,6 +61,7 @@
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
   <script defer src="enhancements.js?v=20261108-560"></script>
+  <script defer src="homepage-feedback.js?v=20261108-581"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
@@ -377,7 +378,7 @@
       </section>
     <div id="topic-section" class="section-heading" tabindex="-1"><div><p class="eyebrow">تدرّب خطوة بخطوة</p><h2>اختر البحث</h2><p class="section-subtitle">اختر أحد أبحاث المنهاج وابدأ حل الأسئلة فوراً. يتحدد الإتقان بعد 10 إجابات على الأقل: 85٪ فأكثر متقن، و60٪ إلى 84٪ جيد.</p></div><span id="total-count" class="count-pill" role="status" aria-live="polite" aria-atomic="true"></span></div>
     <div class="topic-tools">
-      <div class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي" aria-controls="topic-grid" aria-describedby="topic-search-hint"><button type="button" id="clear-topic-search" class="search-clear" aria-label="مسح البحث" title="مسح البحث" hidden>×</button></div><span id="topic-search-hint" class="visually-hidden">اكتب جزءاً من اسم البحث لتصفية البطاقات. اضغط / للانتقال إلى البحث وEscape لمسح العبارة.</span>
+      <div class="search-box"><span aria-hidden="true">⌕</span><input id="topic-search" type="search" placeholder="ابحث عن بحث رياضي..." aria-label="ابحث عن بحث رياضي" aria-controls="topic-grid" aria-describedby="topic-search-hint"><button type="button" id="clear-topic-search" class="search-clear" data-feedback-message="تم مسح عبارة البحث." data-feedback-kind="info" aria-label="مسح البحث" title="مسح البحث" hidden>×</button></div><span id="topic-search-hint" class="visually-hidden">اكتب جزءاً من اسم البحث لتصفية البطاقات. اضغط / للانتقال إلى البحث وEscape لمسح العبارة.</span>
       <div class="filter-panel">
       <label for="difficulty">مستوى الأسئلة</label>
       <select id="difficulty" aria-describedby="difficulty-hint">
@@ -388,7 +389,7 @@
       </select>
       <span class="filter-hint" id="difficulty-hint">اختر المستوى المناسب لك.</span>
       </div>
-      <button type="button" id="clear-all-topic-filters" class="filter-reset-button" hidden>إعادة ضبط الفلاتر</button>
+      <button type="button" id="clear-all-topic-filters" class="filter-reset-button" data-feedback-message="تمت إعادة ضبط جميع الفلاتر." data-feedback-kind="info" hidden>إعادة ضبط الفلاتر</button>
     </div>
     <div id="topic-grid" class="topic-grid" aria-busy="true"><div class="topic-loading" role="status" aria-live="polite"><span class="topic-loading-spinner" aria-hidden="true"></span><span>جارٍ تجهيز الأبحاث الرياضية...</span></div></div>
     <div id="no-topics" class="empty-state hidden" role="status" aria-live="polite" aria-atomic="true"><p>لا توجد أبحاث تطابق كلمات البحث أو المستوى المحدد.</p><button type="button" id="reset-topic-filters" class="secondary">إظهار جميع الأبحاث</button></div>
