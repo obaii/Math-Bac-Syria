@@ -5902,3 +5902,157 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   outline-offset: 2px;
   border-color: var(--hp-brand);
 }
+
+
+/* Homepage refinement batch 510–519. */
+
+/* 510: Make first-visit actions readable and comfortably tappable. */
+.first-visit-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.first-visit-actions :is(.first-visit-start, .first-visit-dismiss) {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border-radius: var(--hp-radius-sm);
+  line-height: 1.5;
+}
+.first-visit-actions :is(.first-visit-start, .first-visit-dismiss):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+
+/* 511: Keep topic cards balanced when research titles wrap on narrow screens. */
+#topic-grid {
+  min-width: 0;
+  align-items: stretch;
+}
+#topic-grid > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#topic-grid :is(h3, h4, p, small) {
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+
+/* 512: Give quiz answer choices a consistent minimum touch area and focus ring. */
+#quiz :is(.options, .answers, .choices) button {
+  min-height: 46px;
+  max-width: 100%;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+#quiz :is(.options, .answers, .choices) button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 513: Clarify the exam setup area and keep its labels attached to controls. */
+#exam-tools .exam-config {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  align-items: end;
+  gap: 12px;
+}
+#exam-tools .exam-config label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  line-height: 1.6;
+}
+#exam-tools .exam-config select:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 514: Improve scanability and spacing of formula entries. */
+#formula-library #formula-list > * {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  overflow-wrap: anywhere;
+}
+#formula-library #formula-list > * + * { margin-block-start: 10px; }
+#formula-library #formula-list :is(h4, h5, p) { line-height: 1.8; overflow-wrap: anywhere; }
+
+/* 515: Keep the flashcard study surface readable and responsive. */
+#flashcards #flashcard {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+  touch-action: manipulation;
+}
+#flashcards #flashcard:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+
+/* 516: Make student review actions form a flexible, touch-friendly group. */
+#student-tools .tools-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 10px;
+}
+#student-tools .tools-actions button {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#student-tools .tools-actions button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 517: Make calendar activity cells distinguishable without relying on color alone. */
+#activity-calendar #activity-calendar-grid > * {
+  position: relative;
+  font-size: .9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+#activity-calendar #activity-calendar-grid > *:focus-within {
+  outline: 2px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+
+/* 518: Strengthen the achievement summary hierarchy and prevent narrow overflow. */
+#achievement-section #achievement-summary {
+  display: inline-block;
+  max-width: 100%;
+  padding: 7px 11px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* 519: Keep result actions usable when labels wrap on small screens. */
+#results .result-card .actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+#results .result-card .actions button {
+  min-width: min(100%, 140px);
+  min-height: 44px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#results .result-card .actions button:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
