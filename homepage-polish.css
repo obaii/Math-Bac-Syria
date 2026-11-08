@@ -7380,6 +7380,7 @@ body.dark-mode .active-topic-filter-chip {
 /* Batch 711–720: keep the new question-coverage filter accessible in every theme. */
 #coverage-filter {
   min-width: 0;
+  min-height: 44px;
   max-width: 100%;
 }
 #coverage-filter:focus-visible {
@@ -7392,7 +7393,7 @@ body.dark-mode #coverage-filter {
   color: var(--hp-ink);
 }
 @media (max-width: 600px) {
-  .coverage-filter-panel {
+  .topic-tools .coverage-filter-panel {
     grid-column: 1 / -1;
     min-width: 0;
   }
