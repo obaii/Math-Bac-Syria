@@ -6070,3 +6070,141 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
     grid-column: 1 / -1;
   }
 }
+
+
+/* Homepage refinement batch 520–529. */
+
+/* 520: Give the first-visit guide a readable measure and stable internal spacing. */
+#first-visit-guide {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 980px;
+  margin-inline: auto;
+  padding: clamp(16px, 3vw, 28px);
+}
+#first-visit-guide :is(h2, p) {
+  max-width: 70ch;
+  overflow-wrap: anywhere;
+}
+
+/* 521: Make the dashboard's weak-topic recommendations easy to scan. */
+#dashboard-panel-home .weak-topic-action {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+  overflow-wrap: anywhere;
+}
+#dashboard-panel-home .weak-topic-action :is(strong, p) {
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+/* 522: Clarify the review assistant's live status and generated guidance. */
+#student-tools #review-assistant-status {
+  padding: 9px 12px;
+  border-inline-start: 3px solid var(--hp-brand);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#student-tools #review-assistant-output {
+  min-width: 0;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+/* 523: Separate the activity-calendar summary from its day cells. */
+#activity-calendar .activity-calendar-summary {
+  margin-block: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font-weight: 700;
+  line-height: 1.75;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* 524: Keep achievement descriptions legible when titles or counts wrap. */
+#achievement-section .achievement-list > li {
+  min-height: 64px;
+  align-content: start;
+}
+#achievement-section .achievement-list > li :is(strong, span, p) {
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+/* 525: Make formula-library source notes and links easier to read. */
+#formula-library .formula-library-sources {
+  max-width: 82ch;
+  padding: 10px 12px;
+  border-inline-start: 3px solid var(--hp-brand);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+#formula-library .formula-library-sources a {
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+/* 526: Give flashcard progress and status messages a stable reading area. */
+#flashcards .flashcard-progress,
+#flashcards .flashcard-status {
+  min-height: 1.8em;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+#flashcards .flashcard-status {
+  padding: 8px 11px;
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+}
+
+/* 527: Distinguish the exam disclaimer from the interactive configuration. */
+#exam-tools .exam-note {
+  max-width: 78ch;
+  margin-block: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+/* 528: Make question labels and hint messages easier to distinguish. */
+#quiz .question-label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-block-end: 12px;
+  color: var(--hp-muted);
+  font-weight: 800;
+  line-height: 1.6;
+}
+#quiz .question-hint-text {
+  max-width: 78ch;
+  line-height: 1.95;
+}
+
+/* 529: Improve the final result explanation's reading width and number alignment. */
+#results #score-detail {
+  max-width: 68ch;
+  margin-inline: auto;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
