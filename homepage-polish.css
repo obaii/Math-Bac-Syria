@@ -6564,3 +6564,93 @@ body.dark-mode .top-actions .install-app-button:hover {
     display: none;
   }
 }
+
+
+/* Homepage refinement batch 571–580: unify typography, controls, and surface rhythm. */
+:root {
+  --hp-font-family: "Cairo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --hp-text-xs: 0.75rem;
+  --hp-text-sm: 0.875rem;
+  --hp-text-md: 1rem;
+  --hp-text-lg: 1.25rem;
+  --hp-space-1: 4px;
+  --hp-space-2: 8px;
+  --hp-space-3: 12px;
+  --hp-space-4: 16px;
+  --hp-space-5: 20px;
+  --hp-control-radius: 12px;
+  --hp-control-border: color-mix(in srgb, var(--hp-brand) 22%, var(--hp-border));
+}
+body {
+  font-family: var(--hp-font-family);
+  color: var(--hp-ink);
+}
+:where(button, input, select, textarea) {
+  font-family: inherit;
+}
+:where(.section-heading h2, .quiz-head h2, .dashboard-intro h2, .first-visit-guide h2) {
+  color: var(--hp-ink);
+  font-weight: 800;
+  line-height: 1.55;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+:where(.section-subtitle, .dashboard-intro p, .first-visit-guide p) {
+  color: var(--hp-muted);
+  line-height: 1.85;
+}
+:where(.search-box, .filter-panel, #topic-search, #difficulty, #exam-tools select) {
+  border-color: var(--hp-border);
+  border-radius: var(--hp-control-radius);
+  color: var(--hp-ink);
+}
+:where(.search-box, .filter-panel, #topic-search, #difficulty, #exam-tools select):focus-within,
+:where(#topic-search, #difficulty, #exam-tools select):focus-visible {
+  border-color: var(--hp-focus);
+  outline-color: var(--hp-focus);
+}
+:where(.count-pill, .hero-stats span, .quick-start-group-label) {
+  font-family: var(--hp-font-family);
+  font-weight: 800;
+}
+:where(.quick-start-card, .stat-card, .filter-panel, .search-box, .topic-card, .notice, .empty-state) {
+  border-width: 1px;
+  border-style: solid;
+}
+:where(.dashboard, .first-visit-guide, #section-menu, #student-tools, #exam-tools, #quiz .question-card, #results .result-card) {
+  border-radius: var(--hp-radius-lg);
+}
+:where(.dashboard-actions button, #quiz .actions button, #exam-tools button, .first-visit-actions a, .first-visit-actions button) {
+  min-height: 44px;
+  border-radius: var(--hp-control-radius);
+  font-family: var(--hp-font-family);
+  font-weight: 700;
+  line-height: 1.55;
+}
+:where(.dashboard-actions button, #quiz .actions button, #exam-tools button):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+body.dark-mode :where(.section-heading h2, .quiz-head h2, .dashboard-intro h2, .first-visit-guide h2) {
+  color: var(--hp-ink);
+}
+body.dark-mode :where(.section-subtitle, .dashboard-intro p, .first-visit-guide p) {
+  color: var(--hp-muted);
+}
+body.dark-mode :where(.search-box, .filter-panel, #topic-search, #difficulty, #exam-tools select) {
+  background-color: var(--hp-surface);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+body.dark-mode :where(.search-box input, #topic-search, #difficulty, #exam-tools select) {
+  color: var(--hp-ink);
+}
+@media (max-width: 600px) {
+  :where(.section-heading h2, .quiz-head h2) {
+    font-size: clamp(1.15rem, 5vw, 1.4rem);
+  }
+  :where(.dashboard-actions button, #quiz .actions button, #exam-tools button) {
+    min-height: 44px;
+    max-width: 100%;
+  }
+}
