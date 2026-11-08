@@ -7367,3 +7367,11 @@ body.dark-mode .active-topic-filter-chip {
     color: ButtonFace;
   }
 }
+
+/* 692: Override the legacy gradient so the open section-menu trigger is visibly gray. */
+#section-menu-toggle[aria-expanded="true"] {
+  background: #6b7280;
+  background-image: none;
+  border-color: #6b7280;
+  color: #fff;
+}

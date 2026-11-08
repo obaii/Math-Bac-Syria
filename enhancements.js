@@ -1938,7 +1938,11 @@
         // Reopening the long shortcut list always starts at its first group.
         menu.scrollTop = 0;
       }
-      if (menuButton) menuButton.setAttribute("aria-expanded", String(open));
+      if (menuButton) {
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuButton.style.background = open ? "#6b7280" : "";
+        menuButton.style.borderColor = open ? "#6b7280" : "";
+      }
       if (reducedMotionRequested()) {
         menu.hidden = !open;
         return;
@@ -1958,7 +1962,11 @@
       if (!menu) return;
       clearMenuAnimation();
       menu.hidden = true;
-      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+      if (menuButton) {
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.style.background = "";
+        menuButton.style.borderColor = "";
+      }
     };
 
     const getActiveHomePanel = () => {
