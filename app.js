@@ -531,12 +531,18 @@ function resumeTrainingSession(topic){
 
 function renderTopics(){
   const level = $("difficulty").value;
+  const masteryFilter = $("mastery-filter")?.value || "الكل";
   const search = ($("topic-search")?.value || "").trim().toLocaleLowerCase("ar");
   const clearSearchButton = $("clear-topic-search");
   if (clearSearchButton) clearSearchButton.hidden = search.length === 0;
   const clearAllFiltersButton = $("clear-all-topic-filters");
-  if (clearAllFiltersButton) clearAllFiltersButton.hidden = !search && level === "الكل";
-  const availableTopics = topics.filter(topic => window.MathSearchUtils.matches(topic, search));
+  if (clearAllFiltersButton) clearAllFiltersButton.hidden =
+    !search && level === "الكل" && masteryFilter === "الكل";
+  const availableTopics = topics.filter(topic => {
+    if (!window.MathSearchUtils.matches(topic, search)) return false;
+    return masteryFilter === "الكل" ||
+      getTopicMastery(progressData.topicStats[topic] || { answered: 0, correct: 0 }).key === masteryFilter;
+  });
   // Count available and previously seen questions in one pass instead of
   // scanning the complete question bank twice for each of the 14 topic cards.
   const topicQuestionCounts = new Map();
@@ -1155,7 +1161,8 @@ function readHomepageFilters(){
     if (!saved || typeof saved !== "object" || Array.isArray(saved)) return null;
     return {
       level: typeof saved.level === "string" ? saved.level : "",
-      search: typeof saved.search === "string" ? saved.search.slice(0, 100) : ""
+      search: typeof saved.search === "string" ? saved.search.slice(0, 100) : "",
+      mastery: typeof saved.mastery === "string" ? saved.mastery : "الكل"
     };
   } catch (_) { return null; }
 }
@@ -1163,7 +1170,8 @@ function saveHomepageFilters(){
   try {
     localStorage.setItem(HOMEPAGE_FILTERS_KEY, JSON.stringify({
       level: $("difficulty").value,
-      search: topicSearchInput.value.slice(0, 100)
+      search: topicSearchInput.value.slice(0, 100),
+      mastery: $("mastery-filter")?.value || "الكل"
     }));
   } catch (_) {}
 }
@@ -1171,10 +1179,16 @@ const savedHomepageFilters = readHomepageFilters();
 if (savedHomepageFilters) {
   const availableLevels = [...$("difficulty").options].map(option => option.value);
   if (availableLevels.includes(savedHomepageFilters.level)) $("difficulty").value = savedHomepageFilters.level;
+  const availableMasteryStates = [...$("mastery-filter").options].map(option => option.value);
+  if (availableMasteryStates.includes(savedHomepageFilters.mastery)) {
+    $("mastery-filter").value = savedHomepageFilters.mastery;
+  }
   topicSearchInput.value = savedHomepageFilters.search;
 }
 $("difficulty").addEventListener("change",saveHomepageFilters);
 $("difficulty").addEventListener("change",renderTopics);
+$("mastery-filter").addEventListener("change",saveHomepageFilters);
+$("mastery-filter").addEventListener("change",renderTopics);
 topicSearchInput.addEventListener("input",saveHomepageFilters);
 topicSearchInput.addEventListener("input",renderTopics);
 document.addEventListener("keydown",event=>{
@@ -1203,6 +1217,7 @@ $("clear-topic-search").addEventListener("click",()=>{
 $("clear-all-topic-filters").addEventListener("click",()=>{
   topicSearchInput.value = "";
   $("difficulty").value = "الكل";
+  $("mastery-filter").value = "الكل";
   saveHomepageFilters();
   renderTopics();
   topicSearchInput.focus();
