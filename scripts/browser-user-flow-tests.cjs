@@ -88,21 +88,11 @@ const assert = require("node:assert/strict");
       "the homepage should not download the unused Bootstrap JavaScript bundle");
 
     // Arabic search should ignore alef variants and allow reordered multiword queries.
+    const topicSearchWidth = await page.locator("#topic-search").evaluate(el => el.getBoundingClientRect().width);
+    assert.ok(topicSearchWidth >= 160,
+      "the topic search field should retain a usable width beside the three desktop filters");
     await page.locator("#topic-search").fill("الاشعة الفراغ");
     assert.equal(await page.locator('#topic-grid [data-topic="الأشعة في الفراغ"]').count(), 1, "topic search should normalize alef variants and match all terms regardless of order");
-    const searchVisibilityDebug = await page.locator("#topic-search").evaluate(el => {
-      const chain = [];
-      for (let node = el; node && node !== document.body; node = node.parentElement) {
-        const style = getComputedStyle(node);
-        const rect = node.getBoundingClientRect();
-        chain.push({ tag: node.tagName, id: node.id, className: String(node.className || ""),
-          hidden: node.hidden, display: style.display, visibility: style.visibility,
-          opacity: style.opacity, width: rect.width, height: rect.height });
-      }
-      return chain;
-    });
-    console.log("TOPIC_SEARCH_VISIBILITY_AFTER_FILTER " + JSON.stringify(searchVisibilityDebug));
-    await page.locator("#topic-search").waitFor({ state: "visible", timeout: 5000 });
     await page.locator("#topic-search").fill("");
 
     // Verify the primary navigation landmarks and keyboard skip link.
