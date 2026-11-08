@@ -135,6 +135,24 @@ const assert = require("node:assert/strict");
       const clearBounds = await clearButton.boundingBox();
       assert.ok(clearBounds && clearBounds.width >= 40 && clearBounds.height >= 40,
         `the search-clear action should provide a 40px touch target at ${viewport.width}px: ${JSON.stringify(clearBounds)}`);
+      const clearPointerDiagnostic = await page.evaluate(() => {
+        const button = document.querySelector("#clear-topic-search");
+        const rect = button.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        const target = document.elementFromPoint(x, y);
+        return {
+          button: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom },
+          searchBox: (() => { const r = button.closest(".search-box").getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; })(),
+          filterPanels: [...document.querySelectorAll(".topic-tools .filter-panel")].map(element => {
+            const r = element.getBoundingClientRect();
+            return { className: element.className, left: r.left, right: r.right, top: r.top, bottom: r.bottom, zIndex: getComputedStyle(element).zIndex };
+          }),
+          target: target ? { tag: target.tagName, id: target.id, className: target.className } : null,
+          buttonZ: getComputedStyle(button).zIndex
+        };
+      });
+      console.log("CLEAR_SEARCH_POINTER_DIAGNOSTIC", JSON.stringify(clearPointerDiagnostic));
       await clearButton.click();
       assert.equal(await page.locator("#topic-search").inputValue(), "",
         "the search-clear action should empty the query at every responsive viewport");
