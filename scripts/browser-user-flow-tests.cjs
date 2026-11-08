@@ -88,6 +88,9 @@ const assert = require("node:assert/strict");
       "the homepage should not download the unused Bootstrap JavaScript bundle");
 
     // Arabic search should ignore alef variants and allow reordered multiword queries.
+    const topicSearchWidth = await page.locator("#topic-search").evaluate(el => el.getBoundingClientRect().width);
+    assert.ok(topicSearchWidth >= 160,
+      "the topic search field should retain a usable width beside the three desktop filters");
     await page.locator("#topic-search").fill("الاشعة الفراغ");
     assert.equal(await page.locator('#topic-grid [data-topic="الأشعة في الفراغ"]').count(), 1, "topic search should normalize alef variants and match all terms regardless of order");
     await page.locator("#topic-search").fill("");
@@ -613,7 +616,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v109/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v110/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -626,6 +629,107 @@ const assert = require("node:assert/strict");
     assert.equal(await topicButtons.count(), 14, "clearing the topic search should restore all 14 research cards");
     assert.equal(await clearSearch.isVisible(), false, "the clear-search control should hide again after clearing");
     assert.equal(await topicSearch.evaluate(el => document.activeElement === el), true, "clearing the search should return keyboard focus to the search field");
+
+    // Batch 711–720: filter research by full-bank question coverage, independently of difficulty.
+    const originalSeenQuestions = await page.evaluate(() => ({ ...progressData.seenQuestions }));
+    const coverageFixture = await page.evaluate(() => {
+      const topicQuestionSets = topics.map(topic => ({
+        topic,
+        questions: questions.filter(question => question.topic === topic)
+      })).filter(entry => entry.questions.length > 0);
+      const inProgressEntry = topicQuestionSets.find(entry => entry.questions.length > 1);
+      const completedEntry = topicQuestionSets.find(entry => entry !== inProgressEntry);
+      const notStartedEntry = topicQuestionSets.find(entry => entry !== inProgressEntry && entry !== completedEntry);
+      if (!inProgressEntry || !completedEntry || !notStartedEntry) {
+        throw new Error("Coverage filter fixtures require three topics with questions and one multi-question topic.");
+      }
+      const notStarted = notStartedEntry.topic;
+      const inProgress = inProgressEntry.topic;
+      const completed = completedEntry.topic;
+      progressData.seenQuestions = {};
+      const inProgressQuestions = inProgressEntry.questions;
+      const completedQuestions = completedEntry.questions;
+      progressData.seenQuestions[questionKey(inProgressQuestions[0])] = true;
+      completedQuestions.forEach(question => { progressData.seenQuestions[questionKey(question)] = true; });
+      saveProgress();
+      renderTopics();
+      const stateCounts = { "not-started": 0, "in-progress": 0, completed: 0 };
+      for (const topic of topics) {
+        const seen = questions.filter(question => question.topic === topic && progressData.seenQuestions[questionKey(question)]).length;
+        const total = questions.filter(question => question.topic === topic).length;
+        const state = !seen ? "not-started" : seen >= total ? "completed" : "in-progress";
+        stateCounts[state] += 1;
+      }
+      return {
+        notStarted,
+        inProgress,
+        completed,
+        completedLevel: completedQuestions[0].level,
+        stateCounts
+      };
+    });
+    const coverageFilter = page.locator("#coverage-filter");
+    for (const [state, count] of Object.entries(coverageFixture.stateCounts)) {
+      const optionText = await coverageFilter.locator('option[value="' + state + '"]').innerText();
+      assert.ok(optionText.includes("(" + count.toLocaleString("ar") + ")"),
+        "coverage filter option counts should match the full question bank for " + state);
+    }
+    await coverageFilter.selectOption("not-started");
+    assert.equal(await topicButtons.count(), coverageFixture.stateCounts["not-started"],
+      "the not-started coverage filter should show only untouched topics");
+    assert.equal(await topicButtons.evaluateAll(cards => cards.every(card => card.dataset.coverage === "not-started")), true,
+      "every visible card should carry the not-started coverage state");
+    await coverageFilter.selectOption("in-progress");
+    assert.equal(await topicButtons.count(), coverageFixture.stateCounts["in-progress"],
+      "the in-progress coverage filter should show only partially practiced topics");
+    assert.equal(await topicButtons.evaluateAll(cards => cards.every(card => card.dataset.coverage === "in-progress")), true,
+      "every visible card should carry the in-progress coverage state");
+    await coverageFilter.selectOption("completed");
+    assert.equal(await topicButtons.count(), 1,
+      "the completed coverage filter should show the topic whose entire question bank was practiced");
+    assert.equal(await topicButtons.first().getAttribute("data-topic"), coverageFixture.completed,
+      "the completed coverage filter should identify the fully practiced topic");
+    await topicSearch.fill(coverageFixture.completed);
+    await page.locator("#difficulty").selectOption(coverageFixture.completedLevel);
+    await page.locator("#mastery-filter").selectOption("not-started");
+    assert.equal(await topicButtons.count(), 1,
+      "search, difficulty, mastery, and coverage filters should compose without overriding one another");
+    assert.equal(await page.locator("#active-topic-filters button").count(), 4,
+      "each of the four active topic filters should have its own removable chip");
+    await page.locator("#active-topic-filters button[aria-label='إزالة فلتر حالة التغطية']").click();
+    assert.equal(await coverageFilter.inputValue(), "الكل",
+      "removing the coverage chip should clear only the coverage filter");
+    assert.equal(await page.locator("#active-topic-filters button").count(), 3,
+      "removing the coverage chip should preserve the other three active filters");
+    await page.locator("#clear-all-topic-filters").click();
+    assert.equal(await coverageFilter.inputValue(), "الكل",
+      "clear-all should reset the coverage filter");
+    assert.equal(await page.locator("#difficulty").inputValue(), "الكل",
+      "clear-all should reset the difficulty filter");
+    assert.equal(await page.locator("#mastery-filter").inputValue(), "الكل",
+      "clear-all should reset the mastery filter");
+    assert.equal(await topicSearch.inputValue(), "",
+      "clear-all should reset the topic search");
+    await coverageFilter.selectOption("in-progress");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    assert.equal(await page.locator("#coverage-filter").inputValue(), "in-progress",
+      "the selected coverage state should be restored after reloading the homepage");
+    assert.equal(await topicButtons.evaluateAll(cards => cards.every(card => card.dataset.coverage === "in-progress")), true,
+      "the restored coverage filter should be applied before the topic cards are displayed");
+    await page.evaluate(original => {
+      progressData.seenQuestions = original;
+      saveProgress();
+      document.querySelector("#coverage-filter").value = "الكل";
+      document.querySelector("#difficulty").value = "الكل";
+      document.querySelector("#mastery-filter").value = "الكل";
+      document.querySelector("#topic-search").value = "";
+      saveHomepageFilters();
+      renderTopics();
+    }, originalSeenQuestions);
+    assert.equal(await topicButtons.count(), 14,
+      "restoring the original progress fixture and clearing filters should restore all research cards");
+
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
     assert.equal(await page.locator("#resume-session").evaluate(el => el.hidden), true, "resume card content should stay hidden until a topic has been practiced");
     assert.equal(await page.locator("#recent-activity").evaluate(el => el.hidden), true, "recent activity content should stay hidden until an answer is recorded");

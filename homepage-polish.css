@@ -4512,7 +4512,7 @@ body.dark-mode .dashboard .stat-card {
 }
 
 /* 426: Give search and filter controls a consistent, visible interaction state. */
-#topic-section .topic-tools { min-width: 0; }
+.topic-tools { min-width: 0; }
 #topic-section .search-box {
   min-width: 0;
   border-color: var(--hp-border);
@@ -6342,7 +6342,7 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   white-space: normal;
 }
 @media (max-width: 420px) {
-  #topic-section .topic-tools {
+  .topic-tools {
     gap: 9px;
   }
   #topic-section .topic-tools :is(input, select, button) {
@@ -7374,4 +7374,68 @@ body.dark-mode .active-topic-filter-chip {
   background-image: none;
   border-color: #6b7280;
   color: #fff;
+}
+
+
+/* Batch 711–720: keep the new question-coverage filter accessible in every theme. */
+#coverage-filter {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+}
+#coverage-filter:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+body.dark-mode #coverage-filter {
+  background-color: var(--hp-surface-soft);
+  border-color: var(--hp-control-border, var(--hp-border));
+  color: var(--hp-ink);
+}
+@media (max-width: 600px) {
+  .topic-tools .coverage-filter-panel {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+}
+@media (forced-colors: active) {
+  #coverage-filter:focus-visible {
+    outline: 3px solid Highlight;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #coverage-filter {
+    scroll-behavior: auto;
+  }
+}
+
+
+/* 717–720: Allocate a stable desktop column to search when all three filters are present. */
+@media (min-width: 851px) {
+  .topic-tools {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.25fr) repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 12px;
+  }
+  .topic-tools .search-box {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+  }
+  .topic-tools .filter-panel {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+    align-items: stretch;
+    align-content: start;
+  }
+  .topic-tools .filter-panel select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
 }
