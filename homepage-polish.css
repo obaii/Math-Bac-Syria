@@ -4512,7 +4512,7 @@ body.dark-mode .dashboard .stat-card {
 }
 
 /* 426: Give search and filter controls a consistent, visible interaction state. */
-.topic-tools { min-width: 0; }
+#topic-section .topic-tools { min-width: 0; }
 #topic-section .search-box {
   min-width: 0;
   border-color: var(--hp-border);
@@ -6342,7 +6342,7 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   white-space: normal;
 }
 @media (max-width: 420px) {
-  .topic-tools {
+  #topic-section .topic-tools {
     gap: 9px;
   }
   #topic-section .topic-tools :is(input, select, button) {
