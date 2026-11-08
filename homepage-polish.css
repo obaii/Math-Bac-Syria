@@ -6728,3 +6728,54 @@ body.dark-mode .score-feedback { color: var(--hp-ink); }
 @media (prefers-reduced-motion: reduce) {
   .score-meter > span { transition: none; }
 }
+
+
+/* Batch 601–610: clearly mark the expanded menu and provide a consistent close action. */
+#section-menu-toggle[aria-expanded="true"] {
+  border: 1px solid #6b7280;
+  background: #6b7280;
+  color: #fff;
+  box-shadow: 0 4px 12px rgb(31 41 55 / 18%);
+}
+#section-menu-toggle[aria-expanded="true"]:hover,
+#section-menu-toggle[aria-expanded="true"]:focus-visible {
+  border-color: #4b5563;
+  background: #4b5563;
+  color: #fff;
+}
+.section-panel-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 96px;
+  min-height: 44px;
+  margin: 22px auto 4px;
+  padding: 9px 22px;
+  border: 1px solid var(--hp-border, #d5deeb);
+  border-radius: 12px;
+  background: var(--hp-surface-soft, #f2f5fa);
+  color: var(--hp-ink, #263449);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+.section-panel-close:hover {
+  border-color: var(--hp-brand, #315edb);
+  background: var(--hp-brand-soft, #edf2ff);
+}
+.section-panel-close:focus-visible {
+  outline: 3px solid var(--hp-focus, #9bb5ff);
+  outline-offset: 3px;
+}
+body.dark-mode .section-panel-close {
+  border-color: var(--hp-border, #34445d);
+  background: var(--hp-surface-soft, #1b2a41);
+  color: var(--hp-ink, #e7edf8);
+}
+@media (max-width: 600px) {
+  .section-panel-close { display: flex; width: min(100%, 240px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-panel-close { transition: none; }
+}
