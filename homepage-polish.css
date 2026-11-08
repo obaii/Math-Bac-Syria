@@ -6470,6 +6470,11 @@ body.dark-mode .hero h1,
 body.dark-mode .hero > p:not(.eyebrow),
 body.dark-mode .hero .hero-note,
 body.dark-mode .hero .hero-stats > span { color: #fff; }
+body.dark-mode .hero .eyebrow { color: #d6e4ff; }
+body.dark-mode .hero .hero-stats > span {
+  background: rgba(255, 255, 255, .13);
+  border-color: rgba(255, 255, 255, .42);
+}
 
 /* 566: Keep in-page targets clear of the sticky header on compact screens. */
 @media (max-width: 600px) {
