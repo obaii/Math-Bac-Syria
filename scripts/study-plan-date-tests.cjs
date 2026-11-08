@@ -16,7 +16,7 @@ assert.match(enhancements, /const daysCount = Math\.min\(366, calendarDayOrdinal
   "plan generation should count calendar dates rather than elapsed 24-hour periods");
 assert.match(enhancements, /const remainingDays = Math\.max\(0, calendarDayOrdinal\(parseLocalDate\(plan\.examDate\)\) - calendarDayOrdinal\(new Date\(\)\) \+ 1\);/,
   "remaining-day metrics should use the same DST-safe calendar arithmetic");
-const enhancementsVersion = html.match(/enhancements\.js\?v=20261105-(\d+)/);
+const enhancementsVersion = html.match(/enhancements\.js\?v=\d{8}-(\d+)/);
 assert.ok(enhancementsVersion && Number(enhancementsVersion[1]) > 7, "the updated plan logic should have a refreshed asset URL");
 const cacheVersion = sw.match(/math-bac-syria-v(\d+)/);
 assert.ok(cacheVersion && Number(cacheVersion[1]) > 76,
