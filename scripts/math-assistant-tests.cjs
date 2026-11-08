@@ -42,6 +42,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#math-assistant-simplify").count(),0,"external simplification control should be removed in local-only mode");
     assert.equal(await page.locator("#math-assistant-diagnose").count(),0,"external attempt diagnosis control should be removed in local-only mode");
     await page.locator("#section-menu-toggle").click();
+    if (await page.locator("#section-menu").isHidden()) await page.locator("#section-menu-toggle").click();
     const toolsShortcut=page.locator('[data-panel-toggle="student-tools"]');
     await toolsShortcut.click();
     await page.locator("#student-tools").waitFor({state:"visible"});
