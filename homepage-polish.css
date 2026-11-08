@@ -5807,3 +5807,98 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   outline: 3px solid var(--hp-focus);
   outline-offset: 3px;
 }
+
+
+/* Homepage refinement batch 500–509. */
+
+/* 500: Make the expanded main-menu toggle state visually explicit. */
+#section-menu-toggle[aria-expanded="true"] {
+  border-color: var(--hp-brand);
+  background: var(--hp-brand-soft);
+  color: var(--hp-brand-strong);
+}
+
+/* 501: Keep the topic search field clearly identifiable during keyboard use. */
+#topic-section #topic-search:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-color: var(--hp-brand);
+}
+
+/* 502: Improve keyboard focus visibility for the question difficulty selector. */
+#topic-section #difficulty:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-color: var(--hp-brand);
+}
+
+/* 503: Give the visible filter-reset action a clear interactive response. */
+#topic-section #clear-all-topic-filters:not([hidden]) {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm);
+}
+#topic-section #clear-all-topic-filters:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+
+/* 504: Keep the live topic count legible and stable as filters change. */
+#total-count {
+  display: inline-flex;
+  min-width: 2.5em;
+  min-height: 2em;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+/* 505: Improve spacing and alignment in the active practice header. */
+#quiz .quiz-head {
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 8px;
+}
+#quiz .quiz-head #quiz-title {
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+/* 506: Emphasize the live completion percentage without competing with the title. */
+#quiz #progress-percent {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+/* 507: Smooth the question progress fill and honor reduced-motion preferences. */
+#quiz #progress-bar {
+  transition: width .3s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  #quiz #progress-bar {
+    transition: none;
+  }
+}
+
+/* 508: Align the session summary values for quick comparison while practicing. */
+#quiz .session-progress-summary strong {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* 509: Give all formula-library filters a consistent keyboard focus indicator. */
+#formula-library .formula-filters :is(input, select):focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 2px;
+  border-color: var(--hp-brand);
+}
