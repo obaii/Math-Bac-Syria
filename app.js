@@ -918,6 +918,8 @@ function showQuestion(){
   const similarPracticeButton = $("similar-practice-start");
   if (similarPracticeButton) {
     similarPracticeButton.hidden = true;
+    similarPracticeButton.disabled = false;
+    similarPracticeButton.textContent = "تدرّب على سؤال مشابه";
     similarPracticeButton.onclick = null;
   }
   answered=false;
