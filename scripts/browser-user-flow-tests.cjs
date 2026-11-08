@@ -630,13 +630,22 @@ const assert = require("node:assert/strict");
     // Batch 711–720: filter research by full-bank question coverage, independently of difficulty.
     const originalSeenQuestions = await page.evaluate(() => ({ ...progressData.seenQuestions }));
     const coverageFixture = await page.evaluate(() => {
-      const [notStarted, inProgress, completed] = topics.slice(0, 3);
-      progressData.seenQuestions = {};
-      const inProgressQuestions = questions.filter(question => question.topic === inProgress);
-      const completedQuestions = questions.filter(question => question.topic === completed);
-      if (!inProgressQuestions.length || !completedQuestions.length) {
-        throw new Error("Coverage filter fixtures require questions in the selected topics.");
+      const topicQuestionSets = topics.map(topic => ({
+        topic,
+        questions: questions.filter(question => question.topic === topic)
+      })).filter(entry => entry.questions.length > 0);
+      const inProgressEntry = topicQuestionSets.find(entry => entry.questions.length > 1);
+      const completedEntry = topicQuestionSets.find(entry => entry !== inProgressEntry);
+      const notStartedEntry = topicQuestionSets.find(entry => entry !== inProgressEntry && entry !== completedEntry);
+      if (!inProgressEntry || !completedEntry || !notStartedEntry) {
+        throw new Error("Coverage filter fixtures require three topics with questions and one multi-question topic.");
       }
+      const notStarted = notStartedEntry.topic;
+      const inProgress = inProgressEntry.topic;
+      const completed = completedEntry.topic;
+      progressData.seenQuestions = {};
+      const inProgressQuestions = inProgressEntry.questions;
+      const completedQuestions = completedEntry.questions;
       progressData.seenQuestions[questionKey(inProgressQuestions[0])] = true;
       completedQuestions.forEach(question => { progressData.seenQuestions[questionKey(question)] = true; });
       saveProgress();
