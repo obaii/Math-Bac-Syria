@@ -247,7 +247,54 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
       "the empty-state recovery action should restore every topic");
 
-    assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
+    // Active-filter chips should reflect each selected filter and remove only their own filter.
+    await page.selectOption("#difficulty", savedLevel);
+    await masteryFilter.selectOption("practice");
+    await page.locator("#topic-search").fill(firstTopic);
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    const activeFilterRegion = page.locator("#active-topic-filters");
+    assert.equal(await activeFilterRegion.isVisible(), true,
+      "the active-filter region should appear when one or more topic filters are selected");
+    assert.equal(await activeFilterRegion.locator("button").count(), 3,
+      "search, difficulty, and mastery selections should each have their own removable chip");
+    assert.equal(await activeFilterRegion.locator("button[aria-label='إزالة فلتر البحث']").count(), 1,
+      "the search chip should have a descriptive accessible removal label");
+    await activeFilterRegion.locator("button[aria-label='إزالة فلتر البحث']").click();
+    assert.equal(await page.locator("#topic-search").inputValue(), "",
+      "removing the search chip should clear only the search query");
+    assert.equal(await page.locator("#difficulty").inputValue(), savedLevel,
+      "removing the search chip should preserve the selected difficulty");
+    assert.equal(await masteryFilter.inputValue(), "practice",
+      "removing the search chip should preserve the mastery state");
+    assert.equal(await activeFilterRegion.locator("button").count(), 2,
+      "removing one chip should leave the other active filters visible");
+
+    await activeFilterRegion.locator("button[aria-label='إزالة فلتر مستوى الأسئلة']").click();
+    assert.equal(await page.locator("#difficulty").inputValue(), "الكل",
+      "removing the difficulty chip should reset only the difficulty selector");
+    assert.equal(await masteryFilter.inputValue(), "practice",
+      "removing the difficulty chip should preserve the mastery selector");
+    assert.equal(await activeFilterRegion.locator("button").count(), 1,
+      "only the mastery chip should remain after removing the difficulty filter");
+
+    await activeFilterRegion.locator("button[aria-label='إزالة فلتر حالة الإتقان']").click();
+    assert.equal(await masteryFilter.inputValue(), "الكل",
+      "removing the mastery chip should reset the mastery selector");
+    assert.equal(await activeFilterRegion.isVisible(), false,
+      "the active-filter region should hide when all individual filters are cleared");
+    assert.equal(await page.locator("#topic-grid .topic-card").count(), 14,
+      "removing all chips individually should restore all fourteen topics");
+
+    await masteryFilter.selectOption("mastered");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelector("#topic-grid")?.getAttribute("aria-busy") === "false");
+    assert.equal(await page.locator("#active-topic-filters button").count(), 1,
+      "the active mastery chip should be reconstructed after restoring saved filters");
+    assert.equal(await page.locator("#active-topic-filters button").getAttribute("aria-label"),
+      "إزالة فلتر حالة الإتقان",
+      "the restored chip should retain its accessible label");
+
+        assert.deepEqual(errors, [], "homepage topic rendering should not produce browser errors");
     console.log("PASS: homepage topic totals, seen counts, progress bars, and disabled states match the question bank for every difficulty filter");
   } finally {
     await browser.close();
