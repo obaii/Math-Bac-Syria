@@ -349,6 +349,25 @@ async function assertVisibleControlsHaveNames(page, context) {
     await mobileMenuPage.locator("#section-menu-toggle").click();
     const mobileMenu = mobileMenuPage.locator("#section-menu");
     await mobileMenu.waitFor({ state: "visible" });
+    const menuSearch = mobileMenuPage.locator("#section-menu-search");
+    await menuSearch.waitFor({ state: "visible" });
+    assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
+      "opening the section menu should focus its shortcut search field");
+    await menuSearch.fill("مكتبة القوانين");
+    assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 1,
+      "Arabic menu search should filter shortcuts by their visible label");
+    assert.equal(await mobileMenuPage.locator("#section-menu-search-status").innerText(),
+      "النتائج المطابقة: 1", "the menu should announce the number of matching shortcuts");
+    await menuSearch.fill("لا يوجد قسم بهذا الاسم");
+    assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 0,
+      "a non-matching query should hide all shortcut cards");
+    assert.equal(await mobileMenuPage.locator("#section-menu-search-empty").isVisible(), true,
+      "an empty search result should show recovery guidance");
+    await menuSearch.press("Escape");
+    assert.equal(await menuSearch.inputValue(), "",
+      "Escape in the search field should clear the query without closing the menu");
+    assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 19,
+      "clearing the search should restore all section shortcuts");
     const menuLayout = await mobileMenu.evaluate(element => ({
       overflowY: getComputedStyle(element).overflowY,
       maxHeight: getComputedStyle(element).maxHeight,
@@ -367,6 +386,8 @@ async function assertVisibleControlsHaveNames(page, context) {
     await mobileMenuPage.locator(".hero h1").click();
     await mobileMenuPage.locator("#section-menu-toggle").click();
     await mobileMenu.waitFor({ state: "visible" });
+    assert.equal(await menuSearch.inputValue(), "",
+      "reopening the menu should reset the previous search query");
     assert.equal(await mobileMenu.evaluate(element => element.scrollTop), 0,
       "reopening the section menu should return to its first group");
     await mobileMenuPage.close();
