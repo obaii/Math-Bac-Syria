@@ -7264,3 +7264,75 @@ body.dark-mode #mastery-filter {
     justify-self: start;
   }
 }
+
+
+/* Batch 671–680: make active homepage topic filters visible and individually removable. */
+.active-topic-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-block: 10px 14px;
+}
+.active-topic-filters[hidden] {
+  display: none;
+}
+.active-topic-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  max-width: 100%;
+  padding: 6px 11px;
+  border: 1px solid var(--hp-control-border, var(--hp-border));
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  font: inherit;
+  font-size: .82rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+.active-topic-filter-chip:hover {
+  border-color: var(--hp-focus);
+  background: var(--hp-surface);
+}
+.active-topic-filter-chip:focus-visible {
+  outline: 3px solid var(--hp-focus);
+  outline-offset: 3px;
+}
+.active-topic-filter-remove {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--hp-border);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+body.dark-mode .active-topic-filter-chip {
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+}
+@media (max-width: 600px) {
+  .active-topic-filters {
+    gap: 7px;
+    margin-block: 8px 12px;
+  }
+  .active-topic-filter-chip {
+    min-height: 40px;
+    max-width: 100%;
+    text-align: start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .active-topic-filter-chip {
+    transition: none;
+  }
+}
