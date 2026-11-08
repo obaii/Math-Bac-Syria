@@ -20,7 +20,12 @@ const assert = require("node:assert/strict");
     if (await menu.evaluate(element => element.classList.contains("is-closing"))) {
       await page.waitForFunction(() => document.querySelector("#section-menu").hidden);
     }
-    if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    if (await menu.isHidden()) {
+      await page.locator("#section-menu-toggle").click();
+      // If a different destination is open, the first click intentionally closes it;
+      // the second click then opens the section menu for the requested destination.
+      if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    }
     await menuLink.waitFor({ state: "visible" });
     if (await dashboardLink.count()) {
       await dashboardLink.click();
