@@ -774,6 +774,8 @@ const assert = require("node:assert/strict");
         date: new Date(now.getFullYear(), now.getMonth(), now.getDate() - offset, 0, 0, 0, 0).toISOString()
       }));
     });
+    // Returning from the quiz is an outside click, so reopen the review section before using its report.
+    await openPanel("student-tools");
     await page.getByRole("button", { name: /تقرير تقدّمي حسب البحث/ }).click();
     const rhythm = page.locator("#progress-report .study-rhythm");
     await rhythm.waitFor({ state: "visible" });
