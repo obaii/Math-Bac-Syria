@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261106-1">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261108-570">
   <script>
     window.MathJax = {
       tex: {
@@ -60,7 +60,7 @@
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
-  <script defer src="enhancements.js?v=20261105-9"></script>
+  <script defer src="enhancements.js?v=20261108-560"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
   <script defer src="pwa-install.js?v=20261028-1"></script>
@@ -70,7 +70,7 @@
 <a class="skip-link" href="#main-content">تجاوز إلى المحتوى الرئيسي</a>
 <header class="top">
   <a class="brand" href="#" aria-label="الصفحة الرئيسية" id="brand-home"><span class="brand-symbol">∑</span><span>رياضيات البكالوريا</span></a>
-  <div class="top-actions"><span class="tag">المنهاج السوري · العلمي</span><span class="privacy-note"><span class="privacy-dot"></span> تقدمك محفوظ على جهازك</span><button type="button" id="install-app-button" class="install-app-button">تثبيت التطبيق</button></div>
+  <div class="top-actions"><span class="tag">المنهاج السوري · العلمي</span><span class="privacy-note"><span class="privacy-dot"></span> تقدمك محفوظ على جهازك</span><button type="button" id="toggle-dark-mode" class="theme-toggle-button" aria-pressed="false">تفعيل الوضع الليلي</button><button type="button" id="install-app-button" class="install-app-button">تثبيت التطبيق</button></div>
 </header>
 <main class="container" id="main-content" tabindex="-1">
   <section class="hero">
@@ -266,7 +266,6 @@
         <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
         <button type="button" id="export-progress">تصدير التقدم JSON</button>
         <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
-        <button type="button" id="toggle-dark-mode" aria-pressed="false">تفعيل الوضع الليلي</button>
         <input id="import-progress-file" type="file" accept="application/json,.json" hidden>
       </div>
       <ul class="bookmark-list guided-list" id="guided-question-list" hidden></ul>
