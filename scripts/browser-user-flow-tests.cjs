@@ -889,7 +889,20 @@ const assert = require("node:assert/strict");
     assert.equal(await practicedTopicCard.getAttribute("data-topic-attempts"), "2", "the topic card should show both the original and similar-question answers");
     assert.ok(["0", "1", "2"].includes(await practicedTopicCard.getAttribute("data-topic-correct")), "the topic card should show the exact correct-answer count");
     assert.equal(await practicedTopicCard.locator(".topic-state").innerText(), "قيد التقدم", "a topic with some but not all questions tried should be marked in progress");
-    assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .*٪ دقة/, "the topic card should summarize attempts, correct answers, and accuracy");
+    assert.match(await practicedTopicCard.locator(".topic-card-performance").innerText(), /إجابة · .* صحيحة · .* خاطئة · .*٪ دقة/,
+      "the topic card should summarize total, correct, incorrect answers, and accuracy");
+    assert.equal(await practicedTopicCard.locator(".topic-card-levels span").count(), 3,
+      "each research card should show counts for basic, intermediate, and advanced questions");
+    assert.match(await practicedTopicCard.locator(".topic-card-levels").innerText(), /أساسي .* متوسط .* متقدم/,
+      "the difficulty distribution should retain the three curriculum level labels");
+    assert.match(await practicedTopicCard.locator(".topic-coverage-summary").innerText(), /٪ من الأسئلة جُرّبت.*متبقي/,
+      "the card should show a visible completion percentage and remaining question count");
+    assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /إنجاز.*متبقي/,
+      "the coverage progress bar should announce its percentage and remaining questions accessibly");
+    assert.match(await practicedTopicCard.getAttribute("aria-label"), /إنجاز/,
+      "each research card should expose a concise accessible progress summary");
+    assert.ok((await practicedTopicCard.locator(".topic-last-activity").getAttribute("title")).length > 0,
+      "the relative last-practice label should provide an exact timestamp on demand");
     assert.equal(await practicedTopicCard.getAttribute("data-last-practiced") === "" , false,
       "the topic card should store a valid last-practice timestamp");
     assert.ok(Number.isFinite(Date.parse(await practicedTopicCard.getAttribute("data-last-practiced"))),
