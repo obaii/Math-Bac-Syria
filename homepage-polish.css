@@ -6691,3 +6691,40 @@ body.dark-mode :where(.search-box input, #topic-search, #difficulty, #exam-tools
 @media (prefers-reduced-motion: reduce) {
   .homepage-feedback { transition: none !important; transform: none; }
 }
+
+
+/* Batch 591–600: make the practice result understandable at a glance and to assistive tech. */
+.score-meter {
+  width: min(100%, 420px);
+  height: 12px;
+  margin: 14px auto 10px;
+  overflow: hidden;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+}
+.score-meter > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--hp-brand), var(--hp-success));
+  transition: width 220ms ease;
+}
+.score-feedback {
+  max-width: 560px;
+  margin: 8px auto 14px;
+  color: var(--hp-ink);
+  font-weight: 700;
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+body.dark-mode .score-feedback { color: var(--hp-ink); }
+@media (max-width: 600px) {
+  #results .result-card { padding-inline: 16px; }
+  .score-meter { height: 10px; }
+  .score-feedback { font-size: 0.95rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .score-meter > span { transition: none; }
+}
