@@ -780,9 +780,11 @@ function formatExpectedAnswer(q){
 
 function findSimilarPracticeQuestion(current) {
   const bank = Array.isArray(questions) ? questions : [];
+  const alreadyInSession = new Set(quizQuestions.map(questionKey));
   const candidates = bank.filter(candidate =>
     candidate && candidate.q !== current.q &&
     candidate.topic === current.topic &&
+    !alreadyInSession.has(questionKey(candidate)) &&
     isSupportedQuestion(candidate)
   );
   const type = getQuestionType(current);
@@ -793,6 +795,21 @@ function findSimilarPracticeQuestion(current) {
   const sameType = candidates.filter(candidate => getQuestionType(candidate) === type);
   const pool = sameTypeAndLevel.length ? sameTypeAndLevel : sameType.length ? sameType : candidates;
   return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+}
+
+function startSimilarPracticeQuestion(current) {
+  const similarQuestion = findSimilarPracticeQuestion(current);
+  if (!similarQuestion) return false;
+
+  // Add the similar exercise to the active quiz so it uses the exact same
+  // prompt, answer, feedback, accessibility and next-question flow.
+  quizQuestions.splice(index + 1, 0, similarQuestion);
+  index += 1;
+  answered = false;
+  showQuestion();
+  saveTrainingSession();
+  updateResumeCard();
+  return true;
 }
 
 function showSimilarPracticeQuestion(current, host) {
@@ -994,6 +1011,15 @@ function showQuestion(){
   $("next").textContent=index===quizQuestions.length-1?"عرض النتيجة ←":"السؤال التالي ←";
   typeset();
   $("question-text").focus({ preventScroll: true });
+  // Keep the active question visible at the top of the viewport on entry
+  // and every transition, rather than leaving it below the page header.
+  requestAnimationFrame(() => {
+    const card = $("question-text")?.closest(".question-card");
+    if (card && !$("quiz").classList.contains("hidden")) {
+      card.scrollIntoView({ behavior: preferredScrollBehavior(), block: "start" });
+      $("question-text").focus({ preventScroll: true });
+    }
+  });
 }
 function chooseAnswer(choice){
   submitQuestionAnswer(choice);
@@ -1077,7 +1103,12 @@ function submitQuestionAnswer(response){
   // One static button is reused for every question; assigning onclick replaces any prior handler.
   const similarPracticeAction = $("similar-practice-start");
   if (similarPracticeAction) {
-    similarPracticeAction.onclick = () => showSimilarPracticeQuestion(q, fb);
+    similarPracticeAction.onclick = () => {
+      if (!startSimilarPracticeQuestion(q)) {
+        similarPracticeAction.disabled = true;
+        similarPracticeAction.textContent = "لا يوجد سؤال مشابه متاح حالياً";
+      }
+    };
     similarPracticeAction.hidden = false;
   }
   $("next").disabled=false;
