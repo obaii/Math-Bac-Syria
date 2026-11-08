@@ -2019,6 +2019,41 @@
       }
       return true;
     };
+    const menuSearch = document.getElementById("section-menu-search");
+    const menuSearchStatus = document.getElementById("section-menu-search-status");
+    const menuSearchEmpty = document.getElementById("section-menu-search-empty");
+    const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar").replace(/ى/g, "ي").trim();
+    const filterSectionMenu = () => {
+      if (!menu || !menuSearch) return;
+      const query = normalizeMenuSearch(menuSearch.value);
+      let visibleCount = 0;
+      menu.querySelectorAll("a.quick-start-card").forEach(card => {
+        const matches = !query || normalizeMenuSearch(card.textContent).includes(query);
+        card.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+      menu.querySelectorAll(".quick-start-group-label").forEach(label => {
+        let next = label.nextElementSibling;
+        let hasVisibleCard = false;
+        while (next && !next.classList.contains("quick-start-group-label")) {
+          if (next.matches("a.quick-start-card") && !next.hidden) hasVisibleCard = true;
+          next = next.nextElementSibling;
+        }
+        label.hidden = !hasVisibleCard;
+      });
+      if (menuSearchStatus) menuSearchStatus.textContent = query ? "النتائج المطابقة: " + visibleCount : "جميع الأقسام متاحة: " + visibleCount;
+      if (menuSearchEmpty) menuSearchEmpty.hidden = visibleCount !== 0;
+    };
+    if (menuSearch && menuSearch.dataset.searchBound !== "true") {
+      menuSearch.addEventListener("input", filterSectionMenu);
+      menuSearch.addEventListener("keydown", event => {
+        if (event.key !== "Escape" || !menuSearch.value) return;
+        event.stopPropagation();
+        menuSearch.value = "";
+        filterSectionMenu();
+      });
+      menuSearch.dataset.searchBound = "true";
+    }
     if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
       menuButton.addEventListener("click", () => {
         // The top menu control doubles as a quick way back from any open destination.
@@ -2029,6 +2064,7 @@
         const shouldOpen = menu.hidden || menu.classList.contains("is-closing");
         setMenuOpen(shouldOpen);
         if (shouldOpen) {
+          if (menuSearch) { menuSearch.value = ""; filterSectionMenu(); }
           refreshMenuUpdateBadges(menu);
           let recentKey = "";
           try { recentKey = localStorage.getItem("mathBacSyriaRecentMenuItemV1") || ""; } catch (_) {}
@@ -2039,7 +2075,7 @@
             if (recent) item.setAttribute("data-recent-label", "استُخدم مؤخراً");
             else item.removeAttribute("data-recent-label");
           });
-          menu.querySelector("a")?.focus({ preventScroll: true });
+          menuSearch?.focus({ preventScroll: true });
         }
       });
       menuButton.dataset.menuBound = "true";
