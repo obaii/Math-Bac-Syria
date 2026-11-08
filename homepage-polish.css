@@ -6056,3 +6056,17 @@ body.dark-mode #quiz .progress-percent { color: #c6d6ff; }
   outline: 3px solid var(--hp-focus);
   outline-offset: 3px;
 }
+
+
+/* Regression fix: preserve the established two-column student action layout on phones. */
+#student-tools .tools-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 420px) {
+  #student-tools .tools-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #student-tools .tools-actions #toggle-dark-mode {
+    grid-column: 1 / -1;
+  }
+}
