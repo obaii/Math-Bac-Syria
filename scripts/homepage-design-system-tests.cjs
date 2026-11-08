@@ -51,9 +51,9 @@ assert.match(css, /:where\(\.dashboard-actions button, #quiz \.actions button, #
 assert.match(css, /#topic-grid \.topic-mastery-status\s*\{[^}]*min-height:\s*28px/s,
   "topic mastery should have a consistent readable status badge");
 for (const state of ["not-started", "practice", "good", "mastered"]) {
-  assert.match(css, new RegExp("#topic-grid \\\\.topic-mastery-status\\\\." + state),
+  assert.ok(css.includes("#topic-grid .topic-mastery-status." + state),
     "topic mastery badge should have a distinct style for " + state);
-  assert.match(css, new RegExp("body\\\\.dark-mode #topic-grid \\\\.topic-mastery-status\\\\." + state),
+  assert.ok(css.includes("body.dark-mode #topic-grid .topic-mastery-status." + state),
     "topic mastery badge should retain its state styling in dark mode: " + state);
 }
 assert.match(css, /#topic-grid \.topic-mastery-status \+ \.topic-mastery/,
