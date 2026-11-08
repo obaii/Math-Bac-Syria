@@ -866,7 +866,7 @@ const assert = require("node:assert/strict");
     assert.ok((await solutionPanel.locator(".key-idea").innerText()).includes("الفكرة الأساسية للاختبار"), "the key idea should appear in its own highlighted panel");
     assert.equal(await solutionPanel.locator(".solution-steps li").count(), 2, "guided solution steps should appear as separate numbered items");
     assert.equal(await solutionPanel.locator(".solution-steps li").first().innerText(), "الخطوة الأولى للاختبار", "the solution steps should retain their original order and text");
-    const expectedProgress = String(Math.round(100 / Number((await page.locator("#question-number").innerText()).split(" من ")[1])));
+    const expectedProgress = String(Math.round((await page.evaluate(() => index + 1)) / (await page.evaluate(() => quizQuestions.length)) * 100));
     assert.equal(await page.locator("#quiz-progress-track").getAttribute("aria-valuenow"), expectedProgress, "answering a question should update the accessible progress value");
     assert.match(await page.locator("#progress-percent").innerText(), /مكتمل/, "answering a question should update the visible completion label");
     assert.equal(await page.locator("#feedback").getAttribute("aria-live"), "polite", "answer feedback should be announced without interrupting the current task");
