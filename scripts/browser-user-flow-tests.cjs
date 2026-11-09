@@ -688,6 +688,56 @@ const assert = require("node:assert/strict");
     assert.equal(badgeFixture.completion, "50", "the achievement summary should expose the completion percentage");
     assert.equal(badgeFixture.streak, "true", "three consecutive active days should unlock the streak badge");
     assert.equal(badgeFixture.accuracy, "true", "at least ten answers with 80 percent accuracy should unlock the accuracy badge");
+
+    // Learners can tailor dashboard density and achievement detail; choices persist locally.
+    await openPanel("home");
+    await page.locator("#dashboard-density").selectOption("compact");
+    await page.locator("#dashboard-hide-unlocked").check();
+    await page.locator("#dashboard-hide-achievement-descriptions").check();
+    await page.locator("#dashboard-show-next-goal").uncheck();
+    const customizedDashboard = await page.evaluate(() => ({
+      compact: document.body.classList.contains("dashboard-compact"),
+      descriptionsHidden: document.body.classList.contains("dashboard-hide-achievement-descriptions"),
+      completedHidden: [...document.querySelectorAll("#achievement-list .achievement-card.is-unlocked")].every(card => card.hidden),
+      nextGoalHidden: document.querySelector("#achievement-next-goal").hidden,
+      saved: JSON.parse(localStorage.getItem("mathBacSyriaDashboardPreferencesV1") || "null")
+    }));
+    assert.equal(customizedDashboard.compact, true, "compact dashboard density should apply immediately");
+    assert.equal(customizedDashboard.descriptionsHidden, true, "achievement descriptions should be hidden when requested");
+    assert.equal(customizedDashboard.completedHidden, true, "completed achievements should be hidden when requested");
+    assert.equal(customizedDashboard.nextGoalHidden, true, "the next-goal summary should respect its visibility preference");
+    assert.deepEqual(customizedDashboard.saved, {
+      density: "compact", hideUnlockedAchievements: true,
+      hideAchievementDescriptions: true, showNextGoal: false
+    }, "dashboard preferences should be saved as a validated local preference record");
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await openPanel("home");
+    const restoredDashboard = await page.evaluate(() => ({
+      density: document.querySelector("#dashboard-density").value,
+      hideUnlocked: document.querySelector("#dashboard-hide-unlocked").checked,
+      hideDescriptions: document.querySelector("#dashboard-hide-achievement-descriptions").checked,
+      showNextGoal: document.querySelector("#dashboard-show-next-goal").checked,
+      compact: document.body.classList.contains("dashboard-compact")
+    }));
+    assert.deepEqual(restoredDashboard, {
+      density: "compact", hideUnlocked: true, hideDescriptions: true,
+      showNextGoal: false, compact: true
+    }, "dashboard preferences should be restored after reloading the page");
+    await page.locator("#dashboard-preferences-reset").click();
+    const resetDashboard = await page.evaluate(() => ({
+      density: document.querySelector("#dashboard-density").value,
+      hideUnlocked: document.querySelector("#dashboard-hide-unlocked").checked,
+      hideDescriptions: document.querySelector("#dashboard-hide-achievement-descriptions").checked,
+      showNextGoal: document.querySelector("#dashboard-show-next-goal").checked,
+      compact: document.body.classList.contains("dashboard-compact"),
+      saved: JSON.parse(localStorage.getItem("mathBacSyriaDashboardPreferencesV1") || "null")
+    }));
+    assert.deepEqual(resetDashboard, {
+      density: "comfortable", hideUnlocked: false, hideDescriptions: false,
+      showNextGoal: true, compact: false,
+      saved: { density: "comfortable", hideUnlockedAchievements: false, hideAchievementDescriptions: false, showNextGoal: true }
+    }, "reset should restore and persist all default dashboard preferences");
     await page.evaluate(() => { progressData.answered = 0; progressData.correct = 0; progressData.topicStats = {}; progressData.attempts = []; refreshDashboard(); });
     assert.equal(await topicButtons.first().getAttribute("data-topic-attempts"), "0", "an untouched topic should show zero recorded answers");
     assert.equal(await topicButtons.first().locator(".topic-state").innerText(), "لم تبدأ بعد", "an untouched topic should have a not-started label");
@@ -709,7 +759,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v118/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v119/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
