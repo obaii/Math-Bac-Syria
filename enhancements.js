@@ -1151,6 +1151,7 @@
   };
   const startTargetedQuiz = (qs, title) => {
     if (!qs.length) { alert("لا توجد أسئلة محفوظة متاحة. تحقق من النسخة الاحتياطية أو احفظ سؤالاً أولاً."); return; }
+    pendingLessonReviewTopic = "";
     currentTopic = title; reviewMode = true; sessionMistakes = []; quizQuestions = [...qs]; index = 0; correctCount = 0; answered = false;
     document.getElementById("home").classList.add("hidden");
     document.getElementById("results").classList.add("hidden");
@@ -1525,6 +1526,30 @@
     }
   };
   const addDays = days => Date.now() + days * 86400000;
+  const recordLessonReviewResult = (topic, accuracy, questionCount) => {
+    if (!Array.isArray(topics) || !topics.includes(topic) || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > 100 ||
+        !Number.isSafeInteger(questionCount) || questionCount < 3) return false;
+    const previous = extras.lessonSchedule[topic] || { stage:0, lastAccuracy:null };
+    let stage, days;
+    if (accuracy < 60) { stage = 0; days = intervalsDays[0]; }
+    else if (accuracy < 85) { stage = 1; days = intervalsDays[1]; }
+    else {
+      stage = Number.isFinite(previous.lastAccuracy) && previous.lastAccuracy >= 85
+        ? Math.min(intervalsDays.length - 1, (Number(previous.stage) || 1) + 1) : 2;
+      days = intervalsDays[stage];
+    }
+    extras.lessonSchedule[topic] = { stage, due:addDays(days), lastAccuracy:Math.round(accuracy), questionCount, updatedAt:new Date().toISOString() };
+    persistExtras();
+    const reviewPanel = document.getElementById("review-plan");
+    if (reviewPanel && !reviewPanel.hidden) renderReviewPlan();
+    const studyPanel = document.getElementById("study-plan");
+    if (studyPanel && !studyPanel.hidden) renderStudyPlan();
+    return true;
+  };
+  window.addEventListener("mathBacSyria:topic-opened", event => {
+    const topic = event && event.detail && typeof event.detail.topic === "string" ? event.detail.topic : "";
+    pendingLessonReviewTopic = Array.isArray(topics) && topics.includes(topic) ? topic : "";
+  });
   const originalShowQuestion = window.showQuestion;
   if (typeof originalShowQuestion === "function") {
     window.showQuestion = function () {
@@ -2012,6 +2037,22 @@
         return;
       }
       originalExamShowResults();
+    };
+  }
+  const originalSpacedReviewShowResults = window.showResults;
+  if (typeof originalSpacedReviewShowResults === "function") {
+    window.showResults = function () {
+      const topic = pendingLessonReviewTopic;
+      const title = document.getElementById("quiz-title")?.textContent || "";
+      const explicitLessonReview = title.startsWith("مراجعة درس — ");
+      const normalTopicSession = !reviewMode && !examState.active && !examState.resultVisible && topic && currentTopic === topic;
+      const total = Array.isArray(quizQuestions) ? quizQuestions.length : 0;
+      const accuracy = total ? Math.round(Math.min(correctCount, total) / total * 100) : 0;
+      originalSpacedReviewShowResults();
+      if (topic && total >= 3 && !examState.active && !examState.resultVisible && (normalTopicSession || explicitLessonReview)) {
+        recordLessonReviewResult(topic, accuracy, total);
+      }
+      pendingLessonReviewTopic = "";
     };
   }
   const originalExamStartQuiz = window.startQuiz;
