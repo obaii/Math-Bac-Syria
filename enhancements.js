@@ -874,12 +874,12 @@
       button.setAttribute("aria-expanded", String(!section.hidden));
     }
     if (!rows.length) {
-      section.innerHTML = '<h4>تحليل الأخطاء</h4><p>لا توجد أسئلة خاطئة محفوظة حالياً. ستظهر هنا الأنماط التي تختار وصفها بنفسك بعد الإجابة.</p>';
+      section.innerHTML = '<h4>سجل الأخطاء وتحليلها</h4><p>لا توجد أسئلة صالحة للمراجعة حالياً. ستظهر هنا الأنماط التي تختار وصفها بنفسك بعد الإجابة.</p>';
       return;
     }
     const summary = Object.entries(reasonLabels).filter(([key]) => reasonCounts[key] > 0)
       .map(([key,label]) => '<span class="error-analysis-chip">' + escapeHtml(label) + ': ' + reasonCounts[key].toLocaleString("ar") + '</span>').join("");
-    let html = '<h4>تحليل الأخطاء</h4>' +
+    let html = '<h4>سجل الأخطاء وتحليلها</h4>' +
       '<p class="error-analysis-disclosure">التصنيفات أدناه مبنية على اختيارك الذاتي، وليست تشخيصاً آلياً أو حكماً على مستواك. ' +
       classifiedCount.toLocaleString("ar") + ' من أصل ' + rows.length.toLocaleString("ar") + ' خطأً لها سبب محدد.</p>' +
       '<div class="error-analysis-summary" aria-label="توزيع الأسباب التي حددتها">' + (summary || '<span class="error-analysis-chip">لم تُحدّد أسباب بعد</span>') + '</div>' +
