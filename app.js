@@ -663,6 +663,7 @@ function refreshDashboard(){
   renderAchievements();
   renderWeakTopicRecommendation();
   updateResumeCard();
+  window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
 }
 
 function topicIcon(topic){
