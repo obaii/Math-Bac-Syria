@@ -7377,6 +7377,34 @@ body.dark-mode .active-topic-filter-chip {
 }
 
 
+/* Batch 731–740: keep dashboard empty feedback readable and hidden when data exists. */
+.dashboard-empty-state {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-muted);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.dashboard-empty-state[hidden] {
+  display: none !important;
+}
+#recent-activity-summary {
+  color: var(--hp-muted);
+  line-height: 1.65;
+}
+.recent-activity-item time {
+  color: var(--hp-muted);
+  font-size: .84rem;
+}
+@media (forced-colors: active) {
+  .dashboard-empty-state {
+    border: 1px dashed CanvasText;
+  }
+}
+
 /* Batch 711–720: keep the new question-coverage filter accessible in every theme. */
 #coverage-filter {
   min-width: 0;

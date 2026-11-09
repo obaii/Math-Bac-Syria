@@ -95,8 +95,11 @@ function renderPerformanceTrend(){
   }
   const total = days.reduce((sum, day) => sum + day.count, 0);
   chart.replaceChildren();
-  section.hidden = total === 0;
-  if (!total) return;
+  syncDashboardEmptyState(section, total > 0);
+  if (!total) {
+    summary.textContent = "لا توجد إجابات مسجلة خلال آخر ٧ أيام.";
+    return;
+  }
   for (const day of days) {
     const item = document.createElement("li");
     item.className = "performance-trend-day";
@@ -181,25 +184,32 @@ function renderRecentActivity(){
     .filter(attempt => attempt && typeof attempt.topic === "string" &&
       Array.isArray(topics) && topics.includes(attempt.topic) &&
       typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
-  const recentTopics = [];
-  const seenTopics = new Set();
-  for (const attempt of validAttempts) {
-    if (seenTopics.has(attempt.topic)) continue;
-    seenTopics.add(attempt.topic);
-    const topicAttempts = validAttempts.filter(item => item.topic === attempt.topic);
-    const correct = topicAttempts.filter(item => item.correct).length;
-    recentTopics.push({
-      topic: attempt.topic,
-      count: topicAttempts.length,
-      rate: Math.round(correct / topicAttempts.length * 100),
-      date: attempt.date
-    });
-    if (recentTopics.length === 5) break;
+  // Sort defensively: imported or migrated progress may not preserve newest-first order.
+  const sortedAttempts = validAttempts.slice().sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+  const topicActivity = new Map();
+  for (const attempt of sortedAttempts) {
+    let item = topicActivity.get(attempt.topic);
+    if (!item) {
+      item = { topic: attempt.topic, count: 0, correct: 0, date: attempt.date };
+      topicActivity.set(attempt.topic, item);
+    }
+    item.count += 1;
+    if (attempt.correct) item.correct += 1;
   }
+  const recentTopics = Array.from(topicActivity.values()).slice(0, 5).map(item => ({
+    ...item,
+    rate: Math.round(item.correct / item.count * 100)
+  }));
   list.replaceChildren();
-  section.hidden = recentTopics.length === 0;
+  syncDashboardEmptyState(section, recentTopics.length > 0);
+  const summary = $("recent-activity-summary");
+  if (summary) {
+    summary.textContent = recentTopics.length
+      ? "يعرض " + recentTopics.length.toLocaleString("ar") + " أبحاث حديثة من " + validAttempts.length.toLocaleString("ar") + " إجابة محفوظة."
+      : "لم تسجل إجابات تدريبية بعد.";
+  }
   const dateFormatter = new Intl.DateTimeFormat("ar", {
-    day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"
+    day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
   });
   for (const item of recentTopics) {
     const row = document.createElement("li");
@@ -211,9 +221,13 @@ function renderRecentActivity(){
     const meta = document.createElement("span");
     meta.textContent = item.count.toLocaleString("ar") + " إجابة · " +
       item.rate.toLocaleString("ar") + "٪ صحيحة";
+    row.dataset.topic = item.topic;
+    row.dataset.attemptCount = String(item.count);
+    row.dataset.accuracy = String(item.rate);
     const date = document.createElement("time");
     date.dateTime = item.date;
-    date.textContent = dateFormatter.format(new Date(item.date));
+    date.title = dateFormatter.format(new Date(item.date));
+    date.textContent = formatTopicActivity(item.date);
     details.append(title, meta, date);
     const button = document.createElement("button");
     button.type = "button";
@@ -248,23 +262,18 @@ function renderWeakTopicRecommendation(){
   const candidates = startedTopics.filter(item => item.answered >= minimumSample);
   candidates.sort((a, b) => a.rate - b.rate || b.answered - a.answered || a.topic.localeCompare(b.topic, "ar"));
   const weakest = candidates[0];
-  section.hidden = !weakest;
-
-  const panel = section.closest(".dashboard-dynamic-panel");
-  const emptyState = panel && panel.querySelector(".dashboard-empty-state");
   if (!weakest) {
-    if (emptyState) {
-      if (!startedTopics.length) {
-        emptyState.textContent = "ابدأ بحل الأسئلة في أحد الأبحاث، وسنقترح عليك ما يستحق المراجعة.";
-      } else {
-        const bestSample = Math.max(...startedTopics.map(item => item.answered));
-        const remaining = Math.max(1, minimumSample - bestSample);
-        emptyState.textContent = "أجب عن " + remaining.toLocaleString("ar") +
-          " إجابة إضافية على الأقل في أحد الأبحاث حتى نبني اقتراح المراجعة على عينة كافية.";
-      }
+    let emptyMessage = "ابدأ بحل الأسئلة في أحد الأبحاث، وسنقترح عليك ما يستحق المراجعة.";
+    if (startedTopics.length) {
+      const bestSample = Math.max(...startedTopics.map(item => item.answered));
+      const remaining = Math.max(1, minimumSample - bestSample);
+      emptyMessage = "أجب عن " + remaining.toLocaleString("ar") +
+        " إجابة إضافية على الأقل في أحد الأبحاث حتى نبني اقتراح المراجعة على عينة كافية.";
     }
+    syncDashboardEmptyState(section, false, emptyMessage);
     return;
   }
+  syncDashboardEmptyState(section, true);
 
   name.textContent = weakest.topic;
   rateNode.textContent = weakest.rate.toLocaleString("ar") + "٪";
@@ -718,6 +727,17 @@ function renderTopics(){
   }));
   refreshDashboard();
 }
+function syncDashboardEmptyState(section, hasContent, emptyMessage){
+  if (!section) return;
+  const panel = section.closest(".dashboard-dynamic-panel");
+  const emptyState = panel && panel.querySelector(".dashboard-empty-state");
+  section.hidden = !hasContent;
+  if (emptyState) {
+    emptyState.hidden = hasContent;
+    if (typeof emptyMessage === "string" && emptyMessage) emptyState.textContent = emptyMessage;
+  }
+}
+
 function updateResumeCard(){
   const section = $("resume-session");
   const name = $("resume-topic-name");
@@ -725,7 +745,7 @@ function updateResumeCard(){
   if (!section || !name || !button) return;
   const lastTopic = getLastOpenedTopic();
   if (!lastTopic || !Array.isArray(topics) || !topics.includes(lastTopic) || !questions.some(q => q.topic === lastTopic)) {
-    section.hidden = true;
+    syncDashboardEmptyState(section, false);
     return;
   }
   name.textContent = lastTopic;
@@ -741,7 +761,7 @@ function updateResumeCard(){
         (answered ? Math.round(correct / answered * 100).toLocaleString("ar") : "٠") + "٪"
       : "لم تسجل إجابات في هذا البحث بعد.";
   }
-  section.hidden = false;
+  syncDashboardEmptyState(section, true);
   const savedSession = readTrainingSession();
   const canResume = savedSession && savedSession.topic === lastTopic && savedSession.questionKeys.length > 0 && savedSession.index < savedSession.questionKeys.length;
   button.textContent = canResume ? "استئناف جلسة التدريب" : "ابدأ التدريب مجدداً";
