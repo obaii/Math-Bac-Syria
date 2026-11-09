@@ -10,6 +10,17 @@ const assert = require("node:assert/strict");
   const pageErrors = [];
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("dialog", dialog => dialog.accept());
+  const openDashboardHome = async () => {
+    const menu = page.locator("#section-menu");
+    if (await menu.isHidden()) {
+      await page.locator("#section-menu-toggle").click();
+      if (await menu.isHidden()) await page.locator("#section-menu-toggle").click();
+    }
+    const link = page.locator('[data-dashboard-target="home"]');
+    await link.waitFor({ state: "visible" });
+    await link.click();
+    await page.locator("#dashboard-panel-home").waitFor({ state: "visible" });
+  };
   const openPanel = async id => {
     const panel = page.locator("#" + id);
     if (await panel.isVisible()) return;
@@ -690,7 +701,7 @@ const assert = require("node:assert/strict");
     assert.equal(badgeFixture.accuracy, "true", "at least ten answers with 80 percent accuracy should unlock the accuracy badge");
 
     // Learners can tailor dashboard density and achievement detail; choices persist locally.
-    await openPanel("home");
+    await openDashboardHome();
     await page.locator("#dashboard-density").selectOption("compact");
     await page.locator("#dashboard-hide-unlocked").check();
     await page.locator("#dashboard-hide-achievement-descriptions").check();
@@ -712,7 +723,7 @@ const assert = require("node:assert/strict");
     }, "dashboard preferences should be saved as a validated local preference record");
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
-    await openPanel("home");
+    await openDashboardHome();
     const restoredDashboard = await page.evaluate(() => ({
       density: document.querySelector("#dashboard-density").value,
       hideUnlocked: document.querySelector("#dashboard-hide-unlocked").checked,
