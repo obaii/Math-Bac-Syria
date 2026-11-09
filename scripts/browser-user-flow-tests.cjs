@@ -1897,6 +1897,9 @@ const assert = require("node:assert/strict");
     // Check compact dashboard and navigation layouts at common phone and tablet widths.
     await openDashboardHome();
     await page.locator("#section-menu-toggle").click();
+    if (await page.locator("#section-menu").isHidden()) {
+      await page.locator("#section-menu-toggle").click();
+    }
     await page.locator("#section-menu").waitFor({ state: "visible" });
     for (const width of [320, 340, 360, 390, 420, 600, 760, 1024]) {
       await page.setViewportSize({ width, height: 900 });
