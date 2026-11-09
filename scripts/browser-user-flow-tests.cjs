@@ -816,7 +816,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v125/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v126/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1893,6 +1893,46 @@ const assert = require("node:assert/strict");
     } finally {
       await page.context().setOffline(false);
     }
+
+    // Check compact dashboard and navigation layouts at common phone and tablet widths.
+    await openDashboardHome();
+    await page.locator("#section-menu-toggle").click();
+    if (await page.locator("#section-menu").isHidden()) {
+      await page.locator("#section-menu-toggle").click();
+    }
+    await page.locator("#section-menu").waitFor({ state: "visible" });
+    for (const width of [320, 340, 360, 390, 420, 600, 760, 1024]) {
+      await page.setViewportSize({ width, height: 900 });
+      const layout = await page.evaluate(() => {
+        const visible = element => {
+          const style = getComputedStyle(element);
+          return style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0;
+        };
+        const menu = document.querySelector("#section-menu");
+        const cards = [...menu.querySelectorAll(".quick-start-card")].filter(visible);
+        const dashboard = document.querySelector("#dashboard-panel-home");
+        const panels = [...dashboard.querySelectorAll(".dashboard-weekly-summary, .personalized-learning-path, .stat-card")]
+          .filter(visible);
+        const outside = [...cards, ...panels].filter(element => {
+          const rect = element.getBoundingClientRect();
+          return rect.left < -1 || rect.right > document.documentElement.clientWidth + 1;
+        });
+        return {
+          viewport: document.documentElement.clientWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          visibleCards: cards.length,
+          outsideElements: outside.map(element => element.className || element.id)
+        };
+      });
+      assert.ok(layout.documentWidth <= width + 2,
+        "homepage should not scroll horizontally at " + width + "px; got " + layout.documentWidth);
+      assert.equal(layout.visibleCards, 19, "all section shortcuts should remain visible at " + width + "px");
+      assert.deepEqual(layout.outsideElements, [],
+        "dashboard cards and section shortcuts should stay within the viewport at " + width + "px");
+    }
+    await page.locator("#section-menu-toggle").click();
+    await page.locator("#section-menu").waitFor({ state: "hidden" });
+    await page.setViewportSize({ width: 1365, height: 900 });
 
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
     console.log("PASS: desktop flows, topic cards, bookmarks, quiz feedback, exam simulation, 360/390px responsive layout, question diagram bounds, MathJax rendering, and offline launch");
