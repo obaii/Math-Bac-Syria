@@ -497,9 +497,7 @@ const assert = require("node:assert/strict");
       supplement: window.MathFormulaLibraryData.filter(item => item.level === "supplement").length,
       complex: window.MathFormulaLibraryData.filter(item => item.level === "bac" && item.unit === "الأعداد العقدية").length
     }));
-    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");
-    await page.locator("#formula-stage").selectOption("bac");
-    assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
+    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");    await page.locator("#formula-stage").selectOption("bac");    assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
     await page.locator("#formula-unit").selectOption("الأعداد العقدية");
     assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.complex), "unit filter should show complex-number formulas only");
     await page.locator("#formula-search").fill("دي موافر");
@@ -737,6 +735,77 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await openDashboardHome();
 
+    // The personalized path uses topic evidence, explains its confidence, and launches the selected research.
+    await page.evaluate(() => {
+      progressData.topicStats = {};
+      progressData.seenQuestions = {};
+      refreshDashboard();
+    });
+    const emptyLearningPath = await page.evaluate(() => ({
+      level: document.querySelector("#learning-path-level").textContent,
+      levelKey: document.querySelector("#learning-path-level").dataset.level,
+      steps: document.querySelectorAll("#learning-path-list .learning-path-step").length,
+      answers: document.querySelector("#learning-path-answered").textContent
+    }));
+    assert.equal(emptyLearningPath.levelKey, "not-started", "the path should not claim a level before any answers exist");
+    assert.equal(emptyLearningPath.steps, 3, "the path should provide up to three initial research suggestions");
+    assert.ok(["0", "٠"].includes(emptyLearningPath.answers), "the path should display zero answers for a new learner regardless of browser numeral locale");
+    const initialPathTopics = await page.locator("#learning-path-list .learning-path-step").evaluateAll(items => items.map(item => item.dataset.topic));
+    assert.deepEqual(initialPathTopics, await page.evaluate(() => topics.slice(0, 3)),
+      "an untouched learner should receive the first three available topics in curriculum order");
+
+    const provisionalPath = await page.evaluate(() => {
+      const [weakSample, partialSample, untouched] = topics;
+      progressData.topicStats = {
+        [weakSample]: { answered: 10, correct: 6 },
+        [partialSample]: { answered: 5, correct: 4 }
+      };
+      refreshDashboard();
+      return {
+        level: document.querySelector("#learning-path-level").textContent,
+        levelKey: document.querySelector("#learning-path-level").dataset.level,
+        reliable: document.querySelector("#learning-path-reliable").textContent,
+        topics: [...document.querySelectorAll("#learning-path-list .learning-path-step")].map(item => item.dataset.topic),
+        note: document.querySelector("#learning-path-note").textContent
+      };
+    });
+    assert.equal(provisionalPath.levelKey, "provisional", "one sufficiently sampled topic should not be presented as a confident overall level");
+    assert.ok(["1", "١"].includes(provisionalPath.reliable), "the path should count topics with at least ten answers regardless of browser numeral locale");
+    assert.equal(provisionalPath.topics[0], await page.evaluate(() => topics[2]),
+      "an unstarted topic should be prioritized before topics with recorded practice");
+    assert.ok(provisionalPath.note.includes("مؤشر تدريبي إرشادي") || provisionalPath.note.includes("لا نعرض تصنيف"),
+      "the path should communicate the limits of an early estimate");
+
+    const establishedPath = await page.evaluate(() => {
+      const [first, second] = topics;
+      progressData.topicStats = {
+        [first]: { answered: 10, correct: 9 },
+        [second]: { answered: 10, correct: 7 }
+      };
+      refreshDashboard();
+      return {
+        levelKey: document.querySelector("#learning-path-level").dataset.level,
+        reliable: document.querySelector("#learning-path-reliable").textContent,
+        coverage: document.querySelector("#learning-path-progress").getAttribute("aria-valuenow"),
+        firstTopic: document.querySelector("#learning-path-list .learning-path-step").dataset.topic,
+        buttonLabel: document.querySelector("#learning-path-list .learning-path-start").getAttribute("aria-label")
+      };
+    });
+    assert.equal(establishedPath.levelKey, "building", "a broader sample with remaining untouched topics should recommend building skills");
+    assert.ok(["2", "٢"].includes(establishedPath.reliable), "two topics with ten answers each should meet the broader evidence threshold regardless of browser numeral locale");
+    assert.equal(establishedPath.coverage, "0", "coverage should be calculated from distinct seen questions, not answer count");
+    assert.equal(establishedPath.firstTopic, await page.evaluate(() => topics[2]),
+      "the path should keep untouched topics in the next-step sequence");
+    assert.ok(establishedPath.buttonLabel.includes(establishedPath.firstTopic),
+      "each learning-path action should expose its selected topic to assistive technology");
+    await page.locator("#learning-path-list .learning-path-start").first().click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), establishedPath.firstTopic,
+      "the learning path should launch the selected topic directly");
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+    await page.evaluate(() => { progressData.topicStats = {}; progressData.seenQuestions = {}; refreshDashboard(); });
+
     // Learners can tailor dashboard density and achievement detail; choices persist locally.
     await openDashboardHome();
     await page.locator("#dashboard-density").selectOption("compact");
@@ -807,7 +876,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v120/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v121/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -926,10 +995,8 @@ const assert = require("node:assert/strict");
     await page.evaluate(original => {
       progressData.seenQuestions = original;
       saveProgress();
-      document.querySelector("#coverage-filter").value = "الكل";
-      document.querySelector("#difficulty").value = "الكل";
-      document.querySelector("#mastery-filter").value = "الكل";
-      document.querySelector("#topic-search").value = "";
+      document.querySelector("#coverage-filter").value = "الكل";      document.querySelector("#difficulty").value = "الكل";
+      document.querySelector("#mastery-filter").value = "الكل";      document.querySelector("#topic-search").value = "";
       saveHomepageFilters();
       renderTopics();
     }, originalSeenQuestions);
@@ -1426,11 +1493,9 @@ const assert = require("node:assert/strict");
     assert.ok(await page.locator("#options [data-option]").first().evaluate(node => node.classList.contains("exam-selected")), "returning to an answered question should preserve its selected answer");
     await page.locator("#exam-submit").click();
     await page.locator("#results").waitFor({ state: "visible" });
-    assert.ok((await page.locator("#score").innerText()).trim().length > 0, "exam submission should show a score");
-    assert.equal(await page.locator("#exam-review .exam-review-item").count(), 20, "exam review should include every submitted question");
+    assert.ok((await page.locator("#score").innerText()).trim().length > 0, "exam submission should show a score");    assert.equal(await page.locator("#exam-review .exam-review-item").count(), 20, "exam review should include every submitted question");
     assert.ok((await page.locator("#exam-review").innerText()).includes("سؤال متروك"), "unanswered questions should be clearly identified as skipped in the review");
-    assert.ok((await page.locator("#exam-review .exam-result-summary").innerText()).includes("٪ إجابات صحيحة"), "the final result should show the percentage of correct answers");
-    assert.equal(await page.locator("#exam-question-nav").isVisible(), false, "the question navigator should hide after exam submission");
+    assert.ok((await page.locator("#exam-review .exam-result-summary").innerText()).includes("٪ إجابات صحيحة"), "the final result should show the percentage of correct answers");    assert.equal(await page.locator("#exam-question-nav").isVisible(), false, "the question navigator should hide after exam submission");
     const examHistory = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(examHistory && examHistory.examHistory && examHistory.examHistory.length > 0, "exam result should be saved locally");
 

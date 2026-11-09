@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261108-720">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261109-810">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261109-821">
   <script>
     window.MathJax = {
       tex: {
@@ -184,6 +184,20 @@
         </div>
         <button type="button" id="dashboard-weekly-focus-start" class="dashboard-weekly-action" hidden>ابدأ التدريب على البحث المقترح</button>
         <p id="dashboard-weekly-empty" class="dashboard-weekly-empty" hidden>ابدأ التدريب لتظهر هنا خلاصة نشاطك خلال آخر سبعة أيام.</p>
+      </section>
+      <section class="personalized-learning-path" id="personalized-learning-path" aria-labelledby="personalized-learning-path-title" aria-live="polite">
+        <div class="personalized-learning-path-heading">
+          <div><p class="eyebrow">مسارك التعليمي الشخصي</p><h3 id="personalized-learning-path-title">خريطة تعلّمك التالية</h3><p id="learning-path-intro">سنرتّب لك الأبحاث اعتماداً على إجاباتك وتغطيتك لبنك الأسئلة.</p></div>
+          <span class="learning-path-level" id="learning-path-level">بانتظار بداية التدريب</span>
+        </div>
+        <div class="learning-path-metrics">
+          <div><strong id="learning-path-answered">٠</strong><span>إجابة مسجلة</span></div>
+          <div><strong id="learning-path-reliable">٠</strong><span>أبحاث بعينة كافية</span></div>
+          <div><strong id="learning-path-started">٠</strong><span>أبحاث بدأت بها</span></div>
+        </div>
+        <div class="learning-path-track" role="progressbar" aria-label="تغطية الأبحاث التي بدأت بها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="learning-path-progress"><span id="learning-path-progress-fill"></span></div>
+        <ol class="learning-path-list" id="learning-path-list"></ol>
+        <p class="learning-path-note" id="learning-path-note" role="status">هذا مؤشر تدريبي إرشادي يتطور مع إجاباتك، وليس حكماً نهائياً على مستواك.</p>
       </section>
       <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
     </div>
