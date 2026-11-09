@@ -7830,3 +7830,90 @@ body.dark-mode .dashboard-preference-field select {
 @media (prefers-reduced-motion: reduce) {
   body.dashboard-compact * { scroll-behavior: auto; }
 }
+
+
+/* 811–820: Weekly learning snapshot in the student dashboard. */
+.dashboard-weekly-summary {
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 18px;
+  background: var(--hp-surface, var(--card-bg));
+}
+.dashboard-weekly-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dashboard-weekly-heading h3 { margin: 2px 0 4px; font-size: 18px; }
+.dashboard-weekly-heading p:last-child { margin: 0; color: var(--hp-muted, var(--muted)); font-size: 12px; }
+.dashboard-weekly-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: var(--hp-surface-soft, var(--bg));
+  color: var(--hp-primary, var(--primary));
+  font-weight: 800;
+}
+.dashboard-weekly-metrics {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 9px;
+  margin: 14px 0;
+}
+.dashboard-weekly-metrics > div {
+  min-width: 0;
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: var(--hp-surface-soft, var(--bg));
+  text-align: center;
+}
+.dashboard-weekly-metrics strong { display: block; font-size: 23px; line-height: 1.3; color: var(--hp-ink, var(--text)); }
+.dashboard-weekly-metrics span { display: block; margin-top: 3px; color: var(--hp-muted, var(--muted)); font-size: 11px; }
+.dashboard-weekly-chart {
+  display: grid;
+  grid-template-columns: repeat(7,minmax(0,1fr));
+  gap: 8px;
+  align-items: end;
+  min-height: 112px;
+  padding: 12px 8px 8px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 13px;
+}
+.dashboard-weekly-day { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.dashboard-weekly-bar-track { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 58px; border-radius: 7px; background: var(--hp-surface-soft, var(--bg)); overflow: hidden; }
+.dashboard-weekly-bar { display: block; width: min(24px,70%); min-height: 0; border-radius: 6px 6px 2px 2px; background: var(--hp-primary, var(--primary)); }
+.dashboard-weekly-day strong { font-size: 11px; color: var(--hp-ink, var(--text)); }
+.dashboard-weekly-day small { color: var(--hp-muted, var(--muted)); font-size: 10px; }
+.dashboard-weekly-insights { display: grid; gap: 7px; margin-top: 12px; }
+.dashboard-weekly-insights p { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--hp-surface-soft, var(--bg)); color: var(--hp-ink, var(--text)); font-size: 12px; line-height: 1.7; }
+.dashboard-weekly-action {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--hp-primary, var(--primary));
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dashboard-weekly-action:focus-visible { outline: 3px solid var(--hp-focus, var(--primary)); outline-offset: 3px; }
+.dashboard-weekly-empty { margin: 12px 0 0; color: var(--hp-muted, var(--muted)); font-size: 12px; }
+#dashboard-weekly-focus-start[hidden], #dashboard-weekly-empty[hidden] { display: none !important; }
+body.dark-mode .dashboard-weekly-summary { background: var(--hp-surface, var(--card-bg)); border-color: var(--hp-border, var(--line)); }
+@media (max-width: 480px) {
+  .dashboard-weekly-summary { padding: 12px; }
+  .dashboard-weekly-metrics { gap: 6px; }
+  .dashboard-weekly-metrics > div { padding: 10px 4px; }
+  .dashboard-weekly-metrics strong { font-size: 19px; }
+  .dashboard-weekly-chart { gap: 4px; padding-inline: 4px; }
+  .dashboard-weekly-bar-track { height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-weekly-summary, .dashboard-weekly-action { scroll-behavior: auto; transition: none; }
+}
