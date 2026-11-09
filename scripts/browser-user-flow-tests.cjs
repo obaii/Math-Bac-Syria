@@ -697,7 +697,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v114/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v115/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1184,8 +1184,13 @@ const assert = require("node:assert/strict");
     await openPanel("performance-trend");
     assert.equal(await page.locator("#performance-trend").evaluate(el => !el.hidden), true, "the seven-day performance chart should appear inside its menu panel after an answer is recorded");
     assert.equal(await page.locator("#performance-trend-chart .performance-trend-day").count(), 7, "the performance chart should show one column for each of the last seven days");
-    assert.match(await page.locator("#performance-trend-summary").innerText(), /نسبة صحة/, "the chart should summarize the weekly accuracy");
+    assert.match(await page.locator("#performance-trend-summary").innerText(), /دقة/, "the chart should summarize the weekly accuracy");
+    assert.match(await page.locator("#performance-trend-summary").innerText(), /أيام نشطة/, "the chart should summarize active study days");
+    assert.match(await page.locator("#performance-trend-summary").innerText(), /أكثر الأيام نشاطاً/, "the chart should identify the most active day");
     assert.equal(await page.locator("#performance-trend-chart [role=progressbar]").count(), 7, "each daily chart column should expose its accuracy accessibly");
+    assert.equal(await page.locator("#performance-trend-chart [aria-valuetext]").count(), 7, "each daily chart column should expose a readable correct-answer count");
+    assert.equal(await page.locator("#performance-trend").evaluate(el => Number(el.dataset.activeDays) >= 1 && Number(el.dataset.activeDays) <= 7), true, "the weekly dashboard should expose a valid active-day count");
+    assert.equal(await page.locator("#performance-trend-chart .performance-trend-day[data-date]").count(), 7, "each chart day should expose its local date for assistive and test tooling");
     assert.equal(await page.locator("#dashboard-panel-performance-trend .dashboard-empty-state").evaluate(el => el.hidden), true,
       "the performance-trend empty message should disappear when chart data is available");
     const activityFixture = await page.evaluate(() => {

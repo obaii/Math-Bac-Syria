@@ -7494,3 +7494,36 @@ body.dark-mode #coverage-filter {
     flex: 1 1 100%;
   }
 }
+
+
+/* Dashboard insight details: make today's activity and accessible chart values easier to scan. */
+.performance-trend-day.is-today .performance-trend-label {
+  font-weight: 800;
+  color: var(--hp-accent, var(--primary));
+}
+.performance-trend-day.is-today .performance-trend-track {
+  outline: 2px solid var(--hp-focus);
+  outline-offset: 2px;
+}
+.activity-calendar-day.is-today {
+  outline: 2px solid var(--hp-focus);
+  outline-offset: 2px;
+  font-weight: 800;
+  position: relative;
+}
+.activity-calendar-day.is-today::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 3px;
+  top: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .performance-trend-day.is-today .performance-trend-track,
+  .activity-calendar-day.is-today {
+    transition: outline-color 160ms ease;
+  }
+}
