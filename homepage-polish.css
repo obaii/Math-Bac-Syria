@@ -7527,3 +7527,28 @@ body.dark-mode #coverage-filter {
     transition: outline-color 160ms ease;
   }
 }
+
+
+/* 771-780: Explain recommendation rationale and sample confidence clearly. */
+#weak-topic-recommendation .weak-topic-reason {
+  margin: 7px 0 0;
+  padding-inline-start: 10px;
+  border-inline-start: 3px solid var(--hp-brand);
+  color: var(--hp-ink);
+  font-size: 13px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+#weak-topic-recommendation .weak-topic-detail {
+  margin-top: 6px;
+}
+#weak-topic-recommendation .weak-topic-action button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  #weak-topic-recommendation .weak-topic-action button {
+    min-height: 46px;
+    width: 100%;
+  }
+}
