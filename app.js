@@ -305,6 +305,8 @@ function renderWeakTopicRecommendation(){
     section.removeAttribute("data-accuracy");
     section.removeAttribute("data-sample-size");
     section.removeAttribute("data-mistake-count");
+    section.removeAttribute("data-confidence");
+    section.removeAttribute("aria-label");
     name.textContent = "";
     rateNode.textContent = "—";
     detail.textContent = "";
