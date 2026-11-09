@@ -1184,7 +1184,7 @@ const assert = require("node:assert/strict");
     await openPanel("performance-trend");
     assert.equal(await page.locator("#performance-trend").evaluate(el => !el.hidden), true, "the seven-day performance chart should appear inside its menu panel after an answer is recorded");
     assert.equal(await page.locator("#performance-trend-chart .performance-trend-day").count(), 7, "the performance chart should show one column for each of the last seven days");
-    assert.match(await page.locator("#performance-trend-summary").innerText(), /نسبة صحة/, "the chart should summarize the weekly accuracy");
+    assert.match(await page.locator("#performance-trend-summary").innerText(), /دقة/, "the chart should summarize the weekly accuracy");
     assert.match(await page.locator("#performance-trend-summary").innerText(), /أيام نشطة/, "the chart should summarize active study days");
     assert.match(await page.locator("#performance-trend-summary").innerText(), /أكثر الأيام نشاطاً/, "the chart should identify the most active day");
     assert.equal(await page.locator("#performance-trend-chart [role=progressbar]").count(), 7, "each daily chart column should expose its accuracy accessibly");
