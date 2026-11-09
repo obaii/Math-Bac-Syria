@@ -262,6 +262,89 @@ function renderRecentActivity(){
     row.append(details, button);
     list.append(row);
   }
+  renderRecentAttemptHistory();
+}
+
+function renderRecentAttemptHistory(){
+  const list = $("recent-attempt-history-list");
+  const summary = $("recent-attempt-history-summary");
+  const empty = $("recent-attempt-history-empty");
+  const topicFilter = $("recent-history-topic-filter");
+  const periodFilter = $("recent-history-period-filter");
+  const resultFilter = $("recent-history-result-filter");
+  if (!list || !summary || !empty || !topicFilter || !periodFilter || !resultFilter) return;
+
+  if (!topicFilter.dataset.initialized) {
+    topicFilter.replaceChildren(new Option("كل الأبحاث", "all"));
+    (Array.isArray(topics) ? topics : []).forEach(topic => topicFilter.add(new Option(topic, topic)));
+    topicFilter.dataset.initialized = "true";
+  }
+  if (!list.dataset.filtersBound) {
+    [topicFilter, periodFilter, resultFilter].forEach(control =>
+      control.addEventListener("change", renderRecentAttemptHistory));
+    list.dataset.filtersBound = "true";
+  }
+
+  const validAttempts = (Array.isArray(progressData.attempts) ? progressData.attempts : [])
+    .filter(attempt => attempt && typeof attempt.topic === "string" &&
+      Array.isArray(topics) && topics.includes(attempt.topic) &&
+      typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
+  const topic = topicFilter.value;
+  const period = periodFilter.value;
+  const result = resultFilter.value;
+  const today = new Date();
+  const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  if (period === "7") start.setDate(start.getDate() - 6);
+  else if (period === "30") start.setDate(start.getDate() - 29);
+  const matching = validAttempts.filter(attempt => {
+    if (topic !== "all" && attempt.topic !== topic) return false;
+    if (result === "correct" && !attempt.correct) return false;
+    if (result === "incorrect" && attempt.correct) return false;
+    if (period !== "all" && new Date(attempt.date) < start) return false;
+    return true;
+  }).sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+  const visible = matching.slice(0, 20);
+  list.replaceChildren();
+  const correctCount = matching.filter(attempt => attempt.correct).length;
+  const accuracy = matching.length ? Math.round(correctCount / matching.length * 100) : 0;
+  summary.textContent = matching.length
+    ? "تطابق " + matching.length.toLocaleString("ar") + " محاولة مع المرشحات، بدقة " +
+      accuracy.toLocaleString("ar") + "٪. " + visible.length.toLocaleString("ar") +
+      " معروضة من أصل " + matching.length.toLocaleString("ar") + "."
+    : "لا توجد محاولات تطابق المرشحات الحالية.";
+  empty.hidden = matching.length > 0;
+  empty.textContent = validAttempts.length
+    ? "لا توجد نتائج لهذا الاختيار. جرّب تغيير المرشحات."
+    : "سيظهر سجل المحاولات هنا بعد حل الأسئلة.";
+  const formatter = new Intl.DateTimeFormat("ar", {
+    day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
+  });
+  for (const attempt of visible) {
+    const row = document.createElement("li");
+    row.className = "recent-attempt-item";
+    row.dataset.topic = attempt.topic;
+    row.dataset.result = attempt.correct ? "correct" : "incorrect";
+    const details = document.createElement("div");
+    details.className = "recent-attempt-details";
+    const title = document.createElement("strong");
+    title.textContent = attempt.topic;
+    const status = document.createElement("span");
+    status.className = "recent-attempt-status " + (attempt.correct ? "is-correct" : "is-incorrect");
+    status.textContent = attempt.correct ? "إجابة صحيحة" : "تحتاج إلى مراجعة";
+    const date = document.createElement("time");
+    date.dateTime = attempt.date;
+    date.textContent = formatter.format(new Date(attempt.date));
+    details.append(title, status, date);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "recent-activity-button";
+    button.textContent = "تدرّب مجدداً";
+    button.setAttribute("aria-label", "تدرّب مجدداً في بحث " + attempt.topic);
+    button.addEventListener("click", () => startQuiz(attempt.topic));
+    row.append(details, button);
+    list.append(row);
+  }
+  list.setAttribute("aria-label", "أحدث " + visible.length.toLocaleString("ar") + " محاولة تدريبية");
 }
 
 function renderWeakTopicRecommendation(){
