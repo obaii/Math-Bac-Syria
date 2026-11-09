@@ -7575,16 +7575,20 @@ body.dark-mode #coverage-filter {
 .recent-history-filters {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 7px 10px;
-  align-items: center;
+  gap: 10px;
 }
-.recent-history-filters label {
+.recent-history-filter {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.recent-history-filter label {
   min-width: 0;
   font-size: 0.9rem;
   font-weight: 650;
   overflow-wrap: anywhere;
 }
-.recent-history-filters select {
+.recent-history-filter select {
   width: 100%;
   min-width: 0;
   min-height: 42px;
@@ -7647,7 +7651,6 @@ body.dark-mode .recent-attempt-item {
   .recent-history-filters {
     grid-template-columns: minmax(0, 1fr);
   }
-  .recent-history-filters label:not(:first-child) { margin-top: 4px; }
   .recent-attempt-item { align-items: stretch; }
   .recent-attempt-item .recent-activity-button { width: 100%; }
 }
