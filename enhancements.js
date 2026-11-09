@@ -2204,99 +2204,8 @@
       }
       return true;
     };
-    const menuSearch = document.getElementById("section-menu-search");
-    const menuSearchStatus = document.getElementById("section-menu-search-status");
-    const menuSearchEmpty = document.getElementById("section-menu-search-empty");
-    const menuSearchClear = document.getElementById("section-menu-search-clear");
-    const menuSearchAliases = {
-      flashcards: "بطاقات مراجعة حفظ تذكر تعليمية فلاش",
-      "formula-library": "القوانين الرياضية المعادلات الصيغ قوانين",
-      "math-assistant": "مساعد ذكي شرح سؤال اسأل",
-      "solved-examples-library": "مسائل محلولة أمثلة حلول تمارين محلولة",
-      "topic-section": "الأبحاث الموضوعات التدريب الأسئلة المنهاج",
-      "exam-tools": "امتحان اختبار محاكاة مؤقت تجريبي",
-      "student-tools": "أدوات الطالب مراجعة تقدم سجل محفوظات",
-      "scientific-calculator": "حاسبة علمية حساب آلة آلة حاسبة",
-      "function-plotter": "رسم الدوال المنحنيات بياني تمثيل الدوال",
-      "geometry-tools": "هندسة تفاعلية أشكال مساحة حجم أشكال هندسية",
-      home: "ملخص إحصائيات الإجابات مساحتي",
-      "learning-progress-title": "تقدم الأبحاث بداية خطوتي التالية",
-      "question-coverage-title": "تغطية بنك الأسئلة المحلولة الأسئلة المجربة",
-      "weak-topic-recommendation": "اقتراح توصية بحث ضعيف مراجعة اقتراح مراجعة",
-      "resume-session": "استئناف متابعة آخر جلسة أكمل",
-      "recent-activity": "سجل النشاط آخر الإجابات سجل الإجابات",
-      "performance-trend": "الأداء التحسن النسبة تطور",
-      "activity-calendar": "تقويم الأيام الانتظام تقويم الدراسة",
-      "achievement-section": "إنجازات شارات جوائز"
-    };
-    const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar")
-      .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
-      .replace(/[\u0622\u0623\u0625]/g, "ا")
-      .replace(/[ىی]/g, "ي").replace(/ک/g, "ك")
-      .replace(/[،؛؟!.,:"'«»…]/g, " ")
-      .replace(/\s+/g, " ").trim();
     const visibleMenuCards = () => [...(menu?.querySelectorAll("a.quick-start-card") || [])].filter(card => !card.hidden);
-    const filterSectionMenu = () => {
-      if (!menu || !menuSearch) return;
-      const query = normalizeMenuSearch(menuSearch.value);
-      const terms = query.split(/\s+/).filter(Boolean);
-      let visibleCount = 0;
-      menu.querySelectorAll("a.quick-start-card").forEach(card => {
-        const key = card.dataset.panelToggle || card.dataset.dashboardTarget || "";
-        const searchableText = normalizeMenuSearch(card.textContent + " " + (menuSearchAliases[key] || ""));
-        const matches = terms.length === 0 || terms.every(term => searchableText.includes(term));
-        card.hidden = !matches;
-        if (matches) visibleCount += 1;
-      });
-      menu.querySelectorAll(".quick-start-group-label").forEach(label => {
-        let next = label.nextElementSibling;
-        let hasVisibleCard = false;
-        while (next && !next.classList.contains("quick-start-group-label")) {
-          if (next.matches("a.quick-start-card") && !next.hidden) hasVisibleCard = true;
-          next = next.nextElementSibling;
-        }
-        label.hidden = !hasVisibleCard;
-      });
-      if (menuSearchStatus) {
-        menuSearchStatus.textContent = query
-          ? "النتائج المطابقة: " + visibleCount.toLocaleString("ar") + " من " + menu.querySelectorAll("a.quick-start-card").length.toLocaleString("ar")
-          : "جميع الأقسام متاحة: " + visibleCount.toLocaleString("ar");
-      }
-      if (menuSearchEmpty) menuSearchEmpty.hidden = visibleCount !== 0;
-      if (menuSearchClear) menuSearchClear.hidden = !query;
-    };
-    if (menuSearch && menuSearch.dataset.searchBound !== "true") {
-      menuSearch.addEventListener("input", filterSectionMenu);
-      menuSearch.addEventListener("keydown", event => {
-        if (event.key === "Escape" && menuSearch.value) {
-          event.preventDefault();
-          event.stopPropagation();
-          menuSearch.value = "";
-          filterSectionMenu();
-          return;
-        }
-        if (event.key === "ArrowDown") {
-          const first = visibleMenuCards()[0];
-          if (first) { event.preventDefault(); first.focus(); }
-          return;
-        }
-        if (event.key === "Enter" && normalizeMenuSearch(menuSearch.value)) {
-          const first = visibleMenuCards()[0];
-          if (first) { event.preventDefault(); first.click(); }
-        }
-      });
-      menuSearch.dataset.searchBound = "true";
-    }
-    if (menuSearchClear && menuSearchClear.dataset.clearBound !== "true") {
-      menuSearchClear.addEventListener("click", () => {
-        if (!menuSearch) return;
-        menuSearch.value = "";
-        filterSectionMenu();
-        menuSearch.focus({ preventScroll: true });
-      });
-      menuSearchClear.dataset.clearBound = "true";
-    }
-    if (menu && menu.dataset.searchKeyboardBound !== "true") {
+    if (menu && menu.dataset.menuKeyboardBound !== "true") {
       menu.addEventListener("keydown", event => {
         const link = event.target instanceof Element ? event.target.closest("a.quick-start-card") : null;
         if (!link || link.hidden) return;
@@ -2306,7 +2215,7 @@
         let targetIndex = -1;
         if (event.key === "ArrowDown") targetIndex = Math.min(cards.length - 1, index + 1);
         else if (event.key === "ArrowUp") {
-          if (index === 0) { event.preventDefault(); menuSearch?.focus({ preventScroll: true }); return; }
+          if (index === 0) { event.preventDefault(); menuButton?.focus({ preventScroll: true }); return; }
           targetIndex = index - 1;
         } else if (event.key === "Home") targetIndex = 0;
         else if (event.key === "End") targetIndex = cards.length - 1;
@@ -2315,7 +2224,7 @@
           cards[targetIndex]?.focus({ preventScroll: true });
         }
       });
-      menu.dataset.searchKeyboardBound = "true";
+      menu.dataset.menuKeyboardBound = "true";
     }
     if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
       menuButton.addEventListener("click", () => {
@@ -2327,7 +2236,6 @@
         const shouldOpen = menu.hidden || menu.classList.contains("is-closing");
         setMenuOpen(shouldOpen);
         if (shouldOpen) {
-          if (menuSearch) { menuSearch.value = ""; filterSectionMenu(); }
           refreshMenuUpdateBadges(menu);
           let recentKey = "";
           try { recentKey = localStorage.getItem("mathBacSyriaRecentMenuItemV1") || ""; } catch (_) {}
@@ -2338,7 +2246,7 @@
             if (recent) item.setAttribute("data-recent-label", "استُخدم مؤخراً");
             else item.removeAttribute("data-recent-label");
           });
-          menuSearch?.focus({ preventScroll: true });
+          visibleMenuCards()[0]?.focus({ preventScroll: true });
         }
       });
       menuButton.dataset.menuBound = "true";
