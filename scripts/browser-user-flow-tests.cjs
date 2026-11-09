@@ -497,8 +497,7 @@ const assert = require("node:assert/strict");
       supplement: window.MathFormulaLibraryData.filter(item => item.level === "supplement").length,
       complex: window.MathFormulaLibraryData.filter(item => item.level === "bac" && item.unit === "الأعداد العقدية").length
     }));
-    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");    await page.locator("#formula-stage").selectOption("bac");
-    assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
+    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");    await page.locator("#formula-stage").selectOption("bac");    assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
     await page.locator("#formula-unit").selectOption("الأعداد العقدية");
     assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.complex), "unit filter should show complex-number formulas only");
     await page.locator("#formula-search").fill("دي موافر");
@@ -793,7 +792,7 @@ const assert = require("node:assert/strict");
       };
     });
     assert.equal(establishedPath.levelKey, "building", "a broader sample with remaining untouched topics should recommend building skills");
-    assert.equal(establishedPath.reliable, "٢", "two topics with ten answers each should meet the broader evidence threshold");
+    assert.ok(["2", "٢"].includes(establishedPath.reliable), "two topics with ten answers each should meet the broader evidence threshold regardless of browser numeral locale");
     assert.equal(establishedPath.coverage, "0", "coverage should be calculated from distinct seen questions, not answer count");
     assert.equal(establishedPath.firstTopic, await page.evaluate(() => topics[2]),
       "the path should keep untouched topics in the next-step sequence");
@@ -997,8 +996,7 @@ const assert = require("node:assert/strict");
       progressData.seenQuestions = original;
       saveProgress();
       document.querySelector("#coverage-filter").value = "الكل";      document.querySelector("#difficulty").value = "الكل";
-      document.querySelector("#mastery-filter").value = "الكل";
-      document.querySelector("#topic-search").value = "";
+      document.querySelector("#mastery-filter").value = "الكل";      document.querySelector("#topic-search").value = "";
       saveHomepageFilters();
       renderTopics();
     }, originalSeenQuestions);
@@ -1497,8 +1495,7 @@ const assert = require("node:assert/strict");
     await page.locator("#results").waitFor({ state: "visible" });
     assert.ok((await page.locator("#score").innerText()).trim().length > 0, "exam submission should show a score");    assert.equal(await page.locator("#exam-review .exam-review-item").count(), 20, "exam review should include every submitted question");
     assert.ok((await page.locator("#exam-review").innerText()).includes("سؤال متروك"), "unanswered questions should be clearly identified as skipped in the review");
-    assert.ok((await page.locator("#exam-review .exam-result-summary").innerText()).includes("٪ إجابات صحيحة"), "the final result should show the percentage of correct answers");
-    assert.equal(await page.locator("#exam-question-nav").isVisible(), false, "the question navigator should hide after exam submission");
+    assert.ok((await page.locator("#exam-review .exam-result-summary").innerText()).includes("٪ إجابات صحيحة"), "the final result should show the percentage of correct answers");    assert.equal(await page.locator("#exam-question-nav").isVisible(), false, "the question navigator should hide after exam submission");
     const examHistory = await page.evaluate(() => JSON.parse(localStorage.getItem("mathBacSyriaStudentToolsV1") || "null"));
     assert.ok(examHistory && examHistory.examHistory && examHistory.examHistory.length > 0, "exam result should be saved locally");
 
