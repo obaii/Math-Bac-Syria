@@ -700,6 +700,43 @@ const assert = require("node:assert/strict");
     assert.equal(badgeFixture.streak, "true", "three consecutive active days should unlock the streak badge");
     assert.equal(badgeFixture.accuracy, "true", "at least ten answers with 80 percent accuracy should unlock the accuracy badge");
 
+    // The weekly dashboard snapshot is derived from the last seven local calendar days.
+    await openDashboardHome();
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [
+        { topic: topics[0], correct: true, date: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10).toISOString() },
+        { topic: topics[0], correct: true, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 10).toISOString() },
+        { topic: topics[0], correct: false, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-2, 10).toISOString() },
+        { topic: topics[1], correct: false, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 12).toISOString() },
+        { topic: topics[1], correct: false, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-3, 12).toISOString() }
+      ];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    const weeklySnapshot = await page.evaluate(() => ({
+      attempts: document.querySelector("#dashboard-weekly-summary").dataset.attempts,
+      activeDays: document.querySelector("#dashboard-weekly-summary").dataset.activeDays,
+      accuracy: document.querySelector("#dashboard-weekly-summary").dataset.accuracy,
+      bars: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day").length,
+      best: document.querySelector("#dashboard-weekly-best").textContent,
+      focus: document.querySelector("#dashboard-weekly-focus").textContent,
+      focusTopic: document.querySelector("#dashboard-weekly-focus-start").dataset.topic,
+      actionVisible: !document.querySelector("#dashboard-weekly-focus-start").hidden
+    }));
+    assert.deepEqual(weeklySnapshot, {
+      attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
+      best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة 67٪ من 3 محاولات.",
+      focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
+      focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
+    }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
+    await page.locator("#dashboard-weekly-focus-start").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), await page.evaluate(() => topics[1]),
+      "the weekly recommendation should launch training for the selected focus topic");
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+    await openDashboardHome();
+
     // Learners can tailor dashboard density and achievement detail; choices persist locally.
     await openDashboardHome();
     await page.locator("#dashboard-density").selectOption("compact");
@@ -770,7 +807,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v119/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v120/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -900,7 +937,7 @@ const assert = require("node:assert/strict");
       "restoring the original progress fixture and clearing filters should restore all research cards");
 
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
-    assert.equal(await page.locator("#resume-session").evaluate(el => el.hidden), true, "resume card content should stay hidden until a topic has been practiced");
+    assert.equal(await page.locator("#resume-session").evaluate(el => el.hidden), false, "an unfinished saved session should keep the resume card available even before the first answer");
     assert.equal(await page.locator("#recent-activity").evaluate(el => el.hidden), true, "recent activity content should stay hidden until an answer is recorded");
     assert.equal(await page.locator("#performance-trend").evaluate(el => el.hidden), true, "the performance chart content should stay hidden until a recent answer is recorded");
     assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the weakest-topic suggestion content should stay hidden before any topic has results");
