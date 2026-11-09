@@ -725,8 +725,8 @@ const assert = require("node:assert/strict");
     }));
     assert.deepEqual(weeklySnapshot, {
       attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
-      best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة ٦٧٪ من ٣ محاولات.",
-      focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — ٢ إجابات تحتاج إلى مراجعة هذا الأسبوع.",
+      best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة 67٪ من 3 محاولات.",
+      focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
     await page.locator("#dashboard-weekly-focus-start").click();
