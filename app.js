@@ -1003,10 +1003,15 @@ function updateResumeCard(){
     syncDashboardEmptyState(section, false);
     return;
   }
-  name.textContent = lastTopic;
-  const activity = $("resume-topic-activity");
   const stat = progressData.topicStats[lastTopic] || { answered: 0, correct: 0 };
   const answered = Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+  // Keep the resume card hidden until the student has actually answered at least one question.
+  if (answered === 0) {
+    syncDashboardEmptyState(section, false);
+    return;
+  }
+  name.textContent = lastTopic;
+  const activity = $("resume-topic-activity");
   const correct = Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
   const latestAttempt = getLatestTopicAttempts().get(lastTopic);
   if (activity) {
