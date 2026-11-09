@@ -751,7 +751,7 @@ const assert = require("node:assert/strict");
     }));
     assert.equal(emptyLearningPath.levelKey, "not-started", "the path should not claim a level before any answers exist");
     assert.equal(emptyLearningPath.steps, 3, "the path should provide up to three initial research suggestions");
-    assert.equal(emptyLearningPath.answers, "٠", "the path should display zero answers for a new learner");
+    assert.ok(["0", "٠"].includes(emptyLearningPath.answers), "the path should display zero answers for a new learner regardless of browser numeral locale");
     const initialPathTopics = await page.locator("#learning-path-list .learning-path-step").evaluateAll(items => items.map(item => item.dataset.topic));
     assert.deepEqual(initialPathTopics, await page.evaluate(() => topics.slice(0, 3)),
       "an untouched learner should receive the first three available topics in curriculum order");
