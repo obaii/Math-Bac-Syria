@@ -697,7 +697,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v116/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v117/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1222,6 +1222,18 @@ const assert = require("node:assert/strict");
       const rows = Array.from(document.querySelectorAll("#recent-activity-list li")).map(row => ({
         topic: row.dataset.topic, count: row.dataset.attemptCount, accuracy: row.dataset.accuracy
       }));
+      const topicFilter = document.querySelector("#recent-history-topic-filter");
+      const resultFilter = document.querySelector("#recent-history-result-filter");
+      topicFilter.value = olderTopic;
+      topicFilter.dispatchEvent(new Event("change"));
+      const topicRows = Array.from(document.querySelectorAll("#recent-attempt-history-list li")).map(row => row.dataset.topic);
+      topicFilter.value = "all";
+      resultFilter.value = "incorrect";
+      resultFilter.dispatchEvent(new Event("change"));
+      const incorrectRows = Array.from(document.querySelectorAll("#recent-attempt-history-list li")).map(row => row.dataset.result);
+      topicFilter.value = "all";
+      resultFilter.value = "all";
+      topicFilter.dispatchEvent(new Event("change"));
       progressData.attempts = [];
       renderRecentActivity();
       renderPerformanceTrend();
@@ -1229,20 +1241,25 @@ const assert = require("node:assert/strict");
         recentVisible: !document.querySelector("#dashboard-panel-recent-activity .dashboard-empty-state").hidden,
         trendVisible: !document.querySelector("#dashboard-panel-performance-trend .dashboard-empty-state").hidden,
         recentContentHidden: document.querySelector("#recent-activity").hidden,
-        trendContentHidden: document.querySelector("#performance-trend").hidden
+        trendContentHidden: document.querySelector("#performance-trend").hidden,
+        historyEmptyVisible: !document.querySelector("#recent-attempt-history-empty").hidden
       };
       progressData.attempts = savedAttempts;
       renderRecentActivity();
       renderPerformanceTrend();
-      return { rows, emptyState, expectedOlder: olderTopic, expectedNewer: newerTopic };
+      return { rows, topicRows, incorrectRows, emptyState, expectedOlder: olderTopic, expectedNewer: newerTopic };
     });
     assert.deepEqual(activityFixture.rows.map(row => row.topic),
       [activityFixture.expectedOlder, activityFixture.expectedNewer],
       "recent topics should be ordered by their latest attempt timestamp, not saved-array order");
     assert.deepEqual(activityFixture.rows.map(row => [row.count, row.accuracy]), [["2", "50"], ["1", "0"]],
       "recent topic rows should aggregate answer counts and accuracy across the saved attempt window");
+    assert.deepEqual(activityFixture.topicRows, [activityFixture.expectedOlder, activityFixture.expectedOlder],
+      "the topic filter should retain only attempts from the selected research");
+    assert.deepEqual(activityFixture.incorrectRows, ["incorrect", "incorrect"],
+      "the result filter should retain only incorrect attempts");
     assert.deepEqual(activityFixture.emptyState,
-      { recentVisible: true, trendVisible: true, recentContentHidden: true, trendContentHidden: true },
+      { recentVisible: true, trendVisible: true, recentContentHidden: true, trendContentHidden: true, historyEmptyVisible: true },
       "empty messages should return when activity and seven-day trend data are absent");
     await openPanel("recent-activity");
     await page.locator("#recent-activity-list button").first().click();
