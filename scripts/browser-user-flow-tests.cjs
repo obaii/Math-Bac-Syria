@@ -876,7 +876,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v122/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v123/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1862,6 +1862,17 @@ const assert = require("node:assert/strict");
     await page.locator("#mistake-reason-filter").selectOption("unclassified");
     assert.equal(await page.locator("#mistake-log .mistake-log-item").count(), 0, "the unclassified filter should exclude categorized mistakes");
     await page.locator("#mistake-reason-filter").selectOption("all");
+    await page.locator('#mistake-log [data-remediation-reason="calculation"]').click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة علاجية"), "a reason group should launch its focused remediation session");
+
+    // Reload, then verify that the original per-question review action remains available.
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await openPanel("student-tools");
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+    await page.locator("#mistake-log-toggle").click();
+    await page.locator("#mistake-log").waitFor({ state: "visible" });
     await page.locator("#mistake-log [data-mistake-key]").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة خطأ"), "choosing a mistake-log item should launch focused practice");
