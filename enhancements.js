@@ -32,12 +32,30 @@
     }
     return normalized;
   };
+  const normalizeLessonSchedule = schedule => {
+    if (!isRecord(schedule)) return {};
+    const normalized = Object.create(null);
+    const validTopics = Array.isArray(topics) ? topics : [];
+    for (const [topic, value] of Object.entries(schedule)) {
+      if (!topic || topic === "__proto__" || topic === "constructor" || topic === "prototype" || !validTopics.includes(topic) || !isRecord(value)) continue;
+      const due = Number(value.due);
+      const rawStage = Number(value.stage);
+      const accuracy = Number(value.lastAccuracy);
+      const questionCount = Number(value.questionCount);
+      if (!Number.isFinite(due) || due <= 0 || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > 100 ||
+          !Number.isSafeInteger(questionCount) || questionCount < 1 || questionCount > 1000) continue;
+      const stage = Number.isFinite(rawStage) ? Math.max(0, Math.min(intervalsDays.length - 1, Math.floor(rawStage))) : 0;
+      normalized[topic] = { stage, due, lastAccuracy:Math.round(accuracy), questionCount, updatedAt:typeof value.updatedAt === "string" && Number.isFinite(Date.parse(value.updatedAt)) ? new Date(value.updatedAt).toISOString() : "" };
+    }
+    return normalized;
+  };
   const loadExtras = () => {
     const parsed = safeParse(localStorage.getItem(EXTRA_KEY), {});
     const x = isRecord(parsed) ? parsed : {};
     return {
       bookmarks: Array.isArray(x.bookmarks) ? x.bookmarks.filter(key => typeof key === "string") : [],
       schedule: normalizeSchedule(x.schedule),
+      lessonSchedule: normalizeLessonSchedule(x.lessonSchedule),
       reviewQuestions: isRecord(x.reviewQuestions) ? x.reviewQuestions : {},
       examHistory: normalizeExamHistory(x.examHistory),
       studyPlan: normalizeStudyPlan(x.studyPlan),
@@ -50,6 +68,7 @@
   let extras = loadExtras();
   // Keep the expanded/collapsed state while the study plan re-renders after task updates.
   let studyPlanExpanded = false;
+  let pendingLessonReviewTopic = "";
   const persistExtras = () => { try { localStorage.setItem(EXTRA_KEY, JSON.stringify(extras)); return true; } catch (_) { alert("تعذر حفظ الإعدادات؛ قد تكون مساحة التخزين ممتلئة."); return false; } };
   const keyOf = q => `${q.topic}::${q.q}`;
   const byKey = key => (typeof questions !== "undefined" ? questions : []).find(q => keyOf(q) === key);
