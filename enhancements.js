@@ -879,10 +879,36 @@
     }
     const summary = Object.entries(reasonLabels).filter(([key]) => reasonCounts[key] > 0)
       .map(([key,label]) => '<span class="error-analysis-chip">' + escapeHtml(label) + ': ' + reasonCounts[key].toLocaleString("ar") + '</span>').join("");
+    const remediationGuidance = {
+      concept:{text:"ابدأ بمثال محلول يشرح الفكرة، ثم أعد حل السؤال دون النظر إلى الحل.",resource:"solved-examples-library",resourceLabel:"افتح الأمثلة المحلولة"},
+      law:{text:"راجع القانون المناسب وشروط استخدامه، ثم طبّقه على سؤال من البحث نفسه.",resource:"formula-library",resourceLabel:"افتح مكتبة القوانين"},
+      calculation:{text:"قسّم العمليات الحسابية إلى أسطر قصيرة، وتحقق من كل ناتج قبل الانتقال للخطوة التالية.",resource:"solved-examples-library",resourceLabel:"راجع مثالاً محلولاً"},
+      sign:{text:"اكتب الإشارات والأقواس بوضوح، وراجع أثر كل تحويل جبري قبل إكمال الحل.",resource:"solved-examples-library",resourceLabel:"راجع خطوات الحل"},
+      reading:{text:"استخرج المعطيات وحدد المطلوب بكلماتك قبل اختيار طريقة الحل.",resource:"solved-examples-library",resourceLabel:"شاهد مثالاً محلولاً"},
+      steps:{text:"قسّم الحل إلى خطوات مرقمة، ولا تنتقل إلى النتيجة قبل تبرير الخطوة الحالية.",resource:"solved-examples-library",resourceLabel:"راجع الحلول المفصلة"},
+      other:{text:"أعد قراءة الحل المفصل وحدد الجزء الذي تحتاج إلى مراجعته قبل المحاولة التالية.",resource:"solved-examples-library",resourceLabel:"افتح الأمثلة المحلولة"}
+    };
+    const remediationGroups = Object.keys(reasonLabels).map(reason => ({
+      reason, label:reasonLabels[reason], count:rows.filter(row => row.reason === reason).length,
+      questions:rows.filter(row => row.reason === reason).map(row => row.q)
+    })).filter(group => group.count > 0).sort((a,b) => b.count-a.count || a.label.localeCompare(b.label,"ar"));
+    const remediationHtml = remediationGroups.length ? '<section class="remediation-plan" aria-labelledby="remediation-plan-title">' +
+      '<h5 id="remediation-plan-title">خطوتك العلاجية التالية</h5>' +
+      '<p>هذه اقتراحات مراجعة مرتبطة بالأسباب التي اخترتها بنفسك. ظهور سبب مرة واحدة مؤشر أولي، وتكراره في أكثر من سؤال يساعدك على ترتيب الأولويات دون اعتباره تشخيصاً نهائياً.</p>' +
+      '<div class="remediation-plan-list">' + remediationGroups.map(group => {
+        const guidance = remediationGuidance[group.reason];
+        const evidence = group.count >= 2 ? "ظهر في " + group.count.toLocaleString("ar") + " سؤالاً مختلفاً" : "ظهر في سؤال واحد؛ راجعه كمؤشر أولي";
+        return '<article class="remediation-plan-item" data-remediation-group="' + group.reason + '">' +
+          '<div class="remediation-plan-heading"><strong>' + escapeHtml(group.label) + '</strong><span>' + group.count.toLocaleString("ar") + '</span></div>' +
+          '<p class="remediation-plan-evidence">' + evidence + '</p><p>' + escapeHtml(guidance.text) + '</p>' +
+          '<div class="remediation-plan-actions"><button type="button" data-remediation-reason="' + group.reason + '">ابدأ مراجعة علاجية</button>' +
+          '<button type="button" class="remediation-resource-button" data-remediation-resource="' + guidance.resource + '">' + guidance.resourceLabel + '</button></div></article>';
+      }).join("") + '</div></section>' : "";
     let html = '<h4>سجل الأخطاء وتحليلها</h4>' +
       '<p class="error-analysis-disclosure">التصنيفات أدناه مبنية على اختيارك الذاتي، وليست تشخيصاً آلياً أو حكماً على مستواك. ' +
       classifiedCount.toLocaleString("ar") + ' من أصل ' + rows.length.toLocaleString("ar") + ' خطأً لها سبب محدد.</p>' +
       '<div class="error-analysis-summary" aria-label="توزيع الأسباب التي حددتها">' + (summary || '<span class="error-analysis-chip">لم تُحدّد أسباب بعد</span>') + '</div>' +
+      remediationHtml +
       '<label class="error-analysis-filter-label" for="mistake-reason-filter">تصفية الأخطاء حسب السبب</label>' +
       '<select id="mistake-reason-filter" class="error-analysis-filter">' +
       '<option value="all">كل الأخطاء (' + rows.length.toLocaleString("ar") + ')</option>' +
@@ -904,6 +930,17 @@
         renderMistakeLog();
       });
     }
+    section.querySelectorAll("[data-remediation-reason]").forEach(item => item.addEventListener("click", () => {
+      const reason = item.dataset.remediationReason;
+      const group = remediationGroups.find(entry => entry.reason === reason);
+      if (!group || !group.questions.length) return;
+      startTargetedQuiz(group.questions, "مراجعة علاجية — " + reasonLabels[reason]);
+    }));
+    section.querySelectorAll("[data-remediation-resource]").forEach(item => item.addEventListener("click", () => {
+      const panel = item.dataset.remediationResource;
+      const shortcut = document.querySelector('[data-panel-toggle="' + panel + '"]');
+      if (shortcut) shortcut.click();
+    }));
     section.querySelectorAll("[data-mistake-key]").forEach(item => item.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
