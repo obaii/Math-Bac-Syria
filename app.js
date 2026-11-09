@@ -674,9 +674,16 @@ function renderTopics(){
     const count = questionCounts.total;
     const topicStat = progressData.topicStats[topic] || {answered:0,correct:0};
     const successRate = topicStat.answered ? Math.round(topicStat.correct/topicStat.answered*100) : 0;
+    // 721–724: Keep topic-wide coverage independent of the temporary difficulty filter.
+    const fullCoverage = coverageStats.get(topic) || { total: 0, seen: 0 };
+    const fullCoverageTotal = fullCoverage.total;
+    const fullCoverageSeen = fullCoverage.seen;
+    const fullCoverageRemaining = Math.max(0, fullCoverageTotal - fullCoverageSeen);
+    const fullCoverageRate = fullCoverageTotal
+      ? Math.min(100, Math.round(fullCoverageSeen / fullCoverageTotal * 100)) : 0;
+    // The lower status line remains scoped to the currently selected level.
     const seenCount = questionCounts.seen;
     const remainingCount = Math.max(0, count - seenCount);
-    const coverageRate = count ? Math.min(100, Math.round(seenCount/count*100)) : 0;
     const attempts = Number.isSafeInteger(topicStat.answered) && topicStat.answered > 0 ? topicStat.answered : 0;
     const correctAnswers = Number.isSafeInteger(topicStat.correct) && topicStat.correct > 0 ? Math.min(topicStat.correct, attempts) : 0;
     const incorrectAnswers = Math.max(0, attempts - correctAnswers);
@@ -686,18 +693,20 @@ function renderTopics(){
     const canResumeTopic = resumableTopic === topic;
     const lastActivityText = lastAttempt ? formatTopicActivity(lastAttempt.date) : "";
     const lastActivityTitle = lastAttempt ? new Date(lastAttempt.date).toLocaleString("ar") : "";
-    const topicState = seenCount === 0 ? "لم تبدأ بعد" : coverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
+    // 725–726: Derive the card state and accessible summary from the complete topic bank.
+    const topicState = fullCoverageSeen === 0 ? "لم تبدأ بعد" :
+      fullCoverageRate === 100 ? "جرّبت جميع الأسئلة" : "قيد التقدم";
     const levelCounts = questionCounts.levels;
-    const cardLabel = `${topic}، ${count.toLocaleString("ar")} سؤال متاح، ${seenCount.toLocaleString("ar")} سؤالاً جُرّب، ${coverageRate.toLocaleString("ar")}٪ إنجاز، ${mastery.label}${canResumeTopic ? "، توجد جلسة تدريب محفوظة" : ""}`;
-    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" data-can-resume="${canResumeTopic}" data-coverage="${getCoverageState(topic)}" aria-label="${cardLabel}" style="--topic-order:${displayIndex}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
-      <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span>${isLastOpenedTopic ? `<span class="topic-resume-badge">${canResumeTopic ? "جلسة محفوظة" : "آخر بحث فتحته"}</span>` : ""}<span class="topic-state ${seenCount === 0 ? "not-started" : coverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
+    const cardLabel = `${topic}، ${fullCoverageTotal.toLocaleString("ar")} سؤالاً في بنك البحث كاملاً، ${fullCoverageSeen.toLocaleString("ar")} سؤالاً جُرّب، ${fullCoverageRate.toLocaleString("ar")}٪ تغطية، ${mastery.label}${canResumeTopic ? "، توجد جلسة تدريب محفوظة" : ""}`;
+    return `<button class="topic-card${isLastOpenedTopic ? " is-resume-topic" : ""}" data-topic="${topic}" data-topic-color="${topicColor(topic)}" data-can-resume="${canResumeTopic}" data-coverage="${getCoverageState(topic)}" data-coverage-seen="${fullCoverageSeen}" data-coverage-total="${fullCoverageTotal}" data-coverage-rate="${fullCoverageRate}" aria-label="${cardLabel}" style="--topic-order:${displayIndex}" data-topic-attempts="${attempts}" data-topic-correct="${correctAnswers}" data-mastery="${mastery.key}" data-last-practiced="${lastAttempt ? new Date(lastAttempt.date).toISOString() : ""}" ${count===0?"disabled":""}>
+      <span class="topic-card-top"><span class="topic-number">${String(i+1).padStart(2,"0")}</span>${isLastOpenedTopic ? `<span class="topic-resume-badge">${canResumeTopic ? "جلسة محفوظة" : "آخر بحث فتحته"}</span>` : ""}<span class="topic-state ${fullCoverageSeen === 0 ? "not-started" : fullCoverageRate === 100 ? "covered" : "in-progress"}">${topicState}</span><span class="topic-arrow">↖</span></span>
       <span class="topic-card-content"><span class="topic-subject-icon" aria-hidden="true">${topicIcon(topic)}</span><span class="topic-title">${topic}</span><span class="topic-meta">${count.toLocaleString("ar")} سؤال متاح</span></span>
       <span class="topic-card-levels" aria-label="توزيع الأسئلة حسب المستوى"><span>أساسي ${levelCounts["أساسي"].toLocaleString("ar")}</span><span>متوسط ${levelCounts["متوسط"].toLocaleString("ar")}</span><span>متقدم ${levelCounts["متقدم"].toLocaleString("ar")}</span></span>
-      <span class="topic-card-bottom"><span class="topic-status">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">${canResumeTopic ? "استئناف التدريب ↶" : "ابدأ التدريب ←"}</span></span>
-      <span class="topic-coverage-summary"><span>${coverageRate.toLocaleString("ar")}٪ من الأسئلة جُرّبت</span><span>متبقي ${remainingCount.toLocaleString("ar")}</span></span>
+      <span class="topic-card-bottom"><span class="topic-status" aria-label="${level === "الكل" ? "عدد الأسئلة المجربة من كامل البحث" : "عدد الأسئلة المجربة في المستوى المختار"}">${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً جُرّب</span><span class="topic-start">${canResumeTopic ? "استئناف التدريب ↶" : "ابدأ التدريب ←"}</span></span>
+      <span class="topic-coverage-summary"><span>${fullCoverageSeen.toLocaleString("ar")} من ${fullCoverageTotal.toLocaleString("ar")} سؤالاً جُرّب في البحث كاملاً · ${fullCoverageRate.toLocaleString("ar")}٪</span><span>متبقي ${fullCoverageRemaining.toLocaleString("ar")}</span></span>
       <span class="topic-card-performance">${attempts ? `${attempts.toLocaleString("ar")} إجابة · ${correctAnswers.toLocaleString("ar")} صحيحة · ${incorrectAnswers.toLocaleString("ar")} خاطئة · ${successRate.toLocaleString("ar")}٪ دقة` : "لم تسجل إجابات بعد"}</span>${lastAttempt ? `<time class="topic-last-activity" datetime="${new Date(lastAttempt.date).toISOString()}" title="${lastActivityTitle}">آخر تدريب: ${lastActivityText}</time>` : ""}
       <span class="topic-mastery-status ${mastery.key}" title="${mastery.answered < 10 && mastery.answered > 0 ? "يحتاج تصنيف الإتقان إلى 10 إجابات على الأقل" : mastery.rate === null ? "لم تُسجّل إجابات لهذا البحث بعد" : mastery.rate.toLocaleString("ar") + "٪ من الإجابات صحيحة"}">${mastery.label}</span>
-      <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${coverageRate}" aria-valuetext="جُرّب ${seenCount.toLocaleString("ar")} من ${count.toLocaleString("ar")} سؤالاً، ${coverageRate.toLocaleString("ar")}٪ إنجاز، متبقي ${remainingCount.toLocaleString("ar")} سؤال"><span style="width:${coverageRate}%"></span></span>
+      <span class="topic-mastery" role="progressbar" aria-label="نسبة الأسئلة التي جرى حلها في ${topic} من بنك البحث كاملاً" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${fullCoverageRate}" aria-valuetext="جُرّب ${fullCoverageSeen.toLocaleString("ar")} من ${fullCoverageTotal.toLocaleString("ar")} سؤالاً في البحث كاملاً، ${fullCoverageRate.toLocaleString("ar")}٪ تغطية، متبقي ${fullCoverageRemaining} سؤال"><span style="width:${fullCoverageRate}%"></span></span>
     </button>`;
   }).join("");
   topicGrid.setAttribute("aria-busy", "false");

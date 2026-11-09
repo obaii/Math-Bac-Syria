@@ -616,7 +616,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v110/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v111/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -665,6 +665,8 @@ const assert = require("node:assert/strict");
         inProgress,
         completed,
         completedLevel: completedQuestions[0].level,
+        alternateLevel: completedQuestions.find(question => question.level !== completedQuestions[0].level)?.level || completedQuestions[0].level,
+        completedTotal: completedQuestions.length,
         stateCounts
       };
     });
@@ -689,6 +691,19 @@ const assert = require("node:assert/strict");
       "the completed coverage filter should show the topic whose entire question bank was practiced");
     assert.equal(await topicButtons.first().getAttribute("data-topic"), coverageFixture.completed,
       "the completed coverage filter should identify the fully practiced topic");
+    const completedCard = topicButtons.first();
+    assert.equal(await completedCard.getAttribute("data-coverage-seen"), String(coverageFixture.completedTotal),
+      "the card should expose the number of practiced questions from the complete topic bank");
+    assert.equal(await completedCard.getAttribute("data-coverage-total"), String(coverageFixture.completedTotal),
+      "the card should expose the complete topic-bank total");
+    await page.locator("#difficulty").selectOption(coverageFixture.alternateLevel);
+    assert.equal(await completedCard.getAttribute("data-coverage-rate"), "100",
+      "topic-wide coverage should remain 100 percent when a single difficulty is selected");
+    assert.equal(await completedCard.locator(".topic-mastery").getAttribute("aria-valuenow"), "100",
+      "the accessible coverage progress bar should use the full topic bank, not the selected level");
+    assert.ok((await completedCard.locator(".topic-coverage-summary").innerText()).includes(coverageFixture.completedTotal.toLocaleString("ar")),
+      "the visible coverage summary should retain the full-bank question count");
+    await page.locator("#difficulty").selectOption("الكل");
     await topicSearch.fill(coverageFixture.completed);
     await page.locator("#difficulty").selectOption(coverageFixture.completedLevel);
     await page.locator("#mastery-filter").selectOption("not-started");
@@ -1037,11 +1052,11 @@ const assert = require("node:assert/strict");
       "each research card should show counts for basic, intermediate, and advanced questions");
     assert.match((await practicedTopicCard.locator(".topic-card-levels").innerText()).replace(/\s+/g, " "), /أساسي .* متوسط .* متقدم/,
       "the difficulty distribution should retain the three curriculum level labels");
-    assert.match((await practicedTopicCard.locator(".topic-coverage-summary").innerText()).replace(/\s+/g, " "), /٪ من الأسئلة جُرّبت.*متبقي/,
+    assert.match((await practicedTopicCard.locator(".topic-coverage-summary").innerText()).replace(/\s+/g, " "), /٪ متبقي/,
       "the card should show a visible completion percentage and remaining question count");
-    assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /إنجاز.*متبقي/,
+    assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /تغطية.*متبقي/,
       "the coverage progress bar should announce its percentage and remaining questions accessibly");
-    assert.match(await practicedTopicCard.getAttribute("aria-label"), /إنجاز/,
+    assert.match(await practicedTopicCard.getAttribute("aria-label"), /تغطية/,
       "each research card should expose a concise accessible progress summary");
     assert.ok((await practicedTopicCard.locator(".topic-last-activity").getAttribute("title")).length > 0,
       "the relative last-practice label should provide an exact timestamp on demand");
