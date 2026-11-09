@@ -652,8 +652,17 @@
       chart.innerHTML = days.map(day => {
         const height = day.count ? Math.max(8,Math.round(day.count/maxCount*100)) : 0;
         const label = day.date.toLocaleDateString("ar-SY",{weekday:"short"});
-        return '<div class="dashboard-weekly-day" aria-label="'+escapeHtml(label)+': '+day.count.toLocaleString("ar")+' محاولات"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
+        return '<div class="dashboard-weekly-day" aria-hidden="true"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
       }).join("");
+    }
+    const accessibleDays = document.getElementById("dashboard-weekly-chart-accessible");
+    if (accessibleDays) {
+      accessibleDays.replaceChildren(...days.map(day => {
+        const item = document.createElement("li");
+        const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+        item.textContent = fullDate + ": " + day.count.toLocaleString("ar") + " محاولة تدريب";
+        return item;
+      }));
     }
     const bestNode = document.getElementById("dashboard-weekly-best");
     const focusNode = document.getElementById("dashboard-weekly-focus");
