@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261108-720">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261109-780">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261109-790">
   <script>
     window.MathJax = {
       tex: {
@@ -53,14 +53,14 @@
   <script defer src="merge-questions.js?v=20261105-2"></script>
   <script defer src="solution-guides.js?v=20261103-6"></script>
   <script defer src="question-diagrams.js?v=20261103-4"></script>
-  <script defer src="app.js?v=20261109-780"></script>
+  <script defer src="app.js?v=20261109-790"></script>
   <script defer src="curriculum-progress.js?v=20261105-2"></script>
   <script defer src="scientific-calculator.js?v=20261102-1"></script>
   <script defer src="function-plotter.js?v=20261102-1"></script>
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
-  <script defer src="enhancements.js?v=20261109-780"></script>
+  <script defer src="enhancements.js?v=20261109-790"></script>
   <script defer src="homepage-feedback.js?v=20261108-581"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
@@ -197,6 +197,33 @@
         </div>
       </div>
       <ul id="recent-activity-list" class="recent-activity-list" aria-label="أحدث خمسة أبحاث جرى التدريب عليها"></ul>
+      <section class="recent-attempt-history" aria-labelledby="recent-attempt-history-title">
+        <div class="recent-attempt-history-heading">
+          <h4 id="recent-attempt-history-title">سجل المحاولات بالتفصيل</h4>
+          <p id="recent-attempt-history-summary" aria-live="polite">أحدث محاولاتك التدريبية.</p>
+        </div>
+        <div class="recent-history-filters" role="group" aria-label="تصفية سجل المحاولات">
+          <label for="recent-history-topic-filter">البحث</label>
+          <select id="recent-history-topic-filter">
+            <option value="all">كل الأبحاث</option>
+          </select>
+          <label for="recent-history-period-filter">الفترة</label>
+          <select id="recent-history-period-filter">
+            <option value="all">كل الفترات</option>
+            <option value="7">آخر ٧ أيام</option>
+            <option value="30">آخر ٣٠ يوماً</option>
+          </select>
+          <label for="recent-history-result-filter">النتيجة</label>
+          <select id="recent-history-result-filter">
+            <option value="all">كل النتائج</option>
+            <option value="correct">الإجابات الصحيحة</option>
+            <option value="incorrect">الإجابات التي تحتاج مراجعة</option>
+          </select>
+        </div>
+        <p id="recent-attempt-history-empty" class="recent-attempt-history-empty" role="status" aria-live="polite" hidden></p>
+        <ul id="recent-attempt-history-list" class="recent-attempt-history-list" aria-label="المحاولات التدريبية مرتبة من الأحدث"></ul>
+        <p class="dashboard-history-note">يعرض السجل أحدث ٢٠ محاولة مطابقة، من أصل آخر ١٠٠ إجابة محفوظة على هذا الجهاز.</p>
+      </section>
     </section></div>
     <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-performance-trend" data-dashboard-panel="performance-trend" hidden><p class="dashboard-empty-state" role="status" aria-live="polite">سيظهر تطور أدائك بعد تسجيل إجاباتك.</p><section id="performance-trend" class="performance-trend" aria-labelledby="performance-trend-title" hidden>
       <div class="performance-trend-heading">
