@@ -1871,7 +1871,15 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     await openPanel("student-tools");
     await page.locator("#student-tools").waitFor({ state: "visible" });
-    // A learner can optionally label the reason for a fresh incorrect answer.
+    await page.locator("#smart-review").click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), "المراجعة الذكية", "smart review should launch the due question set");
+
+    // Return home, then test the optional self-reported error reason in isolation.
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await openPanel("student-tools");
+    await page.locator("#student-tools").waitFor({ state: "visible" });
     await page.evaluate(() => {
       const question = questions.find(item => getQuestionType(item) === "mcq");
       if (!question) throw new Error("no multiple-choice question is available for error reflection testing");
@@ -1901,11 +1909,6 @@ const assert = require("node:assert/strict");
     });
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
-    await openPanel("student-tools");
-    await page.locator("#student-tools").waitFor({ state: "visible" });
-    await page.locator("#smart-review").click();
-    await page.locator("#quiz").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#quiz-title").innerText(), "المراجعة الذكية", "smart review should launch the due question set");
 
     // Verify that the cached application shell can reopen when the network is unavailable.
     await page.evaluate(async () => {
