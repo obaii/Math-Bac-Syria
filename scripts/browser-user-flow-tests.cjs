@@ -158,6 +158,23 @@ const assert = require("node:assert/strict");
     await page.locator('[data-panel-toggle="scientific-calculator"]').press("ArrowUp");
     assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
       "ArrowUp from the first shortcut should return focus to the search field");
+    await menuSearch.fill("تقدم");
+    const progressShortcuts = page.locator("#section-menu a.quick-start-card:visible");
+    assert.ok(await progressShortcuts.count() > 1, "the progress keyword should return multiple related destinations");
+    await menuSearch.press("ArrowDown");
+    await progressShortcuts.nth(0).press("ArrowDown");
+    assert.equal(await progressShortcuts.nth(1).evaluate(el => document.activeElement === el),
+      true, "ArrowDown should advance to the next visible shortcut");
+    await progressShortcuts.nth(1).press("End");
+    assert.equal(await progressShortcuts.last().evaluate(el => document.activeElement === el),
+      true, "End should focus the last visible shortcut");
+    await progressShortcuts.last().press("Home");
+    assert.equal(await progressShortcuts.first().evaluate(el => document.activeElement === el),
+      true, "Home should focus the first visible shortcut");
+    await progressShortcuts.first().press("ArrowUp");
+    assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
+      "ArrowUp from the first shortcut should return focus to the search field");
+    await menuSearch.fill("علمية حاسبة");
     await menuSearch.press("Enter");
     await page.locator("#scientific-calculator").waitFor({ state: "visible" });
     assert.ok(await page.locator("#section-menu").isHidden(),
