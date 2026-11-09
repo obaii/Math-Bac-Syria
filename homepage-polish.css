@@ -7654,3 +7654,56 @@ body.dark-mode .recent-attempt-item {
   .recent-attempt-item { align-items: stretch; }
   .recent-attempt-item .recent-activity-button { width: 100%; }
 }
+
+
+/* Batch 791-800: make achievement progress and the next milestone visible. */
+.achievement-next-goal {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.achievement-progress-track {
+  width: 100%;
+  height: 8px;
+  margin-top: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--hp-border);
+}
+.achievement-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--hp-accent, #2563eb);
+  transition: width 180ms ease;
+}
+.achievement-card.is-locked .achievement-progress-fill {
+  opacity: 0.72;
+}
+.achievement-card.is-unlocked .achievement-progress-fill {
+  width: 100% !important;
+}
+.achievement-copy .achievement-progress-track {
+  min-width: 0;
+}
+body.dark-mode .achievement-next-goal {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 640px) {
+  .achievement-heading {
+    align-items: stretch;
+  }
+  .achievement-next-goal {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .achievement-progress-fill { transition: none; }
+}

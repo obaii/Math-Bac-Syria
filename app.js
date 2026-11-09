@@ -433,16 +433,18 @@ function renderAchievements(){
   const section = $("achievement-section");
   const list = $("achievement-list");
   const summary = $("achievement-summary");
+  const nextGoal = $("achievement-next-goal");
   if (!section || !list || !summary) return;
   const answered = Number.isSafeInteger(progressData.answered) && progressData.answered > 0 ? progressData.answered : 0;
   const correct = Number.isSafeInteger(progressData.correct) && progressData.correct >= 0 ? Math.min(progressData.correct, answered) : 0;
   const rate = answered ? Math.round(correct / answered * 100) : 0;
-  const startedTopics = (Array.isArray(topics) ? topics : []).filter(topic => {
+  const topicNames = Array.isArray(topics) ? topics : [];
+  const startedTopics = topicNames.filter(topic => {
     const stat = progressData.topicStats && progressData.topicStats[topic];
     return stat && Number.isSafeInteger(stat.answered) && stat.answered > 0;
   }).length;
   const validAttempts = (Array.isArray(progressData.attempts) ? progressData.attempts : []).filter(attempt =>
-    attempt && typeof attempt.topic === "string" && Array.isArray(topics) && topics.includes(attempt.topic) &&
+    attempt && typeof attempt.topic === "string" && topicNames.includes(attempt.topic) &&
     typeof attempt.correct === "boolean" && Number.isFinite(Date.parse(attempt.date)));
   const activeDates = new Set(validAttempts.map(attempt => {
     const date = new Date(attempt.date);
@@ -458,14 +460,24 @@ function renderAchievements(){
     if (!activeDates.has(dateKey(day))) break;
     streak++;
   }
+  const thirtyDaysAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-29);
+  const activeDaysLast30 = new Set(validAttempts.filter(attempt => new Date(attempt.date) >= thirtyDaysAgo)
+    .map(attempt => dateKey(new Date(attempt.date)))).size;
   const badges = [
     { id:"first-answer", icon:"🌱", title:"البداية الأولى", description:"سجّلت أول إجابة تدريبية.", value:answered, target:1, unlocked:answered>=1, progressText:answered>=1?"تم الإنجاز":"ابدأ بحل سؤال واحد" },
     { id:"ten-answers", icon:"✍️", title:"خطوات ثابتة", description:"أكملت ١٠ إجابات تدريبية.", value:answered, target:10, unlocked:answered>=10, progressText:answered.toLocaleString("ar")+" / ١٠ إجابات" },
     { id:"fifty-answers", icon:"📘", title:"مثابر", description:"أكملت ٥٠ إجابة تدريبية.", value:answered, target:50, unlocked:answered>=50, progressText:answered.toLocaleString("ar")+" / ٥٠ إجابة" },
     { id:"hundred-answers", icon:"🏅", title:"مئة خطوة", description:"أكملت ١٠٠ إجابة تدريبية.", value:answered, target:100, unlocked:answered>=100, progressText:answered.toLocaleString("ar")+" / ١٠٠ إجابة" },
+    { id:"quarter-thousand", icon:"📚", title:"ربع ألف إجابة", description:"أكملت ٢٥٠ إجابة تدريبية.", value:answered, target:250, unlocked:answered>=250, progressText:answered.toLocaleString("ar")+" / ٢٥٠ إجابة" },
+    { id:"five-hundred", icon:"🏆", title:"خمسمئة خطوة", description:"أكملت ٥٠٠ إجابة تدريبية.", value:answered, target:500, unlocked:answered>=500, progressText:answered.toLocaleString("ar")+" / ٥٠٠ إجابة" },
     { id:"explorer", icon:"🧭", title:"مستكشف الأبحاث", description:"بدأت التدريب في خمسة أبحاث مختلفة.", value:startedTopics, target:5, unlocked:startedTopics>=5, progressText:startedTopics.toLocaleString("ar")+" / ٥ أبحاث" },
-    { id:"accuracy", icon:"🎯", title:"دقة مميزة", description:"حققت دقة ٨٠٪ على الأقل بعد ١٠ إجابات.", value:answered>=10 && rate>=80 ? 1 : 0, target:1, unlocked:answered>=10 && rate>=80, progressText:answered<10?"أكمل ١٠ إجابات أولاً":rate.toLocaleString("ar")+"٪ من الدقة المطلوبة ٨٠٪" },
-    { id:"streak", icon:"🔥", title:"ثلاثة أيام متتالية", description:"تدرّبت في ثلاثة أيام متتابعة.", value:streak, target:3, unlocked:streak>=3, progressText:streak.toLocaleString("ar")+" / ٣ أيام" }
+    { id:"ten-topics", icon:"🗺️", title:"رحّالة المنهاج", description:"بدأت التدريب في عشرة أبحاث مختلفة.", value:startedTopics, target:10, unlocked:startedTopics>=10, progressText:startedTopics.toLocaleString("ar")+" / ١٠ أبحاث" },
+    { id:"all-topics", icon:"🎓", title:"استكشاف المنهاج", description:"بدأت التدريب في جميع الأبحاث المتاحة.", value:startedTopics, target:Math.max(1,topicNames.length), unlocked:topicNames.length>0 && startedTopics>=topicNames.length, progressText:startedTopics.toLocaleString("ar")+" / "+topicNames.length.toLocaleString("ar")+" بحث" },
+    { id:"accuracy", icon:"🎯", title:"دقة مميزة", description:"حققت دقة ٨٠٪ على الأقل بعد ١٠ إجابات.", value:answered>=10?rate:answered, target:answered>=10?80:10, unlocked:answered>=10 && rate>=80, progressPercent:answered>=10?Math.min(100,Math.round(rate/80*100)):Math.round(answered/10*100), progressText:answered<10?"أكمل ١٠ إجابات أولاً":rate.toLocaleString("ar")+"٪ من الدقة المطلوبة ٨٠٪" },
+    { id:"accuracy-90", icon:"💎", title:"إتقان عالٍ", description:"حققت دقة ٩٠٪ على الأقل بعد ٢٠ إجابة.", value:answered>=20?rate:answered, target:answered>=20?90:20, unlocked:answered>=20 && rate>=90, progressPercent:answered>=20?Math.min(100,Math.round(rate/90*100)):Math.round(answered/20*100), progressText:answered<20?answered.toLocaleString("ar")+" / ٢٠ إجابة أولاً":rate.toLocaleString("ar")+"٪ من الدقة المطلوبة ٩٠٪" },
+    { id:"streak", icon:"🔥", title:"ثلاثة أيام متتالية", description:"تدرّبت في ثلاثة أيام متتابعة.", value:streak, target:3, unlocked:streak>=3, progressText:streak.toLocaleString("ar")+" / ٣ أيام" },
+    { id:"streak-seven", icon:"🌟", title:"أسبوع من الالتزام", description:"تدرّبت في سبعة أيام متتابعة.", value:streak, target:7, unlocked:streak>=7, progressText:streak.toLocaleString("ar")+" / ٧ أيام" },
+    { id:"active-five", icon:"📅", title:"حضور منتظم", description:"تدرّبت في خمسة أيام مختلفة خلال آخر ٣٠ يوماً.", value:activeDaysLast30, target:5, unlocked:activeDaysLast30>=5, progressText:activeDaysLast30.toLocaleString("ar")+" / ٥ أيام نشطة" }
   ];
   list.replaceChildren();
   for (const badge of badges) {
@@ -478,17 +490,39 @@ function renderAchievements(){
     const title = document.createElement("strong"); title.textContent = badge.title;
     const description = document.createElement("span"); description.textContent = badge.description;
     const progress = document.createElement("small"); progress.textContent = badge.progressText;
-    copy.append(title, description, progress);
+    const progressPercent = badge.progressPercent ?? (badge.target ? Math.round(Math.min(1,badge.value/badge.target)*100) : 0);
+    const track = document.createElement("div");
+    track.className = "achievement-progress-track";
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-label", "التقدم نحو إنجاز " + badge.title);
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    track.setAttribute("aria-valuenow", String(progressPercent));
+    track.setAttribute("aria-valuetext", badge.progressText);
+    const fill = document.createElement("span");
+    fill.className = "achievement-progress-fill";
+    fill.style.width = progressPercent + "%";
+    track.append(fill);
+    copy.append(title, description, progress, track);
     const status = document.createElement("span"); status.className = "achievement-status"; status.textContent = badge.unlocked ? "مكتملة" : "قيد التقدم";
     item.append(icon, copy, status);
     list.append(item);
   }
   const unlockedCount = badges.filter(badge => badge.unlocked).length;
-  summary.textContent = "أنجزت " + unlockedCount.toLocaleString("ar") + " من " + badges.length.toLocaleString("ar") + " إنجازات.";
+  const completion = Math.round(unlockedCount / badges.length * 100);
+  summary.textContent = "أنجزت " + unlockedCount.toLocaleString("ar") + " من " + badges.length.toLocaleString("ar") +
+    " إنجازاً (" + completion.toLocaleString("ar") + "٪).";
+  const next = badges.filter(badge => !badge.unlocked).sort((a,b) =>
+    (b.progressPercent ?? (b.target ? b.value/b.target*100 : 0)) -
+    (a.progressPercent ?? (a.target ? a.value/a.target*100 : 0))
+  )[0];
+  if (nextGoal) nextGoal.textContent = next
+    ? "هدفك التالي: " + next.title + " — " + next.progressText + "."
+    : "أكملت جميع الإنجازات الحالية! واصل التعلّم.";
   section.dataset.unlockedCount = String(unlockedCount);
   section.dataset.totalCount = String(badges.length);
+  section.dataset.completion = String(completion);
 }
-
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");

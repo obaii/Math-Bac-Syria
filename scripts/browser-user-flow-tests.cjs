@@ -662,7 +662,7 @@ const assert = require("node:assert/strict");
     await openPanel("activity-calendar");
     assert.ok(await page.locator("#activity-calendar").isVisible(), "the activity calendar should appear when selected from the section menu");
     await openPanel("achievement-section");
-    assert.equal(await page.locator("#achievement-list .achievement-card").count(), 7, "the dashboard should show seven achievement badges");
+    assert.equal(await page.locator("#achievement-list .achievement-card").count(), 14, "the dashboard should show fourteen achievement milestones");
     assert.ok(await page.locator("#achievement-section").isVisible(), "achievement badges should appear when selected from the section menu");
     const badgeFixture = await page.evaluate(() => {
       progressData.answered = 120;
@@ -671,9 +671,21 @@ const assert = require("node:assert/strict");
       const now = new Date();
       progressData.attempts = [0, 1, 2].map(offset => ({ topic: topics[0], correct: true, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-offset, 12).toISOString() }));
       refreshDashboard();
-      return { unlocked: document.querySelectorAll("#achievement-list .achievement-card.is-unlocked").length, streak: document.querySelector('[data-achievement="streak"]').dataset.unlocked, accuracy: document.querySelector('[data-achievement="accuracy"]').dataset.unlocked };
+      return {
+        unlocked: document.querySelectorAll("#achievement-list .achievement-card.is-unlocked").length,
+        total: document.querySelectorAll("#achievement-list .achievement-card").length,
+        progressBars: document.querySelectorAll("#achievement-list [role=progressbar]").length,
+        streak: document.querySelector('[data-achievement="streak"]').dataset.unlocked,
+        accuracy: document.querySelector('[data-achievement="accuracy"]').dataset.unlocked,
+        nextGoal: document.querySelector("#achievement-next-goal").textContent,
+        completion: document.querySelector("#achievement-section").dataset.completion
+      };
     });
-    assert.equal(badgeFixture.unlocked, 7, "the qualifying practice fixture should unlock all seven achievements");
+    assert.equal(badgeFixture.unlocked, 7, "the qualifying practice fixture should unlock the seven milestones it qualifies for");
+    assert.equal(badgeFixture.total, 14, "the expanded achievement system should render fourteen milestones");
+    assert.equal(badgeFixture.progressBars, 14, "each achievement should expose an accessible progress bar");
+    assert.ok(badgeFixture.nextGoal.includes("هدفك التالي"), "the dashboard should identify the learner's closest next achievement");
+    assert.equal(badgeFixture.completion, "50", "the achievement summary should expose the completion percentage");
     assert.equal(badgeFixture.streak, "true", "three consecutive active days should unlock the streak badge");
     assert.equal(badgeFixture.accuracy, "true", "at least ten answers with 80 percent accuracy should unlock the accuracy badge");
     await page.evaluate(() => { progressData.answered = 0; progressData.correct = 0; progressData.topicStats = {}; progressData.attempts = []; refreshDashboard(); });
@@ -697,7 +709,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v117/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v118/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
