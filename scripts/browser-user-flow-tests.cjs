@@ -656,6 +656,10 @@ const assert = require("node:assert/strict");
       activeDays: document.querySelector("#dashboard-weekly-summary").dataset.activeDays,
       accuracy: document.querySelector("#dashboard-weekly-summary").dataset.accuracy,
       bars: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day").length,
+      chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
+      accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
+      accessibleCounts: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent.match(/: ([٠-٩]+) محاولة تدريب$/)?.[1]),
+      accessibleLabels: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
       focusTopic: document.querySelector("#dashboard-weekly-focus-start").dataset.topic,
@@ -663,11 +667,18 @@ const assert = require("node:assert/strict");
     }));
     assert.deepEqual(weeklySnapshot, {
       attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
+      chartHidden: "true", accessibleDays: 7, accessibleCounts: ["١", "٢", "١", "١", "٠", "٠", "٠"],
+      accessibleLabels: await page.evaluate(() => [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent)),
       best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة 67٪ من 3 محاولات.",
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
-    await page.locator("#dashboard-weekly-focus-start").click();
+    const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allInnerTexts();
+    assert.ok(accessibleWeeklyLabels.every(label => /[٠-٩]+ محاولة تدريب$/.test(label)),
+      "each accessible day entry should include a full date and a localized attempt count");
+    assert.ok(accessibleWeeklyLabels.every(label => /\d/.test(label) || /[٠-٩]/.test(label)),
+      "each accessible day entry should identify its calendar date");
+        await page.locator("#dashboard-weekly-focus-start").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), await page.evaluate(() => topics[1]),
       "the weekly recommendation should launch training for the selected focus topic");
