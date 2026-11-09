@@ -170,6 +170,21 @@
         <div class="stat-card"><span class="stat-icon amber">↻</span><span class="stat-label">تحتاج مراجعة</span><strong id="stat-mistakes" aria-live="polite" aria-atomic="true">٠</strong></div>
         <div class="stat-card"><span class="stat-icon purple">٪</span><span class="stat-label">نسبة النجاح</span><strong id="stat-percent" aria-live="polite" aria-atomic="true">—</strong></div>
       </div>
+      <section class="dashboard-weekly-summary" id="dashboard-weekly-summary" aria-labelledby="dashboard-weekly-title" aria-live="polite">
+        <div class="dashboard-weekly-heading"><div><p class="eyebrow">نظرة على نشاطك</p><h3 id="dashboard-weekly-title">ملخص أسبوعك</h3><p id="dashboard-weekly-period">آخر سبعة أيام من التدريب</p></div><span class="dashboard-weekly-mark" aria-hidden="true">٧</span></div>
+        <div class="dashboard-weekly-metrics">
+          <div><strong id="dashboard-weekly-attempts">٠</strong><span>محاولة تدريب</span></div>
+          <div><strong id="dashboard-weekly-accuracy">—</strong><span>دقة الإجابات</span></div>
+          <div><strong id="dashboard-weekly-days">٠</strong><span>أيام نشطة</span></div>
+        </div>
+        <div class="dashboard-weekly-chart" id="dashboard-weekly-chart" role="group" aria-label="عدد محاولات التدريب في كل يوم من آخر سبعة أيام"></div>
+        <div class="dashboard-weekly-insights">
+          <p id="dashboard-weekly-best">سيظهر البحث الأقوى بعد تسجيل محاولات كافية.</p>
+          <p id="dashboard-weekly-focus">ستظهر أولوية التدريب بعد تسجيل محاولات كافية.</p>
+        </div>
+        <button type="button" id="dashboard-weekly-focus-start" class="dashboard-weekly-action" hidden>ابدأ التدريب على البحث المقترح</button>
+        <p id="dashboard-weekly-empty" class="dashboard-weekly-empty" hidden>ابدأ التدريب لتظهر هنا خلاصة نشاطك خلال آخر سبعة أيام.</p>
+      </section>
       <div class="dashboard-actions"><button id="review-mistakes" class="secondary" type="button">راجع إجاباتي الخاطئة <span>←</span></button><button id="reset-progress" class="text-button" type="button">مسح التقدم المحفوظ</button></div>
     </div>
     <section class="learning-progress dashboard-menu-panel" id="dashboard-panel-learning-progress-title" data-dashboard-panel="learning-progress-title" aria-labelledby="learning-progress-title" hidden>
