@@ -497,8 +497,7 @@ const assert = require("node:assert/strict");
       supplement: window.MathFormulaLibraryData.filter(item => item.level === "supplement").length,
       complex: window.MathFormulaLibraryData.filter(item => item.level === "bac" && item.unit === "الأعداد العقدية").length
     }));
-    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");
-    await page.locator("#formula-stage").selectOption("bac");
+    assert.ok(formulaTotals.total >= 140, "the expanded library should contain at least 140 researched entries");    await page.locator("#formula-stage").selectOption("bac");
     assert.ok((await page.locator("#formula-count").innerText()).includes("من " + formulaTotals.total), "baccalaureate filter should retain the full-library total");
     await page.locator("#formula-unit").selectOption("الأعداد العقدية");
     assert.ok((await page.locator("#formula-count").innerText()).includes("عدد المداخل: " + formulaTotals.complex), "unit filter should show complex-number formulas only");
@@ -772,7 +771,7 @@ const assert = require("node:assert/strict");
       };
     });
     assert.equal(provisionalPath.levelKey, "provisional", "one sufficiently sampled topic should not be presented as a confident overall level");
-    assert.equal(provisionalPath.reliable, "١", "the path should count topics with at least ten answers");
+    assert.ok(["1", "١"].includes(provisionalPath.reliable), "the path should count topics with at least ten answers regardless of browser numeral locale");
     assert.equal(provisionalPath.topics[0], await page.evaluate(() => topics[2]),
       "an unstarted topic should be prioritized before topics with recorded practice");
     assert.ok(provisionalPath.note.includes("مؤشر تدريبي إرشادي") || provisionalPath.note.includes("لا نعرض تصنيف"),
@@ -997,8 +996,7 @@ const assert = require("node:assert/strict");
     await page.evaluate(original => {
       progressData.seenQuestions = original;
       saveProgress();
-      document.querySelector("#coverage-filter").value = "الكل";
-      document.querySelector("#difficulty").value = "الكل";
+      document.querySelector("#coverage-filter").value = "الكل";      document.querySelector("#difficulty").value = "الكل";
       document.querySelector("#mastery-filter").value = "الكل";
       document.querySelector("#topic-search").value = "";
       saveHomepageFilters();
@@ -1497,8 +1495,7 @@ const assert = require("node:assert/strict");
     assert.ok(await page.locator("#options [data-option]").first().evaluate(node => node.classList.contains("exam-selected")), "returning to an answered question should preserve its selected answer");
     await page.locator("#exam-submit").click();
     await page.locator("#results").waitFor({ state: "visible" });
-    assert.ok((await page.locator("#score").innerText()).trim().length > 0, "exam submission should show a score");
-    assert.equal(await page.locator("#exam-review .exam-review-item").count(), 20, "exam review should include every submitted question");
+    assert.ok((await page.locator("#score").innerText()).trim().length > 0, "exam submission should show a score");    assert.equal(await page.locator("#exam-review .exam-review-item").count(), 20, "exam review should include every submitted question");
     assert.ok((await page.locator("#exam-review").innerText()).includes("سؤال متروك"), "unanswered questions should be clearly identified as skipped in the review");
     assert.ok((await page.locator("#exam-review .exam-result-summary").innerText()).includes("٪ إجابات صحيحة"), "the final result should show the percentage of correct answers");
     assert.equal(await page.locator("#exam-question-nav").isVisible(), false, "the question navigator should hide after exam submission");
