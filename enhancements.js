@@ -1347,6 +1347,10 @@
     const later = items.filter(item => item.due > week);
     const mastered = items.filter(item => item.stage >= 3 && item.lastResult === "correct");
     const struggling = items.filter(item => item.lastResult === "wrong");
+    const lessonItems = getScheduledLessonReviews();
+    const dueLessons = lessonItems.filter(item => item.due <= now);
+    const upcomingLessons = lessonItems.filter(item => item.due > now && item.due <= week);
+    const lessonSection = lessonItems.length ? '<section class="lesson-review-plan" aria-labelledby="lesson-review-title"><h4 id="lesson-review-title">جدول مراجعة الدروس</h4><p>يُحدَّد موعد مراجعة البحث بعد إكمال جلسة تدريب عادية، وفق نتيجتك الفعلية وعدد الأسئلة التي أجبت عنها.</p><div class="lesson-review-metrics"><span>مستحق الآن: ' + dueLessons.length.toLocaleString("ar") + '</span><span>قريباً: ' + upcomingLessons.length.toLocaleString("ar") + '</span></div><ul class="lesson-review-list">' + lessonItems.slice(0,10).map(item => '<li><div><strong>' + escapeHtml(item.topic) + '</strong><small>' + (item.due <= now ? "مستحق للمراجعة" : "موعد المراجعة: " + escapeHtml(new Date(item.due).toLocaleDateString("ar-SY"))) + ' · آخر دقة: ' + item.accuracy.toLocaleString("ar") + '٪ · ' + item.questionCount.toLocaleString("ar") + ' سؤالاً</small></div><button type="button" data-lesson-review-topic="' + escapeHtml(item.topic) + '">راجع الدرس</button></li>').join("") + '</ul>' + (lessonItems.length > 10 ? '<p class="review-plan-empty">توجد ' + (lessonItems.length-10).toLocaleString("ar") + ' دروس أخرى في الجدول.</p>' : '') + '</section>' : '<section class="lesson-review-plan" aria-labelledby="lesson-review-title"><h4 id="lesson-review-title">جدول مراجعة الدروس</h4><p>بعد إكمال جلسة تدريب في أي بحث، سيظهر موعد مراجعة الدرس هنا بحسب نتيجتك.</p></section>';
     const fmt = value => new Date(value).toLocaleString("ar-SY", { dateStyle:"medium", timeStyle:"short" });
     const renderGroup = (title, list, emptyText) => `
       <div class="review-plan-group">
@@ -1367,9 +1371,11 @@
         <div><strong>${mastered.length.toLocaleString("ar")}</strong><span>متقن مبدئياً</span></div>
         <div><strong>${struggling.length.toLocaleString("ar")}</strong><span>يحتاج تثبيتاً</span></div>
       </div>
+      ${lessonSection}
       ${renderGroup("مستحق اليوم", due, "لا توجد مراجعات مستحقة الآن. أحسنت!") }
       ${renderGroup("خلال الأيام السبعة القادمة", upcoming, "لا توجد مراجعات مجدولة خلال الأسبوع القادم.") }
       ${renderGroup("بعد أسبوع", later, "لا توجد مواعيد أبعد من أسبوع.") }`;
+    panel.querySelectorAll("[data-lesson-review-topic]").forEach(button => button.addEventListener("click", () => startLessonReview(button.dataset.lessonReviewTopic)));
     typesetMath(panel);
   };
   const toggleReviewPlan = () => {
