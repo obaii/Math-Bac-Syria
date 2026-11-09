@@ -937,7 +937,7 @@ const assert = require("node:assert/strict");
       "restoring the original progress fixture and clearing filters should restore all research cards");
 
     assert.equal(await page.locator("#student-tools").isVisible(), false, "student tools should start hidden");
-    assert.equal(await page.locator("#resume-session").evaluate(el => el.hidden), true, "resume card content should stay hidden until a topic has been practiced");
+    assert.equal(await page.locator("#resume-session").evaluate(el => el.hidden), false, "an unfinished saved session should keep the resume card available even before the first answer");
     assert.equal(await page.locator("#recent-activity").evaluate(el => el.hidden), true, "recent activity content should stay hidden until an answer is recorded");
     assert.equal(await page.locator("#performance-trend").evaluate(el => el.hidden), true, "the performance chart content should stay hidden until a recent answer is recorded");
     assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the weakest-topic suggestion content should stay hidden before any topic has results");
