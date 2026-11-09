@@ -876,7 +876,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v121/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v122/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1821,7 +1821,7 @@ const assert = require("node:assert/strict");
       const now = Date.now();
       localStorage.setItem("mathBacSyriaProgressV1", JSON.stringify({
         answered: 0, correct: 0,
-        mistakes: { [keyOf(dueQuestion)]: { topic: dueQuestion.topic, q: dueQuestion.q } },
+        mistakes: { [keyOf(dueQuestion)]: { topic: dueQuestion.topic, q: dueQuestion.q, selfReportedReason: "calculation", reasonUpdatedAt: new Date().toISOString() } },
         topicStats: {}, attempts: [], seenQuestions: {}
       }));
       localStorage.setItem("mathBacSyriaStudentToolsV1", JSON.stringify({
@@ -1856,11 +1856,35 @@ const assert = require("node:assert/strict");
     await mistakeLogButton.click();
     await page.locator("#mistake-log").waitFor({ state: "visible" });
     assert.equal(await page.locator("#mistake-log .mistake-log-item").count(), 1, "the mistake log should show the unscheduled missed question");
+    assert.ok((await page.locator("#mistake-log").innerText()).includes("الحساب"), "the error analysis should display a student-reported reason");
+    await page.locator("#mistake-reason-filter").selectOption("calculation");
+    assert.equal(await page.locator("#mistake-log .mistake-log-item").count(), 1, "the reason filter should retain matching mistakes");
+    await page.locator("#mistake-reason-filter").selectOption("unclassified");
+    assert.equal(await page.locator("#mistake-log .mistake-log-item").count(), 0, "the unclassified filter should exclude categorized mistakes");
+    await page.locator("#mistake-reason-filter").selectOption("all");
     await page.locator("#mistake-log [data-mistake-key]").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة خطأ"), "choosing a mistake-log item should launch focused practice");
 
     // Reload to return to the home screen; focused practice has no in-quiz back control.
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await openPanel("student-tools");
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+    // A learner can optionally label the reason for a fresh incorrect answer.
+    await page.evaluate(() => startQuiz(topics[0]));
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    const wrongOption = await page.evaluate(() => {
+      const correct = Number(quizQuestions[index].answer);
+      return [...document.querySelectorAll("#options [data-option]")].map(node => Number(node.dataset.option)).find(value => value !== correct);
+    });
+    await page.locator('#options [data-option="' + wrongOption + '"]').click();
+    await page.locator("#feedback [data-error-reason]").first().waitFor({ state: "visible" });
+    await page.locator('#feedback [data-error-reason="calculation"]').click();
+    await page.waitForFunction(() => {
+      const data = JSON.parse(localStorage.getItem("mathBacSyriaProgressV1") || "null");
+      return Object.values(data?.mistakes || {}).some(item => item.selfReportedReason === "calculation");
+    });
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
     await openPanel("student-tools");
