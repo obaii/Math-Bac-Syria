@@ -1862,6 +1862,17 @@ const assert = require("node:assert/strict");
     await page.locator("#mistake-reason-filter").selectOption("unclassified");
     assert.equal(await page.locator("#mistake-log .mistake-log-item").count(), 0, "the unclassified filter should exclude categorized mistakes");
     await page.locator("#mistake-reason-filter").selectOption("all");
+    await page.locator('#mistake-log [data-remediation-reason="calculation"]').click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة علاجية"), "a reason group should launch its focused remediation session");
+
+    // Reload, then verify that the original per-question review action remains available.
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length === 14);
+    await openPanel("student-tools");
+    await page.locator("#student-tools").waitFor({ state: "visible" });
+    await page.locator("#mistake-log-toggle").click();
+    await page.locator("#mistake-log").waitFor({ state: "visible" });
     await page.locator("#mistake-log [data-mistake-key]").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.ok((await page.locator("#quiz-title").innerText()).includes("مراجعة خطأ"), "choosing a mistake-log item should launch focused practice");
