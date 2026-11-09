@@ -2056,7 +2056,7 @@
       .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
       .replace(/[\u0622\u0623\u0625]/g, "ا")
       .replace(/[ىی]/g, "ي").replace(/ک/g, "ك")
-            .replace(/[،؛؟!.,:"\'«»…]/g, " ")
+      .replace(/[،؛؟!.,:"'«»…]/g, " ")
       .replace(/\s+/g, " ").trim();
     const visibleMenuCards = () => [...(menu?.querySelectorAll("a.quick-start-card") || [])].filter(card => !card.hidden);
     const filterSectionMenu = () => {
