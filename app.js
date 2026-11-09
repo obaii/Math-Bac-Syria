@@ -598,6 +598,120 @@ function renderAchievements(){
   section.dataset.totalCount = String(badges.length);
   section.dataset.completion = String(completion);
 }
+function renderPersonalizedLearningPath(){
+  const section = $("personalized-learning-path");
+  const list = $("learning-path-list");
+  if (!section || !list) return;
+  const topicNames = (Array.isArray(topics) ? topics : []).filter(topic =>
+    typeof topic === "string" && questions.some(question => question.topic === topic)
+  );
+  const stats = isRecord(progressData.topicStats) ? progressData.topicStats : {};
+  const seenQuestions = isRecord(progressData.seenQuestions) ? progressData.seenQuestions : {};
+  const rows = topicNames.map((topic, order) => {
+    const stat = isRecord(stats[topic]) ? stats[topic] : {};
+    const answered = Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
+    const correct = Number.isSafeInteger(stat.correct) && stat.correct >= 0 ? Math.min(stat.correct, answered) : 0;
+    const bankCount = questions.filter(question => question.topic === topic).length;
+    const seenCount = questions.reduce((count, question) =>
+      count + (question.topic === topic && seenQuestions[questionKey(question)] === true ? 1 : 0), 0);
+    const accuracy = answered ? Math.round(correct / answered * 100) : null;
+    const coverage = bankCount ? Math.round(seenCount / bankCount * 100) : 0;
+    let priority = 0;
+    let reason = "وسّع تدريبك إلى أسئلة جديدة من هذا البحث.";
+    if (!answered) {
+      priority = 100;
+      reason = "لم تبدأ التدريب في هذا البحث بعد؛ ابدأ بالأسئلة الأساسية وتعرّف إلى أفكاره.";
+    } else if (answered < 10) {
+      priority = 75 + (10 - answered);
+      reason = "لديك " + answered.toLocaleString("ar") + " إجابات فقط؛ أكمل عينة من ١٠ إجابات قبل تقدير الإتقان.";
+    } else if (accuracy < 60) {
+      priority = 70 + (60 - accuracy);
+      reason = "دقتك الحالية " + accuracy.toLocaleString("ar") + "٪؛ راجع خطوات الحل ثم أعد التدريب.";
+    } else if (accuracy < 85) {
+      priority = 45 + (85 - accuracy);
+      reason = "دقتك " + accuracy.toLocaleString("ar") + "٪؛ ثبّت المهارات قبل الانتقال إلى مستوى أعلى.";
+    } else if (coverage < 35) {
+      priority = 25 + (35 - coverage);
+      reason = "أداؤك جيد في الإجابات المسجلة؛ وسّع التغطية إلى أسئلة جديدة من البنك.";
+    } else {
+      priority = 10;
+      reason = "حافظ على مستواك وجرّب أسئلة متوسطة ومتقدمة.";
+    }
+    return { topic, order, answered, correct, accuracy, bankCount, seenCount, coverage, priority, reason };
+  });
+  const totalAnswers = rows.reduce((sum, row) => sum + row.answered, 0);
+  const started = rows.filter(row => row.answered > 0).length;
+  const reliable = rows.filter(row => row.answered >= 10).length;
+  const totalBank = rows.reduce((sum, row) => sum + row.bankCount, 0);
+  const seenTotal = rows.reduce((sum, row) => sum + row.seenCount, 0);
+  const coveragePercent = totalBank ? Math.round(seenTotal / totalBank * 100) : 0;
+  const overallAccuracy = totalAnswers
+    ? Math.round(rows.reduce((sum, row) => sum + row.correct, 0) / totalAnswers * 100) : null;
+  let level = "بانتظار بداية التدريب";
+  let intro = "ابدأ التدريب في أحد الأبحاث، وسنكوّن مسارك من بياناتك الفعلية.";
+  let note = "لا نصنّف مستواك قبل توفر بيانات كافية. هذا مؤشر تدريبي إرشادي وليس حكماً نهائياً.";
+  if (totalAnswers > 0) {
+    if (totalAnswers < 10 || reliable < 2) {
+      level = "مؤشر أولي";
+      intro = "لدينا بداية من سجلّك، لكن نحتاج إلى مزيد من الإجابات في بحثين على الأقل لتحسين دقة التوجيه.";
+      note = "سجّلت " + totalAnswers.toLocaleString("ar") + " إجابة، ولديك " +
+        reliable.toLocaleString("ar") + " أبحاث بعينة من ١٠ إجابات أو أكثر. لا نعرض تصنيف إتقان نهائياً قبل اتساع العينة.";
+    } else if (overallAccuracy < 60) {
+      level = "تثبيت الأساسيات";
+      intro = "سنبدأ بالأبحاث التي تحتاج إلى مراجعة أكبر، ثم ننتقل تدريجياً إلى مهارات أكثر تقدماً.";
+      note = "متوسط دقتك المسجل " + overallAccuracy.toLocaleString("ar") + "٪. ابدأ بمراجعة المفاهيم الأساسية ثم تدرب على أسئلة متنوعة.";
+    } else if (started < rows.length || coveragePercent < 35) {
+      level = "بناء المهارة";
+      intro = "لديك قاعدة جيدة؛ المسار يوازن بين استكمال الأبحاث غير المبدوءة وتوسيع التدريب.";
+      note = "متوسط دقتك " + overallAccuracy.toLocaleString("ar") + "٪، وبدأت " +
+        started.toLocaleString("ar") + " من " + rows.length.toLocaleString("ar") + " أبحاث. وسّع تغطيتك تدريجياً.";
+    } else {
+      level = "تعزيز الإتقان";
+      intro = "أداؤك المسجل يسمح بالتركيز على توسيع التغطية وتثبيت المهارات بالأسئلة المتقدمة.";
+      note = "متوسط دقتك " + overallAccuracy.toLocaleString("ar") + "٪ وتغطية بنك الأسئلة " +
+        coveragePercent.toLocaleString("ar") + "٪. واصل التدريب المتنوع؛ فالنتائج تتغير مع كل إجابة جديدة.";
+    }
+  }
+  rows.sort((a, b) => b.priority - a.priority || a.order - b.order);
+  const selected = rows.slice(0, 3);
+  $("learning-path-level").textContent = level;
+  $("learning-path-level").dataset.level = totalAnswers ? (reliable < 2 ? "provisional" : overallAccuracy < 60 ? "foundation" : started < rows.length || coveragePercent < 35 ? "building" : "mastery") : "not-started";
+  $("learning-path-intro").textContent = intro;
+  $("learning-path-answered").textContent = totalAnswers.toLocaleString("ar");
+  $("learning-path-reliable").textContent = reliable.toLocaleString("ar");
+  $("learning-path-started").textContent = started.toLocaleString("ar") + " / " + rows.length.toLocaleString("ar");
+  $("learning-path-progress").setAttribute("aria-valuenow", String(coveragePercent));
+  $("learning-path-progress-fill").style.width = coveragePercent + "%";
+  $("learning-path-progress").setAttribute("aria-valuetext", coveragePercent.toLocaleString("ar") + "٪ من أسئلة البنك جرى تجربتها");
+  list.replaceChildren();
+  selected.forEach((row, index) => {
+    const item = document.createElement("li");
+    item.className = "learning-path-step";
+    item.dataset.topic = row.topic;
+    item.dataset.priority = String(row.priority);
+    const heading = document.createElement("h4");
+    heading.textContent = (index + 1).toLocaleString("ar") + ". " + row.topic;
+    const detail = document.createElement("p");
+    detail.textContent = row.reason;
+    const meta = document.createElement("span");
+    meta.className = "learning-path-step-meta";
+    meta.textContent = row.answered
+      ? row.answered.toLocaleString("ar") + " إجابة · " + row.accuracy.toLocaleString("ar") + "٪ دقة · " + row.coverage.toLocaleString("ar") + "٪ تغطية"
+      : "لم يبدأ بعد · " + row.bankCount.toLocaleString("ar") + " سؤالاً متاحاً";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "learning-path-start";
+    button.textContent = "ابدأ هذا البحث";
+    button.setAttribute("aria-label", "ابدأ التدريب على " + row.topic);
+    button.addEventListener("click", () => startQuiz(row.topic));
+    item.append(heading, detail, meta, button);
+    list.append(item);
+  });
+  $("learning-path-note").textContent = note;
+  section.dataset.totalAnswers = String(totalAnswers);
+  section.dataset.reliableTopics = String(reliable);
+  section.dataset.coverage = String(coveragePercent);
+}
 function refreshDashboard(){
   $("stat-answered").textContent = progressData.answered.toLocaleString("ar");
   $("stat-correct").textContent = progressData.correct.toLocaleString("ar");
@@ -662,6 +776,7 @@ function refreshDashboard(){
   renderActivityCalendar();
   renderAchievements();
   renderWeakTopicRecommendation();
+  renderPersonalizedLearningPath();
   updateResumeCard();
   window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
 }
