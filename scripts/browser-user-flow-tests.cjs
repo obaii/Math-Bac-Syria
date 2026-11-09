@@ -142,6 +142,60 @@ const assert = require("node:assert/strict");
       "menu transitions should be disabled for reduced-motion users");
     await page.locator("#section-menu-toggle").click();
     assert.ok(await quickStart.isHidden(), "reduced-motion menu closing should be immediate");
+    // Search should match Arabic menu terms regardless of word order and expose keyboard navigation.
+    await page.locator("#section-menu-toggle").click();
+    const menuSearch = page.locator("#section-menu-search");
+    const menuSearchClear = page.locator("#section-menu-search-clear");
+    await menuSearch.fill("علمية حاسبة");
+    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 1,
+      "unordered Arabic search terms should match the scientific calculator shortcut");
+    assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').isVisible(), true,
+      "the matching calculator shortcut should remain visible");
+    assert.ok(await menuSearchClear.isVisible(), "the clear-search control should appear when a query is entered");
+    await menuSearch.press("ArrowDown");
+    assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').evaluate(el => document.activeElement === el), true,
+      "ArrowDown from the search field should focus the first visible shortcut");
+    await page.locator('[data-panel-toggle="scientific-calculator"]').press("ArrowUp");
+    assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
+      "ArrowUp from the first shortcut should return focus to the search field");
+    await menuSearch.fill("تقدم");
+    const progressShortcuts = page.locator("#section-menu a.quick-start-card:visible");
+    assert.ok(await progressShortcuts.count() > 1, "the progress keyword should return multiple related destinations");
+    await menuSearch.press("ArrowDown");
+    await progressShortcuts.nth(0).press("ArrowDown");
+    assert.equal(await progressShortcuts.nth(1).evaluate(el => document.activeElement === el),
+      true, "ArrowDown should advance to the next visible shortcut");
+    await progressShortcuts.nth(1).press("End");
+    assert.equal(await progressShortcuts.last().evaluate(el => document.activeElement === el),
+      true, "End should focus the last visible shortcut");
+    await progressShortcuts.last().press("Home");
+    assert.equal(await progressShortcuts.first().evaluate(el => document.activeElement === el),
+      true, "Home should focus the first visible shortcut");
+    await progressShortcuts.first().press("ArrowUp");
+    assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
+      "ArrowUp from the first shortcut should return focus to the search field");
+    await menuSearch.fill("علمية حاسبة");
+    await menuSearch.press("Enter");
+    await page.locator("#scientific-calculator").waitFor({ state: "visible" });
+    assert.ok(await page.locator("#section-menu").isHidden(),
+      "pressing Enter in a non-empty menu search should open its first matching destination");
+    await page.locator("#section-menu-toggle").click();
+    await page.locator("#section-menu-toggle").click();
+    await menuSearch.fill("لا يوجد قسم بهذه العبارة");
+    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 0,
+      "a query without matches should hide all shortcuts");
+    assert.ok(await page.locator("#section-menu-search-empty").isVisible(),
+      "a query without matches should display the empty-search message");
+    await menuSearchClear.click();
+    assert.equal(await menuSearch.inputValue(), "", "the clear-search control should reset the query");
+    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 19,
+      "clearing the search should restore all nineteen shortcuts");
+    await menuSearch.press("Escape");
+    await page.waitForFunction(() => document.querySelector("#section-menu").hidden,
+      null, { timeout: 3000 });
+    assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false",
+      "Escape after clearing the search should close the menu and update its expanded state");
+
     await page.emulateMedia({ reducedMotion: "no-preference" });
 
     const loadingFixture = await page.evaluate(() => {
@@ -616,7 +670,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v112/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v113/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");

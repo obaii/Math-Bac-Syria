@@ -2030,13 +2030,42 @@
     const menuSearch = document.getElementById("section-menu-search");
     const menuSearchStatus = document.getElementById("section-menu-search-status");
     const menuSearchEmpty = document.getElementById("section-menu-search-empty");
-    const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar").replace(/[\u064B-\u065F\u0670\u0640]/g, "").replace(/[\u0622\u0623\u0625]/g, "ا").replace(/ى/g, "ي").trim();
+    const menuSearchClear = document.getElementById("section-menu-search-clear");
+    const menuSearchAliases = {
+      flashcards: "بطاقات مراجعة حفظ تذكر",
+      "formula-library": "القوانين الرياضية المعادلات الصيغ",
+      "math-assistant": "مساعد ذكي شرح سؤال",
+      "solved-examples-library": "مسائل محلولة أمثلة حلول",
+      "topic-section": "الأبحاث الموضوعات التدريب الأسئلة",
+      "exam-tools": "امتحان اختبار محاكاة مؤقت",
+      "student-tools": "أدوات الطالب مراجعة تقدم سجل",
+      "scientific-calculator": "حاسبة علمية حساب آلة",
+      "function-plotter": "رسم الدوال المنحنيات بياني",
+      "geometry-tools": "هندسة تفاعلية أشكال مساحة حجم",
+      home: "ملخص إحصائيات الإجابات",
+      "learning-progress-title": "تقدم الأبحاث بداية",
+      "question-coverage-title": "تغطية بنك الأسئلة المحلولة",
+      "weak-topic-recommendation": "اقتراح توصية بحث ضعيف مراجعة",
+      "resume-session": "استئناف متابعة آخر جلسة",
+      "recent-activity": "سجل النشاط آخر الإجابات",
+      "performance-trend": "الأداء التحسن النسبة",
+      "activity-calendar": "تقويم الأيام الانتظام",
+      "achievement-section": "إنجازات شارات"
+    };
+    const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar")
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+      .replace(/[\u0622\u0623\u0625]/g, "ا")
+      .replace(/[ىی]/g, "ي").replace(/ک/g, "ك").trim();
+    const visibleMenuCards = () => [...(menu?.querySelectorAll("a.quick-start-card") || [])].filter(card => !card.hidden);
     const filterSectionMenu = () => {
       if (!menu || !menuSearch) return;
       const query = normalizeMenuSearch(menuSearch.value);
+      const terms = query.split(/\s+/).filter(Boolean);
       let visibleCount = 0;
       menu.querySelectorAll("a.quick-start-card").forEach(card => {
-        const matches = !query || normalizeMenuSearch(card.textContent).includes(query);
+        const key = card.dataset.panelToggle || card.dataset.dashboardTarget || "";
+        const searchableText = normalizeMenuSearch(card.textContent + " " + (menuSearchAliases[key] || ""));
+        const matches = terms.length === 0 || terms.every(term => searchableText.includes(term));
         card.hidden = !matches;
         if (matches) visibleCount += 1;
       });
@@ -2049,18 +2078,65 @@
         }
         label.hidden = !hasVisibleCard;
       });
-      if (menuSearchStatus) menuSearchStatus.textContent = query ? "النتائج المطابقة: " + visibleCount : "جميع الأقسام متاحة: " + visibleCount;
+      if (menuSearchStatus) {
+        menuSearchStatus.textContent = query
+          ? "النتائج المطابقة: " + visibleCount.toLocaleString("ar") + " من " + menu.querySelectorAll("a.quick-start-card").length.toLocaleString("ar")
+          : "جميع الأقسام متاحة: " + visibleCount.toLocaleString("ar");
+      }
       if (menuSearchEmpty) menuSearchEmpty.hidden = visibleCount !== 0;
+      if (menuSearchClear) menuSearchClear.hidden = !query;
     };
     if (menuSearch && menuSearch.dataset.searchBound !== "true") {
       menuSearch.addEventListener("input", filterSectionMenu);
       menuSearch.addEventListener("keydown", event => {
-        if (event.key !== "Escape" || !menuSearch.value) return;
-        event.stopPropagation();
-        menuSearch.value = "";
-        filterSectionMenu();
+        if (event.key === "Escape" && menuSearch.value) {
+          event.preventDefault();
+          event.stopPropagation();
+          menuSearch.value = "";
+          filterSectionMenu();
+          return;
+        }
+        if (event.key === "ArrowDown") {
+          const first = visibleMenuCards()[0];
+          if (first) { event.preventDefault(); first.focus(); }
+          return;
+        }
+        if (event.key === "Enter" && normalizeMenuSearch(menuSearch.value)) {
+          const first = visibleMenuCards()[0];
+          if (first) { event.preventDefault(); first.click(); }
+        }
       });
       menuSearch.dataset.searchBound = "true";
+    }
+    if (menuSearchClear && menuSearchClear.dataset.clearBound !== "true") {
+      menuSearchClear.addEventListener("click", () => {
+        if (!menuSearch) return;
+        menuSearch.value = "";
+        filterSectionMenu();
+        menuSearch.focus({ preventScroll: true });
+      });
+      menuSearchClear.dataset.clearBound = "true";
+    }
+    if (menu && menu.dataset.searchKeyboardBound !== "true") {
+      menu.addEventListener("keydown", event => {
+        const link = event.target instanceof Element ? event.target.closest("a.quick-start-card") : null;
+        if (!link || link.hidden) return;
+        const cards = visibleMenuCards();
+        const index = cards.indexOf(link);
+        if (index < 0) return;
+        let targetIndex = -1;
+        if (event.key === "ArrowDown") targetIndex = Math.min(cards.length - 1, index + 1);
+        else if (event.key === "ArrowUp") {
+          if (index === 0) { event.preventDefault(); menuSearch?.focus({ preventScroll: true }); return; }
+          targetIndex = index - 1;
+        } else if (event.key === "Home") targetIndex = 0;
+        else if (event.key === "End") targetIndex = cards.length - 1;
+        if (targetIndex >= 0) {
+          event.preventDefault();
+          cards[targetIndex]?.focus({ preventScroll: true });
+        }
+      });
+      menu.dataset.searchKeyboardBound = "true";
     }
     if (menu && menuButton && menuButton.dataset.menuBound !== "true") {
       menuButton.addEventListener("click", () => {

@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261108-720">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261108-720">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261109-750">
   <script>
     window.MathJax = {
       tex: {
@@ -60,7 +60,7 @@
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
-  <script defer src="enhancements.js?v=20261108-631"></script>
+  <script defer src="enhancements.js?v=20261109-750"></script>
   <script defer src="homepage-feedback.js?v=20261108-581"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
@@ -101,8 +101,11 @@
   <nav id="section-menu" class="quick-start d-grid gap-2" aria-label="اختصارات المنصة" hidden>
       <div class="section-menu-search-wrap">
         <label for="section-menu-search">ابحث عن قسم أو أداة</label>
-        <input id="section-menu-search" type="search" inputmode="search" autocomplete="off" placeholder="مثال: القوانين، الاختبارات، الحاسبة..." aria-controls="section-menu" aria-describedby="section-menu-search-status">
-        <p id="section-menu-search-status" class="section-menu-search-status" role="status" aria-live="polite">جميع الأقسام متاحة.</p>
+        <div class="section-menu-search-controls">
+          <input id="section-menu-search" type="search" inputmode="search" autocomplete="off" placeholder="مثال: القوانين، الاختبارات، الحاسبة..." aria-controls="section-menu" aria-describedby="section-menu-search-status" aria-keyshortcuts="Enter ArrowDown Escape">
+          <button id="section-menu-search-clear" type="button" aria-label="مسح البحث في الأقسام" hidden>مسح</button>
+        </div>
+        <p id="section-menu-search-status" class="section-menu-search-status" role="status" aria-live="polite" aria-atomic="true">جميع الأقسام متاحة.</p>
       </div>
       <p id="section-menu-search-empty" class="section-menu-search-empty" role="status" hidden>لا توجد أقسام مطابقة. جرّب كلمة أخرى أو امسح البحث.</p>
       <p class="quick-start-group-label" role="heading" aria-level="2">التعلّم</p>
