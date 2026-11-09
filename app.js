@@ -1005,8 +1005,12 @@ function updateResumeCard(){
   }
   const stat = progressData.topicStats[lastTopic] || { answered: 0, correct: 0 };
   const answered = Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
-  // Keep the resume card hidden until the student has actually answered at least one question.
-  if (answered === 0) {
+  const savedSession = readTrainingSession();
+  const canResume = savedSession && savedSession.topic === lastTopic &&
+    Array.isArray(savedSession.questionKeys) && savedSession.questionKeys.length > 0 &&
+    Number.isSafeInteger(savedSession.index) && savedSession.index < savedSession.questionKeys.length;
+  // Show the card after a recorded answer, or when a real unfinished session can be resumed.
+  if (answered === 0 && !canResume) {
     syncDashboardEmptyState(section, false);
     return;
   }
@@ -1022,8 +1026,6 @@ function updateResumeCard(){
       : "لم تسجل إجابات في هذا البحث بعد.";
   }
   syncDashboardEmptyState(section, true);
-  const savedSession = readTrainingSession();
-  const canResume = savedSession && savedSession.topic === lastTopic && savedSession.questionKeys.length > 0 && savedSession.index < savedSession.questionKeys.length;
   button.textContent = canResume ? "استئناف جلسة التدريب" : "ابدأ التدريب مجدداً";
   button.onclick = () => { if (!canResume || !resumeTrainingSession(lastTopic)) startQuiz(lastTopic); };
 }
