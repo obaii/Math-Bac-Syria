@@ -737,6 +737,77 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await openDashboardHome();
 
+    // The personalized path uses topic evidence, explains its confidence, and launches the selected research.
+    await page.evaluate(() => {
+      progressData.topicStats = {};
+      progressData.seenQuestions = {};
+      refreshDashboard();
+    });
+    const emptyLearningPath = await page.evaluate(() => ({
+      level: document.querySelector("#learning-path-level").textContent,
+      levelKey: document.querySelector("#learning-path-level").dataset.level,
+      steps: document.querySelectorAll("#learning-path-list .learning-path-step").length,
+      answers: document.querySelector("#learning-path-answered").textContent
+    }));
+    assert.equal(emptyLearningPath.levelKey, "not-started", "the path should not claim a level before any answers exist");
+    assert.equal(emptyLearningPath.steps, 3, "the path should provide up to three initial research suggestions");
+    assert.equal(emptyLearningPath.answers, "٠", "the path should display zero answers for a new learner");
+    const initialPathTopics = await page.locator("#learning-path-list .learning-path-step").evaluateAll(items => items.map(item => item.dataset.topic));
+    assert.deepEqual(initialPathTopics, await page.evaluate(() => topics.slice(0, 3)),
+      "an untouched learner should receive the first three available topics in curriculum order");
+
+    const provisionalPath = await page.evaluate(() => {
+      const [weakSample, partialSample, untouched] = topics;
+      progressData.topicStats = {
+        [weakSample]: { answered: 10, correct: 6 },
+        [partialSample]: { answered: 5, correct: 4 }
+      };
+      refreshDashboard();
+      return {
+        level: document.querySelector("#learning-path-level").textContent,
+        levelKey: document.querySelector("#learning-path-level").dataset.level,
+        reliable: document.querySelector("#learning-path-reliable").textContent,
+        topics: [...document.querySelectorAll("#learning-path-list .learning-path-step")].map(item => item.dataset.topic),
+        note: document.querySelector("#learning-path-note").textContent
+      };
+    });
+    assert.equal(provisionalPath.levelKey, "provisional", "one sufficiently sampled topic should not be presented as a confident overall level");
+    assert.equal(provisionalPath.reliable, "١", "the path should count topics with at least ten answers");
+    assert.equal(provisionalPath.topics[0], await page.evaluate(() => topics[2]),
+      "an unstarted topic should be prioritized before topics with recorded practice");
+    assert.ok(provisionalPath.note.includes("مؤشر تدريبي إرشادي") || provisionalPath.note.includes("لا نعرض تصنيف"),
+      "the path should communicate the limits of an early estimate");
+
+    const establishedPath = await page.evaluate(() => {
+      const [first, second] = topics;
+      progressData.topicStats = {
+        [first]: { answered: 10, correct: 9 },
+        [second]: { answered: 10, correct: 7 }
+      };
+      refreshDashboard();
+      return {
+        levelKey: document.querySelector("#learning-path-level").dataset.level,
+        reliable: document.querySelector("#learning-path-reliable").textContent,
+        coverage: document.querySelector("#learning-path-progress").getAttribute("aria-valuenow"),
+        firstTopic: document.querySelector("#learning-path-list .learning-path-step").dataset.topic,
+        buttonLabel: document.querySelector("#learning-path-list .learning-path-start").getAttribute("aria-label")
+      };
+    });
+    assert.equal(establishedPath.levelKey, "building", "a broader sample with remaining untouched topics should recommend building skills");
+    assert.equal(establishedPath.reliable, "٢", "two topics with ten answers each should meet the broader evidence threshold");
+    assert.equal(establishedPath.coverage, "0", "coverage should be calculated from distinct seen questions, not answer count");
+    assert.equal(establishedPath.firstTopic, await page.evaluate(() => topics[2]),
+      "the path should keep untouched topics in the next-step sequence");
+    assert.ok(establishedPath.buttonLabel.includes(establishedPath.firstTopic),
+      "each learning-path action should expose its selected topic to assistive technology");
+    await page.locator("#learning-path-list .learning-path-start").first().click();
+    await page.locator("#quiz").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#quiz-title").innerText(), establishedPath.firstTopic,
+      "the learning path should launch the selected topic directly");
+    await page.locator("#back").click();
+    await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
+    await page.evaluate(() => { progressData.topicStats = {}; progressData.seenQuestions = {}; refreshDashboard(); });
+
     // Learners can tailor dashboard density and achievement detail; choices persist locally.
     await openDashboardHome();
     await page.locator("#dashboard-density").selectOption("compact");
