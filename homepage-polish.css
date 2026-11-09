@@ -7552,3 +7552,105 @@ body.dark-mode #coverage-filter {
     width: 100%;
   }
 }
+
+
+/* Batch 781-790: make the chronological learning history easy to filter and scan. */
+.recent-attempt-history {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hp-border);
+}
+.recent-attempt-history-heading h4,
+.recent-attempt-history-heading p {
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+.recent-attempt-history-heading p {
+  color: var(--hp-muted);
+  line-height: 1.65;
+}
+.recent-history-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.recent-history-filter {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.recent-history-filter label {
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.recent-history-filter select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm, 8px);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+.recent-attempt-history-list {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.recent-attempt-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface);
+}
+.recent-attempt-details {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.recent-attempt-details > * {
+  overflow-wrap: anywhere;
+}
+.recent-attempt-status {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.recent-attempt-status.is-correct { color: var(--hp-success, #18794e); }
+.recent-attempt-status.is-incorrect { color: var(--hp-muted); }
+.recent-attempt-history-empty {
+  margin: 0;
+  padding: 12px;
+  border: 1px dashed var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  color: var(--hp-muted);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+body.dark-mode .recent-attempt-item {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 640px) {
+  .recent-history-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .recent-attempt-item { align-items: stretch; }
+  .recent-attempt-item .recent-activity-button { width: 100%; }
+}
