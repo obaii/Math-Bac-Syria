@@ -697,7 +697,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v115/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v116/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -831,6 +831,14 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#recent-activity").evaluate(el => el.hidden), true, "recent activity content should stay hidden until an answer is recorded");
     assert.equal(await page.locator("#performance-trend").evaluate(el => el.hidden), true, "the performance chart content should stay hidden until a recent answer is recorded");
     assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the weakest-topic suggestion content should stay hidden before any topic has results");
+    const insufficientRecommendation = await page.evaluate(() => {
+      const topic = topics[0];
+      progressData.topicStats = { [topic]: { answered: 4, correct: 4 } };
+      refreshDashboard();
+      return document.querySelector("#dashboard-panel-weak-topic-recommendation .dashboard-empty-state").textContent;
+    });
+    assert.match(insufficientRecommendation, /إجابة إضافية/, "the recommendation should explain the minimum sample when only four answers exist");
+    assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the recommendation should not rank a topic before five answers");
     const weakestTopicFixture = await page.evaluate(() => {
       const [strongTopic, weakTopic] = topics.slice(0, 2);
       progressData.topicStats = {
@@ -843,6 +851,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => !el.hidden), true, "the weakest-topic suggestion content should appear after topic results exist");
     assert.equal(await page.locator("#weak-topic-name").innerText(), weakestTopicFixture, "the suggestion should identify the topic with the lowest accuracy");
     assert.ok(["0٪", "٠٪"].includes(await page.locator("#weak-topic-rate").innerText()), "the suggestion should show the selected topic accuracy");
+    assert.equal(await page.locator("#weak-topic-recommendation").getAttribute("data-topic"), weakestTopicFixture, "the recommendation should expose its selected topic for consistent tooling");
+    assert.equal(await page.locator("#weak-topic-recommendation").getAttribute("data-sample-size"), "5", "the recommendation should expose the evidence sample size");
+    assert.equal(await page.locator("#weak-topic-recommendation").getAttribute("data-accuracy"), "0", "the recommendation should expose its calculated accuracy");
+    assert.equal(await page.locator("#weak-topic-recommendation").getAttribute("data-confidence"), "عينة أولية", "a five-answer recommendation should be labeled as an initial sample");
+    assert.ok((await page.locator("#weak-topic-reason").innerText()).length > 10, "the recommendation should explain why this topic was selected");
+    assert.match(await page.locator("#weak-topic-button").getAttribute("aria-label"), new RegExp(weakestTopicFixture), "the recommendation action should announce its selected topic");
     await openPanel("weak-topic-recommendation");
     await page.locator("#weak-topic-button").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
@@ -851,6 +865,8 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => document.querySelector("#quiz").classList.contains("hidden"));
     await page.evaluate(() => { progressData.topicStats = {}; refreshDashboard(); });
     assert.equal(await page.locator("#weak-topic-recommendation").evaluate(el => el.hidden), true, "the suggestion content should hide again when no topic has recorded results");
+    assert.equal(await page.locator("#weak-topic-recommendation").getAttribute("data-topic"), null, "stale recommendation metadata should be cleared when evidence disappears");
+    assert.equal(await page.locator("#weak-topic-reason").innerText(), "", "stale recommendation rationale should be cleared when evidence disappears");
 
     // Mastery labels require a meaningful sample and use accuracy thresholds independently of coverage.
     const masteryFixture = await page.evaluate(() => {
