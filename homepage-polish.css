@@ -7996,3 +7996,129 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
   .recent-activity { padding: 12px; }
   .recent-activity-item { padding: 11px; }
 }
+
+
+/* Batch 871–880: keep dashboard insights and learning paths readable on narrow screens. */
+.dashboard-weekly-summary,
+.dashboard-weekly-heading,
+.dashboard-weekly-metrics,
+.dashboard-weekly-chart,
+.dashboard-weekly-insights,
+.personalized-learning-path,
+.personalized-learning-path-heading,
+.learning-path-metrics,
+.learning-path-list,
+.learning-path-step {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.dashboard-weekly-heading h3,
+.dashboard-weekly-heading p,
+.dashboard-weekly-insights p,
+.learning-path-step h4,
+.learning-path-step p,
+.learning-path-note {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.dashboard-weekly-metrics > div,
+.learning-path-metrics > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dashboard-weekly-chart {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.dashboard-weekly-day,
+.dashboard-weekly-day strong,
+.dashboard-weekly-day small {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.dashboard-weekly-bar-track {
+  min-width: 0;
+}
+.learning-path-step {
+  overflow-wrap: anywhere;
+}
+.learning-path-start,
+.dashboard-weekly-action {
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.dashboard-weekly-action:focus-visible,
+.learning-path-start:focus-visible,
+.dashboard-preferences-heading button:focus-visible {
+  outline-width: 3px;
+  outline-offset: 3px;
+}
+@media (max-width: 420px) {
+  .dashboard-weekly-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dashboard-weekly-metrics,
+  .learning-path-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .dashboard-weekly-metrics > div,
+  .learning-path-metrics > div {
+    padding-inline: 4px;
+  }
+  .dashboard-weekly-metrics strong,
+  .learning-path-metrics strong {
+    font-size: clamp(15px, 5vw, 19px);
+    overflow-wrap: anywhere;
+  }
+  .dashboard-weekly-metrics span,
+  .learning-path-metrics span {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .dashboard-weekly-chart {
+    gap: 3px;
+    padding-inline: 3px;
+  }
+  .dashboard-weekly-day strong,
+  .dashboard-weekly-day small {
+    font-size: 9px;
+  }
+  .learning-path-start,
+  .dashboard-weekly-action {
+    width: 100%;
+    justify-self: stretch;
+  }
+}
+@media (max-width: 340px) {
+  .dashboard-weekly-summary,
+  .personalized-learning-path {
+    padding: 10px;
+  }
+  .dashboard-weekly-chart {
+    min-height: 96px;
+    gap: 2px;
+  }
+  .dashboard-weekly-bar-track {
+    height: 42px;
+  }
+  .dashboard-weekly-day strong,
+  .dashboard-weekly-day small {
+    font-size: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-weekly-summary *,
+  .personalized-learning-path *,
+  .learning-path-start,
+  .dashboard-weekly-action {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
