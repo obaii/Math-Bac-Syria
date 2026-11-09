@@ -1052,11 +1052,11 @@ const assert = require("node:assert/strict");
       "each research card should show counts for basic, intermediate, and advanced questions");
     assert.match((await practicedTopicCard.locator(".topic-card-levels").innerText()).replace(/\s+/g, " "), /أساسي .* متوسط .* متقدم/,
       "the difficulty distribution should retain the three curriculum level labels");
-    assert.match((await practicedTopicCard.locator(".topic-coverage-summary").innerText()).replace(/\s+/g, " "), /٪ من الأسئلة جُرّبت.*متبقي/,
+    assert.match((await practicedTopicCard.locator(".topic-coverage-summary").innerText()).replace(/\s+/g, " "), /٪ متبقي/,
       "the card should show a visible completion percentage and remaining question count");
-    assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /إنجاز.*متبقي/,
+    assert.match(await practicedTopicCard.locator(".topic-mastery").getAttribute("aria-valuetext"), /تغطية.*متبقي/,
       "the coverage progress bar should announce its percentage and remaining questions accessibly");
-    assert.match(await practicedTopicCard.getAttribute("aria-label"), /إنجاز/,
+    assert.match(await practicedTopicCard.getAttribute("aria-label"), /تغطية/,
       "each research card should expose a concise accessible progress summary");
     assert.ok((await practicedTopicCard.locator(".topic-last-activity").getAttribute("title")).length > 0,
       "the relative last-practice label should provide an exact timestamp on demand");
