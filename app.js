@@ -13,6 +13,80 @@ const STORAGE_KEY = "mathBacSyriaProgressV1";
 const LAST_TOPIC_KEY = "mathBacSyriaLastTopicV1";
 const TRAINING_SESSION_KEY = "mathBacSyriaTrainingSessionV1";
 const HOMEPAGE_FILTERS_KEY = "mathBacSyriaHomepageFiltersV1";
+const DASHBOARD_PREFERENCES_KEY = "mathBacSyriaDashboardPreferencesV1";
+const DEFAULT_DASHBOARD_PREFERENCES = Object.freeze({
+  density: "comfortable",
+  hideUnlockedAchievements: false,
+  hideAchievementDescriptions: false,
+  showNextGoal: true
+});
+function loadDashboardPreferences(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(DASHBOARD_PREFERENCES_KEY) || "null");
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) return { ...DEFAULT_DASHBOARD_PREFERENCES };
+    return {
+      density: ["comfortable", "compact"].includes(saved.density) ? saved.density : "comfortable",
+      hideUnlockedAchievements: saved.hideUnlockedAchievements === true,
+      hideAchievementDescriptions: saved.hideAchievementDescriptions === true,
+      showNextGoal: saved.showNextGoal !== false
+    };
+  } catch (_) { return { ...DEFAULT_DASHBOARD_PREFERENCES }; }
+}
+let dashboardPreferences = loadDashboardPreferences();
+function saveDashboardPreferences(){
+  try { localStorage.setItem(DASHBOARD_PREFERENCES_KEY, JSON.stringify(dashboardPreferences)); }
+  catch (_) {
+    const status = $("dashboard-preferences-status");
+    if (status) status.textContent = "تعذر حفظ التفضيلات على هذا الجهاز؛ تحقق من مساحة التخزين.";
+  }
+}
+function applyDashboardPreferences(){
+  document.body.classList.toggle("dashboard-compact", dashboardPreferences.density === "compact");
+  document.body.classList.toggle("dashboard-hide-achievement-descriptions", dashboardPreferences.hideAchievementDescriptions);
+  const nextGoal = $("achievement-next-goal");
+  if (nextGoal) nextGoal.hidden = !dashboardPreferences.showNextGoal;
+  const density = $("dashboard-density");
+  const hideUnlocked = $("dashboard-hide-unlocked");
+  const hideDescriptions = $("dashboard-hide-achievement-descriptions");
+  const showNextGoal = $("dashboard-show-next-goal");
+  if (density) density.value = dashboardPreferences.density;
+  if (hideUnlocked) hideUnlocked.checked = dashboardPreferences.hideUnlockedAchievements;
+  if (hideDescriptions) hideDescriptions.checked = dashboardPreferences.hideAchievementDescriptions;
+  if (showNextGoal) showNextGoal.checked = dashboardPreferences.showNextGoal;
+}
+function initDashboardPreferences(){
+  const density = $("dashboard-density");
+  const hideUnlocked = $("dashboard-hide-unlocked");
+  const hideDescriptions = $("dashboard-hide-achievement-descriptions");
+  const showNextGoal = $("dashboard-show-next-goal");
+  const reset = $("dashboard-preferences-reset");
+  const status = $("dashboard-preferences-status");
+  if (!density || !hideUnlocked || !hideDescriptions || !showNextGoal || !reset) return;
+  const update = message => {
+    dashboardPreferences = {
+      density: density.value === "compact" ? "compact" : "comfortable",
+      hideUnlockedAchievements: hideUnlocked.checked,
+      hideAchievementDescriptions: hideDescriptions.checked,
+      showNextGoal: showNextGoal.checked
+    };
+    saveDashboardPreferences();
+    applyDashboardPreferences();
+    renderAchievements();
+    if (status) status.textContent = message || "حُفظت تفضيلات مساحتك التعليمية على هذا الجهاز.";
+  };
+  density.addEventListener("change", () => update());
+  hideUnlocked.addEventListener("change", () => update());
+  hideDescriptions.addEventListener("change", () => update());
+  showNextGoal.addEventListener("change", () => update());
+  reset.addEventListener("click", () => {
+    dashboardPreferences = { ...DEFAULT_DASHBOARD_PREFERENCES };
+    saveDashboardPreferences();
+    applyDashboardPreferences();
+    renderAchievements();
+    if (status) status.textContent = "أُعيدت تفضيلات مساحتك التعليمية إلى الإعدادات الافتراضية.";
+  });
+  applyDashboardPreferences();
+}
 const $ = (id) => document.getElementById(id);
 // Question records are assembled once by merge-questions.js before app initialization.
 const letters = ["أ","ب","ج","د"];
@@ -506,6 +580,7 @@ function renderAchievements(){
     copy.append(title, description, progress, track);
     const status = document.createElement("span"); status.className = "achievement-status"; status.textContent = badge.unlocked ? "مكتملة" : "قيد التقدم";
     item.append(icon, copy, status);
+    item.hidden = badge.unlocked && dashboardPreferences.hideUnlockedAchievements;
     list.append(item);
   }
   const unlockedCount = badges.filter(badge => badge.unlocked).length;
@@ -1630,6 +1705,7 @@ $("reset-progress").addEventListener("click",()=>{
   refreshDashboard();
   renderTopics();
 });
+initDashboardPreferences();
 renderTopics();
 refreshDashboard();
 updateResumeCard();

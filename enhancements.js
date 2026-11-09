@@ -784,9 +784,16 @@
           <div class="mistake-log-question">${escapeHtml(String(q.q).replace(/<[^>]*>/g, " "))}</div>
           <button type="button" data-mistake-key="${escapeHtml(key)}">تدرّب على هذا السؤال ←</button>
         </li>`).join("")}</ul>`;
-    section.querySelectorAll("[data-mistake-key]").forEach(item => item.addEventListener("click", () => {
-      const q = byKey(item.dataset.mistakeKey) || progressData.mistakes[item.dataset.mistakeKey];
-      if (q) startTargetedQuiz([q], "مراجعة خطأ — " + (q.topic || ""));
+    section.querySelectorAll("[data-mistake-key]").forEach(item => item.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const key = item.dataset.mistakeKey;
+      const q = byKey(key) || progressData.mistakes[key];
+      if (!q) return;
+      startTargetedQuiz([q], "مراجعة خطأ — " + (q.topic || ""));
+      // Keep the quiz transition explicit when the practice action originates
+      // inside the dynamically rendered student-tools panel.
+      document.getElementById("quiz")?.classList.remove("hidden");
     }));
     typesetMath(section);
   };
