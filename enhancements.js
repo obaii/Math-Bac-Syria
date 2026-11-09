@@ -377,6 +377,21 @@
       .error-reflection-options button[aria-pressed=true]{border-color:var(--success,#2f9e72);background:var(--success-soft,#e8f7ef)}
       .error-reflection-options button:disabled{opacity:.75;cursor:default}
       .error-reflection-status{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+      .remediation-plan{margin:14px 0;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--card-bg)}
+      .remediation-plan h5{margin:0 0 6px;font-size:15px}
+      .remediation-plan>p{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.8}
+      .remediation-plan-list{display:grid;gap:9px}
+      .remediation-plan-item{padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg,#f7f9fc)}
+      .remediation-plan-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}
+      .remediation-plan-heading span{min-width:28px;padding:3px 8px;border-radius:999px;background:var(--card-bg);border:1px solid var(--line);text-align:center;font-size:12px}
+      .remediation-plan-evidence{margin:4px 0;color:var(--muted);font-size:11px}
+      .remediation-plan-item>p:not(.remediation-plan-evidence){margin:5px 0 10px;font-size:13px;line-height:1.8}
+      .remediation-plan-actions{display:flex;flex-wrap:wrap;gap:7px}
+      .remediation-plan-actions button{min-height:42px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg);color:var(--ink);font:inherit;font-size:12px;cursor:pointer}
+      .remediation-plan-actions button:focus-visible{outline:3px solid var(--focus,#2563eb);outline-offset:2px}
+      .remediation-plan-actions [data-remediation-reason]{background:var(--accent,#3154b5);color:white;border-color:transparent}
+      body.dark-mode .remediation-plan-item{background:var(--bg);border-color:var(--line)}
+      @media(max-width:640px){.remediation-plan-actions{display:grid;grid-template-columns:1fr}.remediation-plan-actions button{width:100%}}
       body.dark-mode .error-reflection-options button[aria-pressed=true]{background:#123b2b;color:#c7f9df}
       @media(max-width:640px){.error-reflection-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.error-reflection-options button{overflow-wrap:anywhere}.error-analysis-chip{max-width:100%}}
       .solution{margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--card-bg,white);line-height:1.9}
