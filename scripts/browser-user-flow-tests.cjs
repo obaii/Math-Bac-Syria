@@ -1083,8 +1083,21 @@ const assert = require("node:assert/strict");
       "the recent-activity empty message should disappear when activity is available");
     assert.match(await page.locator("#recent-activity-summary").innerText(), /أبحاث حديثة/,
       "recent activity should summarize the number of displayed topics and saved answers");
-    assert.equal(await page.locator("#recent-activity-list li").first().getAttribute("data-attempt-count"), "1",
+    const recentAggregate = await page.evaluate(() => {
+      const row = document.querySelector("#recent-activity-list li");
+      const attempts = progressData.attempts.filter(attempt => attempt.topic === row.dataset.topic);
+      const correct = attempts.filter(attempt => attempt.correct).length;
+      return {
+        count: row.dataset.attemptCount,
+        expectedCount: String(attempts.length),
+        accuracy: row.dataset.accuracy,
+        expectedAccuracy: String(Math.round(correct / attempts.length * 100))
+      };
+    });
+    assert.equal(recentAggregate.count, recentAggregate.expectedCount,
       "recent activity rows should expose their aggregated answer count");
+    assert.equal(recentAggregate.accuracy, recentAggregate.expectedAccuracy,
+      "recent activity rows should expose accuracy calculated from their saved attempts");
     assert.equal(await page.locator("#dashboard-panel-resume-session .dashboard-empty-state").evaluate(el => el.hidden), true,
       "the resume empty message should disappear when a last topic is available");
     await openPanel("performance-trend");
