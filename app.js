@@ -85,9 +85,13 @@ function renderPerformanceTrend(){
         date.getMonth() === day.getMonth() && date.getDate() === day.getDate();
     });
     const correct = attempts.filter(attempt => attempt.correct).length;
+    const dateLabel = new Intl.DateTimeFormat("ar", { day: "numeric", month: "long" }).format(day);
+    const todayKey = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
     days.push({
       key,
       label: new Intl.DateTimeFormat("ar", { weekday: "short" }).format(day),
+      dateLabel,
+      isToday: key === todayKey,
       count: attempts.length,
       correct,
       rate: attempts.length ? Math.round(correct / attempts.length * 100) : 0
@@ -102,17 +106,24 @@ function renderPerformanceTrend(){
   }
   for (const day of days) {
     const item = document.createElement("li");
-    item.className = "performance-trend-day";
+    item.className = "performance-trend-day" + (day.isToday ? " is-today" : "");
+    item.dataset.date = day.key;
+    item.dataset.count = String(day.count);
+    item.dataset.accuracy = String(day.rate);
+    item.title = day.dateLabel + ": " + day.count.toLocaleString("ar") + " إجابة";
     const rate = document.createElement("strong");
     rate.className = "performance-trend-rate";
     rate.textContent = day.count ? day.rate.toLocaleString("ar") + "٪" : "—";
     const track = document.createElement("div");
     track.className = "performance-trend-track";
     track.setAttribute("role", "progressbar");
-    track.setAttribute("aria-label", day.label + ": نسبة الإجابات الصحيحة");
+    track.setAttribute("aria-label", day.dateLabel + " " + day.label + ": نسبة الإجابات الصحيحة");
     track.setAttribute("aria-valuemin", "0");
     track.setAttribute("aria-valuemax", "100");
     track.setAttribute("aria-valuenow", String(day.rate));
+    track.setAttribute("aria-valuetext", day.count
+      ? day.correct.toLocaleString("ar") + " إجابة صحيحة من " + day.count.toLocaleString("ar")
+      : "لا توجد إجابات مسجلة");
     const fill = document.createElement("span");
     fill.className = "performance-trend-fill";
     fill.style.height = (day.count ? Math.max(day.rate, 4) : 0) + "%";
@@ -128,8 +139,17 @@ function renderPerformanceTrend(){
   }
   const correctTotal = days.reduce((sum, day) => sum + day.correct, 0);
   const weeklyRate = Math.round(correctTotal / total * 100);
+  const activeDays = days.filter(day => day.count > 0);
+  const averagePerActiveDay = Math.round(total / activeDays.length);
+  const bestDay = activeDays.slice().sort((a, b) => b.count - a.count || b.rate - a.rate)[0];
+  section.dataset.totalAnswers = String(total);
+  section.dataset.activeDays = String(activeDays.length);
+  section.dataset.weeklyAccuracy = String(weeklyRate);
   summary.textContent = "خلال آخر ٧ أيام: " + total.toLocaleString("ar") +
-    " إجابة، ونسبة صحة " + weeklyRate.toLocaleString("ar") + "٪.";
+    " إجابة خلال " + activeDays.length.toLocaleString("ar") + " أيام نشطة، بمتوسط " +
+    averagePerActiveDay.toLocaleString("ar") + " إجابة في اليوم النشط ودقة " +
+    weeklyRate.toLocaleString("ar") + "٪. أكثر الأيام نشاطاً: " + bestDay.dateLabel +
+    " (" + bestDay.count.toLocaleString("ar") + " إجابة).";
 }
 
 function renderActivityCalendar(){
@@ -160,10 +180,11 @@ function renderActivityCalendar(){
   for (const day of days) {
     const cell = document.createElement("li");
     const level = day.count === 0 ? 0 : day.count === 1 ? 1 : day.count <= 3 ? 2 : day.count <= 6 ? 3 : 4;
-    cell.className = "activity-calendar-day level-" + level;
+    const isToday = day.key === [today.getFullYear(), String(today.getMonth()+1).padStart(2,"0"), String(today.getDate()).padStart(2,"0")].join("-");
+    cell.className = "activity-calendar-day level-" + level + (isToday ? " is-today" : "");
     cell.textContent = day.date.getDate().toLocaleString("ar");
-    cell.title = day.label + ": " + day.count.toLocaleString("ar") + " إجابة";
-    cell.setAttribute("aria-label", day.weekday + " " + day.label + ": " + day.count.toLocaleString("ar") + " إجابة");
+    cell.title = (isToday ? "اليوم · " : "") + day.label + ": " + day.count.toLocaleString("ar") + " إجابة";
+    cell.setAttribute("aria-label", (isToday ? "اليوم، " : "") + day.weekday + " " + day.label + ": " + day.count.toLocaleString("ar") + " إجابة");
     cell.setAttribute("data-date", day.key);
     cell.setAttribute("data-count", String(day.count));
     grid.append(cell);
@@ -171,7 +192,10 @@ function renderActivityCalendar(){
   const lastSeven = days.slice(-7);
   const weeklyAnswers = lastSeven.reduce((sum, day) => sum + day.count, 0);
   const activeDays = lastSeven.filter(day => day.count > 0).length;
-  summary.textContent = "آخر ٧ أيام: " + weeklyAnswers.toLocaleString("ar") + " إجابة خلال " + activeDays.toLocaleString("ar") + " أيام نشطة.";
+  const dailyAverage = activeDays ? Math.round(weeklyAnswers / activeDays) : 0;
+  summary.textContent = "آخر ٧ أيام: " + weeklyAnswers.toLocaleString("ar") + " إجابة خلال " +
+    activeDays.toLocaleString("ar") + " أيام نشطة" +
+    (activeDays ? "، بمتوسط " + dailyAverage.toLocaleString("ar") + " إجابة في اليوم النشط." : ".");
   section.dataset.totalAnswers = String(weeklyAnswers);
   section.dataset.activeDays = String(activeDays);
 }
