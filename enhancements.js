@@ -1039,6 +1039,7 @@
   window.addEventListener("mathBacSyria:reset-progress", () => {
     extras.bookmarks = [];
     extras.schedule = {};
+    extras.lessonSchedule = {};
     extras.reviewQuestions = {};
     extras.examHistory = [];
     persistExtras();
@@ -1449,11 +1450,12 @@
         const answered = toCount(stat.answered);
         nextProgress.topicStats[topic] = { answered, correct:Math.min(toCount(stat.correct), answered) };
       }
-      let nextExtras = { bookmarks:[], schedule:{}, reviewQuestions:{}, darkMode:false, textScale:100, mathScale:100 };
+      let nextExtras = { bookmarks:[], schedule:{}, lessonSchedule:{}, reviewQuestions:{}, darkMode:false, textScale:100, mathScale:100 };
       nextExtras.darkMode = Boolean(sourceTools.darkMode);
       nextExtras.textScale = Number.isFinite(sourceTools.textScale) ? Math.min(130, Math.max(80, Math.round(sourceTools.textScale / 10) * 10)) : 100;
       nextExtras.mathScale = Number.isFinite(sourceTools.mathScale) ? Math.min(140, Math.max(80, Math.round(sourceTools.mathScale / 10) * 10)) : 100;
       nextExtras.examHistory = normalizeExamHistory(sourceTools.examHistory);
+      nextExtras.lessonSchedule = normalizeLessonSchedule(sourceTools.lessonSchedule);
       nextExtras.studyPlan = normalizeStudyPlan(sourceTools.studyPlan);
       nextExtras.bookmarks = Array.isArray(sourceTools.bookmarks) ? [...new Set(sourceTools.bookmarks.filter(k => typeof k === "string" && byKey(k)))] : [];
       const restoredSchedule = normalizeSchedule(sourceTools.schedule);
