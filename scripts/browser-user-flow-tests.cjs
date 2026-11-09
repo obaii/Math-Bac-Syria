@@ -153,86 +153,26 @@ const assert = require("node:assert/strict");
       "menu transitions should be disabled for reduced-motion users");
     await page.locator("#section-menu-toggle").click();
     assert.ok(await quickStart.isHidden(), "reduced-motion menu closing should be immediate");
-    // Search should match Arabic menu terms regardless of word order and expose keyboard navigation.
+    // The section menu is a navigation list, not a second search interface.
     await page.locator("#section-menu-toggle").click();
-    const menuSearch = page.locator("#section-menu-search");
-    const menuSearchClear = page.locator("#section-menu-search-clear");
-    await menuSearch.fill("علمية حاسبة");
-    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 1,
-      "unordered Arabic search terms should match the scientific calculator shortcut");
-    assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').isVisible(), true,
-      "the matching calculator shortcut should remain visible");
-    // Common learner phrases should resolve to their intended destinations.
-    const menuSearchCases = [
-      ["بطاقات حفظ", "flashcards", "panel"],
-      ["قوانين المعادلات", "formula-library", "panel"],
-      ["مساعد ذكي", "math-assistant", "panel"],
-      ["تمارين محلولة", "solved-examples-library", "panel"],
-      ["أسئلة المنهاج", "topic-section", "panel"],
-      ["امتحان تجريبي", "exam-tools", "panel"],
-      ["محفوظات المراجعة", "student-tools", "panel"],
-      ["آلة، حاسبة", "scientific-calculator", "panel"],
-      ["تمثيل الدوال", "function-plotter", "panel"],
-      ["أشكال هندسية", "geometry-tools", "panel"],
-      ["سجل الإجابات", "recent-activity", "dashboard"],
-      ["تقويم الدراسة", "activity-calendar", "dashboard"],
-      ["اقتراح مراجعة", "weak-topic-recommendation", "dashboard"]
-    ];
-    for (const [query, target, kind] of menuSearchCases) {
-      await menuSearch.fill(query);
-      const selector = kind === "dashboard"
-        ? '[data-dashboard-target="' + target + '"]'
-        : '[data-panel-toggle="' + target + '"]';
-      assert.equal(await page.locator(selector).isVisible(), true,
-        "menu search should resolve the learner phrase: " + query);
-      assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 1,
-        "each tested phrase should lead to one unambiguous shortcut: " + query);
-    }
-    await menuSearch.fill("علمية حاسبة");
-    assert.ok(await menuSearchClear.isVisible(), "the clear-search control should appear when a query is entered");
-    await menuSearch.press("ArrowDown");
-    assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').evaluate(el => document.activeElement === el), true,
-      "ArrowDown from the search field should focus the first visible shortcut");
-    await page.locator('[data-panel-toggle="scientific-calculator"]').press("ArrowUp");
-    assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
-      "ArrowUp from the first shortcut should return focus to the search field");
-    await menuSearch.fill("تقدم");
-    const progressShortcuts = page.locator("#section-menu a.quick-start-card:visible");
-    assert.ok(await progressShortcuts.count() > 1, "the progress keyword should return multiple related destinations");
-    await menuSearch.press("ArrowDown");
-    await progressShortcuts.nth(0).press("ArrowDown");
-    assert.equal(await progressShortcuts.nth(1).evaluate(el => document.activeElement === el),
-      true, "ArrowDown should advance to the next visible shortcut");
-    await progressShortcuts.nth(1).press("End");
-    assert.equal(await progressShortcuts.last().evaluate(el => document.activeElement === el),
-      true, "End should focus the last visible shortcut");
-    await progressShortcuts.last().press("Home");
-    assert.equal(await progressShortcuts.first().evaluate(el => document.activeElement === el),
-      true, "Home should focus the first visible shortcut");
-    await progressShortcuts.first().press("ArrowUp");
-    assert.equal(await menuSearch.evaluate(el => document.activeElement === el), true,
-      "ArrowUp from the first shortcut should return focus to the search field");
-    await menuSearch.fill("علمية حاسبة");
-    await menuSearch.press("Enter");
-    await page.locator("#scientific-calculator").waitFor({ state: "visible" });
-    assert.ok(await page.locator("#section-menu").isHidden(),
-      "pressing Enter in a non-empty menu search should open its first matching destination");
-    await page.locator("#section-menu-toggle").click();
-    await page.locator("#section-menu-toggle").click();
-    await menuSearch.fill("لا يوجد قسم بهذه العبارة");
-    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 0,
-      "a query without matches should hide all shortcuts");
-    assert.ok(await page.locator("#section-menu-search-empty").isVisible(),
-      "a query without matches should display the empty-search message");
-    await menuSearchClear.click();
-    assert.equal(await menuSearch.inputValue(), "", "the clear-search control should reset the query");
+    assert.equal(await page.locator("#section-menu-search, #section-menu-search-clear, #section-menu-search-empty").count(), 0,
+      "the section menu should not contain a search field, clear button, or search empty state");
     assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 19,
-      "clearing the search should restore all nineteen shortcuts");
-    await menuSearch.press("Escape");
-    await page.waitForFunction(() => document.querySelector("#section-menu").hidden,
-      null, { timeout: 3000 });
-    assert.equal(await page.locator("#section-menu-toggle").getAttribute("aria-expanded"), "false",
-      "Escape after clearing the search should close the menu and update its expanded state");
+      "all nineteen section shortcuts should remain visible without filtering");
+    const menuCards = page.locator("#section-menu a.quick-start-card:visible");
+    await menuCards.first().focus();
+    await menuCards.first().press("ArrowDown");
+    assert.equal(await menuCards.nth(1).evaluate(el => document.activeElement === el),
+      true, "ArrowDown should move focus to the next section shortcut");
+    await menuCards.nth(1).press("ArrowUp");
+    assert.equal(await menuCards.first().evaluate(el => document.activeElement === el),
+      true, "ArrowUp should move focus to the previous section shortcut");
+    await menuCards.first().press("ArrowUp");
+    assert.equal(await page.locator("#section-menu-toggle").evaluate(el => document.activeElement === el),
+      true, "ArrowUp from the first shortcut should return focus to the menu toggle");
+    await page.locator("#section-menu-toggle").click();
+    assert.ok(await page.locator("#section-menu").isHidden(),
+      "the section menu should close normally after keyboard navigation");
 
     await page.emulateMedia({ reducedMotion: "no-preference" });
 
@@ -876,7 +816,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v123/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v125/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1282,7 +1222,12 @@ const assert = require("node:assert/strict");
       const card = el.closest(".question-card");
       return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
     });
-    assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2, "the active question card should be positioned in the upper half of the viewport");
+    await page.waitForFunction(() => {
+      const card = document.querySelector("#question-text")?.closest(".question-card");
+      return card && card.getBoundingClientRect().top < window.innerHeight / 2;
+    }, { timeout: 5000 });
+    assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2,
+      "the active question card should be positioned in the upper half of the viewport after scrolling settles");
 
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
