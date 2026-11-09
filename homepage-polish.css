@@ -7707,3 +7707,126 @@ body.dark-mode .achievement-next-goal {
 @media (prefers-reduced-motion: reduce) {
   .achievement-progress-fill { transition: none; }
 }
+
+
+/* Batch 801-810: student-controlled dashboard presentation preferences. */
+.dashboard-preferences {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-md);
+  background: var(--hp-surface-soft);
+}
+.dashboard-preferences-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.dashboard-preferences-heading h3,
+.dashboard-preferences-heading p {
+  margin: 0 0 5px;
+  overflow-wrap: anywhere;
+}
+.dashboard-preferences-heading p {
+  color: var(--hp-muted);
+  line-height: 1.65;
+}
+.dashboard-preferences-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+.dashboard-preference-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.dashboard-preference-field label,
+.dashboard-preference-option {
+  font-weight: 650;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.dashboard-preference-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm, 8px);
+  background: var(--hp-surface);
+  color: var(--hp-ink);
+  font: inherit;
+}
+.dashboard-preference-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 7px 10px;
+  border: 1px solid var(--hp-border);
+  border-radius: var(--hp-radius-sm, 8px);
+  background: var(--hp-surface);
+  cursor: pointer;
+}
+.dashboard-preference-option input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--hp-accent, #2563eb);
+}
+.dashboard-preference-option:focus-within,
+.dashboard-preference-field select:focus-visible,
+.dashboard-preferences-heading button:focus-visible {
+  outline: 3px solid var(--hp-accent, #2563eb);
+  outline-offset: 2px;
+}
+.dashboard-preferences-status {
+  margin: 0;
+  color: var(--hp-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+body.dashboard-compact .dashboard .stat-grid {
+  gap: 8px;
+}
+body.dashboard-compact .dashboard .stat-card,
+body.dashboard-compact .achievement-card {
+  padding: 10px;
+}
+body.dashboard-compact .achievement-list {
+  gap: 8px;
+}
+body.dashboard-compact .achievement-card {
+  gap: 8px;
+}
+body.dashboard-hide-achievement-descriptions .achievement-copy > span:not(.achievement-status) {
+  display: none;
+}
+.dashboard-preferences[hidden],
+#achievement-next-goal[hidden],
+.achievement-card[hidden] {
+  display: none !important;
+}
+body.dark-mode .dashboard-preferences,
+body.dark-mode .dashboard-preference-option,
+body.dark-mode .dashboard-preference-field select {
+  background: var(--hp-surface-soft);
+  border-color: var(--hp-border);
+  color: var(--hp-ink);
+}
+@media (max-width: 640px) {
+  .dashboard-preferences { padding: 12px; }
+  .dashboard-preferences-controls { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-preferences-heading { align-items: stretch; }
+  .dashboard-preferences-heading button { align-self: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.dashboard-compact * { scroll-behavior: auto; }
+}
