@@ -357,7 +357,7 @@ async function assertVisibleControlsHaveNames(page, context) {
     assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 1,
       "Arabic menu search should filter shortcuts by their visible label");
     assert.equal(await mobileMenuPage.locator("#section-menu-search-status").innerText(),
-      "النتائج المطابقة: 1", "the menu should announce the number of matching shortcuts");
+      "النتائج المطابقة: 1 من 19", "the menu should announce the matching count and total shortcuts");
     await menuSearch.fill("لا يوجد قسم بهذا الاسم");
     assert.equal(await mobileMenuPage.locator("#section-menu a.quick-start-card:visible").count(), 0,
       "a non-matching query should hide all shortcut cards");
