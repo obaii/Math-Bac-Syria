@@ -7917,3 +7917,126 @@ body.dark-mode .dashboard-weekly-summary { background: var(--hp-surface, var(--c
 @media (prefers-reduced-motion: reduce) {
   .dashboard-weekly-summary, .dashboard-weekly-action { scroll-behavior: auto; transition: none; }
 }
+
+
+/* 821–830: Evidence-based personalized learning path in the student dashboard. */
+.personalized-learning-path {
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 16px;
+  background: var(--hp-card, var(--card-bg, #fff));
+  color: var(--hp-ink, var(--ink));
+}
+.personalized-learning-path-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.personalized-learning-path-heading h3 { margin: 0 0 6px; font-size: 19px; }
+.personalized-learning-path-heading p:last-child { margin: 0; color: var(--hp-muted, var(--muted)); font-size: 13px; line-height: 1.8; }
+.learning-path-level {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 11px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 999px;
+  color: var(--hp-brand, var(--primary));
+  font-size: 12px;
+  font-weight: 800;
+}
+.learning-path-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 16px 0 12px;
+}
+.learning-path-metrics > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 11px;
+}
+.learning-path-metrics strong { font-size: 20px; line-height: 1.3; }
+.learning-path-metrics span, .learning-path-step-meta {
+  color: var(--hp-muted, var(--muted));
+  font-size: 12px;
+}
+.learning-path-track {
+  height: 9px;
+  margin: 12px 0 16px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--hp-border, var(--line));
+}
+.learning-path-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--hp-brand, var(--primary));
+  transition: width .25s ease;
+}
+.learning-path-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: learning-path;
+}
+.learning-path-step {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 12px;
+  background: var(--hp-surface, transparent);
+}
+.learning-path-step h4 { margin: 0; font-size: 15px; line-height: 1.6; }
+.learning-path-step p { margin: 0; color: var(--hp-muted, var(--muted)); font-size: 13px; line-height: 1.8; }
+.learning-path-step-meta { line-height: 1.7; }
+.learning-path-start {
+  justify-self: start;
+  min-height: 40px;
+  padding: 8px 13px;
+  border: 1px solid var(--hp-brand, var(--primary));
+  border-radius: 9px;
+  background: transparent;
+  color: var(--hp-brand, var(--primary));
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.learning-path-start:hover { background: var(--hp-brand-soft, rgba(40, 100, 180, .08)); }
+.learning-path-start:focus-visible {
+  outline: 3px solid var(--focus-ring, #8aa8ff);
+  outline-offset: 3px;
+}
+.learning-path-note { margin: 13px 0 0; color: var(--hp-muted, var(--muted)); font-size: 12px; line-height: 1.8; }
+body.dark-mode .personalized-learning-path,
+body.dark-mode .learning-path-step { background: var(--hp-card, var(--card-bg)); border-color: var(--hp-border, var(--line)); color: var(--hp-ink, var(--ink)); }
+body.dark-mode .learning-path-step p,
+body.dark-mode .learning-path-metrics span,
+body.dark-mode .learning-path-step-meta,
+body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
+@media (max-width: 640px) {
+  .personalized-learning-path { padding: 13px; }
+  .personalized-learning-path-heading { flex-direction: column; }
+  .learning-path-level { align-self: flex-start; }
+  .learning-path-metrics { gap: 6px; }
+  .learning-path-metrics > div { padding: 8px 6px; }
+  .learning-path-metrics strong { font-size: 17px; }
+  .learning-path-metrics span { font-size: 11px; }
+  .learning-path-start { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .learning-path-track span { transition: none; }
+}
