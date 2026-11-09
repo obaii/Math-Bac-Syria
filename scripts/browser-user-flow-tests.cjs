@@ -1079,11 +1079,56 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#recent-activity").evaluate(el => !el.hidden), true, "recent activity should appear inside its menu panel after an answer is recorded");
     assert.equal(await page.locator("#recent-activity-list li").count(), 1, "recent activity should show the latest practiced topic");
     assert.equal(await page.locator("#recent-activity-list li strong").innerText(), lastPracticedTopic, "recent activity should show the correct topic");
+    assert.equal(await page.locator("#dashboard-panel-recent-activity .dashboard-empty-state").evaluate(el => el.hidden), true,
+      "the recent-activity empty message should disappear when activity is available");
+    assert.match(await page.locator("#recent-activity-summary").innerText(), /أبحاث حديثة/,
+      "recent activity should summarize the number of displayed topics and saved answers");
+    assert.equal(await page.locator("#recent-activity-list li").first().getAttribute("data-attempt-count"), "1",
+      "recent activity rows should expose their aggregated answer count");
+    assert.equal(await page.locator("#dashboard-panel-resume-session .dashboard-empty-state").evaluate(el => el.hidden), true,
+      "the resume empty message should disappear when a last topic is available");
     await openPanel("performance-trend");
     assert.equal(await page.locator("#performance-trend").evaluate(el => !el.hidden), true, "the seven-day performance chart should appear inside its menu panel after an answer is recorded");
     assert.equal(await page.locator("#performance-trend-chart .performance-trend-day").count(), 7, "the performance chart should show one column for each of the last seven days");
     assert.match(await page.locator("#performance-trend-summary").innerText(), /نسبة صحة/, "the chart should summarize the weekly accuracy");
     assert.equal(await page.locator("#performance-trend-chart [role=progressbar]").count(), 7, "each daily chart column should expose its accuracy accessibly");
+    assert.equal(await page.locator("#dashboard-panel-performance-trend .dashboard-empty-state").evaluate(el => el.hidden), true,
+      "the performance-trend empty message should disappear when chart data is available");
+    const activityFixture = await page.evaluate(() => {
+      const savedAttempts = progressData.attempts;
+      const [olderTopic, newerTopic] = topics;
+      const now = Date.now();
+      progressData.attempts = [
+        { topic: olderTopic, correct: true, date: new Date(now - 86400000).toISOString() },
+        { topic: newerTopic, correct: false, date: new Date(now - 3600000).toISOString() },
+        { topic: olderTopic, correct: false, date: new Date(now).toISOString() }
+      ];
+      renderRecentActivity();
+      const rows = Array.from(document.querySelectorAll("#recent-activity-list li")).map(row => ({
+        topic: row.dataset.topic, count: row.dataset.attemptCount, accuracy: row.dataset.accuracy
+      }));
+      progressData.attempts = [];
+      renderRecentActivity();
+      renderPerformanceTrend();
+      const emptyState = {
+        recentVisible: !document.querySelector("#dashboard-panel-recent-activity .dashboard-empty-state").hidden,
+        trendVisible: !document.querySelector("#dashboard-panel-performance-trend .dashboard-empty-state").hidden,
+        recentContentHidden: document.querySelector("#recent-activity").hidden,
+        trendContentHidden: document.querySelector("#performance-trend").hidden
+      };
+      progressData.attempts = savedAttempts;
+      renderRecentActivity();
+      renderPerformanceTrend();
+      return { rows, emptyState, expectedOlder: olderTopic, expectedNewer: newerTopic };
+    });
+    assert.deepEqual(activityFixture.rows.map(row => row.topic),
+      [activityFixture.expectedOlder, activityFixture.expectedNewer],
+      "recent topics should be ordered by their latest attempt timestamp, not saved-array order");
+    assert.deepEqual(activityFixture.rows.map(row => [row.count, row.accuracy]), [["2", "50"], ["1", "0"]],
+      "recent topic rows should aggregate answer counts and accuracy across the saved attempt window");
+    assert.deepEqual(activityFixture.emptyState,
+      { recentVisible: true, trendVisible: true, recentContentHidden: true, trendContentHidden: true },
+      "empty messages should return when activity and seven-day trend data are absent");
     await openPanel("recent-activity");
     await page.locator("#recent-activity-list button").first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
