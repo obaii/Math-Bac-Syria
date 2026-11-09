@@ -2032,30 +2032,32 @@
     const menuSearchEmpty = document.getElementById("section-menu-search-empty");
     const menuSearchClear = document.getElementById("section-menu-search-clear");
     const menuSearchAliases = {
-      flashcards: "بطاقات مراجعة حفظ تذكر",
-      "formula-library": "القوانين الرياضية المعادلات الصيغ",
-      "math-assistant": "مساعد ذكي شرح سؤال",
-      "solved-examples-library": "مسائل محلولة أمثلة حلول",
-      "topic-section": "الأبحاث الموضوعات التدريب الأسئلة",
-      "exam-tools": "امتحان اختبار محاكاة مؤقت",
-      "student-tools": "أدوات الطالب مراجعة تقدم سجل",
-      "scientific-calculator": "حاسبة علمية حساب آلة",
-      "function-plotter": "رسم الدوال المنحنيات بياني",
-      "geometry-tools": "هندسة تفاعلية أشكال مساحة حجم",
-      home: "ملخص إحصائيات الإجابات",
-      "learning-progress-title": "تقدم الأبحاث بداية",
-      "question-coverage-title": "تغطية بنك الأسئلة المحلولة",
-      "weak-topic-recommendation": "اقتراح توصية بحث ضعيف مراجعة",
-      "resume-session": "استئناف متابعة آخر جلسة",
-      "recent-activity": "سجل النشاط آخر الإجابات",
-      "performance-trend": "الأداء التحسن النسبة",
-      "activity-calendar": "تقويم الأيام الانتظام",
-      "achievement-section": "إنجازات شارات"
+      flashcards: "بطاقات مراجعة حفظ تذكر تعليمية فلاش",
+      "formula-library": "القوانين الرياضية المعادلات الصيغ قوانين",
+      "math-assistant": "مساعد ذكي شرح سؤال اسأل",
+      "solved-examples-library": "مسائل محلولة أمثلة حلول تمارين محلولة",
+      "topic-section": "الأبحاث الموضوعات التدريب الأسئلة المنهاج",
+      "exam-tools": "امتحان اختبار محاكاة مؤقت تجريبي",
+      "student-tools": "أدوات الطالب مراجعة تقدم سجل محفوظات",
+      "scientific-calculator": "حاسبة علمية حساب آلة آلة حاسبة",
+      "function-plotter": "رسم الدوال المنحنيات بياني تمثيل الدوال",
+      "geometry-tools": "هندسة تفاعلية أشكال مساحة حجم أشكال هندسية",
+      home: "ملخص إحصائيات الإجابات مساحتي",
+      "learning-progress-title": "تقدم الأبحاث بداية خطوتي التالية",
+      "question-coverage-title": "تغطية بنك الأسئلة المحلولة الأسئلة المجربة",
+      "weak-topic-recommendation": "اقتراح توصية بحث ضعيف مراجعة اقتراح مراجعة",
+      "resume-session": "استئناف متابعة آخر جلسة أكمل",
+      "recent-activity": "سجل النشاط آخر الإجابات سجل الإجابات",
+      "performance-trend": "الأداء التحسن النسبة تطور",
+      "activity-calendar": "تقويم الأيام الانتظام تقويم الدراسة",
+      "achievement-section": "إنجازات شارات جوائز"
     };
     const normalizeMenuSearch = value => String(value || "").normalize("NFKC").toLocaleLowerCase("ar")
       .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
       .replace(/[\u0622\u0623\u0625]/g, "ا")
-      .replace(/[ىی]/g, "ي").replace(/ک/g, "ك").trim();
+      .replace(/[ىی]/g, "ي").replace(/ک/g, "ك")
+      .replace(/[،؛؟!.,:()[\]{}"'«»…]/g, " ")
+      .replace(/\s+/g, " ").trim();
     const visibleMenuCards = () => [...(menu?.querySelectorAll("a.quick-start-card") || [])].filter(card => !card.hidden);
     const filterSectionMenu = () => {
       if (!menu || !menuSearch) return;
