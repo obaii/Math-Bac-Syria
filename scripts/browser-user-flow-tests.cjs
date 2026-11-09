@@ -1222,7 +1222,12 @@ const assert = require("node:assert/strict");
       const card = el.closest(".question-card");
       return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
     });
-    assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2, "the active question card should be positioned in the upper half of the viewport");
+    await page.waitForFunction(() => {
+      const card = document.querySelector("#question-text")?.closest(".question-card");
+      return card && card.getBoundingClientRect().top < window.innerHeight / 2;
+    }, { timeout: 5000 });
+    assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2,
+      "the active question card should be positioned in the upper half of the viewport after scrolling settles");
 
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
