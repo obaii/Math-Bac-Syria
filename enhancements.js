@@ -362,6 +362,23 @@
       .mistake-log-item button{font:inherit;font-size:13px;min-height:38px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:var(--card-bg,white);color:var(--ink);cursor:pointer}
       body.dark-mode .mistake-log-item{background:var(--card-bg);border-color:var(--line)}
       body.dark-mode .mistake-log-item button{background:var(--bg);color:var(--ink);border-color:var(--line)}
+      .error-analysis-disclosure{margin:8px 0;color:var(--muted);font-size:12px;line-height:1.8}
+      .error-analysis-summary{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+      .error-analysis-chip{display:inline-flex;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--bg,#f7f9fc);font-size:12px}
+      .error-analysis-filter-label{display:block;margin:12px 0 5px;font-size:13px;font-weight:700}
+      .error-analysis-filter{width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card-bg);color:var(--ink);font:inherit}
+      .error-analysis-reason{margin:0 0 9px;color:var(--muted);font-size:12px;line-height:1.7}
+      .error-analysis-empty{padding:10px;color:var(--muted);font-size:13px}
+      .error-reflection{margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card-bg)}
+      .error-reflection>p{margin:5px 0 9px;color:var(--muted);font-size:12px;line-height:1.8}
+      .error-reflection-options{display:flex;flex-wrap:wrap;gap:7px}
+      .error-reflection-options button{min-height:44px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+      .error-reflection-options button:focus-visible,.error-analysis-filter:focus-visible{outline:3px solid var(--focus,#2563eb);outline-offset:2px}
+      .error-reflection-options button[aria-pressed=true]{border-color:var(--success,#2f9e72);background:var(--success-soft,#e8f7ef)}
+      .error-reflection-options button:disabled{opacity:.75;cursor:default}
+      .error-reflection-status{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+      body.dark-mode .error-reflection-options button[aria-pressed=true]{background:#123b2b;color:#c7f9df}
+      @media(max-width:640px){.error-reflection-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.error-reflection-options button{overflow-wrap:anywhere}.error-analysis-chip{max-width:100%}}
       .solution{margin-top:14px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--card-bg,white);line-height:1.9}
       .solution-heading{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
       .solution-heading>span{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:#eaf0ff;color:#3154b5;font-size:19px}
@@ -835,30 +852,58 @@
     const section = document.getElementById("mistake-log");
     const button = document.getElementById("mistake-log-toggle");
     if (!section || typeof progressData === "undefined") return;
+    const reasonLabels = {
+      concept:"فهم المفهوم", law:"اختيار القانون", calculation:"الحساب",
+      sign:"الإشارة أو الترتيب", reading:"فهم المطلوب", steps:"خطوات الحل", other:"سبب آخر / غير متأكد"
+    };
     const mistakes = progressData.mistakes && typeof progressData.mistakes === "object" && !Array.isArray(progressData.mistakes) ? progressData.mistakes : {};
     const rows = Object.keys(mistakes).map(key => {
       const q = byKey(key);
       if (!q || typeof q.q !== "string" || !(typeof isSupportedQuestion === "function" ? isSupportedQuestion(q) : Array.isArray(q.options) && q.options.length === 4)) return null;
-      return { key, q };
+      const stored = mistakes[key];
+      const reason = stored && typeof stored.selfReportedReason === "string" && Object.prototype.hasOwnProperty.call(reasonLabels, stored.selfReportedReason) ? stored.selfReportedReason : "";
+      return { key, q, reason };
     }).filter(Boolean).sort((a,b) => String(a.q.topic || "").localeCompare(String(b.q.topic || ""), "ar"));
+    const reasonCounts = Object.fromEntries(Object.keys(reasonLabels).map(key => [key, rows.filter(row => row.reason === key).length]));
+    const classifiedCount = rows.filter(row => row.reason).length;
+    const currentFilter = section.dataset.reasonFilter || "all";
+    const filteredRows = rows.filter(row => currentFilter === "all" || (currentFilter === "unclassified" ? !row.reason : row.reason === currentFilter));
     if (button) {
-      button.textContent = `سجل الأخطاء (${rows.length.toLocaleString("ar")})`;
+      button.textContent = "تحليل الأخطاء (" + rows.length.toLocaleString("ar") + ")";
       button.disabled = rows.length === 0;
       button.setAttribute("aria-expanded", String(!section.hidden));
     }
     if (!rows.length) {
-      section.innerHTML = '<h4>سجل الأخطاء</h4><p>لا توجد أسئلة صالحة للمراجعة حالياً. قد تكون بعض العلامات من نسخة قديمة من بنك الأسئلة.</p>';
+      section.innerHTML = '<h4>سجل الأخطاء وتحليلها</h4><p>لا توجد أسئلة صالحة للمراجعة حالياً. ستظهر هنا الأنماط التي تختار وصفها بنفسك بعد الإجابة.</p>';
       return;
     }
-    section.innerHTML = `
-      <h4>سجل الأخطاء</h4>
-      <p>هذه الأسئلة أخطأتَ في الإجابة عنها. افتح أي سؤال لتتدرّب عليه منفرداً؛ وتُحذف علامة الخطأ عند الإجابة الصحيحة في المراجعة.</p>
-      <ul class="mistake-log-list">${rows.map(({key,q}) => `
-        <li class="mistake-log-item">
-          <div class="mistake-log-meta"><strong>${escapeHtml(q.topic || "بحث غير محدد")}</strong><span>${escapeHtml(q.level || "مستوى غير محدد")}</span></div>
-          <div class="mistake-log-question">${escapeHtml(String(q.q).replace(/<[^>]*>/g, " "))}</div>
-          <button type="button" data-mistake-key="${escapeHtml(key)}">تدرّب على هذا السؤال ←</button>
-        </li>`).join("")}</ul>`;
+    const summary = Object.entries(reasonLabels).filter(([key]) => reasonCounts[key] > 0)
+      .map(([key,label]) => '<span class="error-analysis-chip">' + escapeHtml(label) + ': ' + reasonCounts[key].toLocaleString("ar") + '</span>').join("");
+    let html = '<h4>سجل الأخطاء وتحليلها</h4>' +
+      '<p class="error-analysis-disclosure">التصنيفات أدناه مبنية على اختيارك الذاتي، وليست تشخيصاً آلياً أو حكماً على مستواك. ' +
+      classifiedCount.toLocaleString("ar") + ' من أصل ' + rows.length.toLocaleString("ar") + ' خطأً لها سبب محدد.</p>' +
+      '<div class="error-analysis-summary" aria-label="توزيع الأسباب التي حددتها">' + (summary || '<span class="error-analysis-chip">لم تُحدّد أسباب بعد</span>') + '</div>' +
+      '<label class="error-analysis-filter-label" for="mistake-reason-filter">تصفية الأخطاء حسب السبب</label>' +
+      '<select id="mistake-reason-filter" class="error-analysis-filter">' +
+      '<option value="all">كل الأخطاء (' + rows.length.toLocaleString("ar") + ')</option>' +
+      '<option value="unclassified">لم يُحدّد سببها (' + (rows.length-classifiedCount).toLocaleString("ar") + ')</option>' +
+      Object.entries(reasonLabels).map(([key,label]) => '<option value="' + key + '">' + escapeHtml(label) + ' (' + reasonCounts[key].toLocaleString("ar") + ')</option>').join("") +
+      '</select><ul class="mistake-log-list">' +
+      filteredRows.map(({key,q,reason}) => '<li class="mistake-log-item">' +
+        '<div class="mistake-log-meta"><strong>' + escapeHtml(q.topic || "بحث غير محدد") + '</strong><span>' + escapeHtml(q.level || "مستوى غير محدد") + '</span></div>' +
+        '<div class="mistake-log-question">' + escapeHtml(String(q.q).replace(/<[^>]*>/g, " ")) + '</div>' +
+        '<p class="error-analysis-reason">' + (reason ? "السبب الذي حددته: " + escapeHtml(reasonLabels[reason]) : "لم يُحدّد سبب هذا الخطأ بعد") + '</p>' +
+        '<button type="button" data-mistake-key="' + escapeHtml(key) + '">تدرّب على هذا السؤال ←</button></li>').join("") +
+      '</ul>' + (filteredRows.length ? "" : '<p class="error-analysis-empty">لا توجد أخطاء ضمن هذا التصنيف.</p>');
+    section.innerHTML = html;
+    const filter = section.querySelector("#mistake-reason-filter");
+    if (filter) {
+      filter.value = currentFilter;
+      filter.addEventListener("change", () => {
+        section.dataset.reasonFilter = filter.value;
+        renderMistakeLog();
+      });
+    }
     section.querySelectorAll("[data-mistake-key]").forEach(item => item.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
@@ -866,8 +911,6 @@
       const q = byKey(key) || progressData.mistakes[key];
       if (!q) return;
       startTargetedQuiz([q], "مراجعة خطأ — " + (q.topic || ""));
-      // Keep the quiz transition explicit when the practice action originates
-      // inside the dynamically rendered student-tools panel.
       document.getElementById("quiz")?.classList.remove("hidden");
     }));
     typesetMath(section);

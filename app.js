@@ -1513,7 +1513,10 @@ function submitQuestionAnswer(response){
       progressData.correct += 1;
       delete progressData.mistakes[questionKey(q)];
     } else {
-      progressData.mistakes[questionKey(q)] = { topic: q.topic, q: q.q, options: q.options, answer: q.answer, solution: q.solution, level: q.level, type: q.type, acceptedAnswers: q.acceptedAnswers, tolerance: q.tolerance };
+      const previousMistake = progressData.mistakes[questionKey(q)];
+      progressData.mistakes[questionKey(q)] = { topic: q.topic, q: q.q, options: q.options, answer: q.answer, solution: q.solution, level: q.level, type: q.type, acceptedAnswers: q.acceptedAnswers, tolerance: q.tolerance,
+        selfReportedReason: previousMistake && ["concept","law","calculation","sign","reading","steps","other"].includes(previousMistake.selfReportedReason) ? previousMistake.selfReportedReason : "",
+        reasonUpdatedAt: previousMistake && typeof previousMistake.reasonUpdatedAt === "string" ? previousMistake.reasonUpdatedAt : "" };
     }
     const ts = progressData.topicStats[q.topic] || { answered: 0, correct: 0 };
     ts.answered += 1;
@@ -1566,7 +1569,25 @@ function submitQuestionAnswer(response){
     ? (isCorrect ? "اختيارك صحيح." : "الإجابة الصحيحة هي: " + letters[q.answer] + " — " + q.options[q.answer])
     : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeSolutionText(formatExpectedAnswer(q)));
   const submittedSummary = type === "mcq" ? "" : '<div>إجابتك: ' + escapeSolutionText(type === "true-false" ? (response ? "صح" : "خطأ") : response) + '</div>';
-  fb.innerHTML='<strong>' + (isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة") + '</strong><div>' + answerSummary + '</div>' + submittedSummary + '<div class="solution"><strong>الحل:</strong>' + solutionContent + '</div>';
+  fb.innerHTML='<strong>' + (isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة") + '</strong><div>' + answerSummary + '</div>' + submittedSummary +
+    (isCorrect ? "" : '<section class="error-reflection" aria-labelledby="error-reflection-title"><strong id="error-reflection-title">ما السبب الأقرب لوقوعك في الخطأ؟</strong><p>اختيارك اختياري ويساعدك على فهم نمط المراجعة؛ لا تستنتج المنصة السبب تلقائياً.</p><div class="error-reflection-options">' +
+      [["concept","لم أفهم المفهوم"],["law","اخترت قانوناً غير مناسب"],["calculation","خطأ في الحساب"],["sign","خطأ في الإشارة أو الترتيب"],["reading","لم أفهم المطلوب جيداً"],["steps","تعثر في خطوات الحل"],["other","سبب آخر / لست متأكداً"]].map(([value,label]) => '<button type="button" data-error-reason="' + value + '">' + label + '</button>').join("") +
+      '</div><span class="error-reflection-status" role="status" aria-live="polite">يمكنك تخطي هذا السؤال والمتابعة.</span></section>') +
+    '<div class="solution"><strong>الحل:</strong>' + solutionContent + '</div>';
+  fb.querySelectorAll("[data-error-reason]").forEach(button => button.addEventListener("click", () => {
+    const key = questionKey(q);
+    const record = progressData.mistakes && progressData.mistakes[key];
+    if (!record || !["concept","law","calculation","sign","reading","steps","other"].includes(button.dataset.errorReason)) return;
+    record.selfReportedReason = button.dataset.errorReason;
+    record.reasonUpdatedAt = new Date().toISOString();
+    saveProgress();
+    fb.querySelectorAll("[data-error-reason]").forEach(option => {
+      option.disabled = true;
+      option.setAttribute("aria-pressed", String(option === button));
+    });
+    const status = fb.querySelector(".error-reflection-status");
+    if (status) status.textContent = "حُفظ تصنيفك الذاتي لهذا الخطأ على هذا الجهاز.";
+  }));
   // One static button is reused for every question; assigning onclick replaces any prior handler.
   const similarPracticeAction = $("similar-practice-start");
   if (similarPracticeAction) {
