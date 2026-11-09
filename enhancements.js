@@ -571,6 +571,81 @@
     window.addEventListener("online", updateOnlineStatus);
     window.addEventListener("offline", updateOnlineStatus);
   };
+  const renderDashboardWeeklySummary = () => {
+    const panel = document.getElementById("dashboard-weekly-summary");
+    if (!panel) return;
+    const attempts = Array.isArray(progressData?.attempts) ? progressData.attempts : [];
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+    const dayKey = date => [date.getFullYear(), String(date.getMonth()+1).padStart(2,"0"), String(date.getDate()).padStart(2,"0")].join("-");
+    const days = Array.from({length:7}, (_, index) => {
+      const date = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate()+index);
+      return { date, key:dayKey(date), count:0 };
+    });
+    const dayMap = new Map(days.map(day => [day.key, day]));
+    const weekly = attempts.filter(item => {
+      const date = new Date(item && item.date);
+      if (Number.isNaN(date.getTime()) || date < weekStart || date >= new Date(todayStart.getTime()+86400000)) return false;
+      const day = dayMap.get(dayKey(date));
+      if (day) day.count++;
+      return true;
+    });
+    const correct = weekly.filter(item => item.correct === true).length;
+    const activeDays = days.filter(day => day.count > 0).length;
+    const accuracy = weekly.length ? Math.round(correct / weekly.length * 100) : null;
+    const topicMap = new Map();
+    weekly.forEach(item => {
+      const topic = typeof item.topic === "string" && item.topic.trim() ? item.topic.trim() : "بحث غير محدد";
+      const record = topicMap.get(topic) || { topic, total:0, correct:0 };
+      record.total++;
+      if (item.correct === true) record.correct++;
+      topicMap.set(topic, record);
+    });
+    const topicRows = [...topicMap.values()].filter(row => row.total >= 2);
+    const best = [...topicRows].sort((a,b) => (b.correct/b.total)-(a.correct/a.total) || b.total-a.total || a.topic.localeCompare(b.topic,"ar"))[0];
+    const focus = [...topicRows].filter(row => row.correct < row.total)
+      .sort((a,b) => (a.correct/a.total)-(b.correct/b.total) || (b.total-b.correct)-(a.total-a.correct) || b.total-a.total || a.topic.localeCompare(b.topic,"ar"))[0];
+    const attemptsNode = document.getElementById("dashboard-weekly-attempts");
+    const accuracyNode = document.getElementById("dashboard-weekly-accuracy");
+    const daysNode = document.getElementById("dashboard-weekly-days");
+    if (attemptsNode) attemptsNode.textContent = weekly.length.toLocaleString("ar");
+    if (accuracyNode) accuracyNode.textContent = accuracy === null ? "—" : accuracy.toLocaleString("ar")+"٪";
+    if (daysNode) daysNode.textContent = activeDays.toLocaleString("ar");
+    const period = document.getElementById("dashboard-weekly-period");
+    if (period) period.textContent = days[0].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"})+" – "+days[6].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"});
+    const chart = document.getElementById("dashboard-weekly-chart");
+    if (chart) {
+      const maxCount = Math.max(1,...days.map(day=>day.count));
+      chart.innerHTML = days.map(day => {
+        const height = day.count ? Math.max(8,Math.round(day.count/maxCount*100)) : 0;
+        const label = day.date.toLocaleDateString("ar-SY",{weekday:"short"});
+        return '<div class="dashboard-weekly-day" aria-label="'+escapeHtml(label)+': '+day.count.toLocaleString("ar")+' محاولات"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
+      }).join("");
+    }
+    const bestNode = document.getElementById("dashboard-weekly-best");
+    const focusNode = document.getElementById("dashboard-weekly-focus");
+    if (bestNode) bestNode.textContent = best
+      ? "أقوى أبحاثك هذا الأسبوع: "+best.topic+" — دقة "+Math.round(best.correct/best.total*100).toLocaleString("ar")+"٪ من "+best.total.toLocaleString("ar")+" محاولات."
+      : "سيظهر البحث الأقوى بعد تسجيل محاولتين على الأقل في أحد الأبحاث.";
+    if (focusNode) focusNode.textContent = focus
+      ? "أولوية التدريب: "+focus.topic+" — "+(focus.total-focus.correct).toLocaleString("ar")+" إجابات تحتاج إلى مراجعة هذا الأسبوع."
+      : "ستظهر أولوية التدريب عند وجود إجابات غير صحيحة ضمن بحث جُرّبت أسئلته مرتين على الأقل.";
+    const action = document.getElementById("dashboard-weekly-focus-start");
+    if (action) {
+      action.hidden = !focus;
+      action.onclick = focus && typeof startQuiz === "function" ? () => startQuiz(focus.topic) : null;
+      action.dataset.topic = focus ? focus.topic : "";
+    }
+    const empty = document.getElementById("dashboard-weekly-empty");
+    if (empty) empty.hidden = weekly.length > 0;
+    panel.dataset.attempts = String(weekly.length);
+    panel.dataset.activeDays = String(activeDays);
+    panel.dataset.accuracy = accuracy === null ? "" : String(accuracy);
+  };
+  window.addEventListener("mathBacSyria:dashboard-refreshed", renderDashboardWeeklySummary);
+  renderDashboardWeeklySummary();
+
   const renderProgressReport = () => {
     const report = document.getElementById("progress-report");
     if (!report) return;
