@@ -269,22 +269,29 @@ function renderWeakTopicRecommendation(){
   const name = $("weak-topic-name");
   const rateNode = $("weak-topic-rate");
   const detail = $("weak-topic-detail");
+  const reasonNode = $("weak-topic-reason");
   const button = $("weak-topic-button");
   if (!section || !name || !rateNode || !detail || !button) return;
 
-  // لا نصدر حكماً على مستوى الطالب من عينة صغيرة؛ نحتاج خمس إجابات على الأقل في البحث.
+  // نحتاج عينة كافية قبل تقديم توصية قد تؤثر في خطة مراجعة الطالب.
   const minimumSample = 5;
-  const availableTopics = (Array.isArray(topics) ? topics : [])
+  const validTopics = (Array.isArray(topics) ? topics : [])
     .filter(topic => questions.some(question => question.topic === topic));
-  const startedTopics = availableTopics.map(topic => {
+  const mistakes = progressData.mistakes && typeof progressData.mistakes === "object"
+    ? Object.values(progressData.mistakes) : [];
+  const startedTopics = validTopics.map(topic => {
     const stat = progressData.topicStats && progressData.topicStats[topic];
     const answered = stat && Number.isSafeInteger(stat.answered) && stat.answered > 0 ? stat.answered : 0;
     const correct = stat && Number.isSafeInteger(stat.correct) && stat.correct >= 0
       ? Math.min(stat.correct, answered) : 0;
-    return { topic, answered, correct, rate: answered ? Math.round(correct / answered * 100) : 0 };
+    const mistakeCount = mistakes.filter(item => item && item.topic === topic).length;
+    return { topic, answered, correct, mistakeCount, rate: answered ? Math.round(correct / answered * 100) : 0 };
   }).filter(item => item.answered > 0);
   const candidates = startedTopics.filter(item => item.answered >= minimumSample);
-  candidates.sort((a, b) => a.rate - b.rate || b.answered - a.answered || a.topic.localeCompare(b.topic, "ar"));
+  candidates.sort((a, b) =>
+    a.rate - b.rate || b.mistakeCount - a.mistakeCount ||
+    b.answered - a.answered || a.topic.localeCompare(b.topic, "ar")
+  );
   const weakest = candidates[0];
   if (!weakest) {
     let emptyMessage = "ابدأ بحل الأسئلة في أحد الأبحاث، وسنقترح عليك ما يستحق المراجعة.";
@@ -294,17 +301,46 @@ function renderWeakTopicRecommendation(){
       emptyMessage = "أجب عن " + remaining.toLocaleString("ar") +
         " إجابة إضافية على الأقل في أحد الأبحاث حتى نبني اقتراح المراجعة على عينة كافية.";
     }
+    section.removeAttribute("data-topic");
+    section.removeAttribute("data-accuracy");
+    section.removeAttribute("data-sample-size");
+    section.removeAttribute("data-mistake-count");
+    name.textContent = "";
+    rateNode.textContent = "—";
+    detail.textContent = "";
+    if (reasonNode) reasonNode.textContent = "";
+    button.textContent = "ابدأ مراجعة البحث";
+    button.setAttribute("aria-label", "ابدأ التدريب بعد توفر بيانات كافية");
+    button.onclick = null;
     syncDashboardEmptyState(section, false, emptyMessage);
     return;
   }
-  syncDashboardEmptyState(section, true);
 
+  const overallAnswered = startedTopics.reduce((sum, item) => sum + item.answered, 0);
+  const overallCorrect = startedTopics.reduce((sum, item) => sum + item.correct, 0);
+  const overallRate = overallAnswered ? Math.round(overallCorrect / overallAnswered * 100) : weakest.rate;
+  const belowAverage = Math.max(0, overallRate - weakest.rate);
+  const confidence = weakest.answered >= 10 ? "عينة أوسع" : "عينة أولية";
+  const reason = weakest.mistakeCount
+    ? "لديك " + weakest.mistakeCount.toLocaleString("ar") + " أخطاء محفوظة في هذا البحث، لذلك يستحق مراجعتها."
+    : belowAverage >= 5
+      ? "دقتك في هذا البحث أقل من متوسط أدائك في الأبحاث التي تدربت عليها بـ " + belowAverage.toLocaleString("ar") + " نقاط مئوية."
+      : "هذا البحث يملك أدنى نسبة إجابات صحيحة بين الأبحاث ذات العينات الكافية.";
+  section.dataset.topic = weakest.topic;
+  section.dataset.accuracy = String(weakest.rate);
+  section.dataset.sampleSize = String(weakest.answered);
+  section.dataset.mistakeCount = String(weakest.mistakeCount);
+  section.dataset.confidence = confidence;
+  section.setAttribute("aria-label", "توصية مراجعة بحث " + weakest.topic + "، دقة " + weakest.rate + " بالمئة");
+  syncDashboardEmptyState(section, true);
   name.textContent = weakest.topic;
   rateNode.textContent = weakest.rate.toLocaleString("ar") + "٪";
   detail.textContent = weakest.answered.toLocaleString("ar") + " إجابات مسجلة، منها " +
-    weakest.correct.toLocaleString("ar") + " صحيحة. اخترنا هذا البحث لأنه الأقل في نسبة الإجابات الصحيحة بين الأبحاث التي تدربت عليها، بعد عينة لا تقل عن " +
-    minimumSample.toLocaleString("ar") + " إجابات.";
-  button.setAttribute("aria-label", "ابدأ مراجعة البحث " + weakest.topic);
+    weakest.correct.toLocaleString("ar") + " صحيحة. " + confidence +
+    " مبنية على " + weakest.answered.toLocaleString("ar") + " إجابات؛ لا تمثل حكماً نهائياً على مستواك.";
+  if (reasonNode) reasonNode.textContent = reason;
+  button.textContent = "ابدأ مراجعة " + weakest.topic;
+  button.setAttribute("aria-label", "ابدأ مراجعة البحث " + weakest.topic + "، " + reason);
   button.onclick = () => startQuiz(weakest.topic);
 }
 
