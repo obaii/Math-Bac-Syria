@@ -665,6 +665,8 @@ const assert = require("node:assert/strict");
         inProgress,
         completed,
         completedLevel: completedQuestions[0].level,
+        alternateLevel: completedQuestions.find(question => question.level !== completedQuestions[0].level)?.level || completedQuestions[0].level,
+        completedTotal: completedQuestions.length,
         stateCounts
       };
     });
@@ -689,6 +691,19 @@ const assert = require("node:assert/strict");
       "the completed coverage filter should show the topic whose entire question bank was practiced");
     assert.equal(await topicButtons.first().getAttribute("data-topic"), coverageFixture.completed,
       "the completed coverage filter should identify the fully practiced topic");
+    const completedCard = topicButtons.first();
+    assert.equal(await completedCard.getAttribute("data-coverage-seen"), String(coverageFixture.completedTotal),
+      "the card should expose the number of practiced questions from the complete topic bank");
+    assert.equal(await completedCard.getAttribute("data-coverage-total"), String(coverageFixture.completedTotal),
+      "the card should expose the complete topic-bank total");
+    await page.locator("#difficulty").selectOption(coverageFixture.alternateLevel);
+    assert.equal(await completedCard.getAttribute("data-coverage-rate"), "100",
+      "topic-wide coverage should remain 100 percent when a single difficulty is selected");
+    assert.equal(await completedCard.locator(".topic-mastery").getAttribute("aria-valuenow"), "100",
+      "the accessible coverage progress bar should use the full topic bank, not the selected level");
+    assert.ok((await completedCard.locator(".topic-coverage-summary").innerText()).includes(coverageFixture.completedTotal.toLocaleString("ar")),
+      "the visible coverage summary should retain the full-bank question count");
+    await page.locator("#difficulty").selectOption("الكل");
     await topicSearch.fill(coverageFixture.completed);
     await page.locator("#difficulty").selectOption(coverageFixture.completedLevel);
     await page.locator("#mastery-filter").selectOption("not-started");
