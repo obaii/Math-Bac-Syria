@@ -151,6 +151,33 @@ const assert = require("node:assert/strict");
       "unordered Arabic search terms should match the scientific calculator shortcut");
     assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').isVisible(), true,
       "the matching calculator shortcut should remain visible");
+    // Common learner phrases should resolve to their intended destinations.
+    const menuSearchCases = [
+      ["بطاقات حفظ", "flashcards", "panel"],
+      ["قوانين المعادلات", "formula-library", "panel"],
+      ["مساعد ذكي", "math-assistant", "panel"],
+      ["تمارين محلولة", "solved-examples-library", "panel"],
+      ["أسئلة المنهاج", "topic-section", "panel"],
+      ["امتحان تجريبي", "exam-tools", "panel"],
+      ["محفوظات المراجعة", "student-tools", "panel"],
+      ["آلة، حاسبة", "scientific-calculator", "panel"],
+      ["تمثيل الدوال", "function-plotter", "panel"],
+      ["أشكال هندسية", "geometry-tools", "panel"],
+      ["سجل الإجابات", "recent-activity", "dashboard"],
+      ["تقويم الدراسة", "activity-calendar", "dashboard"],
+      ["اقتراح مراجعة", "weak-topic-recommendation", "dashboard"]
+    ];
+    for (const [query, target, kind] of menuSearchCases) {
+      await menuSearch.fill(query);
+      const selector = kind === "dashboard"
+        ? '[data-dashboard-target="' + target + '"]'
+        : '[data-panel-toggle="' + target + '"]';
+      assert.equal(await page.locator(selector).isVisible(), true,
+        "menu search should resolve the learner phrase: " + query);
+      assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 1,
+        "each tested phrase should lead to one unambiguous shortcut: " + query);
+    }
+    await menuSearch.fill("علمية حاسبة");
     assert.ok(await menuSearchClear.isVisible(), "the clear-search control should appear when a query is entered");
     await menuSearch.press("ArrowDown");
     assert.equal(await page.locator('[data-panel-toggle="scientific-calculator"]').evaluate(el => document.activeElement === el), true,
@@ -670,7 +697,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v113/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v114/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
