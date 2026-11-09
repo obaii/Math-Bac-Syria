@@ -659,7 +659,6 @@ const assert = require("node:assert/strict");
       chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
       accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
       accessibleCounts: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent.match(/: ([٠-٩]+) محاولة تدريب$/)?.[1]),
-      accessibleLabels: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
       focusTopic: document.querySelector("#dashboard-weekly-focus-start").dataset.topic,
@@ -668,7 +667,6 @@ const assert = require("node:assert/strict");
     assert.deepEqual(weeklySnapshot, {
       attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
       chartHidden: "true", accessibleDays: 7, accessibleCounts: ["١", "٢", "١", "١", "٠", "٠", "٠"],
-      accessibleLabels: await page.evaluate(() => [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent)),
       best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة 67٪ من 3 محاولات.",
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
