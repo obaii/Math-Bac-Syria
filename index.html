@@ -161,7 +161,7 @@
       <div class="learning-progress-track" id="question-progress-bar" role="progressbar" aria-label="نسبة الأسئلة المختلفة التي جرى حلها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="question-progress-fill" style="width:0%"></span></div>
       <p class="learning-progress-caption" id="question-progress-caption">ابدأ التدريب لتتبع عدد الأسئلة المختلفة التي حللتها.</p>
     </section>
-    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-weak-topic-recommendation" data-dashboard-panel="weak-topic-recommendation" hidden><p class="dashboard-empty-state">سيظهر اقتراح مناسب بعد حل عدد كافٍ من الأسئلة.</p><section id="weak-topic-recommendation" class="weak-topic-recommendation" aria-labelledby="weak-topic-heading" hidden>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-weak-topic-recommendation" data-dashboard-panel="weak-topic-recommendation" hidden><p class="dashboard-empty-state" role="status" aria-live="polite">سيظهر اقتراح مناسب بعد حل عدد كافٍ من الأسئلة.</p><section id="weak-topic-recommendation" class="weak-topic-recommendation" aria-labelledby="weak-topic-heading" hidden>
       <div class="weak-topic-copy">
         <p class="eyebrow">اقتراح للتدريب</p>
         <h3 id="weak-topic-heading">بحث يستحق مزيداً من المراجعة</h3>
@@ -174,7 +174,7 @@
         <button type="button" id="weak-topic-button">ابدأ مراجعة البحث ←</button>
       </div>
     </section></div>
-    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-resume-session" data-dashboard-panel="resume-session" hidden><p class="dashboard-empty-state">سيظهر هنا آخر بحث تدربت عليه لتتمكن من المتابعة.</p><section id="resume-session" class="resume-session" aria-labelledby="resume-session-title" hidden>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-resume-session" data-dashboard-panel="resume-session" hidden><p class="dashboard-empty-state" role="status" aria-live="polite">سيظهر هنا آخر بحث تدربت عليه لتتمكن من المتابعة.</p><section id="resume-session" class="resume-session" aria-labelledby="resume-session-title" hidden>
       <div class="resume-session-copy">
         <p class="eyebrow">أكمل رحلتك</p>
         <h3 id="resume-session-title">تابع من حيث توقفت</h3>
@@ -183,18 +183,18 @@
       </div>
       <button type="button" id="resume-topic-button" class="resume-topic-button">متابعة التدريب ←</button>
     </section></div>
-    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-recent-activity" data-dashboard-panel="recent-activity" hidden><p class="dashboard-empty-state">سيظهر سجل نشاطك بعد بدء التدريب.</p><section id="recent-activity" class="recent-activity" aria-labelledby="recent-activity-title" hidden>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-recent-activity" data-dashboard-panel="recent-activity" hidden><p class="dashboard-empty-state" role="status" aria-live="polite">سيظهر سجل نشاطك بعد بدء التدريب.</p><section id="recent-activity" class="recent-activity" aria-labelledby="recent-activity-title" aria-describedby="recent-activity-summary recent-activity-history-note" hidden>
       <div class="recent-activity-heading">
         <div>
           <p class="eyebrow">سجل التعلم</p>
           <h3 id="recent-activity-title">آخر الأبحاث التي تدربت عليها</h3>
-          <p>تذكّر نشاطك الأخير وعد إلى أي بحث بسهولة.</p>
-          <p class="dashboard-history-note">يعرض هذا السجل أحدث الأبحاث ضمن آخر ١٠٠ إجابة محفوظة على هذا الجهاز.</p>
+          <p id="recent-activity-summary" aria-live="polite">لم تسجل إجابات تدريبية بعد.</p>
+          <p class="dashboard-history-note" id="recent-activity-history-note">يعرض هذا السجل أحدث الأبحاث ضمن آخر ١٠٠ إجابة محفوظة على هذا الجهاز.</p>
         </div>
       </div>
-      <ul id="recent-activity-list" class="recent-activity-list" aria-live="polite"></ul>
+      <ul id="recent-activity-list" class="recent-activity-list" aria-label="أحدث خمسة أبحاث جرى التدريب عليها"></ul>
     </section></div>
-    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-performance-trend" data-dashboard-panel="performance-trend" hidden><p class="dashboard-empty-state">سيظهر تطور أدائك بعد تسجيل إجاباتك.</p><section id="performance-trend" class="performance-trend" aria-labelledby="performance-trend-title" hidden>
+    <div class="dashboard-menu-panel dashboard-dynamic-panel" id="dashboard-panel-performance-trend" data-dashboard-panel="performance-trend" hidden><p class="dashboard-empty-state" role="status" aria-live="polite">سيظهر تطور أدائك بعد تسجيل إجاباتك.</p><section id="performance-trend" class="performance-trend" aria-labelledby="performance-trend-title" hidden>
       <div class="performance-trend-heading">
         <div>
           <p class="eyebrow">مؤشر التقدّم</p>
