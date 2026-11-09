@@ -1872,7 +1872,21 @@ const assert = require("node:assert/strict");
     await openPanel("student-tools");
     await page.locator("#student-tools").waitFor({ state: "visible" });
     // A learner can optionally label the reason for a fresh incorrect answer.
-    await page.evaluate(() => startQuiz(topics[0]));
+    await page.evaluate(() => {
+      const question = questions.find(item => getQuestionType(item) === "mcq");
+      if (!question) throw new Error("no multiple-choice question is available for error reflection testing");
+      currentTopic = question.topic;
+      reviewMode = false;
+      quizQuestions = [question];
+      index = 0;
+      correctCount = 0;
+      answered = false;
+      sessionMistakes = [];
+      document.getElementById("home").classList.add("hidden");
+      document.getElementById("quiz").classList.remove("hidden");
+      document.getElementById("quiz-title").textContent = currentTopic;
+      showQuestion();
+    });
     await page.locator("#quiz").waitFor({ state: "visible" });
     const wrongOption = await page.evaluate(() => {
       const correct = Number(quizQuestions[index].answer);
