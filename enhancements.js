@@ -1193,6 +1193,18 @@
       .filter(Boolean)
       .sort((a, b) => a.due - b.due);
   };
+  const getScheduledLessonReviews = () => {
+    const validTopics = Array.isArray(topics) ? topics : [];
+    const schedule = extras && isRecord(extras.lessonSchedule) ? extras.lessonSchedule : {};
+    return Object.entries(schedule).map(([topic, item]) => {
+      if (!validTopics.includes(topic) || !isRecord(item)) return null;
+      const due = Number(item.due), accuracy = Number(item.lastAccuracy), questionCount = Number(item.questionCount);
+      if (!Number.isFinite(due) || due <= 0 || !Number.isFinite(accuracy) || accuracy < 0 || accuracy > 100 ||
+          !Number.isSafeInteger(questionCount) || questionCount < 1) return null;
+      const stage = Math.max(0, Math.min(intervalsDays.length - 1, Math.floor(Number(item.stage) || 0)));
+      return { topic, due, stage, accuracy:Math.round(accuracy), questionCount };
+    }).filter(Boolean).sort((a,b) => a.due-b.due);
+  };
   const buildReviewAssistantSnapshot = () => {
     const bankTopics = Array.isArray(topics) ? topics : [];
     const stats = progressData && isRecord(progressData.topicStats) ? progressData.topicStats : {};
@@ -1307,6 +1319,15 @@
     showQuestion();
     if (status) status.textContent = "بدأت جلسة من " + selected.length.toLocaleString("ar") + " سؤالاً " + label + ".";
     window.scrollTo({top:0,behavior:"smooth"});
+  };
+  const startLessonReview = topic => {
+    const validTopics = Array.isArray(topics) ? topics : [];
+    if (!validTopics.includes(topic)) return;
+    const qs = (Array.isArray(questions) ? questions : []).filter(q => q.topic === topic && typeof isSupportedQuestion === "function" && isSupportedQuestion(q));
+    if (!qs.length) { alert("لا توجد أسئلة صالحة لهذا البحث حالياً."); return; }
+    pendingLessonReviewTopic = topic;
+    startTargetedQuiz(qs, "مراجعة درس — " + topic);
+    pendingLessonReviewTopic = topic;
   };
   const startSmartReview = () => {
     const now = Date.now();
