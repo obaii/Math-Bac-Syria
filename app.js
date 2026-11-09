@@ -23,7 +23,7 @@ const DEFAULT_DASHBOARD_PREFERENCES = Object.freeze({
 function loadDashboardPreferences(){
   try {
     const saved = JSON.parse(localStorage.getItem(DASHBOARD_PREFERENCES_KEY) || "null");
-    if (!isRecord(saved)) return { ...DEFAULT_DASHBOARD_PREFERENCES };
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) return { ...DEFAULT_DASHBOARD_PREFERENCES };
     return {
       density: ["comfortable", "compact"].includes(saved.density) ? saved.density : "comfortable",
       hideUnlockedAchievements: saved.hideUnlockedAchievements === true,
