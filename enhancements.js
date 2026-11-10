@@ -623,10 +623,22 @@
       if (day) day.count++;
       return true;
     });
+    const previousWeekStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate()-7);
+    const previousWeekly = attempts.filter(item => {
+      const date = new Date(item && item.date);
+      return !Number.isNaN(date.getTime()) && date >= previousWeekStart && date < weekStart;
+    });
     const correct = weekly.filter(item => item.correct === true).length;
+    const incorrect = weekly.length - correct;
     const activeDays = days.filter(day => day.count > 0).length;
     const averageDaily = weekly.length / 7;
-    const busiestDay = days.reduce((best, day) => day.count > (best?.count || 0) ? day : best, null);
+    const busiestDay = days.some(day => day.count > 0)
+      ? days.reduce((best, day) => day.count > (best?.count || 0) ? day : best, null)
+      : null;
+    const weeklyDelta = weekly.length - previousWeekly.length;
+    const weeklyChangePercent = previousWeekly.length
+      ? Math.round(Math.abs(weeklyDelta) / previousWeekly.length * 100)
+      : null;
     const formatAttemptCount = count => {
       const number = count.toLocaleString("ar-u-nu-arab");
       if (count === 0) return "لا توجد محاولات";
@@ -651,10 +663,28 @@
     const accuracyNode = document.getElementById("dashboard-weekly-accuracy");
     const daysNode = document.getElementById("dashboard-weekly-days");
     const averageNode = document.getElementById("dashboard-weekly-average");
+    const correctNode = document.getElementById("dashboard-weekly-correct");
+    const incorrectNode = document.getElementById("dashboard-weekly-incorrect");
+    const comparisonNode = document.getElementById("dashboard-weekly-comparison");
     if (attemptsNode) attemptsNode.textContent = weekly.length.toLocaleString("ar");
     if (accuracyNode) accuracyNode.textContent = accuracy === null ? "—" : accuracy.toLocaleString("ar")+"٪";
     if (daysNode) daysNode.textContent = activeDays.toLocaleString("ar");
     if (averageNode) averageNode.textContent = averageDaily.toLocaleString("ar", { maximumFractionDigits: 1 });
+    if (correctNode) correctNode.textContent = correct.toLocaleString("ar");
+    if (incorrectNode) incorrectNode.textContent = incorrect.toLocaleString("ar");
+    if (comparisonNode) {
+      if (previousWeekly.length === 0) {
+        comparisonNode.textContent = weekly.length
+          ? "بدأت تسجيل نشاطك هذا الأسبوع؛ لا توجد بيانات من الأسبوع السابق للمقارنة."
+          : "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.";
+      } else if (weeklyDelta === 0) {
+        comparisonNode.textContent = "نشاطك مماثل للأسبوع السابق: "+weekly.length.toLocaleString("ar")+" محاولة تدريب.";
+      } else {
+        const direction = weeklyDelta > 0 ? "زاد" : "انخفض";
+        comparisonNode.textContent = direction+" نشاطك "+weeklyChangePercent.toLocaleString("ar")+"٪ مقارنة بالأسبوع السابق ("+
+          previousWeekly.length.toLocaleString("ar")+" مقابل "+weekly.length.toLocaleString("ar")+" محاولة تدريب).";
+      }
+    }
     const period = document.getElementById("dashboard-weekly-period");
     if (period) period.textContent = days[0].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"})+" – "+days[6].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"});
     const chart = document.getElementById("dashboard-weekly-chart");
@@ -704,6 +734,10 @@
     panel.dataset.attempts = String(weekly.length);
     panel.dataset.activeDays = String(activeDays);
     panel.dataset.accuracy = accuracy === null ? "" : String(accuracy);
+    panel.dataset.correct = String(correct);
+    panel.dataset.incorrect = String(incorrect);
+    panel.dataset.previousAttempts = String(previousWeekly.length);
+    panel.dataset.weeklyDelta = String(weeklyDelta);
   };
   window.addEventListener("mathBacSyria:dashboard-refreshed", renderDashboardWeeklySummary);
   renderDashboardWeeklySummary();
