@@ -8162,3 +8162,12 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
   line-height: 1.8;
 }
 .dashboard-weekly-chart-accessible li + li { margin-top: 4px; }
+
+
+@media (max-width: 480px) {
+  .dashboard-weekly-details > summary { padding: 10px; }
+  .dashboard-weekly-chart-accessible {
+    padding-inline: 28px 10px;
+    overflow-wrap: anywhere;
+  }
+}
