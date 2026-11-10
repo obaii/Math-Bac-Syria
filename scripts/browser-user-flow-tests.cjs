@@ -304,6 +304,19 @@ const assert = require("node:assert/strict");
     await page.locator("#back").click();
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaTrainingSessionV1"));
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
+    await page.evaluate(topic => {
+      localStorage.setItem("mathBacSyriaLastTopicV1", topic);
+      localStorage.setItem("mathBacSyriaTrainingSessionV1", JSON.stringify({
+        version: 1, topic, questionKeys: ["duplicate-key", "duplicate-key"],
+        index: 0, correctCount: 0, mistakeKeys: [], updatedAt: new Date().toISOString()
+      }));
+    }, resumeTopic);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    assert.equal(await page.evaluate(() => localStorage.getItem("mathBacSyriaTrainingSessionV1")), null,
+      "a malformed saved session with duplicate question keys should be discarded");
+    await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
+
 
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
@@ -1126,7 +1139,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v138/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v139/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
