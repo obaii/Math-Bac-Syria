@@ -58,6 +58,22 @@ const assert = require("node:assert/strict");
   });
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
+    const shuffleChecks = await page.evaluate(() => {
+      const original = [1, 2, 3, 4, 5];
+      const unchanged = [...original];
+      const low = shuffleQuestions(original, () => 0);
+      const high = shuffleQuestions(original, () => 0.999999);
+      return {
+        originalUnchanged: JSON.stringify(original) === JSON.stringify(unchanged),
+        lowIsPermutation: low.length === original.length && [...low].sort().join(",") === unchanged.join(","),
+        highIsPermutation: high.length === original.length && [...high].sort().join(",") === unchanged.join(","),
+        lowOrder: low.join(","), highOrder: high.join(",")
+      };
+    });
+    assert.equal(shuffleChecks.originalUnchanged, true, "quiz shuffling should never mutate the source question list");
+    assert.equal(shuffleChecks.lowIsPermutation, true, "the lowest random boundary should preserve every question exactly once");
+    assert.equal(shuffleChecks.highIsPermutation, true, "the highest random boundary should preserve every question exactly once");
+    assert.notEqual(shuffleChecks.lowOrder, shuffleChecks.highOrder, "the shuffle should respond correctly to opposite random boundaries");
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0, null, { timeout: 15000 });
     await page.waitForSelector("#curriculum-topic-select", { state: "attached", timeout: 10000 });
     assert.equal(await page.locator("#curriculum-progress-picker").isVisible(), false,
@@ -1110,7 +1126,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v137/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v138/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");

@@ -79,7 +79,7 @@ const checks = [
   ["saved review schedules reject invalid due dates and normalize stages", /const normalizeSchedule = schedule => \{[\s\S]*?if \(!Number\.isFinite\(due\) \|\| due <= 0\) continue;[\s\S]*?Math\.min\(intervalsDays\.length - 1, Math\.floor\(rawStage\)\)/.test(enhancements)],
   ["session mistakes are tracked once per question without changing saved progress structure", /sessionMistakes\.some\(item => questionKey\(item\) === questionKey\(q\)\)/.test(app) && /else if \(!sessionMistakes\.some/.test(app)],
   ["session results show correct and incorrect totals and list missed questions", /const wrongCount=Math\.max\(0, total-correctCount\)/.test(app) && /session-result-review/.test(app) && /session-mistake-list/.test(app)],
-  ["session-only retry uses only mistakes from the current session", /function startSessionMistakeQuiz\(\)[\s\S]*?const retryQuestions = \[\.\.\.sessionMistakes\][\s\S]*?quizQuestions = \[\.\.\.retryQuestions\]/.test(app)],
+  ["session-only retry uses only mistakes from the current session", /function startSessionMistakeQuiz\(\)[\s\S]*?const retryQuestions = \[\.\.\.sessionMistakes\][\s\S]*?quizQuestions = shuffleQuestions\(retryQuestions\)/.test(app)],
   ["session retry control is created only when at least one mistake exists", /if \(sessionMistakes\.length\)[\s\S]*?retry-session-mistakes/.test(app)],
   ["session retry is tested for filtering and an empty error-free result", /retry should contain only this session/.test(browser) && /retry action should be absent when the session has no mistakes/.test(browser)],
   ["session result panel supports dark mode and narrow screens", /body\.dark-mode \.session-result-review/.test(css) && /@media\(max-width:600px\)\{\.session-result-review/.test(css)],
