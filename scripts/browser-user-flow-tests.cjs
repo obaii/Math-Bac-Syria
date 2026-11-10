@@ -655,6 +655,13 @@ const assert = require("node:assert/strict");
       attempts: document.querySelector("#dashboard-weekly-summary").dataset.attempts,
       activeDays: document.querySelector("#dashboard-weekly-summary").dataset.activeDays,
       accuracy: document.querySelector("#dashboard-weekly-summary").dataset.accuracy,
+      correctMetric: document.querySelector("#dashboard-weekly-correct").textContent,
+      incorrectMetric: document.querySelector("#dashboard-weekly-incorrect").textContent,
+      correct: document.querySelector("#dashboard-weekly-summary").dataset.correct,
+      incorrect: document.querySelector("#dashboard-weekly-summary").dataset.incorrect,
+      previousAttempts: document.querySelector("#dashboard-weekly-summary").dataset.previousAttempts,
+      weeklyDelta: document.querySelector("#dashboard-weekly-summary").dataset.weeklyDelta,
+      comparison: document.querySelector("#dashboard-weekly-comparison").textContent,
       bars: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day").length,
       chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
       accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
@@ -670,7 +677,10 @@ const assert = require("node:assert/strict");
       actionVisible: !document.querySelector("#dashboard-weekly-focus-start").hidden
     }));
     assert.deepEqual(weeklySnapshot, {
-      attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
+      attempts: "5", activeDays: "4", accuracy: "40", correctMetric: "٢", incorrectMetric: "٣",
+      correct: "2", incorrect: "3",
+      previousAttempts: "0", weeklyDelta: "5",
+      comparison: "بدأت تسجيل نشاطك هذا الأسبوع؛ لا توجد بيانات من الأسبوع السابق للمقارنة.", bars: 7,
       chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "١", "٢", "١"],
       average: await page.evaluate(() => (5 / 7).toLocaleString("ar", { maximumFractionDigits: 1 })),
       busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
@@ -698,6 +708,60 @@ const assert = require("node:assert/strict");
       "zero-activity days should be described explicitly");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
       "two attempts should use the correct dual form in Arabic");
+    await page.evaluate(() => {
+      window.__weeklyAttemptsBeforeComparison = progressData.attempts;
+      const now = new Date();
+      const previous = [7, 8].map((daysAgo, index) => ({
+        topic: topics[0], correct: index === 0,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-daysAgo, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "زاد نشاطك ١٥٠٪ مقارنة بالأسبوع السابق (محاولتا تدريب مقابل ٥ محاولات تدريب).",
+      "weekly comparison should calculate and localize an increase against the previous seven days");
+    await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:10}, (_, index) => ({
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-(index % 7), 10+index).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "انخفض نشاطك ٥٠٪ مقارنة بالأسبوع السابق (١٠ محاولات تدريب مقابل ٥ محاولات تدريب).",
+      "weekly comparison should identify a decrease and calculate its percentage");
+    await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "نشاطك مماثل للأسبوع السابق: ٥ محاولات تدريب.",
+      "weekly comparison should identify unchanged activity");
+    await page.evaluate(() => {
+      window.__weeklyAttemptsBeforeEmptyState = progressData.attempts;
+      progressData.attempts = [];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-busiest").innerText(),
+      "سيظهر اليوم الأكثر نشاطاً بعد تسجيل أول محاولة تدريب.",
+      "an empty week must not incorrectly label a zero-activity day as the busiest");
+    assert.equal(await page.locator("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").count(), 0,
+      "an empty week must not highlight any chart day as busiest");
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.",
+      "an empty two-week period should explain that there is no comparison baseline");
+    await page.evaluate(() => {
+      progressData.attempts = window.__weeklyAttemptsBeforeComparison;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
     const weeklyDetails = page.locator("#dashboard-weekly-details");
     const weeklyDetailsSummary = weeklyDetails.locator("summary");
     assert.equal(await weeklyDetailsSummary.getAttribute("aria-controls"), "dashboard-weekly-chart-accessible",
@@ -863,7 +927,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v129/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v130/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
