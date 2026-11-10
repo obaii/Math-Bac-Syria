@@ -1163,7 +1163,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    const cacheVersionMatch = serviceWorkerSource.match(/const CACHE_NAME = ["\x27]math-bac-syria-v(\\d+)["\x27]/);
+    const cacheVersionMatch = serviceWorkerSource.match(/const CACHE_NAME = "math-bac-syria-v(\d+)";/);
     assert.ok(cacheVersionMatch && Number(cacheVersionMatch[1]) > 141,
       "the PWA cache should advance beyond the baseline so returning learners receive updated homepage assets");
     const topicSearch = page.locator("#topic-search");
