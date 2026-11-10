@@ -660,7 +660,7 @@
       accessibleDays.replaceChildren(...days.map(day => {
         const item = document.createElement("li");
         const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
-        item.dataset.count = day.count.toLocaleString("ar");
+        item.dataset.count = day.count.toLocaleString("ar-u-nu-arab");
         item.textContent = fullDate + ": " + item.dataset.count + " محاولة تدريب";
         return item;
       }));
