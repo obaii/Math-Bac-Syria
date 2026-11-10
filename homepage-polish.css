@@ -8236,3 +8236,17 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
 @media (max-width: 360px) {
   #dashboard-weekly-last-activity { padding-inline-start: 7px; }
 }
+
+
+/* 941–950: Make the weekly activity pace metric legible at every dashboard width. */
+#dashboard-weekly-active-average {
+  font-variant-numeric: tabular-nums;
+}
+#dashboard-weekly-rhythm {
+  border-inline-start: 3px solid var(--hp-brand, var(--primary));
+  font-weight: 700;
+}
+@media (max-width: 360px) {
+  .dashboard-weekly-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .dashboard-weekly-metrics span { font-size: 10px; line-height: 1.5; }
+}
