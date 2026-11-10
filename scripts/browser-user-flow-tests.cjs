@@ -396,7 +396,7 @@ const assert = require("node:assert/strict");
     await page.locator('[data-calc="clear"]').click();
     assert.equal(await page.locator("#calculator-expression").inputValue(), "", "clear should reset the expression");
     assert.equal(await page.locator("#calculator-result").innerText(), "—", "clear should reset the displayed result");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
 
     // Exercise the interactive function plotter using the visible graph controls.
@@ -416,7 +416,7 @@ const assert = require("node:assert/strict");
     await page.locator("#plotter-x-max").fill("-20");
     await page.locator("#plotter-draw").click();
     assert.ok((await page.locator("#plotter-message").innerText()).includes("مجالاً صحيحاً"), "invalid graph ranges should show an accessible validation message");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#function-plotter").waitFor({ state: "hidden" });
     
     await openPanel("geometry-tools");
@@ -435,7 +435,7 @@ const assert = require("node:assert/strict");
     await page.locator("#geometry-shape").selectOption("cone");
     assert.ok((await page.locator("#geometry-board").getAttribute("aria-label")).includes("مخروط"), "the SVG drawing should match the selected solid");
     await page.locator("#geometry-reset").click();
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#geometry-tools").waitFor({ state: "hidden" });
     // Exercise formula search, category filtering, and accessible copy feedback.
     await openPanel("formula-library");
@@ -449,7 +449,7 @@ const assert = require("node:assert/strict");
     await page.locator("#formula-category").selectOption("all");
     await page.locator("#formula-list .formula-copy").first().click();
     assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#formula-library").waitFor({ state: "hidden" });
 
     // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
@@ -1503,7 +1503,7 @@ const assert = require("node:assert/strict");
 
     await openPanel("exam-tools");
     assert.equal(await page.locator("#exam-tools").isVisible(), true, "exam setup should open from its shortcut");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await topicButtons.first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     // Keep this interaction test deterministic by starting with an MCQ,
