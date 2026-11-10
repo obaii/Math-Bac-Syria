@@ -725,7 +725,8 @@ const assert = require("node:assert/strict");
     const weeklyPeriodText = await page.evaluate(() =>
       document.querySelector("#dashboard-weekly-period")?.textContent || ""
     );
-    assert.ok(weeklyPeriodText.includes(String(new Date().getFullYear())),
+    const normalizedWeeklyPeriod = weeklyPeriodText.replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)));
+    assert.ok(normalizedWeeklyPeriod.includes(String(new Date().getFullYear())),
       "the displayed weekly period should include its year to avoid ambiguity across year boundaries");
     assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("aria-describedby"),
       "dashboard-weekly-chart-description dashboard-weekly-rhythm",
