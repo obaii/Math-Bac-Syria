@@ -124,7 +124,10 @@ const checks = [
   ["saved training sessions reject duplicate question keys", /new Set\(saved\.questionKeys\)\.size !== saved\.questionKeys\.length/.test(app)],
   ["saved training sessions enforce question-position and score bounds", /saved\.index > saved\.questionKeys\.length/.test(app) && /saved\.correctCount > saved\.index/.test(app)],
   ["saved session mistakes must be unique members of the session question list", /mistakeKeys\.every\(key => typeof key === "string" && saved\.questionKeys\.includes\(key\)\)/.test(app) && /new Set\(mistakeKeys\)\.size !== mistakeKeys\.length/.test(app)],
-  ["corrupt or undated saved sessions are cleared instead of repeatedly restored", /Number\.isFinite\(Date\.parse\(saved\.updatedAt\)\)/.test(app) && /localStorage\.removeItem\(TRAINING_SESSION_KEY\)/.test(app)]
+  ["corrupt or undated saved sessions are cleared instead of repeatedly restored", /Number\.isFinite\(updatedAt\)/.test(app) && /localStorage\.removeItem\(TRAINING_SESSION_KEY\)/.test(app)],
+  ["saved sessions reject timestamps implausibly far in the future", /updatedAt > Date\.now\(\) \+ 5 \* 60 \* 1000/.test(app)],
+  ["saved session mistakes must refer only to questions already answered", /saved\.questionKeys\.indexOf\(key\) < saved\.index/.test(app)],
+  ["session recovery rejects question keys belonging to another topic", /restoredQuestions\.some\(question => !question \|\| question\.topic !== topic\)/.test(app)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
