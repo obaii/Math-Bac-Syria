@@ -775,7 +775,7 @@
         activeDaysComparisonNode.textContent = "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.";
       } else {
         const dayDelta = activeDays - previousActiveDays;
-        const formatDayDifference = count => count === 1 ? "يوماً واحداً"
+        const formatDayDifference = count => count === 1 ? "يوم واحد"
           : count === 2 ? "يومين"
           : count <= 10 ? count.toLocaleString("ar-u-nu-arab") + " أيام"
           : count.toLocaleString("ar-u-nu-arab") + " يوماً";
