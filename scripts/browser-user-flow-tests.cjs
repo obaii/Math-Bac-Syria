@@ -138,21 +138,23 @@ const assert = require("node:assert/strict");
       .map(link => link.getAttribute("href")));
     const expectedQuickStartLinks = [
       "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library",
-      "#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator",
+      "#exam-tools", "#student-tools", "#scientific-calculator",
       "#function-plotter", "#geometry-tools", "#home", "#learning-progress-title",
       "#question-coverage-title", "#weak-topic-recommendation", "#resume-session",
       "#recent-activity", "#performance-trend", "#activity-calendar", "#achievement-section"
     ];
+    assert.equal(quickStartLinks.includes("#topic-section"), false,
+      "the homepage research cards should remain on the homepage rather than appear as a tenth menu section");
     for (const href of expectedQuickStartLinks) {
       assert.equal(quickStartLinks.filter(link => link === href).length, 1,
-        "the dashboard should expose exactly one shortcut for " + href + "; found: " + quickStartLinks.join(", "));
+        "the section menu should expose exactly one shortcut for " + href + "; found: " + quickStartLinks.join(", "));
     }
     assert.deepEqual(
       await quickStart.locator(".quick-start-group-label").allInnerTexts(),
-      ["التعلّم", "التدريب", "الاختبارات", "الأدوات", "التقدم"],
+      ["التعلّم", "الاختبارات", "الأدوات", "التقدم"],
       "the section menu should group its shortcuts into four clear learning areas"
     );
-    assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
+    assert.equal(await quickStart.locator("a.quick-start-card").count(), 18,
       "group headings should not replace or hide any existing section shortcut");
 
     await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -173,8 +175,8 @@ const assert = require("node:assert/strict");
     await page.locator("#section-menu-toggle").click();
     assert.equal(await page.locator("#section-menu-search, #section-menu-search-clear, #section-menu-search-empty").count(), 0,
       "the section menu should not contain a search field, clear button, or search empty state");
-    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 19,
-      "all nineteen section shortcuts should remain visible without filtering");
+    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 18,
+      "all eighteen menu shortcuts should remain visible without filtering");
     const menuCards = page.locator("#section-menu a.quick-start-card:visible");
     await menuCards.first().focus();
     await menuCards.first().press("ArrowDown");
@@ -202,9 +204,9 @@ const assert = require("node:assert/strict");
     assert.equal(loadingFixture.busy, "false", "rendering the topic bank should clear its busy state");
     assert.equal(loadingFixture.placeholders, 0, "rendering the topic bank should replace its loading feedback");
     const menuIcons = await quickStart.locator("a.quick-start-card .quick-start-icon").allInnerTexts();
-    assert.equal(menuIcons.length, 19, "every section shortcut should display its own icon");
-    assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 19,
-      "all 19 section shortcuts should use distinct visual icons");
+    assert.equal(menuIcons.length, 18, "every section shortcut should display its own icon");
+    assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 18,
+      "all 18 menu shortcuts should use distinct visual icons");
 
     // A new homepage destination should show one update marker until the learner opens it.
     await page.locator("#section-menu-toggle").click();
@@ -394,7 +396,7 @@ const assert = require("node:assert/strict");
     await page.locator('[data-calc="clear"]').click();
     assert.equal(await page.locator("#calculator-expression").inputValue(), "", "clear should reset the expression");
     assert.equal(await page.locator("#calculator-result").innerText(), "—", "clear should reset the displayed result");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#scientific-calculator").waitFor({ state: "hidden" });
 
     // Exercise the interactive function plotter using the visible graph controls.
@@ -414,7 +416,7 @@ const assert = require("node:assert/strict");
     await page.locator("#plotter-x-max").fill("-20");
     await page.locator("#plotter-draw").click();
     assert.ok((await page.locator("#plotter-message").innerText()).includes("مجالاً صحيحاً"), "invalid graph ranges should show an accessible validation message");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#function-plotter").waitFor({ state: "hidden" });
     
     await openPanel("geometry-tools");
@@ -433,7 +435,7 @@ const assert = require("node:assert/strict");
     await page.locator("#geometry-shape").selectOption("cone");
     assert.ok((await page.locator("#geometry-board").getAttribute("aria-label")).includes("مخروط"), "the SVG drawing should match the selected solid");
     await page.locator("#geometry-reset").click();
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#geometry-tools").waitFor({ state: "hidden" });
     // Exercise formula search, category filtering, and accessible copy feedback.
     await openPanel("formula-library");
@@ -447,7 +449,7 @@ const assert = require("node:assert/strict");
     await page.locator("#formula-category").selectOption("all");
     await page.locator("#formula-list .formula-copy").first().click();
     assert.ok((await page.locator("#formula-status").innerText()).length > 0, "copy action should report its outcome accessibly");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await page.locator("#formula-library").waitFor({ state: "hidden" });
 
     // Exercise flashcards: deck filtering, reveal, ratings, navigation, shuffle, persistence, and reset.
@@ -1161,7 +1163,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v140/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v141/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1501,7 +1503,7 @@ const assert = require("node:assert/strict");
 
     await openPanel("exam-tools");
     assert.equal(await page.locator("#exam-tools").isVisible(), true, "exam setup should open from its shortcut");
-    await openPanel("topic-section");
+    await page.locator("#section-menu-toggle").click();
     await topicButtons.first().click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     // Keep this interaction test deterministic by starting with an MCQ,
@@ -2272,7 +2274,7 @@ const assert = require("node:assert/strict");
       });
       assert.ok(layout.documentWidth <= width + 2,
         "homepage should not scroll horizontally at " + width + "px; got " + layout.documentWidth);
-      assert.equal(layout.visibleCards, 19, "all section shortcuts should remain visible at " + width + "px");
+      assert.equal(layout.visibleCards, 18, "all section shortcuts should remain visible at " + width + "px");
       assert.deepEqual(layout.outsideElements, [],
         "dashboard cards and section shortcuts should stay within the viewport at " + width + "px");
     }

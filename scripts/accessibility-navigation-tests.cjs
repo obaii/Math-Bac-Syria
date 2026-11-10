@@ -350,8 +350,8 @@ async function assertVisibleControlsHaveNames(page, context) {
     const mobileMenu = mobileMenuPage.locator("#section-menu");
     await mobileMenu.waitFor({ state: "visible" });
     const menuShortcuts = mobileMenuPage.locator("#section-menu a.quick-start-card");
-    assert.equal(await menuShortcuts.count(), 19,
-      "the section menu should show all 19 shortcuts without a search control");
+    assert.equal(await menuShortcuts.count(), 18,
+      "the section menu should show all 18 menu shortcuts without a search control");
     assert.equal(await menuShortcuts.first().evaluate(el => document.activeElement === el), true,
       "opening the section menu should focus its first shortcut");
     const menuLayout = await mobileMenu.evaluate(element => ({
