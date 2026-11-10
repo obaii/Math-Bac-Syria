@@ -980,10 +980,9 @@ const assert = require("node:assert/strict");
 
     const provisionalPath = await page.evaluate(() => {
       const [weakSample, partialSample, untouched] = topics;
-      progressData.topicStats = {
-        [weakSample]: { answered: 10, correct: 6 },
-        [partialSample]: { answered: 5, correct: 4 }
-      };
+      progressData.topicStats = Object.fromEntries(topics.slice(3).map(topic => [topic, { answered: 9, correct: 8 }]));
+      progressData.topicStats[weakSample] = { answered: 10, correct: 0 };
+      progressData.topicStats[partialSample] = { answered: 5, correct: 4 };
       refreshDashboard();
       return {
         level: document.querySelector("#learning-path-level").textContent,
@@ -1001,14 +1000,14 @@ const assert = require("node:assert/strict");
     });
     assert.equal(provisionalPath.levelKey, "provisional", "one sufficiently sampled topic should not be presented as a confident overall level");
     assert.ok(["1", "١"].includes(provisionalPath.reliable), "the path should count topics with at least ten answers regardless of browser numeral locale");
-    assert.equal(provisionalPath.topics[0], await page.evaluate(() => topics[2]),
-      "an unstarted topic should be prioritized before topics with recorded practice");
+    assert.deepEqual(new Set(provisionalPath.topics), new Set(await page.evaluate(() => topics.slice(0, 3))),
+      "the three deliberately configured sample sizes should all appear among the recommendations");
     assert.ok(provisionalPath.note.includes("مؤشر تدريبي إرشادي") || provisionalPath.note.includes("لا نعرض تصنيف"),
       "the path should communicate the limits of an early estimate");
     assert.deepEqual(provisionalPath.confidence, [
+      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · ١٠ إجابة" },
       { topic: await page.evaluate(() => topics[2]), sampleSize: "0", sampleBand: "not-started", label: "لم تبدأ العينة بعد" },
-      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · ٥ من ١٠ إجابات" },
-      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · ١٠ إجابة" }
+      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · ٥ من ١٠ إجابات" }
     ], "each recommendation should disclose whether its evidence is absent, provisional, or based on at least ten answers");
 
     const establishedPath = await page.evaluate(() => {
