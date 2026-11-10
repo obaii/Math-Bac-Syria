@@ -670,8 +670,8 @@
     if (accuracyNode) accuracyNode.textContent = accuracy === null ? "—" : accuracy.toLocaleString("ar")+"٪";
     if (daysNode) daysNode.textContent = activeDays.toLocaleString("ar");
     if (averageNode) averageNode.textContent = averageDaily.toLocaleString("ar", { maximumFractionDigits: 1 });
-    if (correctNode) correctNode.textContent = correct.toLocaleString("ar");
-    if (incorrectNode) incorrectNode.textContent = incorrect.toLocaleString("ar");
+    if (correctNode) correctNode.textContent = correct.toLocaleString("ar-u-nu-arab");
+    if (incorrectNode) incorrectNode.textContent = incorrect.toLocaleString("ar-u-nu-arab");
     if (comparisonNode) {
       if (previousWeekly.length === 0) {
         comparisonNode.textContent = weekly.length
@@ -681,7 +681,7 @@
         comparisonNode.textContent = "نشاطك مماثل للأسبوع السابق: "+formatAttemptCount(weekly.length)+".";
       } else {
         const direction = weeklyDelta > 0 ? "زاد" : "انخفض";
-        comparisonNode.textContent = direction+" نشاطك "+weeklyChangePercent.toLocaleString("ar")+"٪ مقارنة بالأسبوع السابق ("+
+        comparisonNode.textContent = direction+" نشاطك "+weeklyChangePercent.toLocaleString("ar-u-nu-arab")+"٪ مقارنة بالأسبوع السابق ("+
           formatAttemptCount(previousWeekly.length)+" مقابل "+formatAttemptCount(weekly.length)+").";
       }
     }
