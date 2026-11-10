@@ -715,7 +715,7 @@ const assert = require("node:assert/strict");
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
     assert.ok(accessibleWeeklyLabels.every(label => {
       const normalizedLabel = label.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
-      return normalizedLabel.includes(": ") && /(لا توجد محاولات|محاولة تدريب واحدة|محاولتا تدريب|محاولات تدريب|محاولة تدريب)( — أعلى نشاط)?$/.test(normalizedLabel);
+      return normalizedLabel.includes(": ") && /(لا توجد محاولات|محاولة تدريب واحدة|محاولتا تدريب|محاولات تدريب|محاولة تدريب)( — أعلى نشاط)?( — ضمن أطول سلسلة نشاط)?$/.test(normalizedLabel);
     }), "each accessible day entry should include its full date and grammatically localized attempt count");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("لا توجد محاولات")),
       "zero-activity days should be described explicitly");
