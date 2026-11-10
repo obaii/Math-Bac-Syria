@@ -659,7 +659,7 @@
     const validAttemptDates = attempts
       .filter(item => item && typeof item === "object" && item.date)
       .map(item => new Date(item.date))
-      .filter(date => !Number.isNaN(date.getTime()) && date <= now);
+      .filter(date => !Number.isNaN(date.getTime()) && calendarDayOrdinal(date) <= calendarDayOrdinal(todayStart));
     const latestAttemptDate = validAttemptDates.reduce(
       (latest, date) => !latest || date > latest ? date : latest, null
     );
