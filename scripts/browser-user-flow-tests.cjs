@@ -737,6 +737,7 @@ const assert = require("node:assert/strict");
       }];
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
     });
+    assert.deepEqual(pageErrors, [], "rendering tied busiest days should not trigger browser JavaScript errors");
     assert.equal(await page.locator("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").count(), 2,
       "all days tied for the highest attempt count should be highlighted in the chart");
     assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-busiest").count(), 2,
