@@ -8225,3 +8225,14 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
 @media (prefers-reduced-motion: reduce) {
   .dashboard-weekly-day.is-streak .dashboard-weekly-bar { transition: none; }
 }
+
+
+/* Batch 931–940: clarify the latest valid activity without adding visual noise. */
+#dashboard-weekly-last-activity {
+  border-inline-start: 3px solid var(--hp-primary, var(--primary));
+  padding-inline-start: 10px;
+}
+#dashboard-weekly-last-activity:empty { display: none; }
+@media (max-width: 360px) {
+  #dashboard-weekly-last-activity { padding-inline-start: 7px; }
+}

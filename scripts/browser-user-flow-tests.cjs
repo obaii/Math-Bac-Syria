@@ -807,6 +807,27 @@ const assert = require("node:assert/strict");
     });
     assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("منذ ٣ أيام"),
       "the latest-activity insight should localize elapsed days beyond yesterday");
+    const latestActivityState = await page.locator("#dashboard-weekly-summary").evaluate(node => ({
+      date: node.dataset.lastActivityDate,
+      age: node.dataset.daysSinceLastActivity
+    }));
+    assert.equal(latestActivityState.age, "3", "latest activity should expose its calendar-day age");
+    assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(latestActivityState.date),
+      "latest activity should expose a stable local calendar date");
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [
+        { topic: topics[0], correct: true, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-11, 10).toISOString() },
+        { topic: topics[0], correct: true, date: "not-a-valid-date" },
+        { topic: topics[0], correct: true, date: new Date(now.getFullYear(), now.getMonth(), now.getDate()+2, 10).toISOString() }
+      ];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("منذ ١١ يوماً"),
+      "elapsed-day wording should use the correct Arabic form for counts above ten");
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-days-since-last-activity"), "11",
+      "invalid and future-dated attempts must not replace the latest valid activity");
+
     await page.evaluate(() => {
       progressData.attempts = window.__weeklyAttemptsBeforeComparison;
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
@@ -976,7 +997,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v131/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v133/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");

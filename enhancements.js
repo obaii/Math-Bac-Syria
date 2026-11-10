@@ -655,16 +655,22 @@
     if (days[6].count > 0) {
       for (let index = 6; index >= 0 && days[index].count > 0; index--) currentStreak++;
     }
+    // Ignore malformed and future-dated records when describing the learner's latest activity.
     const validAttemptDates = attempts
-      .filter(item => item && item.date)
+      .filter(item => item && typeof item === "object" && item.date)
       .map(item => new Date(item.date))
-      .filter(date => !Number.isNaN(date.getTime()));
+      .filter(date => !Number.isNaN(date.getTime()) && calendarDayOrdinal(date) <= calendarDayOrdinal(todayStart));
     const latestAttemptDate = validAttemptDates.reduce(
       (latest, date) => !latest || date > latest ? date : latest, null
     );
+    // Compare local calendar days rather than milliseconds so daylight-saving changes cannot shift the age.
     const daysSinceLastActivity = latestAttemptDate
-      ? Math.max(0, Math.floor((todayStart - new Date(latestAttemptDate.getFullYear(), latestAttemptDate.getMonth(), latestAttemptDate.getDate())) / 86400000))
+      ? calendarDayOrdinal(todayStart) - calendarDayOrdinal(new Date(latestAttemptDate.getFullYear(), latestAttemptDate.getMonth(), latestAttemptDate.getDate()))
       : null;
+    const formatElapsedDays = count => count === 1 ? "منذ يوم واحد"
+      : count === 2 ? "منذ يومين"
+      : count <= 10 ? "منذ " + count.toLocaleString("ar-u-nu-arab") + " أيام"
+      : "منذ " + count.toLocaleString("ar-u-nu-arab") + " يوماً";
     const busiestDay = days.some(day => day.count > 0)
       ? days.reduce((best, day) => day.count > (best?.count || 0) ? day : best, null)
       : null;
@@ -723,8 +729,7 @@
         lastActivityNode.textContent = "لم تسجل محاولة تدريب بعد.";
       } else {
         const relative = daysSinceLastActivity === 0 ? "اليوم" : daysSinceLastActivity === 1 ? "أمس"
-          : daysSinceLastActivity === 2 ? "منذ يومين"
-          : "منذ " + daysSinceLastActivity.toLocaleString("ar-u-nu-arab") + " أيام";
+          : formatElapsedDays(daysSinceLastActivity);
         lastActivityNode.textContent = "آخر نشاط تدريبي: " + relative + "، " +
           latestAttemptDate.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + ".";
       }
@@ -803,6 +808,10 @@
     panel.dataset.longestStreak = String(longestStreak);
     panel.dataset.activeRate = String(activeRate);
     panel.dataset.daysSinceLastActivity = daysSinceLastActivity === null ? "" : String(daysSinceLastActivity);
+    panel.dataset.lastActivityDate = latestAttemptDate ? dayKey(latestAttemptDate) : "";
+    panel.dataset.currentStreakEnd = currentStreak ? days[6].key : "";
+    panel.dataset.longestStreakStart = longestStreak ? days[longestStreakStart].key : "";
+    panel.dataset.longestStreakEnd = longestStreak ? days[longestStreakEnd].key : "";
   };
   window.addEventListener("mathBacSyria:dashboard-refreshed", renderDashboardWeeklySummary);
   renderDashboardWeeklySummary();
