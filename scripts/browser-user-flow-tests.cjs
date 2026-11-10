@@ -670,6 +670,13 @@ const assert = require("node:assert/strict");
       busiest: document.querySelector("#dashboard-weekly-busiest").textContent,
       busiestDate: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].find(item => item.classList.contains("is-busiest"))?.dataset.date,
       busiestCount: document.querySelectorAll("#dashboard-weekly-chart-accessible li.is-busiest").length,
+      currentStreak: document.querySelector("#dashboard-weekly-summary").dataset.currentStreak,
+      longestStreak: document.querySelector("#dashboard-weekly-summary").dataset.longestStreak,
+      activeRate: document.querySelector("#dashboard-weekly-summary").dataset.activeRate,
+      daysSinceLastActivity: document.querySelector("#dashboard-weekly-summary").dataset.daysSinceLastActivity,
+      streakDays: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day.is-streak").length,
+      streakInsight: document.querySelector("#dashboard-weekly-streak-insight").textContent,
+      lastActivity: document.querySelector("#dashboard-weekly-last-activity").textContent,
       chartData: [...document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day")].map(item => ({ date: item.dataset.date, count: item.dataset.count, busiest: item.classList.contains("is-busiest"), title: item.title })),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
@@ -686,6 +693,12 @@ const assert = require("node:assert/strict");
       busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
       busiestDate: await page.evaluate(() => { const now=new Date(); const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-1); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"); }),
       busiestCount: 1,
+      currentStreak: "4", longestStreak: "4", activeRate: "57", daysSinceLastActivity: "0",
+      streakDays: 4, streakInsight: "أطول سلسلة نشاط خلال الأسبوع: ٤ أيام متتالية.",
+      lastActivity: await page.evaluate(() => {
+        const now = new Date();
+        return "آخر نشاط تدريبي: اليوم، " + now.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + ".";
+      }),
       chartData: await page.evaluate(() => {
         const now=new Date();
         return Array.from({length:7},(_,i)=>{
@@ -702,12 +715,20 @@ const assert = require("node:assert/strict");
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
     assert.ok(accessibleWeeklyLabels.every(label => {
       const normalizedLabel = label.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
-      return normalizedLabel.includes(": ") && /(لا توجد محاولات|محاولة تدريب واحدة|محاولتا تدريب|محاولات تدريب|محاولة تدريب)( — أعلى نشاط)?$/.test(normalizedLabel);
+      return normalizedLabel.includes(": ") && /(لا توجد محاولات|محاولة تدريب واحدة|محاولتا تدريب|محاولات تدريب|محاولة تدريب)( — أعلى نشاط)?( — ضمن أطول سلسلة نشاط)?$/.test(normalizedLabel);
     }), "each accessible day entry should include its full date and grammatically localized attempt count");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("لا توجد محاولات")),
       "zero-activity days should be described explicitly");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
       "two attempts should use the correct dual form in Arabic");
+    assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-streak").count(), 4,
+      "the accessible weekly list should identify the longest consecutive activity streak");
+    assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "٤",
+      "the current streak should count consecutive active days ending today");
+    assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٥٧٪",
+      "the dashboard should show the share of active days in the seven-day period");
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("اليوم"),
+      "the dashboard should identify when the latest training activity occurred");
     await page.evaluate(() => {
       window.__weeklyAttemptsBeforeComparison = progressData.attempts;
       const now = new Date();
@@ -758,6 +779,34 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
       "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.",
       "an empty two-week period should explain that there is no comparison baseline");
+    assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "٠",
+      "an empty week should report no current activity streak");
+    assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٠٪",
+      "an empty week should report zero active-day rate");
+    assert.equal(await page.locator("#dashboard-weekly-last-activity").innerText(), "لم تسجل محاولة تدريب بعد.",
+      "the latest-activity insight should provide a clear empty state");
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [{
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 10).toISOString()
+      }];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-days-since-last-activity"), "1",
+      "the latest activity age should count one full local calendar day");
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("أمس"),
+      "the latest-activity insight should use the yesterday label");
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [{
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-3, 10).toISOString()
+      }];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("منذ ٣ أيام"),
+      "the latest-activity insight should localize elapsed days beyond yesterday");
     await page.evaluate(() => {
       progressData.attempts = window.__weeklyAttemptsBeforeComparison;
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
@@ -927,7 +976,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v130/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v131/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
