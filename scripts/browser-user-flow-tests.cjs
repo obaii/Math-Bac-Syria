@@ -656,6 +656,9 @@ const assert = require("node:assert/strict");
       activeDays: document.querySelector("#dashboard-weekly-summary").dataset.activeDays,
       accuracy: document.querySelector("#dashboard-weekly-summary").dataset.accuracy,
       bars: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day").length,
+      chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
+      accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
+      accessibleCounts: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.dataset.count),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
       focusTopic: document.querySelector("#dashboard-weekly-focus-start").dataset.topic,
@@ -663,10 +666,14 @@ const assert = require("node:assert/strict");
     }));
     assert.deepEqual(weeklySnapshot, {
       attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
+      chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "١", "٢", "١"],
       best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة 67٪ من 3 محاولات.",
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
+    const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allInnerTexts();
+    assert.ok(accessibleWeeklyLabels.every(label => label.includes(": ") && label.endsWith("محاولة تدريب")),
+      "each accessible day entry should include its full date and localized attempt count");
     await page.locator("#dashboard-weekly-focus-start").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), await page.evaluate(() => topics[1]),
@@ -816,7 +823,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v126/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v127/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
