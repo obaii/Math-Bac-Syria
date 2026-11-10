@@ -767,7 +767,11 @@
         accuracyComparisonNode.textContent = "دقة إجاباتك مستقرة عند " + accuracy.toLocaleString("ar-u-nu-arab") + "٪ مقارنة بالأسبوع السابق.";
       } else {
         const direction = accuracyPointDelta > 0 ? "ارتفعت" : "انخفضت";
-        accuracyComparisonNode.textContent = direction + " دقة إجاباتك بمقدار " + Math.abs(accuracyPointDelta).toLocaleString("ar-u-nu-arab") + " نقطة مئوية مقارنة بالأسبوع السابق (" + previousAccuracy.toLocaleString("ar-u-nu-arab") + "٪ إلى " + accuracy.toLocaleString("ar-u-nu-arab") + "٪).";
+        const pointCount = Math.abs(accuracyPointDelta);
+        const pointLabel = pointCount === 1 ? "نقطة مئوية"
+          : pointCount === 2 ? "نقطتين مئويتين"
+          : pointCount <= 10 ? "نقاط مئوية" : "نقطة مئوية";
+        accuracyComparisonNode.textContent = direction + " دقة إجاباتك بمقدار " + pointCount.toLocaleString("ar-u-nu-arab") + " " + pointLabel + " مقارنة بالأسبوع السابق (" + previousAccuracy.toLocaleString("ar-u-nu-arab") + "٪ إلى " + accuracy.toLocaleString("ar-u-nu-arab") + "٪).";
       }
     }
     if (activeDaysComparisonNode) {
