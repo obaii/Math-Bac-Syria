@@ -7767,7 +7767,7 @@ body.dark-mode .dashboard-preference-field select {
 }
 .dashboard-weekly-metrics {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 9px;
   margin: 14px 0;
 }
@@ -8171,3 +8171,25 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
     overflow-wrap: anywhere;
   }
 }
+
+/* Batch 901–910: clarify weekly activity counts and highlight the busiest day. */
+.dashboard-weekly-day { cursor: help; }
+.dashboard-weekly-day.is-busiest .dashboard-weekly-bar {
+  background: var(--hp-success, var(--success, #16865b));
+}
+.dashboard-weekly-day.is-busiest strong,
+.dashboard-weekly-chart-accessible li.is-busiest {
+  color: var(--hp-primary, var(--primary));
+  font-weight: 800;
+}
+.dashboard-weekly-chart-accessible li.is-busiest {
+  border-inline-start: 3px solid var(--hp-primary, var(--primary));
+  padding-inline-start: 8px;
+}
+@media (max-width: 480px) {
+  .dashboard-weekly-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .dashboard-weekly-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
