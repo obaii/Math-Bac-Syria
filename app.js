@@ -693,6 +693,18 @@ function renderPersonalizedLearningPath(){
     heading.textContent = (index + 1).toLocaleString("ar") + ". " + row.topic;
     const detail = document.createElement("p");
     detail.textContent = row.reason;
+    const confidence = document.createElement("span");
+    const confidenceBand = row.answered >= 10 ? "established" : row.answered > 0 ? "provisional" : "not-started";
+    confidence.className = "learning-path-confidence";
+    confidence.dataset.confidence = confidenceBand;
+    confidence.textContent = row.answered >= 10
+      ? "عينة أوسع · " + row.answered.toLocaleString("ar") + " إجابة"
+      : row.answered > 0
+        ? "عينة أولية · " + row.answered.toLocaleString("ar") + " من ١٠ إجابات"
+        : "لم تبدأ العينة بعد";
+    confidence.setAttribute("aria-label", "مستوى بيانات " + row.topic + ": " + confidence.textContent);
+    item.dataset.sampleSize = String(row.answered);
+    item.dataset.sampleBand = confidenceBand;
     const meta = document.createElement("span");
     meta.className = "learning-path-step-meta";
     meta.textContent = row.answered
@@ -704,7 +716,7 @@ function renderPersonalizedLearningPath(){
     button.textContent = "ابدأ هذا البحث";
     button.setAttribute("aria-label", "ابدأ التدريب على " + row.topic);
     button.addEventListener("click", () => startQuiz(row.topic));
-    item.append(heading, detail, meta, button);
+    item.append(heading, detail, confidence, meta, button);
     list.append(item);
   });
   $("learning-path-note").textContent = note;
