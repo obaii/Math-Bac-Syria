@@ -37,7 +37,7 @@ const assert = require("node:assert/strict");
     );
     assert.equal(await menuButton.evaluate(button => getComputedStyle(button).backgroundColor), "rgb(107, 114, 128)",
       "the open section-menu trigger should settle on the requested gray treatment after its visual transition");
-    assert.equal(await page.evaluate(() => { const cards = [...document.querySelectorAll("#section-menu a.quick-start-card")]; return document.activeElement === cards[0] && cards.length === 19; }), true, "opening the section menu should focus its first shortcut and expose all 19 shortcuts");
+    assert.equal(await page.evaluate(() => { const cards = [...document.querySelectorAll("#section-menu a.quick-start-card")]; return document.activeElement === cards[0] && cards.length === 18; }), true, "opening the section menu should focus its first shortcut and expose all 18 menu shortcuts");
 
     await menuButton.click();
     await page.waitForFunction(() => document.querySelector("#section-menu")?.hidden === true);
