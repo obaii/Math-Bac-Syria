@@ -206,7 +206,7 @@ const assert = require("node:assert/strict");
     const menuIcons = await quickStart.locator("a.quick-start-card .quick-start-icon").allInnerTexts();
     assert.equal(menuIcons.length, 18, "every section shortcut should display its own icon");
     assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 18,
-      "all 19 section shortcuts should use distinct visual icons");
+      "all 18 menu shortcuts should use distinct visual icons");
 
     // A new homepage destination should show one update marker until the learner opens it.
     await page.locator("#section-menu-toggle").click();
@@ -2274,7 +2274,7 @@ const assert = require("node:assert/strict");
       });
       assert.ok(layout.documentWidth <= width + 2,
         "homepage should not scroll horizontally at " + width + "px; got " + layout.documentWidth);
-      assert.equal(layout.visibleCards, 19, "all section shortcuts should remain visible at " + width + "px");
+      assert.equal(layout.visibleCards, 18, "all section shortcuts should remain visible at " + width + "px");
       assert.deepEqual(layout.outsideElements, [],
         "dashboard cards and section shortcuts should stay within the viewport at " + width + "px");
     }
