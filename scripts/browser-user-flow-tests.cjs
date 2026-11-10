@@ -793,7 +793,7 @@ const assert = require("node:assert/strict");
       "انخفضت دقة إجاباتك بمقدار ١٠ نقطة مئوية مقارنة بالأسبوع السابق (٥٠٪ إلى ٤٠٪).",
       "weekly accuracy comparison should report percentage-point changes, not relative percentages");
     assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
-      "زاد عدد أيام نشاطك بمقدار ٢ أيام (٢ مقابل ٤).",
+      "زاد عدد أيام نشاطك بمقدار يومين (٢ مقابل ٤).",
       "weekly active-day comparison should compare distinct local calendar days");
     await page.evaluate(() => {
       const now = new Date();
