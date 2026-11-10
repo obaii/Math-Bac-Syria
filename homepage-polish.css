@@ -8201,3 +8201,27 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
   .dashboard-weekly-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+
+
+/* Batch 921–930: make weekly consistency and recency insights easy to scan. */
+.dashboard-weekly-day.is-streak .dashboard-weekly-bar {
+  outline: 2px solid var(--hp-primary, var(--primary));
+  outline-offset: 2px;
+}
+.dashboard-weekly-chart-accessible li.is-streak {
+  background: color-mix(in srgb, var(--hp-primary, var(--primary)) 8%, transparent);
+  border-radius: 8px;
+  padding: 5px 8px;
+}
+#dashboard-weekly-streak-insight,
+#dashboard-weekly-last-activity {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+@media (max-width: 420px) {
+  .dashboard-weekly-metrics { gap: 8px; }
+  .dashboard-weekly-metrics > div { min-width: 0; padding: 9px 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-weekly-day.is-streak .dashboard-weekly-bar { transition: none; }
+}
