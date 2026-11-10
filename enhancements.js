@@ -678,11 +678,11 @@
           ? "بدأت تسجيل نشاطك هذا الأسبوع؛ لا توجد بيانات من الأسبوع السابق للمقارنة."
           : "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.";
       } else if (weeklyDelta === 0) {
-        comparisonNode.textContent = "نشاطك مماثل للأسبوع السابق: "+weekly.length.toLocaleString("ar")+" محاولة تدريب.";
+        comparisonNode.textContent = "نشاطك مماثل للأسبوع السابق: "+formatAttemptCount(weekly.length)+".";
       } else {
         const direction = weeklyDelta > 0 ? "زاد" : "انخفض";
         comparisonNode.textContent = direction+" نشاطك "+weeklyChangePercent.toLocaleString("ar")+"٪ مقارنة بالأسبوع السابق ("+
-          previousWeekly.length.toLocaleString("ar")+" مقابل "+weekly.length.toLocaleString("ar")+" محاولة تدريب).";
+          formatAttemptCount(previousWeekly.length)+" مقابل "+formatAttemptCount(weekly.length)+").";
       }
     }
     const period = document.getElementById("dashboard-weekly-period");
