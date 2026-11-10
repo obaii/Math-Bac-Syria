@@ -655,11 +655,13 @@
     if (days[6].count > 0) {
       for (let index = 6; index >= 0 && days[index].count > 0; index--) currentStreak++;
     }
-    const validAttemptDates = attempts.map(item => new Date(item && item.date))
+    const validAttemptDates = attempts
+      .filter(item => item && item.date)
+      .map(item => new Date(item.date))
       .filter(date => !Number.isNaN(date.getTime()));
-    const latestAttemptDate = validAttemptDates.length
-      ? new Date(Math.max(...validAttemptDates.map(date => date.getTime())))
-      : null;
+    const latestAttemptDate = validAttemptDates.reduce(
+      (latest, date) => !latest || date > latest ? date : latest, null
+    );
     const daysSinceLastActivity = latestAttemptDate
       ? Math.max(0, Math.floor((todayStart - new Date(latestAttemptDate.getFullYear(), latestAttemptDate.getMonth(), latestAttemptDate.getDate())) / 86400000))
       : null;
@@ -709,9 +711,13 @@
     if (incorrectNode) incorrectNode.textContent = incorrect.toLocaleString("ar-u-nu-arab");
     if (streakNode) streakNode.textContent = currentStreak.toLocaleString("ar-u-nu-arab");
     if (activeRateNode) activeRateNode.textContent = activeRate.toLocaleString("ar-u-nu-arab") + "٪";
-    if (streakInsightNode) streakInsightNode.textContent = longestStreak
-      ? "أطول سلسلة نشاط خلال الأسبوع: " + longestStreak.toLocaleString("ar-u-nu-arab") + (longestStreak === 1 ? " يوم متتالٍ." : " أيام متتالية.")
-      : "لم تسجل أياماً نشطة خلال هذا الأسبوع بعد.";
+    if (streakInsightNode) {
+      const streakCount = longestStreak.toLocaleString("ar-u-nu-arab");
+      const streakLabel = longestStreak === 1 ? "يوم متتالٍ" : longestStreak === 2 ? "يومان متتاليان" : "أيام متتالية";
+      streakInsightNode.textContent = longestStreak
+        ? "أطول سلسلة نشاط خلال الأسبوع: " + streakCount + " " + streakLabel + "."
+        : "لم تسجل أياماً نشطة خلال هذا الأسبوع بعد.";
+    }
     if (lastActivityNode) {
       if (!latestAttemptDate) {
         lastActivityNode.textContent = "لم تسجل محاولة تدريب بعد.";
