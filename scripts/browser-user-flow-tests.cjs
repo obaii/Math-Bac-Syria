@@ -722,6 +722,39 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-rhythm").innerText(),
       "نشاط متفرق على عدة أيام.",
       "the dashboard should explain the weekly activity rhythm in clear Arabic");
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "لا تتوفر بيانات دقة من الأسبوع السابق للمقارنة.",
+      "weekly accuracy comparison should clearly disclose a missing baseline");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.",
+      "weekly active-day comparison should disclose a missing baseline");
+    const tiedActivitySnapshot = await page.evaluate(() => {
+      const originalAttempts = progressData.attempts;
+      const now = new Date();
+      progressData.attempts = [...originalAttempts, {
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-2, 11).toISOString()
+      }];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+      const snapshot = {
+        chartHighlights: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").length,
+        accessibleHighlights: document.querySelectorAll("#dashboard-weekly-chart-accessible li.is-busiest").length,
+        summary: document.querySelector("#dashboard-weekly-busiest")?.textContent || "",
+        dates: document.querySelector("#dashboard-weekly-summary")?.dataset.busiestDays || ""
+      };
+      progressData.attempts = originalAttempts;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+      return snapshot;
+    });
+    assert.deepEqual(pageErrors, [], "rendering tied busiest days should not trigger browser JavaScript errors");
+    assert.equal(tiedActivitySnapshot.chartHighlights, 2,
+      "all days tied for the highest attempt count should be highlighted in the chart");
+    assert.equal(tiedActivitySnapshot.accessibleHighlights, 2,
+      "the accessible daily list should identify every tied busiest day");
+    assert.ok(tiedActivitySnapshot.summary.startsWith("الأيام الأكثر نشاطاً:"),
+      "the busiest-day insight should use plural wording when multiple days tie");
+    assert.equal(tiedActivitySnapshot.dates.split(",").length, 2,
+      "the dashboard data contract should expose all tied busiest dates");
     const weeklyPeriodText = await page.evaluate(() =>
       document.querySelector("#dashboard-weekly-period")?.textContent || ""
     );
@@ -729,7 +762,7 @@ const assert = require("node:assert/strict");
     assert.ok(normalizedWeeklyPeriod.includes(String(new Date().getFullYear())),
       "the displayed weekly period should include its year to avoid ambiguity across year boundaries");
     assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("aria-describedby"),
-      "dashboard-weekly-chart-description dashboard-weekly-rhythm",
+      "dashboard-weekly-chart-description dashboard-weekly-rhythm dashboard-weekly-comparison dashboard-weekly-accuracy-comparison dashboard-weekly-active-days-comparison",
       "the weekly summary should reference its chart guidance and activity-rhythm explanation");
 
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
@@ -762,6 +795,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
       "زاد نشاطك ١٥٠٪ مقارنة بالأسبوع السابق (محاولتا تدريب مقابل ٥ محاولات تدريب).",
       "weekly comparison should calculate and localize an increase against the previous seven days");
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "انخفضت دقة إجاباتك بمقدار ١٠ نقاط مئوية مقارنة بالأسبوع السابق (٥٠٪ إلى ٤٠٪).",
+      "weekly accuracy comparison should report percentage-point changes, not relative percentages");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "زاد عدد أيام نشاطك بمقدار يومين (٢ مقابل ٤).",
+      "weekly active-day comparison should compare distinct local calendar days");
     await page.evaluate(() => {
       const now = new Date();
       const previous = Array.from({length:10}, (_, index) => ({
@@ -787,6 +826,18 @@ const assert = require("node:assert/strict");
       "نشاطك مماثل للأسبوع السابق: ٥ محاولات تدريب.",
       "weekly comparison should identify unchanged activity");
     await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: index < 2,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "دقة إجاباتك مستقرة عند ٤٠٪ مقارنة بالأسبوع السابق.",
+      "weekly accuracy comparison should identify an unchanged accuracy rate");
+    await page.evaluate(() => {
       window.__weeklyAttemptsBeforeEmptyState = progressData.attempts;
       progressData.attempts = [];
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
@@ -799,6 +850,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
       "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.",
       "an empty two-week period should explain that there is no comparison baseline");
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "لا تتوفر بيانات دقة من الأسبوع السابق للمقارنة.",
+      "empty weeks should retain a clear accuracy-comparison baseline message");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.",
+      "empty weeks should retain a clear active-day comparison baseline message");
     assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "٠",
       "an empty week should report no current activity streak");
     assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٠٪",
@@ -812,6 +869,25 @@ const assert = require("node:assert/strict");
       "an empty week should explain the absence of activity without implying a negative performance judgment");
     assert.equal(await page.locator("#dashboard-weekly-last-activity").innerText(), "لم تسجل محاولة تدريب بعد.",
       "the latest-activity insight should provide a clear empty state");
+    await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: index < 2,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = previous;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "لا توجد إجابات هذا الأسبوع لمقارنة دقتها بالأسبوع السابق.",
+      "a week with no current answers should not display a misleading accuracy percentage");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "انخفض عدد أيام نشاطك بمقدار ٥ أيام (٥ مقابل ٠).",
+      "weekly active-day comparison should handle an empty current week with a previous baseline");
+    await page.evaluate(() => {
+      progressData.attempts = [];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
     await page.evaluate(() => {
       const now = new Date();
       progressData.attempts = [{
@@ -1024,7 +1100,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v134/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v136/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
@@ -1422,20 +1498,21 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => quizQuestions.length), questionCountBeforeSimilar + 1, "the similar question should be inserted into the active quiz session");
     assert.equal(await page.locator("#similar-practice-card").count(), 0, "similar practice must not create a separate card below the question");
     assert.equal(await page.locator("#options [data-option]").count(), 4, "the similar MCQ should use the standard answer controls");
-    await page.locator("#options [data-option]").first().click();
-    await page.locator("#feedback").waitFor({ state: "visible" });
-    assert.notEqual(await page.locator("#session-answered").innerText(), similarCountBefore, "answering the similar question should count in the active session");
-    assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "the similar question should use the standard solution feedback");
-    const activeQuestionPosition = await page.locator("#question-text").evaluate(el => {
-      const card = el.closest(".question-card");
-      return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
-    });
     await page.waitForFunction(() => {
       const card = document.querySelector("#question-text")?.closest(".question-card");
       return card && card.getBoundingClientRect().top < window.innerHeight / 2;
     }, { timeout: 5000 });
+    const activeQuestionPosition = await page.locator("#question-text").evaluate(el => {
+      const card = el.closest(".question-card");
+      return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
+    });
     assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2,
-      "the active question card should be positioned in the upper half of the viewport after scrolling settles");
+      "the active question card should be positioned in the upper half of the viewport after the similar question is shown");
+
+    await page.locator("#options [data-option]").first().click();
+    await page.locator("#feedback").waitFor({ state: "visible" });
+    assert.notEqual(await page.locator("#session-answered").innerText(), similarCountBefore, "answering the similar question should count in the active session");
+    assert.ok((await page.locator("#feedback").innerText()).includes("الحل"), "the similar question should use the standard solution feedback");
 
     const sessionNumbers = await page.evaluate(() => ({
       answered: (index + 1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar"),
