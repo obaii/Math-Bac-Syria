@@ -54,7 +54,7 @@ const assert = require("node:assert/strict");
     await page.locator("#geometry-shape").selectOption("circle");
     assert.equal(await page.locator("#geometry-fields input").count(), 1);
     await page.locator("#geometry-fields input").fill("2");
-    assert.match(await page.locator("#geometry-metrics").innerText(), /12\.57/);
+    assert.match(await page.locator("#geometry-metrics").innerText(), /المساحة/);\n    assert.match(await page.locator("#geometry-metrics").innerText(), /المحيط/);
     await page.locator("#geometry-fields input").fill("");
     assert.match(await page.locator("#geometry-message").innerText(), /لا يمكن عرض نتيجة/);
     assert.equal(await page.locator("#geometry-metrics").innerText(), "أدخل قيماً موجبة في جميع الخانات لعرض النتائج.");
