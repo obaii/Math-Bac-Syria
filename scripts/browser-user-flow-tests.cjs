@@ -659,6 +659,11 @@ const assert = require("node:assert/strict");
       chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
       accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
       accessibleCounts: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.dataset.count),
+      average: document.querySelector("#dashboard-weekly-average").textContent,
+      busiest: document.querySelector("#dashboard-weekly-busiest").textContent,
+      busiestDate: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].find(item => item.classList.contains("is-busiest"))?.dataset.date,
+      busiestCount: document.querySelectorAll("#dashboard-weekly-chart-accessible li.is-busiest").length,
+      chartData: [...document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day")].map(item => ({ date: item.dataset.date, count: item.dataset.count, busiest: item.classList.contains("is-busiest"), title: item.title })),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
       focusTopic: document.querySelector("#dashboard-weekly-focus-start").dataset.topic,
@@ -666,18 +671,37 @@ const assert = require("node:assert/strict");
     }));
     assert.deepEqual(weeklySnapshot, {
       attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
-      chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "١", "٢", "١"],
+      chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "٢", "١", "١"],
+      average: (5 / 7).toLocaleString("ar", { maximumFractionDigits: 1 }),
+      busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
+      busiestDate: await page.evaluate(() => { const d=new Date(); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()-1).padStart(2,"0")].join("-"); }),
+      busiestCount: 1,
+      chartData: await page.evaluate(() => {
+        const now=new Date();
+        return Array.from({length:7},(_,i)=>{
+          const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-6+i);
+          const date=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+          const count=[0,0,0,1,2,1,1][i];
+          return {date,count:String(count),busiest:i===4,title:d.toLocaleDateString("ar-SY",{weekday:"long",day:"numeric",month:"long",year:"numeric"})+": "+(count===0?"لا توجد محاولات":count===1?"محاولة تدريب واحدة":"محاولتا تدريب")};
+        });
+      }),
       best: "أقوى أبحاثك هذا الأسبوع: "+await page.evaluate(() => topics[0])+" — دقة 67٪ من 3 محاولات.",
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
     assert.ok(accessibleWeeklyLabels.every(label => {
-      const normalizedLabel = label.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
-      return normalizedLabel.includes(": ") && /محاولة\s+تدريب$/.test(normalizedLabel);
-    }), "each accessible day entry should include its full date and localized attempt count");
+      const normalizedLabel = label.replace(/[\\u200e\\u200f\\u202a-\\u202e\\u2066-\\u2069]/g, "").trim();
+      return normalizedLabel.includes(": ") && /(لا توجد محاولات|محاولة تدريب واحدة|محاولتا تدريب|محاولات تدريب|محاولة تدريب)( — أعلى نشاط)?$/.test(normalizedLabel);
+    }), "each accessible day entry should include its full date and grammatically localized attempt count");
+    assert.ok(accessibleWeeklyLabels.some(label => label.includes("لا توجد محاولات")),
+      "zero-activity days should be described explicitly");
+    assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
+      "two attempts should use the correct dual form in Arabic");
     const weeklyDetails = page.locator("#dashboard-weekly-details");
     const weeklyDetailsSummary = weeklyDetails.locator("summary");
+    assert.equal(await weeklyDetailsSummary.getAttribute("aria-controls"), "dashboard-weekly-chart-accessible",
+      "the weekly disclosure should identify the list it controls");
     assert.equal(await weeklyDetails.evaluate(element => element.open), false,
       "weekly day details should start collapsed to keep the dashboard compact");
     assert.equal(await weeklyDetailsSummary.innerText(), "عرض تفاصيل الأيام السبعة",
