@@ -1498,14 +1498,14 @@ const assert = require("node:assert/strict");
     assert.equal(await page.evaluate(() => quizQuestions.length), questionCountBeforeSimilar + 1, "the similar question should be inserted into the active quiz session");
     assert.equal(await page.locator("#similar-practice-card").count(), 0, "similar practice must not create a separate card below the question");
     assert.equal(await page.locator("#options [data-option]").count(), 4, "the similar MCQ should use the standard answer controls");
-    const activeQuestionPosition = await page.locator("#question-text").evaluate(el => {
-      const card = el.closest(".question-card");
-      return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
-    });
     await page.waitForFunction(() => {
       const card = document.querySelector("#question-text")?.closest(".question-card");
       return card && card.getBoundingClientRect().top < window.innerHeight / 2;
     }, { timeout: 5000 });
+    const activeQuestionPosition = await page.locator("#question-text").evaluate(el => {
+      const card = el.closest(".question-card");
+      return { top: card.getBoundingClientRect().top, viewportHeight: window.innerHeight };
+    });
     assert.ok(activeQuestionPosition.top < activeQuestionPosition.viewportHeight / 2,
       "the active question card should be positioned in the upper half of the viewport after the similar question is shown");
 
