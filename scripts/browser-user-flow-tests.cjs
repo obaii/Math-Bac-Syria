@@ -796,7 +796,7 @@ const assert = require("node:assert/strict");
       "زاد نشاطك ١٥٠٪ مقارنة بالأسبوع السابق (محاولتا تدريب مقابل ٥ محاولات تدريب).",
       "weekly comparison should calculate and localize an increase against the previous seven days");
     assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
-      "انخفضت دقة إجاباتك بمقدار ١٠ نقطة مئوية مقارنة بالأسبوع السابق (٥٠٪ إلى ٤٠٪).",
+      "انخفضت دقة إجاباتك بمقدار ١٠ نقاط مئوية مقارنة بالأسبوع السابق (٥٠٪ إلى ٤٠٪).",
       "weekly accuracy comparison should report percentage-point changes, not relative percentages");
     assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
       "زاد عدد أيام نشاطك بمقدار يومين (٢ مقابل ٤).",
