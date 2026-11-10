@@ -722,6 +722,33 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-rhythm").innerText(),
       "نشاط متفرق على عدة أيام.",
       "the dashboard should explain the weekly activity rhythm in clear Arabic");
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "لا تتوفر بيانات دقة من الأسبوع السابق للمقارنة.",
+      "weekly accuracy comparison should clearly disclose a missing baseline");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.",
+      "weekly active-day comparison should disclose a missing baseline");
+    await page.evaluate(() => {
+      window.__initialWeeklyAttemptsForTieTest = progressData.attempts;
+      const now = new Date();
+      progressData.attempts = [...progressData.attempts, {
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-2, 11).toISOString()
+      }];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").count(), 2,
+      "all days tied for the highest attempt count should be highlighted in the chart");
+    assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-busiest").count(), 2,
+      "the accessible daily list should identify every tied busiest day");
+    assert.ok((await page.locator("#dashboard-weekly-busiest").innerText()).startsWith("الأيام الأكثر نشاطاً:"),
+      "the busiest-day insight should use plural wording when multiple days tie");
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-busiest-days").split(",").length, 2,
+      "the dashboard data contract should expose all tied busiest dates");
+    await page.evaluate(() => {
+      progressData.attempts = window.__initialWeeklyAttemptsForTieTest;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
     const weeklyPeriodText = await page.evaluate(() =>
       document.querySelector("#dashboard-weekly-period")?.textContent || ""
     );
@@ -762,6 +789,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
       "زاد نشاطك ١٥٠٪ مقارنة بالأسبوع السابق (محاولتا تدريب مقابل ٥ محاولات تدريب).",
       "weekly comparison should calculate and localize an increase against the previous seven days");
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "انخفضت دقة إجاباتك بمقدار ١٠ نقطة مئوية مقارنة بالأسبوع السابق (٥٠٪ إلى ٤٠٪).",
+      "weekly accuracy comparison should report percentage-point changes, not relative percentages");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "زاد عدد أيام نشاطك بمقدار ٢ أيام (٢ مقابل ٤).",
+      "weekly active-day comparison should compare distinct local calendar days");
     await page.evaluate(() => {
       const now = new Date();
       const previous = Array.from({length:10}, (_, index) => ({
@@ -799,6 +832,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
       "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.",
       "an empty two-week period should explain that there is no comparison baseline");
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "لا تتوفر بيانات دقة من الأسبوع السابق للمقارنة.",
+      "empty weeks should retain a clear accuracy-comparison baseline message");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.",
+      "empty weeks should retain a clear active-day comparison baseline message");
     assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "٠",
       "an empty week should report no current activity streak");
     assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٠٪",
@@ -1024,7 +1063,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v134/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v135/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
