@@ -762,7 +762,7 @@ const assert = require("node:assert/strict");
     assert.ok(normalizedWeeklyPeriod.includes(String(new Date().getFullYear())),
       "the displayed weekly period should include its year to avoid ambiguity across year boundaries");
     assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("aria-describedby"),
-      "dashboard-weekly-chart-description dashboard-weekly-rhythm",
+      "dashboard-weekly-chart-description dashboard-weekly-rhythm dashboard-weekly-comparison dashboard-weekly-accuracy-comparison dashboard-weekly-active-days-comparison",
       "the weekly summary should reference its chart guidance and activity-rhythm explanation");
 
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
