@@ -980,25 +980,35 @@ const assert = require("node:assert/strict");
 
     const provisionalPath = await page.evaluate(() => {
       const [weakSample, partialSample, untouched] = topics;
-      progressData.topicStats = {
-        [weakSample]: { answered: 10, correct: 6 },
-        [partialSample]: { answered: 5, correct: 4 }
-      };
+      progressData.topicStats = Object.fromEntries(topics.slice(3).map(topic => [topic, { answered: 9, correct: 8 }]));
+      progressData.topicStats[weakSample] = { answered: 10, correct: 0 };
+      progressData.topicStats[partialSample] = { answered: 5, correct: 4 };
       refreshDashboard();
       return {
         level: document.querySelector("#learning-path-level").textContent,
         levelKey: document.querySelector("#learning-path-level").dataset.level,
         reliable: document.querySelector("#learning-path-reliable").textContent,
         topics: [...document.querySelectorAll("#learning-path-list .learning-path-step")].map(item => item.dataset.topic),
+        confidence: [...document.querySelectorAll("#learning-path-list .learning-path-step")].map(item => ({
+          topic: item.dataset.topic,
+          sampleSize: item.dataset.sampleSize,
+          sampleBand: item.dataset.sampleBand,
+          label: (item.querySelector(".learning-path-confidence")?.textContent || "").replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+        })),
         note: document.querySelector("#learning-path-note").textContent
       };
     });
     assert.equal(provisionalPath.levelKey, "provisional", "one sufficiently sampled topic should not be presented as a confident overall level");
     assert.ok(["1", "١"].includes(provisionalPath.reliable), "the path should count topics with at least ten answers regardless of browser numeral locale");
-    assert.equal(provisionalPath.topics[0], await page.evaluate(() => topics[2]),
-      "an unstarted topic should be prioritized before topics with recorded practice");
+    assert.deepEqual(new Set(provisionalPath.topics), new Set(await page.evaluate(() => topics.slice(0, 3))),
+      "the three deliberately configured sample sizes should all appear among the recommendations");
     assert.ok(provisionalPath.note.includes("مؤشر تدريبي إرشادي") || provisionalPath.note.includes("لا نعرض تصنيف"),
       "the path should communicate the limits of an early estimate");
+    assert.deepEqual(provisionalPath.confidence, [
+      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · 10 إجابة" },
+      { topic: await page.evaluate(() => topics[2]), sampleSize: "0", sampleBand: "not-started", label: "لم تبدأ العينة بعد" },
+      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · 5 من 10 إجابات" }
+    ], "each recommendation should disclose whether its evidence is absent, provisional, or based on at least ten answers");
 
     const establishedPath = await page.evaluate(() => {
       const [first, second] = topics;
@@ -1100,7 +1110,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v136/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v137/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");

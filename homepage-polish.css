@@ -8264,3 +8264,57 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
   .dashboard-weekly-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .dashboard-weekly-metrics span { font-size: 10px; line-height: 1.5; }
 }
+
+
+/* Batch 961–970: disclose the amount of evidence behind each learning-path suggestion. */
+.learning-path-confidence {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  max-width: 100%;
+  padding: 4px 9px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 999px;
+  color: var(--hp-muted, var(--muted));
+  background: var(--hp-surface-soft, var(--bg));
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.learning-path-confidence[data-confidence="provisional"] {
+  color: #80520b;
+  border-color: #e9cf91;
+  background: #fff8e7;
+}
+.learning-path-confidence[data-confidence="established"] {
+  color: #176443;
+  border-color: #b9dfc9;
+  background: #effaf3;
+}
+body.dark-mode .learning-path-confidence[data-confidence="provisional"] {
+  color: #f5d58d;
+  border-color: #755d2d;
+  background: #382f1d;
+}
+body.dark-mode .learning-path-confidence[data-confidence="established"] {
+  color: #a8e5c2;
+  border-color: #35614f;
+  background: #1b3a32;
+}
+.learning-path-step[data-sample-band="not-started"] .learning-path-confidence {
+  border-style: dashed;
+}
+@media (max-width: 360px) {
+  .learning-path-confidence {
+    justify-self: stretch;
+    white-space: normal;
+  }
+}
+@media (forced-colors: active) {
+  .learning-path-confidence {
+    border: 1px solid CanvasText;
+    color: CanvasText;
+    background: Canvas;
+  }
+}
