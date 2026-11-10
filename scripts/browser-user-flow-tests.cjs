@@ -671,7 +671,7 @@ const assert = require("node:assert/strict");
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
-    const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allInnerTexts();
+    const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
     assert.ok(accessibleWeeklyLabels.every(label => label.includes(": ") && label.endsWith("محاولة تدريب")),
       "each accessible day entry should include its full date and localized attempt count");
     const weeklyDetails = page.locator("#dashboard-weekly-details");
