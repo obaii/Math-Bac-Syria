@@ -632,6 +632,37 @@
     const incorrect = weekly.length - correct;
     const activeDays = days.filter(day => day.count > 0).length;
     const averageDaily = weekly.length / 7;
+    const activeRate = Math.round(activeDays / 7 * 100);
+    let longestStreak = 0;
+    let currentRun = 0;
+    let longestStreakStart = -1;
+    let longestStreakEnd = -1;
+    let runStart = -1;
+    days.forEach((day, index) => {
+      if (day.count > 0) {
+        if (currentRun === 0) runStart = index;
+        currentRun++;
+        if (currentRun > longestStreak) {
+          longestStreak = currentRun;
+          longestStreakStart = runStart;
+          longestStreakEnd = index;
+        }
+      } else {
+        currentRun = 0;
+      }
+    });
+    let currentStreak = 0;
+    if (days[6].count > 0) {
+      for (let index = 6; index >= 0 && days[index].count > 0; index--) currentStreak++;
+    }
+    const validAttemptDates = attempts.map(item => new Date(item && item.date))
+      .filter(date => !Number.isNaN(date.getTime()));
+    const latestAttemptDate = validAttemptDates.length
+      ? new Date(Math.max(...validAttemptDates.map(date => date.getTime())))
+      : null;
+    const daysSinceLastActivity = latestAttemptDate
+      ? Math.max(0, Math.floor((todayStart - new Date(latestAttemptDate.getFullYear(), latestAttemptDate.getMonth(), latestAttemptDate.getDate())) / 86400000))
+      : null;
     const busiestDay = days.some(day => day.count > 0)
       ? days.reduce((best, day) => day.count > (best?.count || 0) ? day : best, null)
       : null;
@@ -665,6 +696,10 @@
     const averageNode = document.getElementById("dashboard-weekly-average");
     const correctNode = document.getElementById("dashboard-weekly-correct");
     const incorrectNode = document.getElementById("dashboard-weekly-incorrect");
+    const streakNode = document.getElementById("dashboard-weekly-streak");
+    const activeRateNode = document.getElementById("dashboard-weekly-active-rate");
+    const streakInsightNode = document.getElementById("dashboard-weekly-streak-insight");
+    const lastActivityNode = document.getElementById("dashboard-weekly-last-activity");
     const comparisonNode = document.getElementById("dashboard-weekly-comparison");
     if (attemptsNode) attemptsNode.textContent = weekly.length.toLocaleString("ar");
     if (accuracyNode) accuracyNode.textContent = accuracy === null ? "—" : accuracy.toLocaleString("ar")+"٪";
@@ -672,6 +707,22 @@
     if (averageNode) averageNode.textContent = averageDaily.toLocaleString("ar", { maximumFractionDigits: 1 });
     if (correctNode) correctNode.textContent = correct.toLocaleString("ar-u-nu-arab");
     if (incorrectNode) incorrectNode.textContent = incorrect.toLocaleString("ar-u-nu-arab");
+    if (streakNode) streakNode.textContent = currentStreak.toLocaleString("ar-u-nu-arab");
+    if (activeRateNode) activeRateNode.textContent = activeRate.toLocaleString("ar-u-nu-arab") + "٪";
+    if (streakInsightNode) streakInsightNode.textContent = longestStreak
+      ? "أطول سلسلة نشاط خلال الأسبوع: " + longestStreak.toLocaleString("ar-u-nu-arab") + (longestStreak === 1 ? " يوم متتالٍ." : " أيام متتالية.")
+      : "لم تسجل أياماً نشطة خلال هذا الأسبوع بعد.";
+    if (lastActivityNode) {
+      if (!latestAttemptDate) {
+        lastActivityNode.textContent = "لم تسجل محاولة تدريب بعد.";
+      } else {
+        const relative = daysSinceLastActivity === 0 ? "اليوم" : daysSinceLastActivity === 1 ? "أمس"
+          : daysSinceLastActivity === 2 ? "منذ يومين"
+          : "منذ " + daysSinceLastActivity.toLocaleString("ar-u-nu-arab") + " أيام";
+        lastActivityNode.textContent = "آخر نشاط تدريبي: " + relative + "، " +
+          latestAttemptDate.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + ".";
+      }
+    }
     if (comparisonNode) {
       if (previousWeekly.length === 0) {
         comparisonNode.textContent = weekly.length
@@ -695,7 +746,8 @@
         const label = day.date.toLocaleDateString("ar-SY",{weekday:"short"});
         const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
         const isBusiest = Boolean(busiestDay && day.key === busiestDay.key);
-        return '<div class="dashboard-weekly-day'+(isBusiest ? ' is-busiest' : '')+'" data-date="'+day.key+'" data-count="'+day.count+'" title="'+escapeHtml(fullDate + ": " + formatAttemptCount(day.count))+'" aria-hidden="true"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
+        const isStreak = longestStreak > 1 && days.indexOf(day) >= longestStreakStart && days.indexOf(day) <= longestStreakEnd;
+        return '<div class="dashboard-weekly-day'+(isBusiest ? ' is-busiest' : '')+(isStreak ? ' is-streak' : '')+'" data-date="'+day.key+'" data-count="'+day.count+'" title="'+escapeHtml(fullDate + ": " + formatAttemptCount(day.count))+'" aria-hidden="true"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
       }).join("");
     }
     const accessibleDays = document.getElementById("dashboard-weekly-chart-accessible");
@@ -706,8 +758,11 @@
         item.dataset.count = day.count.toLocaleString("ar-u-nu-arab");
         item.dataset.date = day.key;
         const isBusiest = Boolean(busiestDay && day.key === busiestDay.key);
+        const isStreak = longestStreak > 1 && days.indexOf(day) >= longestStreakStart && days.indexOf(day) <= longestStreakEnd;
         if (isBusiest) item.classList.add("is-busiest");
-        item.textContent = fullDate + ": " + formatAttemptCount(day.count) + (isBusiest ? " — أعلى نشاط" : "");
+        if (isStreak) item.classList.add("is-streak");
+        item.textContent = fullDate + ": " + formatAttemptCount(day.count) +
+          (isBusiest ? " — أعلى نشاط" : "") + (isStreak ? " — ضمن أطول سلسلة نشاط" : "");
         return item;
       }));
     }
@@ -738,6 +793,10 @@
     panel.dataset.incorrect = String(incorrect);
     panel.dataset.previousAttempts = String(previousWeekly.length);
     panel.dataset.weeklyDelta = String(weeklyDelta);
+    panel.dataset.currentStreak = String(currentStreak);
+    panel.dataset.longestStreak = String(longestStreak);
+    panel.dataset.activeRate = String(activeRate);
+    panel.dataset.daysSinceLastActivity = daysSinceLastActivity === null ? "" : String(daysSinceLastActivity);
   };
   window.addEventListener("mathBacSyria:dashboard-refreshed", renderDashboardWeeklySummary);
   renderDashboardWeeklySummary();
