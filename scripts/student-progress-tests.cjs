@@ -118,7 +118,13 @@ const checks = [
   ["intensive training records progress as a normal practice session", /currentTopic = "التدريب المكثف";[\s\S]*?reviewMode = false;[\s\S]*?quizQuestions = selected/.test(enhancements)],
   ["intensive training provides useful empty states for weak-topic and mistake pools", /لا توجد أخطاء محفوظة صالحة للتدريب حالياً/.test(enhancements) && /نحتاج إلى بعض نتائج التدريب أولاً/.test(enhancements)],
   ["intensive training refreshes script and offline cache versions", /enhancements\.js\?v=\d{8}-[0-9]+/.test(html) && /math-bac-syria-v[0-9]+/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8"))],
-  ["browser flow verifies a bounded unique intensive session", /intensive-training-start/.test(browser) && /new Set\(quizQuestions\.map\(questionKey\)\)/.test(browser) && /reviewMode/.test(browser)]
+  ["browser flow verifies a bounded unique intensive session", /intensive-training-start/.test(browser) && /new Set\(quizQuestions\.map\(questionKey\)\)/.test(browser) && /reviewMode/.test(browser)],
+
+  ["saved training sessions reject empty topics and malformed question keys", /typeof saved\.topic !== "string" \|\| !saved\.topic\.trim\(\)/.test(app) && /saved\.questionKeys\.every\(key => typeof key === "string" && key\.trim\(\)\)/.test(app)],
+  ["saved training sessions reject duplicate question keys", /new Set\(saved\.questionKeys\)\.size !== saved\.questionKeys\.length/.test(app)],
+  ["saved training sessions enforce question-position and score bounds", /saved\.index > saved\.questionKeys\.length/.test(app) && /saved\.correctCount > saved\.index/.test(app)],
+  ["saved session mistakes must be unique members of the session question list", /mistakeKeys\.every\(key => typeof key === "string" && saved\.questionKeys\.includes\(key\)\)/.test(app) && /new Set\(mistakeKeys\)\.size !== mistakeKeys\.length/.test(app)],
+  ["corrupt or undated saved sessions are cleared instead of repeatedly restored", /Number\.isFinite\(Date\.parse\(saved\.updatedAt\)\)/.test(app) && /localStorage\.removeItem\(TRAINING_SESSION_KEY\)/.test(app)]
 ];
 let failures = 0;
 for (const [name, passed] of checks) {
