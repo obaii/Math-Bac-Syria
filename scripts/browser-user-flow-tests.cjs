@@ -672,9 +672,9 @@ const assert = require("node:assert/strict");
     assert.deepEqual(weeklySnapshot, {
       attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
       chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "١", "٢", "١"],
-      average: (5 / 7).toLocaleString("ar", { maximumFractionDigits: 1 }),
+      average: await page.evaluate(() => (5 / 7).toLocaleString("ar", { maximumFractionDigits: 1 })),
       busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
-      busiestDate: await page.evaluate(() => { const d=new Date(); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()-1).padStart(2,"0")].join("-"); }),
+      busiestDate: await page.evaluate(() => { const now=new Date(); const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-1); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"); }),
       busiestCount: 1,
       chartData: await page.evaluate(() => {
         const now=new Date();
