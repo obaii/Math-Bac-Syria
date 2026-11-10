@@ -315,6 +315,28 @@ const assert = require("node:assert/strict");
     await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
     assert.equal(await page.evaluate(() => localStorage.getItem("mathBacSyriaTrainingSessionV1")), null,
       "a malformed saved session with duplicate question keys should be discarded");
+    await page.evaluate(topic => {
+      const keys = questions.filter(question => question.topic === topic).slice(0, 2).map(questionKey);
+      localStorage.setItem("mathBacSyriaTrainingSessionV1", JSON.stringify({
+        version: 1, topic, questionKeys: keys, index: 0, correctCount: 0,
+        mistakeKeys: keys.slice(0, 1), updatedAt: new Date().toISOString()
+      }));
+    }, resumeTopic);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    assert.equal(await page.evaluate(() => localStorage.getItem("mathBacSyriaTrainingSessionV1")), null,
+      "a saved mistake on an unanswered question should invalidate the session");
+    await page.evaluate(topic => {
+      const keys = questions.filter(question => question.topic === topic).slice(0, 2).map(questionKey);
+      localStorage.setItem("mathBacSyriaTrainingSessionV1", JSON.stringify({
+        version: 1, topic, questionKeys: keys, index: 0, correctCount: 0,
+        mistakeKeys: [], updatedAt: new Date(Date.now() + 60 * 60 * 1000).toISOString()
+      }));
+    }, resumeTopic);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => document.querySelectorAll("#topic-grid [data-topic]").length > 0);
+    assert.equal(await page.evaluate(() => localStorage.getItem("mathBacSyriaTrainingSessionV1")), null,
+      "a saved session timestamp far in the future should be discarded");
     await page.evaluate(() => localStorage.removeItem("mathBacSyriaLastTopicV1"));
 
 
