@@ -138,21 +138,23 @@ const assert = require("node:assert/strict");
       .map(link => link.getAttribute("href")));
     const expectedQuickStartLinks = [
       "#flashcards", "#formula-library", "#math-assistant", "#solved-examples-library",
-      "#topic-section", "#exam-tools", "#student-tools", "#scientific-calculator",
+      "#exam-tools", "#student-tools", "#scientific-calculator",
       "#function-plotter", "#geometry-tools", "#home", "#learning-progress-title",
       "#question-coverage-title", "#weak-topic-recommendation", "#resume-session",
       "#recent-activity", "#performance-trend", "#activity-calendar", "#achievement-section"
     ];
+    assert.equal(quickStartLinks.includes("#topic-section"), false,
+      "the homepage research cards should remain on the homepage rather than appear as a tenth menu section");
     for (const href of expectedQuickStartLinks) {
       assert.equal(quickStartLinks.filter(link => link === href).length, 1,
-        "the dashboard should expose exactly one shortcut for " + href + "; found: " + quickStartLinks.join(", "));
+        "the section menu should expose exactly one shortcut for " + href + "; found: " + quickStartLinks.join(", "));
     }
     assert.deepEqual(
       await quickStart.locator(".quick-start-group-label").allInnerTexts(),
-      ["التعلّم", "التدريب", "الاختبارات", "الأدوات", "التقدم"],
+      ["التعلّم", "الاختبارات", "الأدوات", "التقدم"],
       "the section menu should group its shortcuts into four clear learning areas"
     );
-    assert.equal(await quickStart.locator("a.quick-start-card").count(), 19,
+    assert.equal(await quickStart.locator("a.quick-start-card").count(), 18,
       "group headings should not replace or hide any existing section shortcut");
 
     await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -173,8 +175,8 @@ const assert = require("node:assert/strict");
     await page.locator("#section-menu-toggle").click();
     assert.equal(await page.locator("#section-menu-search, #section-menu-search-clear, #section-menu-search-empty").count(), 0,
       "the section menu should not contain a search field, clear button, or search empty state");
-    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 19,
-      "all nineteen section shortcuts should remain visible without filtering");
+    assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 18,
+      "all eighteen menu shortcuts should remain visible without filtering");
     const menuCards = page.locator("#section-menu a.quick-start-card:visible");
     await menuCards.first().focus();
     await menuCards.first().press("ArrowDown");
@@ -202,8 +204,8 @@ const assert = require("node:assert/strict");
     assert.equal(loadingFixture.busy, "false", "rendering the topic bank should clear its busy state");
     assert.equal(loadingFixture.placeholders, 0, "rendering the topic bank should replace its loading feedback");
     const menuIcons = await quickStart.locator("a.quick-start-card .quick-start-icon").allInnerTexts();
-    assert.equal(menuIcons.length, 19, "every section shortcut should display its own icon");
-    assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 19,
+    assert.equal(menuIcons.length, 18, "every section shortcut should display its own icon");
+    assert.equal(new Set(menuIcons.map(icon => icon.trim())).size, 18,
       "all 19 section shortcuts should use distinct visual icons");
 
     // A new homepage destination should show one update marker until the learner opens it.
