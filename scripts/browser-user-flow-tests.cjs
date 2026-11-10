@@ -658,7 +658,7 @@ const assert = require("node:assert/strict");
       bars: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day").length,
       chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
       accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
-      accessibleCounts: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.textContent.match(/([٠-٩]+)\s+محاولة تدريب$/u)?.[1]),
+      accessibleCounts: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].map(item => item.dataset.count),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
       focusTopic: document.querySelector("#dashboard-weekly-focus-start").dataset.topic,
