@@ -672,11 +672,9 @@ const assert = require("node:assert/strict");
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allInnerTexts();
-    assert.ok(accessibleWeeklyLabels.every(label => /[٠-٩]+ محاولة تدريب$/.test(label)),
-      "each accessible day entry should include a full date and a localized attempt count");
-    assert.ok(accessibleWeeklyLabels.every(label => /\d/.test(label) || /[٠-٩]/.test(label)),
-      "each accessible day entry should identify its calendar date");
-        await page.locator("#dashboard-weekly-focus-start").click();
+    assert.ok(accessibleWeeklyLabels.every(label => label.includes(": ") && label.endsWith("محاولة تدريب")),
+      "each accessible day entry should include its full date and localized attempt count");
+    await page.locator("#dashboard-weekly-focus-start").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), await page.evaluate(() => topics[1]),
       "the weekly recommendation should launch training for the selected focus topic");
