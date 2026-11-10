@@ -670,6 +670,13 @@ const assert = require("node:assert/strict");
       busiest: document.querySelector("#dashboard-weekly-busiest").textContent,
       busiestDate: [...document.querySelectorAll("#dashboard-weekly-chart-accessible li")].find(item => item.classList.contains("is-busiest"))?.dataset.date,
       busiestCount: document.querySelectorAll("#dashboard-weekly-chart-accessible li.is-busiest").length,
+      currentStreak: document.querySelector("#dashboard-weekly-summary").dataset.currentStreak,
+      longestStreak: document.querySelector("#dashboard-weekly-summary").dataset.longestStreak,
+      activeRate: document.querySelector("#dashboard-weekly-summary").dataset.activeRate,
+      daysSinceLastActivity: document.querySelector("#dashboard-weekly-summary").dataset.daysSinceLastActivity,
+      streakDays: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day.is-streak").length,
+      streakInsight: document.querySelector("#dashboard-weekly-streak-insight").textContent,
+      lastActivity: document.querySelector("#dashboard-weekly-last-activity").textContent,
       chartData: [...document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day")].map(item => ({ date: item.dataset.date, count: item.dataset.count, busiest: item.classList.contains("is-busiest"), title: item.title })),
       best: document.querySelector("#dashboard-weekly-best").textContent,
       focus: document.querySelector("#dashboard-weekly-focus").textContent,
@@ -686,6 +693,12 @@ const assert = require("node:assert/strict");
       busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
       busiestDate: await page.evaluate(() => { const now=new Date(); const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-1); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"); }),
       busiestCount: 1,
+      currentStreak: "1", longestStreak: "3", activeRate: "57", daysSinceLastActivity: "0",
+      streakDays: 3, streakInsight: "أطول سلسلة نشاط خلال الأسبوع: ٣ أيام متتالية.",
+      lastActivity: await page.evaluate(() => {
+        const now = new Date();
+        return "آخر نشاط تدريبي: اليوم، " + now.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + ".";
+      }),
       chartData: await page.evaluate(() => {
         const now=new Date();
         return Array.from({length:7},(_,i)=>{
@@ -708,6 +721,14 @@ const assert = require("node:assert/strict");
       "zero-activity days should be described explicitly");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
       "two attempts should use the correct dual form in Arabic");
+    assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-streak").count(), 3,
+      "the accessible weekly list should identify the longest consecutive activity streak");
+    assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "١",
+      "the current streak should count consecutive active days ending today");
+    assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٥٧٪",
+      "the dashboard should show the share of active days in the seven-day period");
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("اليوم"),
+      "the dashboard should identify when the latest training activity occurred");
     await page.evaluate(() => {
       window.__weeklyAttemptsBeforeComparison = progressData.attempts;
       const now = new Date();
@@ -758,6 +779,12 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
       "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.",
       "an empty two-week period should explain that there is no comparison baseline");
+    assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "٠",
+      "an empty week should report no current activity streak");
+    assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٠٪",
+      "an empty week should report zero active-day rate");
+    assert.equal(await page.locator("#dashboard-weekly-last-activity").innerText(), "لم تسجل محاولة تدريب بعد.",
+      "the latest-activity insight should provide a clear empty state");
     await page.evaluate(() => {
       progressData.attempts = window.__weeklyAttemptsBeforeComparison;
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
