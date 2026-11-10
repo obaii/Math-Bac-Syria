@@ -1007,8 +1007,8 @@ const assert = require("node:assert/strict");
       "the path should communicate the limits of an early estimate");
     assert.deepEqual(provisionalPath.confidence, [
       { topic: await page.evaluate(() => topics[2]), sampleSize: "0", sampleBand: "not-started", label: "لم تبدأ العينة بعد" },
-      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · ١٠ إجابة" },
-      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · ٥ من ١٠ إجابات" }
+      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · ٥ من ١٠ إجابات" },
+      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · ١٠ إجابة" }
     ], "each recommendation should disclose whether its evidence is absent, provisional, or based on at least ten answers");
 
     const establishedPath = await page.evaluate(() => {
