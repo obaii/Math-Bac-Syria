@@ -655,6 +655,8 @@ const assert = require("node:assert/strict");
       attempts: document.querySelector("#dashboard-weekly-summary").dataset.attempts,
       activeDays: document.querySelector("#dashboard-weekly-summary").dataset.activeDays,
       accuracy: document.querySelector("#dashboard-weekly-summary").dataset.accuracy,
+      correctMetric: document.querySelector("#dashboard-weekly-correct").textContent,
+      incorrectMetric: document.querySelector("#dashboard-weekly-incorrect").textContent,
       correct: document.querySelector("#dashboard-weekly-summary").dataset.correct,
       incorrect: document.querySelector("#dashboard-weekly-summary").dataset.incorrect,
       previousAttempts: document.querySelector("#dashboard-weekly-summary").dataset.previousAttempts,
@@ -675,7 +677,8 @@ const assert = require("node:assert/strict");
       actionVisible: !document.querySelector("#dashboard-weekly-focus-start").hidden
     }));
     assert.deepEqual(weeklySnapshot, {
-      attempts: "5", activeDays: "4", accuracy: "40", correct: "2", incorrect: "3",
+      attempts: "5", activeDays: "4", accuracy: "40", correctMetric: "٢", incorrectMetric: "٣",
+      correct: "2", incorrect: "3",
       previousAttempts: "0", weeklyDelta: "5",
       comparison: "بدأت تسجيل نشاطك هذا الأسبوع؛ لا توجد بيانات من الأسبوع السابق للمقارنة.", bars: 7,
       chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "١", "٢", "١"],
@@ -705,8 +708,31 @@ const assert = require("node:assert/strict");
       "zero-activity days should be described explicitly");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
       "two attempts should use the correct dual form in Arabic");
-    assert.equal(await page.locator("#dashboard-weekly-metrics").count(), 0,
-      "weekly metrics should remain rendered without requiring a wrapper-specific selector");
+    await page.evaluate(() => {
+      window.__weeklyAttemptsBeforeComparison = progressData.attempts;
+      const now = new Date();
+      const previous = [7, 8].map((daysAgo, index) => ({
+        topic: topics[0], correct: index === 0,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-daysAgo, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "زاد نشاطك ١٥٠٪ مقارنة بالأسبوع السابق (٢ مقابل ٥ محاولة تدريب).",
+      "weekly comparison should calculate and localize an increase against the previous seven days");
+    await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "نشاطك مماثل للأسبوع السابق: ٥ محاولة تدريب.",
+      "weekly comparison should identify unchanged activity");
     await page.evaluate(() => {
       window.__weeklyAttemptsBeforeEmptyState = progressData.attempts;
       progressData.attempts = [];
@@ -717,8 +743,11 @@ const assert = require("node:assert/strict");
       "an empty week must not incorrectly label a zero-activity day as the busiest");
     assert.equal(await page.locator("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").count(), 0,
       "an empty week must not highlight any chart day as busiest");
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "لا توجد محاولات تدريب في الأسبوع الحالي أو الأسبوع السابق.",
+      "an empty two-week period should explain that there is no comparison baseline");
     await page.evaluate(() => {
-      progressData.attempts = window.__weeklyAttemptsBeforeEmptyState;
+      progressData.attempts = window.__weeklyAttemptsBeforeComparison;
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
     });
     const weeklyDetails = page.locator("#dashboard-weekly-details");
