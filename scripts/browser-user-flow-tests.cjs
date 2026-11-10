@@ -655,6 +655,11 @@ const assert = require("node:assert/strict");
       attempts: document.querySelector("#dashboard-weekly-summary").dataset.attempts,
       activeDays: document.querySelector("#dashboard-weekly-summary").dataset.activeDays,
       accuracy: document.querySelector("#dashboard-weekly-summary").dataset.accuracy,
+      correct: document.querySelector("#dashboard-weekly-summary").dataset.correct,
+      incorrect: document.querySelector("#dashboard-weekly-summary").dataset.incorrect,
+      previousAttempts: document.querySelector("#dashboard-weekly-summary").dataset.previousAttempts,
+      weeklyDelta: document.querySelector("#dashboard-weekly-summary").dataset.weeklyDelta,
+      comparison: document.querySelector("#dashboard-weekly-comparison").textContent,
       bars: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day").length,
       chartHidden: document.querySelector("#dashboard-weekly-chart").getAttribute("aria-hidden"),
       accessibleDays: document.querySelectorAll("#dashboard-weekly-chart-accessible li").length,
@@ -670,7 +675,9 @@ const assert = require("node:assert/strict");
       actionVisible: !document.querySelector("#dashboard-weekly-focus-start").hidden
     }));
     assert.deepEqual(weeklySnapshot, {
-      attempts: "5", activeDays: "4", accuracy: "40", bars: 7,
+      attempts: "5", activeDays: "4", accuracy: "40", correct: "2", incorrect: "3",
+      previousAttempts: "0", weeklyDelta: "5",
+      comparison: "بدأت تسجيل نشاطك هذا الأسبوع؛ لا توجد بيانات من الأسبوع السابق للمقارنة.", bars: 7,
       chartHidden: "true", accessibleDays: 7, accessibleCounts: ["٠", "٠", "٠", "١", "١", "٢", "١"],
       average: await page.evaluate(() => (5 / 7).toLocaleString("ar", { maximumFractionDigits: 1 })),
       busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
@@ -698,6 +705,22 @@ const assert = require("node:assert/strict");
       "zero-activity days should be described explicitly");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
       "two attempts should use the correct dual form in Arabic");
+    assert.equal(await page.locator("#dashboard-weekly-metrics").count(), 0,
+      "weekly metrics should remain rendered without requiring a wrapper-specific selector");
+    await page.evaluate(() => {
+      window.__weeklyAttemptsBeforeEmptyState = progressData.attempts;
+      progressData.attempts = [];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-busiest").innerText(),
+      "سيظهر اليوم الأكثر نشاطاً بعد تسجيل أول محاولة تدريب.",
+      "an empty week must not incorrectly label a zero-activity day as the busiest");
+    assert.equal(await page.locator("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").count(), 0,
+      "an empty week must not highlight any chart day as busiest");
+    await page.evaluate(() => {
+      progressData.attempts = window.__weeklyAttemptsBeforeEmptyState;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
     const weeklyDetails = page.locator("#dashboard-weekly-details");
     const weeklyDetailsSummary = weeklyDetails.locator("summary");
     assert.equal(await weeklyDetailsSummary.getAttribute("aria-controls"), "dashboard-weekly-chart-accessible",
@@ -863,7 +886,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v129/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v130/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
