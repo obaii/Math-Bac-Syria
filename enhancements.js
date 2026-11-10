@@ -678,6 +678,7 @@
     const weeklyChangePercent = previousWeekly.length
       ? Math.round(Math.abs(weeklyDelta) / previousWeekly.length * 100)
       : null;
+    const previousActiveDays = new Set(previousWeekly.map(item => dayKey(new Date(item.date)))).size;
     const formatAttemptCount = count => {
       const number = count.toLocaleString("ar-u-nu-arab");
       if (count === 0) return "لا توجد محاولات";
@@ -686,6 +687,10 @@
       return count <= 10 ? number + " محاولات تدريب" : number + " محاولة تدريب";
     };
     const accuracy = weekly.length ? Math.round(correct / weekly.length * 100) : null;
+    const previousCorrect = previousWeekly.filter(item => item.correct === true).length;
+    const previousAccuracy = previousWeekly.length ? Math.round(previousCorrect / previousWeekly.length * 100) : null;
+    const accuracyPointDelta = accuracy === null || previousAccuracy === null ? null : accuracy - previousAccuracy;
+    const busiestDays = busiestDay ? days.filter(day => day.count === busiestDay.count) : [];
     // Show the pace on days when the learner actually practiced, not only the seven-day average.
     const activeDayAverage = activeDays ? weekly.length / activeDays : 0;
     const activityRhythm = activeDays === 0 ? "none"
@@ -724,6 +729,8 @@
     const streakInsightNode = document.getElementById("dashboard-weekly-streak-insight");
     const lastActivityNode = document.getElementById("dashboard-weekly-last-activity");
     const comparisonNode = document.getElementById("dashboard-weekly-comparison");
+    const accuracyComparisonNode = document.getElementById("dashboard-weekly-accuracy-comparison");
+    const activeDaysComparisonNode = document.getElementById("dashboard-weekly-active-days-comparison");
     if (attemptsNode) attemptsNode.textContent = weekly.length.toLocaleString("ar");
     if (accuracyNode) accuracyNode.textContent = accuracy === null ? "—" : accuracy.toLocaleString("ar")+"٪";
     if (daysNode) daysNode.textContent = activeDays.toLocaleString("ar");
@@ -751,6 +758,29 @@
           latestAttemptDate.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + ".";
       }
     }
+    if (accuracyComparisonNode) {
+      if (previousAccuracy === null) {
+        accuracyComparisonNode.textContent = "لا تتوفر بيانات دقة من الأسبوع السابق للمقارنة.";
+      } else if (accuracy === null) {
+        accuracyComparisonNode.textContent = "لا توجد إجابات هذا الأسبوع لمقارنة دقتها بالأسبوع السابق.";
+      } else if (accuracyPointDelta === 0) {
+        accuracyComparisonNode.textContent = "دقة إجاباتك مستقرة عند " + accuracy.toLocaleString("ar-u-nu-arab") + "٪ مقارنة بالأسبوع السابق.";
+      } else {
+        const direction = accuracyPointDelta > 0 ? "ارتفعت" : "انخفضت";
+        accuracyComparisonNode.textContent = direction + " دقة إجاباتك بمقدار " + Math.abs(accuracyPointDelta).toLocaleString("ar-u-nu-arab") + " نقطة مئوية مقارنة بالأسبوع السابق (" + previousAccuracy.toLocaleString("ar-u-nu-arab") + "٪ إلى " + accuracy.toLocaleString("ar-u-nu-arab") + "٪).";
+      }
+    }
+    if (activeDaysComparisonNode) {
+      if (previousWeekly.length === 0) {
+        activeDaysComparisonNode.textContent = "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.";
+      } else {
+        const dayDelta = activeDays - previousActiveDays;
+        const dayDescription = dayDelta === 0 ? "عدد أيام نشاطك مماثل للأسبوع السابق"
+          : dayDelta > 0 ? "زاد عدد أيام نشاطك بمقدار " + dayDelta.toLocaleString("ar-u-nu-arab") + (dayDelta === 1 ? " يوم" : " أيام")
+          : "انخفض عدد أيام نشاطك بمقدار " + Math.abs(dayDelta).toLocaleString("ar-u-nu-arab") + (dayDelta === -1 ? " يوم" : " أيام");
+        activeDaysComparisonNode.textContent = dayDescription + " (" + previousActiveDays.toLocaleString("ar-u-nu-arab") + " مقابل " + activeDays.toLocaleString("ar-u-nu-arab") + ").";
+      }
+    }
     if (comparisonNode) {
       if (previousWeekly.length === 0) {
         comparisonNode.textContent = weekly.length
@@ -776,7 +806,7 @@
         const height = day.count ? Math.max(8,Math.round(day.count/maxCount*100)) : 0;
         const label = day.date.toLocaleDateString("ar-SY",{weekday:"short"});
         const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
-        const isBusiest = Boolean(busiestDay && day.key === busiestDay.key);
+        const isBusiest = Boolean(busiestDay && day.count === busiestDay.count && day.count > 0);
         const isStreak = longestStreak > 1 && days.indexOf(day) >= longestStreakStart && days.indexOf(day) <= longestStreakEnd;
         return '<div class="dashboard-weekly-day'+(isBusiest ? ' is-busiest' : '')+(isStreak ? ' is-streak' : '')+'" data-date="'+day.key+'" data-count="'+day.count+'" title="'+escapeHtml(fullDate + ": " + formatAttemptCount(day.count))+'" aria-hidden="true"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
       }).join("");
@@ -788,7 +818,7 @@
         const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
         item.dataset.count = day.count.toLocaleString("ar-u-nu-arab");
         item.dataset.date = day.key;
-        const isBusiest = Boolean(busiestDay && day.key === busiestDay.key);
+        const isBusiest = Boolean(busiestDay && day.count === busiestDay.count && day.count > 0);
         const isStreak = longestStreak > 1 && days.indexOf(day) >= longestStreakStart && days.indexOf(day) <= longestStreakEnd;
         if (isBusiest) item.classList.add("is-busiest");
         if (isStreak) item.classList.add("is-streak");
@@ -807,7 +837,9 @@
       : "ستظهر أولوية التدريب عند وجود إجابات غير صحيحة ضمن بحث جُرّبت أسئلته مرتين على الأقل.";
     const busiestNode = document.getElementById("dashboard-weekly-busiest");
     if (busiestNode) busiestNode.textContent = busiestDay
-      ? "أكثر أيامك نشاطاً: "+busiestDay.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" })+" — "+formatAttemptCount(busiestDay.count)+"."
+      ? (busiestDays.length > 1 ? "الأيام الأكثر نشاطاً: " : "أكثر أيامك نشاطاً: ") +
+        busiestDays.map(day => day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" })).join("، ") +
+        " — " + formatAttemptCount(busiestDay.count) + "."
       : "سيظهر اليوم الأكثر نشاطاً بعد تسجيل أول محاولة تدريب.";
     const action = document.getElementById("dashboard-weekly-focus-start");
     if (action) {
@@ -824,6 +856,10 @@
     panel.dataset.incorrect = String(incorrect);
     panel.dataset.previousAttempts = String(previousWeekly.length);
     panel.dataset.weeklyDelta = String(weeklyDelta);
+    panel.dataset.previousActiveDays = String(previousActiveDays);
+    panel.dataset.previousAccuracy = previousAccuracy === null ? "" : String(previousAccuracy);
+    panel.dataset.accuracyPointDelta = accuracyPointDelta === null ? "" : String(accuracyPointDelta);
+    panel.dataset.busiestDays = busiestDays.map(day => day.key).join(",");
     panel.dataset.currentStreak = String(currentStreak);
     panel.dataset.longestStreak = String(longestStreak);
     panel.dataset.activeRate = String(activeRate);
