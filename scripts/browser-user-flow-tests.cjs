@@ -722,7 +722,10 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-rhythm").innerText(),
       "نشاط متفرق على عدة أيام.",
       "the dashboard should explain the weekly activity rhythm in clear Arabic");
-    assert.ok(await page.locator("#dashboard-weekly-period").innerText().includes(String(new Date().getFullYear())),
+    const weeklyPeriodText = await page.evaluate(() =>
+      document.querySelector("#dashboard-weekly-period")?.textContent || ""
+    );
+    assert.ok(weeklyPeriodText.includes(String(new Date().getFullYear())),
       "the displayed weekly period should include its year to avoid ambiguity across year boundaries");
     assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("aria-describedby"),
       "dashboard-weekly-chart-description dashboard-weekly-rhythm",
