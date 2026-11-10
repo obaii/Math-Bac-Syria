@@ -41,6 +41,35 @@ try {
     .normalize("NFKC")
     .replace(/\s+/g, " ")
     .trim();
+
+  // Detect conflicting duplicate definitions before the merge step can discard them.
+  const rawCollections = [
+    ["questions.js", originalQuestions],
+    ["questions_vectors_additional.js", additional],
+    ["questions_typed_additional.js", typedAdditional]
+  ];
+  const rawDefinitions = new Map();
+  for (const [sourceFile, collection] of rawCollections) {
+    for (const [sourceIndex, question] of (Array.isArray(collection) ? collection : []).entries()) {
+      if (!question || typeof question !== "object" || !normalize(question.q)) continue;
+      const key = normalize(question.topic) + "::" + normalize(question.q);
+      const payload = JSON.stringify({
+        type: question.type || "mcq",
+        options: question.options || null,
+        answer: question.answer,
+        acceptedAnswers: question.acceptedAnswers || [],
+        tolerance: question.tolerance ?? null,
+        solution: normalize(question.solution),
+        level: question.level
+      });
+      const previous = rawDefinitions.get(key);
+      if (previous && previous.payload !== payload) {
+        errors.push(`تعريف متعارض للسؤال "${normalize(question.q)}" بين ${previous.sourceFile} و${sourceFile}؛ أُوقف الدمج الآمن بدلاً من إسقاط إحدى النسختين بصمت.`);
+      } else if (!previous) {
+        rawDefinitions.set(key, { payload, sourceFile, sourceIndex });
+      }
+    }
+  }
   const slash = String.fromCharCode(92);
   const countToken = (value, token) => value.split(token).length - 1;
   const extractMathSegments = (value) => {
@@ -93,7 +122,32 @@ try {
   }
 
   const curriculumManifest = JSON.parse(fs.readFileSync(path.join(root, "curriculum-map.json"), "utf8"));
-  const unitsByTopic = new Map((curriculumManifest.units || []).map(unit => [unit.topic, unit]));
+  const manifestUnits = Array.isArray(curriculumManifest.units) ? curriculumManifest.units : [];
+  const unitsByTopic = new Map(manifestUnits.map(unit => [unit.topic, unit]));
+  const manifestTopicNames = manifestUnits.map(unit => normalize(unit.topic));
+  const manifestUnitIds = manifestUnits.map(unit => normalize(unit.id));
+  const manifestLessonCount = manifestUnits.reduce((total, unit) =>
+    total + (Array.isArray(unit.lessons) ? unit.lessons.length : 0), 0);
+  if (curriculumManifest.schemaVersion !== 1) errors.push("إصدار خريطة المنهاج غير مدعوم.");
+  if (new Set(manifestTopicNames).size !== manifestTopicNames.length) errors.push("توجد أبحاث مكررة في خريطة المنهاج.");
+  if (new Set(manifestUnitIds).size !== manifestUnitIds.length) errors.push("توجد معرفات وحدات مكررة في خريطة المنهاج.");
+  if (manifestUnits.length !== topics.length ||
+      topics.some(topic => !unitsByTopic.has(topic)) ||
+      manifestUnits.some(unit => !topics.includes(unit.topic))) {
+    errors.push("خريطة المنهاج لا تطابق قائمة الأبحاث في بنك الأسئلة تطابقاً كاملاً.");
+  }
+  if (curriculumManifest.lessonCount !== manifestLessonCount) {
+    errors.push(`عدد الدروس في خريطة المنهاج غير متطابق: المعلن ${curriculumManifest.lessonCount} والفعلي ${manifestLessonCount}.`);
+  }
+  for (const unit of manifestUnits) {
+    if (!unit.id || !unit.topic || !unit.unit || ![1, 2].includes(unit.part) ||
+        typeof unit.section !== "string" || !unit.section.trim() ||
+        !Array.isArray(unit.lessons) || unit.lessons.length === 0 ||
+        unit.lessons.some(lesson => typeof lesson !== "string" || !normalize(lesson)) ||
+        new Set(unit.lessons.map(normalize)).size !== unit.lessons.length) {
+      errors.push(`بيانات الوحدة أو دروسها غير مكتملة أو مكررة في خريطة المنهاج: ${unit.topic || unit.id || "وحدة بلا اسم"}.`);
+    }
+  }
   const seenIds = new Map();
   const seenQuestions = new Map();
   const counts = new Map();
@@ -233,6 +287,12 @@ try {
   for (const topic of topics || []) {
     if (!guidedTopics.has(topic)) errors.push(`لا يوجد سؤال بحل تفصيلي للبحث "${topic}".`);
   }
+  const lessonMappedCount = (questions || []).filter(q => typeof q.lessonId === "string" && q.lessonId.trim()).length;
+  const topicOnlyCount = (questions || []).length - lessonMappedCount;
+  console.log(`الأسئلة المرتبطة بوحدة/بحث: ${(questions || []).length}`);
+  console.log(`الأسئلة المرتبطة بمعرّف درس محدد: ${lessonMappedCount}`);
+  console.log(`الأسئلة المصنفة على مستوى البحث فقط وتحتاج تدقيق ربط الدروس: ${topicOnlyCount}`);
+  if (topicOnlyCount > 0) warnings.push(`هناك ${topicOnlyCount} سؤالاً دون ربط بدرس محدد؛ لا تُنشأ روابط دروس تلقائياً قبل مراجعة المحتوى تعليمياً.`);
   console.log(`الأسئلة ذات الحل التفصيلي: ${guidedQuestions.length}`);
   console.log(`الأبحاث التي لديها حل تفصيلي واحد على الأقل: ${guidedTopics.size} من ${(topics || []).length}`);
 
