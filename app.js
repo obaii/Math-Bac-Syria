@@ -886,9 +886,10 @@ function readTrainingSession(){
         !Number.isSafeInteger(saved.correctCount) || saved.correctCount < 0 || saved.correctCount > saved.index) return discard();
     const mistakeKeys = saved.mistakeKeys === undefined ? [] : saved.mistakeKeys;
     if (!Array.isArray(mistakeKeys) ||
-        !mistakeKeys.every(key => typeof key === "string" && saved.questionKeys.includes(key)) ||
+        !mistakeKeys.every(key => typeof key === "string" && saved.questionKeys.includes(key) && saved.questionKeys.indexOf(key) < saved.index) ||
         new Set(mistakeKeys).size !== mistakeKeys.length) return discard();
-    if (typeof saved.updatedAt !== "string" || !Number.isFinite(Date.parse(saved.updatedAt))) return discard();
+    const updatedAt = typeof saved.updatedAt === "string" ? Date.parse(saved.updatedAt) : NaN;
+    if (!Number.isFinite(updatedAt) || updatedAt > Date.now() + 5 * 60 * 1000) return discard();
     return { ...saved, topic: saved.topic.trim(), mistakeKeys };
   } catch (_) { return discard(); }
 }
@@ -915,7 +916,7 @@ function resumeTrainingSession(topic){
   if (!saved || saved.topic !== topic) return false;
   const byKey = new Map(questions.map(question => [questionKey(question), question]));
   const restoredQuestions = saved.questionKeys.map(key => byKey.get(key));
-  if (restoredQuestions.some(question => !question) || saved.index > restoredQuestions.length || saved.correctCount > saved.index) {
+  if (restoredQuestions.some(question => !question || question.topic !== topic) || saved.index > restoredQuestions.length || saved.correctCount > saved.index) {
     clearTrainingSession();
     return false;
   }
