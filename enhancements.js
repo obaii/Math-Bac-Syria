@@ -1292,10 +1292,13 @@
     if (count) count.textContent = extras.bookmarks.length.toLocaleString("ar");
     const list = document.getElementById("bookmark-list");
     if (!list) return;
-    list.innerHTML = extras.bookmarks.map(k => {
-      const q = byKey(k);
-      return q ? `<li><button type="button" data-bookmark-key="${escapeHtml(k)}">${escapeHtml(q.topic)} — ${escapeHtml(q.q.replace(/<[^>]*>/g,"").slice(0,110))}</button></li>` : "";
-    }).join("");
+    const savedQuestions = extras.bookmarks
+      .map(key => ({ key, question: byKey(key) }))
+      .filter(item => item.question);
+    list.setAttribute("aria-label", "قائمة المسائل المحفوظة مرتبة");
+    list.innerHTML = savedQuestions.map(({ key, question }, index) =>
+      `<li><button type="button" data-bookmark-key="${escapeHtml(key)}"><span class="bookmark-number" aria-hidden="true">${(index + 1).toLocaleString("ar")}</span><span class="bookmark-item-text">${escapeHtml(question.topic)} — ${escapeHtml(question.q.replace(/<[^>]*>/g,"").slice(0,110))}</span></button></li>`
+    ).join("");
     // لا تُظهر المحفوظات تلقائياً عند تحميل الصفحة؛ زر المحفوظات هو المتحكم الوحيد بفتحها.
     if (extras.bookmarks.length === 0) list.hidden = true;
     const bookmarkButton = document.getElementById("bookmark-review");
