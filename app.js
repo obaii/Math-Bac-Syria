@@ -1157,6 +1157,17 @@ function updateResumeCard(){
   button.onclick = () => { if (!canResume || !resumeTrainingSession(lastTopic)) startQuiz(lastTopic); };
 }
 
+function shuffleQuestions(items, random = Math.random){
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const sample = Number(random());
+    const safeSample = Number.isFinite(sample) ? Math.min(1 - Number.EPSILON, Math.max(0, sample)) : 0;
+    const j = Math.floor(safeSample * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 function startQuiz(topic){
   currentTopic = topic;
   try { localStorage.setItem(LAST_TOPIC_KEY, topic); } catch (_) {}
@@ -1167,7 +1178,7 @@ function startQuiz(topic){
   if(!quizQuestions.length){ alert("لا توجد أسئلة في هذا المستوى لهذا البحث حالياً. اختر مستوى آخر."); return; }
   window.dispatchEvent(new CustomEvent("mathBacSyria:topic-opened", { detail: { topic } }));
   clearTrainingSession();
-  quizQuestions = [...quizQuestions].sort(()=>Math.random()-0.5);
+  quizQuestions = shuffleQuestions(quizQuestions);
   index=0; correctCount=0; answered=false; sessionMistakes=[];
   $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent=topic;
@@ -1689,7 +1700,7 @@ function startSessionMistakeQuiz(){
   reviewQuestions = retryQuestions;
   reviewMode = true;
   currentTopic = "إعادة تدريب أخطاء الجلسة";
-  quizQuestions = [...retryQuestions].sort(()=>Math.random()-0.5);
+  quizQuestions = shuffleQuestions(retryQuestions);
   sessionMistakes = [];
   index=0; correctCount=0; answered=false;
   $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
@@ -1843,7 +1854,7 @@ function startReviewQuiz(){
   reviewMode = true;
   sessionMistakes = [];
   currentTopic = "مراجعة الأخطاء";
-  quizQuestions = [...reviewQuestions].sort(()=>Math.random()-0.5);
+  quizQuestions = shuffleQuestions(reviewQuestions);
   index=0; correctCount=0; answered=false;
   $("home").classList.add("hidden"); $("results").classList.add("hidden"); $("quiz").classList.remove("hidden");
   $("quiz-title").textContent=currentTopic;
