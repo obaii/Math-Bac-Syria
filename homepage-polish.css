@@ -8247,9 +8247,15 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
   font-weight: 700;
 }
 #dashboard-weekly-accuracy-comparison,
-#dashboard-weekly-active-days-comparison {
+#dashboard-weekly-active-days-comparison,
+#dashboard-weekly-comparison {
   overflow-wrap: anywhere;
   line-height: 1.7;
+  text-wrap: pretty;
+}
+.dashboard-weekly-insights > p[aria-live="polite"] {
+  min-width: 0;
+  max-width: 100%;
 }
 .dashboard-weekly-day.is-busiest .dashboard-weekly-bar {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--hp-success, var(--success, #16865b)) 28%, transparent);
