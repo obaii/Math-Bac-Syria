@@ -728,28 +728,33 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
       "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.",
       "weekly active-day comparison should disclose a missing baseline");
-    await page.evaluate(() => {
-      window.__initialWeeklyAttemptsForTieTest = progressData.attempts;
+    const tiedActivitySnapshot = await page.evaluate(() => {
+      const originalAttempts = progressData.attempts;
       const now = new Date();
-      progressData.attempts = [...progressData.attempts, {
+      progressData.attempts = [...originalAttempts, {
         topic: topics[0], correct: true,
         date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-2, 11).toISOString()
       }];
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+      const snapshot = {
+        chartHighlights: document.querySelectorAll("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").length,
+        accessibleHighlights: document.querySelectorAll("#dashboard-weekly-chart-accessible li.is-busiest").length,
+        summary: document.querySelector("#dashboard-weekly-busiest")?.textContent || "",
+        dates: document.querySelector("#dashboard-weekly-summary")?.dataset.busiestDays || ""
+      };
+      progressData.attempts = originalAttempts;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+      return snapshot;
     });
     assert.deepEqual(pageErrors, [], "rendering tied busiest days should not trigger browser JavaScript errors");
-    assert.equal(await page.locator("#dashboard-weekly-chart .dashboard-weekly-day.is-busiest").count(), 2,
+    assert.equal(tiedActivitySnapshot.chartHighlights, 2,
       "all days tied for the highest attempt count should be highlighted in the chart");
-    assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-busiest").count(), 2,
+    assert.equal(tiedActivitySnapshot.accessibleHighlights, 2,
       "the accessible daily list should identify every tied busiest day");
-    assert.ok((await page.locator("#dashboard-weekly-busiest").innerText()).startsWith("الأيام الأكثر نشاطاً:"),
+    assert.ok(tiedActivitySnapshot.summary.startsWith("الأيام الأكثر نشاطاً:"),
       "the busiest-day insight should use plural wording when multiple days tie");
-    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-busiest-days").split(",").length, 2,
+    assert.equal(tiedActivitySnapshot.dates.split(",").length, 2,
       "the dashboard data contract should expose all tied busiest dates");
-    await page.evaluate(() => {
-      progressData.attempts = window.__initialWeeklyAttemptsForTieTest;
-      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
-    });
     const weeklyPeriodText = await page.evaluate(() =>
       document.querySelector("#dashboard-weekly-period")?.textContent || ""
     );
