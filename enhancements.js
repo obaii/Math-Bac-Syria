@@ -775,9 +775,13 @@
         activeDaysComparisonNode.textContent = "لا تتوفر أيام نشاط من الأسبوع السابق للمقارنة.";
       } else {
         const dayDelta = activeDays - previousActiveDays;
+        const formatDayDifference = count => count === 1 ? "يوماً واحداً"
+          : count === 2 ? "يومين"
+          : count <= 10 ? count.toLocaleString("ar-u-nu-arab") + " أيام"
+          : count.toLocaleString("ar-u-nu-arab") + " يوماً";
         const dayDescription = dayDelta === 0 ? "عدد أيام نشاطك مماثل للأسبوع السابق"
-          : dayDelta > 0 ? "زاد عدد أيام نشاطك بمقدار " + dayDelta.toLocaleString("ar-u-nu-arab") + (dayDelta === 1 ? " يوم" : " أيام")
-          : "انخفض عدد أيام نشاطك بمقدار " + Math.abs(dayDelta).toLocaleString("ar-u-nu-arab") + (dayDelta === -1 ? " يوم" : " أيام");
+          : dayDelta > 0 ? "زاد عدد أيام نشاطك بمقدار " + formatDayDifference(dayDelta)
+          : "انخفض عدد أيام نشاطك بمقدار " + formatDayDifference(Math.abs(dayDelta));
         activeDaysComparisonNode.textContent = dayDescription + " (" + previousActiveDays.toLocaleString("ar-u-nu-arab") + " مقابل " + activeDays.toLocaleString("ar-u-nu-arab") + ").";
       }
     }
