@@ -826,6 +826,18 @@ const assert = require("node:assert/strict");
       "نشاطك مماثل للأسبوع السابق: ٥ محاولات تدريب.",
       "weekly comparison should identify unchanged activity");
     await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: index < 2,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "دقة إجاباتك مستقرة عند ٤٠٪ مقارنة بالأسبوع السابق.",
+      "weekly accuracy comparison should identify an unchanged accuracy rate");
+    await page.evaluate(() => {
       window.__weeklyAttemptsBeforeEmptyState = progressData.attempts;
       progressData.attempts = [];
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
@@ -857,6 +869,25 @@ const assert = require("node:assert/strict");
       "an empty week should explain the absence of activity without implying a negative performance judgment");
     assert.equal(await page.locator("#dashboard-weekly-last-activity").innerText(), "لم تسجل محاولة تدريب بعد.",
       "the latest-activity insight should provide a clear empty state");
+    await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: index < 2,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = previous;
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-accuracy-comparison").innerText(),
+      "لا توجد إجابات هذا الأسبوع لمقارنة دقتها بالأسبوع السابق.",
+      "a week with no current answers should not display a misleading accuracy percentage");
+    assert.equal(await page.locator("#dashboard-weekly-active-days-comparison").innerText(),
+      "انخفض عدد أيام نشاطك بمقدار ٥ أيام (٥ مقابل ٠).",
+      "weekly active-day comparison should handle an empty current week with a previous baseline");
+    await page.evaluate(() => {
+      progressData.attempts = [];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
     await page.evaluate(() => {
       const now = new Date();
       progressData.attempts = [{
