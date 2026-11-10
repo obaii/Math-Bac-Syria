@@ -2006,3 +2006,66 @@ body.dark-mode #topic-grid .topic-coverage-summary {
   #topic-grid .topic-card-levels span,
   #topic-grid .topic-coverage-summary { transition: none !important; }
 }
+
+
+/* Consistent numbered rows for saved problems in the review list. */
+#bookmark-list {
+  direction: rtl;
+  counter-reset: saved-problem;
+}
+#bookmark-list > li {
+  min-width: 0;
+}
+#bookmark-list > li > button {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  gap: .65rem;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.8;
+}
+#bookmark-list .bookmark-number {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  border: 1px solid #b8c9f3;
+  border-radius: 50%;
+  background: #edf2ff;
+  color: #244dbd;
+  font-size: .85rem;
+  font-weight: 800;
+  line-height: 1;
+  direction: ltr;
+  unicode-bidi: isolate;
+  writing-mode: horizontal-tb;
+  font-variant-numeric: tabular-nums;
+}
+#bookmark-list .bookmark-item-text {
+  display: block;
+  min-width: 0;
+  text-align: right;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  overflow-wrap: anywhere;
+}
+body.dark-mode #bookmark-list .bookmark-number {
+  border-color: #526b9e;
+  background: #243653;
+  color: #c6d7ff;
+}
+@media (max-width: 540px) {
+  #bookmark-list > li > button {
+    grid-template-columns: 1.8rem minmax(0, 1fr);
+    gap: .5rem;
+    padding-inline: 9px;
+  }
+  #bookmark-list .bookmark-number {
+    width: 1.8rem;
+    min-width: 1.8rem;
+    height: 1.8rem;
+    font-size: .8rem;
+  }
+}
