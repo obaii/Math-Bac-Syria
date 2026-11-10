@@ -693,8 +693,8 @@ const assert = require("node:assert/strict");
       busiest: "أكثر أيامك نشاطاً: "+await page.evaluate(() => new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1).toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" }))+" — محاولتا تدريب.",
       busiestDate: await page.evaluate(() => { const now=new Date(); const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-1); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"); }),
       busiestCount: 1,
-      currentStreak: "1", longestStreak: "3", activeRate: "57", daysSinceLastActivity: "0",
-      streakDays: 3, streakInsight: "أطول سلسلة نشاط خلال الأسبوع: ٣ أيام متتالية.",
+      currentStreak: "4", longestStreak: "4", activeRate: "57", daysSinceLastActivity: "0",
+      streakDays: 4, streakInsight: "أطول سلسلة نشاط خلال الأسبوع: ٤ أيام متتالية.",
       lastActivity: await page.evaluate(() => {
         const now = new Date();
         return "آخر نشاط تدريبي: اليوم، " + now.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" }) + ".";
@@ -721,9 +721,9 @@ const assert = require("node:assert/strict");
       "zero-activity days should be described explicitly");
     assert.ok(accessibleWeeklyLabels.some(label => label.includes("محاولتا تدريب")),
       "two attempts should use the correct dual form in Arabic");
-    assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-streak").count(), 3,
+    assert.equal(await page.locator("#dashboard-weekly-chart-accessible li.is-streak").count(), 4,
       "the accessible weekly list should identify the longest consecutive activity streak");
-    assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "١",
+    assert.equal(await page.locator("#dashboard-weekly-streak").innerText(), "٤",
       "the current streak should count consecutive active days ending today");
     assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٥٧٪",
       "the dashboard should show the share of active days in the seven-day period");
