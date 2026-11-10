@@ -812,7 +812,7 @@ const assert = require("node:assert/strict");
       age: node.dataset.daysSinceLastActivity
     }));
     assert.equal(latestActivityState.age, "3", "latest activity should expose its calendar-day age");
-    assert.ok(/^\\d{4}-\\d{2}-\\d{2}$/.test(latestActivityState.date),
+    assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(latestActivityState.date),
       "latest activity should expose a stable local calendar date");
     await page.evaluate(() => {
       const now = new Date();
