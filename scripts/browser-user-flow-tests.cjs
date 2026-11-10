@@ -786,6 +786,28 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#dashboard-weekly-last-activity").innerText(), "لم تسجل محاولة تدريب بعد.",
       "the latest-activity insight should provide a clear empty state");
     await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [{
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-1, 10).toISOString()
+      }];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-days-since-last-activity"), "1",
+      "the latest activity age should count one full local calendar day");
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("أمس"),
+      "the latest-activity insight should use the yesterday label");
+    await page.evaluate(() => {
+      const now = new Date();
+      progressData.attempts = [{
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-3, 10).toISOString()
+      }];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.ok((await page.locator("#dashboard-weekly-last-activity").innerText()).includes("منذ ٣ أيام"),
+      "the latest-activity insight should localize elapsed days beyond yesterday");
+    await page.evaluate(() => {
       progressData.attempts = window.__weeklyAttemptsBeforeComparison;
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
     });
