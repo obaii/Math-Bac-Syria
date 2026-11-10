@@ -671,9 +671,25 @@ const assert = require("node:assert/strict");
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
-    const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allInnerTexts();
-    assert.ok(accessibleWeeklyLabels.every(label => label.includes(": ") && label.endsWith("محاولة تدريب")),
-      "each accessible day entry should include its full date and localized attempt count");
+    const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
+    assert.ok(accessibleWeeklyLabels.every(label => {
+      const normalizedLabel = label.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
+      return normalizedLabel.includes(": ") && /محاولة\s+تدريب$/.test(normalizedLabel);
+    }), "each accessible day entry should include its full date and localized attempt count");
+    const weeklyDetails = page.locator("#dashboard-weekly-details");
+    const weeklyDetailsSummary = weeklyDetails.locator("summary");
+    assert.equal(await weeklyDetails.evaluate(element => element.open), false,
+      "weekly day details should start collapsed to keep the dashboard compact");
+    assert.equal(await weeklyDetailsSummary.innerText(), "عرض تفاصيل الأيام السبعة",
+      "weekly details should have a clear disclosure label");
+    await weeklyDetailsSummary.click();
+    assert.equal(await weeklyDetails.evaluate(element => element.open), true,
+      "the weekly details disclosure should open on activation");
+    assert.equal(await page.locator("#dashboard-weekly-chart-accessible").isVisible(), true,
+      "the seven-day text list should become visible when expanded");
+    await weeklyDetailsSummary.press("Enter");
+    assert.equal(await weeklyDetails.evaluate(element => element.open), false,
+      "the native disclosure should also toggle closed with the keyboard");
     await page.locator("#dashboard-weekly-focus-start").click();
     await page.locator("#quiz").waitFor({ state: "visible" });
     assert.equal(await page.locator("#quiz-title").innerText(), await page.evaluate(() => topics[1]),
@@ -823,7 +839,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v127/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v128/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
