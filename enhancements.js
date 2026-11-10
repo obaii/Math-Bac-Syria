@@ -625,6 +625,15 @@
     });
     const correct = weekly.filter(item => item.correct === true).length;
     const activeDays = days.filter(day => day.count > 0).length;
+    const averageDaily = weekly.length / 7;
+    const busiestDay = days.reduce((best, day) => day.count > (best?.count || 0) ? day : best, null);
+    const formatAttemptCount = count => {
+      const number = count.toLocaleString("ar-u-nu-arab");
+      if (count === 0) return "لا توجد محاولات";
+      if (count === 1) return "محاولة تدريب واحدة";
+      if (count === 2) return "محاولتا تدريب";
+      return count <= 10 ? number + " محاولات تدريب" : number + " محاولة تدريب";
+    };
     const accuracy = weekly.length ? Math.round(correct / weekly.length * 100) : null;
     const topicMap = new Map();
     weekly.forEach(item => {
@@ -641,9 +650,11 @@
     const attemptsNode = document.getElementById("dashboard-weekly-attempts");
     const accuracyNode = document.getElementById("dashboard-weekly-accuracy");
     const daysNode = document.getElementById("dashboard-weekly-days");
+    const averageNode = document.getElementById("dashboard-weekly-average");
     if (attemptsNode) attemptsNode.textContent = weekly.length.toLocaleString("ar");
     if (accuracyNode) accuracyNode.textContent = accuracy === null ? "—" : accuracy.toLocaleString("ar")+"٪";
     if (daysNode) daysNode.textContent = activeDays.toLocaleString("ar");
+    if (averageNode) averageNode.textContent = averageDaily.toLocaleString("ar", { maximumFractionDigits: 1 });
     const period = document.getElementById("dashboard-weekly-period");
     if (period) period.textContent = days[0].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"})+" – "+days[6].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"});
     const chart = document.getElementById("dashboard-weekly-chart");
@@ -652,7 +663,9 @@
       chart.innerHTML = days.map(day => {
         const height = day.count ? Math.max(8,Math.round(day.count/maxCount*100)) : 0;
         const label = day.date.toLocaleDateString("ar-SY",{weekday:"short"});
-        return '<div class="dashboard-weekly-day" aria-hidden="true"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
+        const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+        const isBusiest = Boolean(busiestDay && day.key === busiestDay.key);
+        return '<div class="dashboard-weekly-day'+(isBusiest ? ' is-busiest' : '')+'" data-date="'+day.key+'" data-count="'+day.count+'" title="'+escapeHtml(fullDate + ": " + formatAttemptCount(day.count))+'" aria-hidden="true"><span class="dashboard-weekly-bar-track"><span class="dashboard-weekly-bar" style="height:'+height+'%"></span></span><strong>'+day.count.toLocaleString("ar")+'</strong><small>'+escapeHtml(label)+'</small></div>';
       }).join("");
     }
     const accessibleDays = document.getElementById("dashboard-weekly-chart-accessible");
@@ -661,7 +674,10 @@
         const item = document.createElement("li");
         const fullDate = day.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
         item.dataset.count = day.count.toLocaleString("ar-u-nu-arab");
-        item.textContent = fullDate + ": " + item.dataset.count + " محاولة تدريب";
+        item.dataset.date = day.key;
+        const isBusiest = Boolean(busiestDay && day.key === busiestDay.key);
+        if (isBusiest) item.classList.add("is-busiest");
+        item.textContent = fullDate + ": " + formatAttemptCount(day.count) + (isBusiest ? " — أعلى نشاط" : "");
         return item;
       }));
     }
@@ -673,6 +689,10 @@
     if (focusNode) focusNode.textContent = focus
       ? "أولوية التدريب: "+focus.topic+" — "+(focus.total-focus.correct).toLocaleString("ar")+" إجابات تحتاج إلى مراجعة هذا الأسبوع."
       : "ستظهر أولوية التدريب عند وجود إجابات غير صحيحة ضمن بحث جُرّبت أسئلته مرتين على الأقل.";
+    const busiestNode = document.getElementById("dashboard-weekly-busiest");
+    if (busiestNode) busiestNode.textContent = busiestDay
+      ? "أكثر أيامك نشاطاً: "+busiestDay.date.toLocaleDateString("ar-SY", { weekday:"long", day:"numeric", month:"long" })+" — "+formatAttemptCount(busiestDay.count)+"."
+      : "سيظهر اليوم الأكثر نشاطاً بعد تسجيل أول محاولة تدريب.";
     const action = document.getElementById("dashboard-weekly-focus-start");
     if (action) {
       action.hidden = !focus;
