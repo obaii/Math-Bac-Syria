@@ -803,7 +803,7 @@ const assert = require("node:assert/strict");
       "an empty week should report no current activity streak");
     assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٠٪",
       "an empty week should report zero active-day rate");
-    assert.equal(await page.locator("#dashboard-weekly-active-average").innerText(), "٠",
+    assert.equal(await page.locator("#dashboard-weekly-active-average").innerText(), "0",
       "an empty week should avoid division by zero in the active-day average");
     assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-activity-rhythm"), "none",
       "an empty week should expose the neutral no-activity rhythm state");
