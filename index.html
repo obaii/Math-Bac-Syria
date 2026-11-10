@@ -167,13 +167,15 @@
           <div><strong id="dashboard-weekly-attempts">٠</strong><span>محاولة تدريب</span></div>
           <div><strong id="dashboard-weekly-accuracy">—</strong><span>دقة الإجابات</span></div>
           <div><strong id="dashboard-weekly-days">٠</strong><span>أيام نشطة</span></div>
+          <div><strong id="dashboard-weekly-average">٠</strong><span>متوسط يومي</span></div>
         </div>
-        <p class="dashboard-weekly-chart-description" id="dashboard-weekly-chart-description">يعرض المخطط عدد محاولات التدريب يومياً خلال آخر سبعة أيام. يمكنك فتح تفاصيل الأيام السبعة وأعداد المحاولات من القائمة التالية.</p>
+        <p class="dashboard-weekly-chart-description" id="dashboard-weekly-chart-description">يعرض المخطط محاولات التدريب في كل يوم. مرّر المؤشر فوق العمود لمعرفة التاريخ والعدد، أو افتح تفاصيل الأيام السبعة.</p>
         <div class="dashboard-weekly-chart" id="dashboard-weekly-chart" aria-hidden="true"></div>
-        <details class="dashboard-weekly-details" id="dashboard-weekly-details"><summary>عرض تفاصيل الأيام السبعة</summary><ol class="dashboard-weekly-chart-accessible" id="dashboard-weekly-chart-accessible" aria-label="تفاصيل النشاط اليومي خلال آخر سبعة أيام"></ol></details>
+        <details class="dashboard-weekly-details" id="dashboard-weekly-details"><summary aria-controls="dashboard-weekly-chart-accessible">عرض تفاصيل الأيام السبعة</summary><ol class="dashboard-weekly-chart-accessible" id="dashboard-weekly-chart-accessible" aria-label="تفاصيل النشاط اليومي خلال آخر سبعة أيام"></ol></details>
         <div class="dashboard-weekly-insights">
           <p id="dashboard-weekly-best">سيظهر البحث الأقوى بعد تسجيل محاولات كافية.</p>
           <p id="dashboard-weekly-focus">ستظهر أولوية التدريب بعد تسجيل محاولات كافية.</p>
+          <p id="dashboard-weekly-busiest">سيظهر اليوم الأكثر نشاطاً بعد تسجيل أول محاولة تدريب.</p>
         </div>
         <button type="button" id="dashboard-weekly-focus-start" class="dashboard-weekly-action" hidden>ابدأ التدريب على البحث المقترح</button>
         <p id="dashboard-weekly-empty" class="dashboard-weekly-empty" hidden>ابدأ التدريب لتظهر هنا خلاصة نشاطك خلال آخر سبعة أيام.</p>
