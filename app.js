@@ -871,14 +871,26 @@ function getLastOpenedTopic(){
 }
 
 function readTrainingSession(){
+  const discard = () => {
+    try { localStorage.removeItem(TRAINING_SESSION_KEY); } catch (_) {}
+    return null;
+  };
   try {
     const saved = JSON.parse(localStorage.getItem(TRAINING_SESSION_KEY) || "null");
-    if (!saved || saved.version !== 1 || typeof saved.topic !== "string" ||
+    if (!saved || typeof saved !== "object" || Array.isArray(saved) || saved.version !== 1) return discard();
+    if (typeof saved.topic !== "string" || !saved.topic.trim() ||
         !Array.isArray(saved.questionKeys) || !saved.questionKeys.length ||
-        !Number.isSafeInteger(saved.index) || saved.index < 0 ||
-        !Number.isSafeInteger(saved.correctCount) || saved.correctCount < 0) return null;
-    return saved;
-  } catch (_) { return null; }
+        !saved.questionKeys.every(key => typeof key === "string" && key.trim()) ||
+        new Set(saved.questionKeys).size !== saved.questionKeys.length) return discard();
+    if (!Number.isSafeInteger(saved.index) || saved.index < 0 || saved.index > saved.questionKeys.length ||
+        !Number.isSafeInteger(saved.correctCount) || saved.correctCount < 0 || saved.correctCount > saved.index) return discard();
+    const mistakeKeys = saved.mistakeKeys === undefined ? [] : saved.mistakeKeys;
+    if (!Array.isArray(mistakeKeys) ||
+        !mistakeKeys.every(key => typeof key === "string" && saved.questionKeys.includes(key)) ||
+        new Set(mistakeKeys).size !== mistakeKeys.length) return discard();
+    if (typeof saved.updatedAt !== "string" || !Number.isFinite(Date.parse(saved.updatedAt))) return discard();
+    return { ...saved, topic: saved.topic.trim(), mistakeKeys };
+  } catch (_) { return discard(); }
 }
 
 function saveTrainingSession(){
