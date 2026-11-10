@@ -734,6 +734,18 @@ const assert = require("node:assert/strict");
       "انخفض نشاطك ٥٠٪ مقارنة بالأسبوع السابق (١٠ محاولات تدريب مقابل ٥ محاولات تدريب).",
       "weekly comparison should identify a decrease and calculate its percentage");
     await page.evaluate(() => {
+      const now = new Date();
+      const previous = Array.from({length:5}, (_, index) => ({
+        topic: topics[0], correct: true,
+        date: new Date(now.getFullYear(), now.getMonth(), now.getDate()-7-index, 10).toISOString()
+      }));
+      progressData.attempts = [...window.__weeklyAttemptsBeforeComparison, ...previous];
+      window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
+    });
+    assert.equal(await page.locator("#dashboard-weekly-comparison").innerText(),
+      "نشاطك مماثل للأسبوع السابق: ٥ محاولات تدريب.",
+      "weekly comparison should identify unchanged activity");
+    await page.evaluate(() => {
       window.__weeklyAttemptsBeforeEmptyState = progressData.attempts;
       progressData.attempts = [];
       window.dispatchEvent(new CustomEvent("mathBacSyria:dashboard-refreshed"));
