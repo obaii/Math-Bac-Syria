@@ -2006,3 +2006,93 @@ body.dark-mode #topic-grid .topic-coverage-summary {
   #topic-grid .topic-card-levels span,
   #topic-grid .topic-coverage-summary { transition: none !important; }
 }
+
+
+/* Keep the recently-used marker intact in Arabic and keep solution step numbers horizontal. */
+#section-menu .quick-start-card.is-recently-used::after {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  max-width: none;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  direction: rtl;
+  unicode-bidi: isolate;
+  writing-mode: horizontal-tb;
+  line-height: 1.5;
+}
+
+.solution-steps,
+.solution-method ol,
+.solved-example-card > ol {
+  direction: rtl;
+  list-style: none;
+  counter-reset: solution-step;
+  padding-inline-start: 2.5rem;
+  margin: 10px 0 16px;
+}
+
+.solution-steps > li,
+.solution-method ol > li,
+.solved-example-card > ol > li {
+  display: list-item;
+  position: relative;
+  counter-increment: solution-step;
+  min-width: 0;
+  writing-mode: horizontal-tb;
+  overflow-wrap: anywhere;
+}
+
+.solution-steps > li::before,
+.solution-method ol > li::before,
+.solved-example-card > ol > li::before {
+  content: counter(solution-step);
+  position: absolute;
+  inset-inline-start: -2.15rem;
+  top: .65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border: 1px solid #b8c9f3;
+  border-radius: 999px;
+  background: #edf2ff;
+  color: #244dbd;
+  font-size: .82rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
+  writing-mode: horizontal-tb;
+}
+
+body.dark-mode .solution-steps > li::before,
+body.dark-mode .solution-method ol > li::before,
+body.dark-mode .solved-example-card > ol > li::before {
+  border-color: #526b9e;
+  background: #243653;
+  color: #c6d7ff;
+}
+
+@media (max-width: 540px) {
+  #section-menu .quick-start-card.is-recently-used::after {
+    font-size: 9px;
+    padding-inline: 6px;
+  }
+  .solution-steps,
+  .solution-method ol,
+  .solved-example-card > ol {
+    padding-inline-start: 2.2rem;
+  }
+  .solution-steps > li::before,
+  .solution-method ol > li::before,
+  .solved-example-card > ol > li::before {
+    inset-inline-start: -1.95rem;
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+}
