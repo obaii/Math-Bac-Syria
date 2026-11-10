@@ -993,7 +993,7 @@ const assert = require("node:assert/strict");
           topic: item.dataset.topic,
           sampleSize: item.dataset.sampleSize,
           sampleBand: item.dataset.sampleBand,
-          label: item.querySelector(".learning-path-confidence")?.textContent || ""
+          label: (item.querySelector(".learning-path-confidence")?.textContent || "").replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
         })),
         note: document.querySelector("#learning-path-note").textContent
       };
@@ -1005,9 +1005,9 @@ const assert = require("node:assert/strict");
     assert.ok(provisionalPath.note.includes("مؤشر تدريبي إرشادي") || provisionalPath.note.includes("لا نعرض تصنيف"),
       "the path should communicate the limits of an early estimate");
     assert.deepEqual(provisionalPath.confidence, [
-      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · ١٠ إجابة" },
+      { topic: await page.evaluate(() => topics[0]), sampleSize: "10", sampleBand: "established", label: "عينة أوسع · 10 إجابة" },
       { topic: await page.evaluate(() => topics[2]), sampleSize: "0", sampleBand: "not-started", label: "لم تبدأ العينة بعد" },
-      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · ٥ من ١٠ إجابات" }
+      { topic: await page.evaluate(() => topics[1]), sampleSize: "5", sampleBand: "provisional", label: "عينة أولية · 5 من 10 إجابات" }
     ], "each recommendation should disclose whether its evidence is absent, provisional, or based on at least ten answers");
 
     const establishedPath = await page.evaluate(() => {
