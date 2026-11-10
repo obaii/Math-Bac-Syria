@@ -1163,8 +1163,9 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v141/,
-      "the PWA cache should advance so returning learners receive the updated homepage assets");
+    const cacheVersionMatch = serviceWorkerSource.match(/const CACHE_NAME = ["\x27]math-bac-syria-v(\\d+)["\x27]/);
+    assert.ok(cacheVersionMatch && Number(cacheVersionMatch[1]) > 141,
+      "the PWA cache should advance beyond the baseline so returning learners receive updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");
     assert.equal(await clearSearch.isVisible(), false, "the clear-search control should stay hidden when the search is empty");
