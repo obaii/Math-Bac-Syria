@@ -8124,21 +8124,41 @@ body.dark-mode .learning-path-note { color: var(--hp-muted, var(--muted)); }
 }
 
 
-/* Batch 881–890: provide a readable text equivalent for the weekly activity chart. */
+/* Batch 881–890: accessible weekly activity chart; batch 891–900: visible details disclosure. */
 .dashboard-weekly-chart-description {
   margin: 8px 0 4px;
   color: var(--hp-muted, var(--muted));
   font-size: 12px;
   line-height: 1.8;
 }
-.dashboard-weekly-chart-accessible {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
+.dashboard-weekly-details {
+  margin-top: 10px;
+  border: 1px solid var(--hp-border, var(--line));
+  border-radius: 11px;
+  background: var(--hp-surface-soft, var(--bg));
+  overflow: hidden;
 }
+.dashboard-weekly-details > summary {
+  padding: 10px 12px;
+  color: var(--hp-ink, var(--text));
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.7;
+  cursor: pointer;
+}
+.dashboard-weekly-details > summary:focus-visible {
+  outline: 3px solid var(--hp-focus, var(--primary));
+  outline-offset: -3px;
+  border-radius: 9px;
+}
+.dashboard-weekly-details[open] > summary {
+  border-bottom: 1px solid var(--hp-border, var(--line));
+}
+.dashboard-weekly-chart-accessible {
+  margin: 0;
+  padding: 10px 34px 12px;
+  color: var(--hp-ink, var(--text));
+  font-size: 12px;
+  line-height: 1.8;
+}
+.dashboard-weekly-chart-accessible li + li { margin-top: 4px; }
