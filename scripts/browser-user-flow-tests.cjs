@@ -712,6 +712,26 @@ const assert = require("node:assert/strict");
       focus: "أولوية التدريب: "+await page.evaluate(() => topics[1])+" — 2 إجابات تحتاج إلى مراجعة هذا الأسبوع.",
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
+    assert.equal(await page.locator("#dashboard-weekly-active-average").innerText(),
+      await page.evaluate(() => (5 / 4).toLocaleString("ar", { maximumFractionDigits:1 })),
+      "the dashboard should calculate attempts per active day independently from the seven-day average");
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-active-day-average"), "1.3",
+      "the weekly data contract should expose a one-decimal active-day average");
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-activity-rhythm"), "intermittent",
+      "four active days should be classified as intermittent weekly activity");
+    assert.equal(await page.locator("#dashboard-weekly-rhythm").innerText(),
+      "نشاط متفرق على عدة أيام.",
+      "the dashboard should explain the weekly activity rhythm in clear Arabic");
+    const weeklyPeriodText = await page.evaluate(() =>
+      document.querySelector("#dashboard-weekly-period")?.textContent || ""
+    );
+    const normalizedWeeklyPeriod = weeklyPeriodText.replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)));
+    assert.ok(normalizedWeeklyPeriod.includes(String(new Date().getFullYear())),
+      "the displayed weekly period should include its year to avoid ambiguity across year boundaries");
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("aria-describedby"),
+      "dashboard-weekly-chart-description dashboard-weekly-rhythm",
+      "the weekly summary should reference its chart guidance and activity-rhythm explanation");
+
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
     assert.ok(accessibleWeeklyLabels.every(label => {
       const normalizedLabel = label.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
@@ -783,6 +803,13 @@ const assert = require("node:assert/strict");
       "an empty week should report no current activity streak");
     assert.equal(await page.locator("#dashboard-weekly-active-rate").innerText(), "٠٪",
       "an empty week should report zero active-day rate");
+    assert.equal(await page.locator("#dashboard-weekly-active-average").innerText(), "0",
+      "an empty week should avoid division by zero in the active-day average");
+    assert.equal(await page.locator("#dashboard-weekly-summary").getAttribute("data-activity-rhythm"), "none",
+      "an empty week should expose the neutral no-activity rhythm state");
+    assert.equal(await page.locator("#dashboard-weekly-rhythm").innerText(),
+      "لم يُسجّل نشاط خلال هذا الأسبوع.",
+      "an empty week should explain the absence of activity without implying a negative performance judgment");
     assert.equal(await page.locator("#dashboard-weekly-last-activity").innerText(), "لم تسجل محاولة تدريب بعد.",
       "the latest-activity insight should provide a clear empty state");
     await page.evaluate(() => {
@@ -997,7 +1024,7 @@ const assert = require("node:assert/strict");
       "the card should show the full question-bank distribution for all three levels"
     );
     const serviceWorkerSource = await page.evaluate(() => fetch("sw.js").then(response => response.text()));
-    assert.match(serviceWorkerSource, /math-bac-syria-v133/,
+    assert.match(serviceWorkerSource, /math-bac-syria-v134/,
       "the PWA cache should advance so returning learners receive the updated homepage assets");
     const topicSearch = page.locator("#topic-search");
     const clearSearch = page.locator("#clear-topic-search");

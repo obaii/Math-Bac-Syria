@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261108-720">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261110-940">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261110-941">
   <script>
     window.MathJax = {
       tex: {
@@ -60,7 +60,7 @@
   <script defer src="geometry-tools.js?v=20261102-2"></script>
   <script defer src="formula-library.js?v=20261103-3"></script>
   <script defer src="solved-examples.js?v=20261104-1"></script>
-  <script defer src="enhancements.js?v=20261110-940"></script>
+  <script defer src="enhancements.js?v=20261110-941"></script>
   <script defer src="homepage-feedback.js?v=20261108-581"></script>
   <script defer src="math-assistant.js?v=20261103-8"></script>
   <script defer src="flashcards.js?v=20261102-1"></script>
@@ -161,7 +161,7 @@
         <div class="stat-card"><span class="stat-icon amber">↻</span><span class="stat-label">تحتاج مراجعة</span><strong id="stat-mistakes" aria-live="polite" aria-atomic="true">٠</strong></div>
         <div class="stat-card"><span class="stat-icon purple">٪</span><span class="stat-label">نسبة النجاح</span><strong id="stat-percent" aria-live="polite" aria-atomic="true">—</strong></div>
       </div>
-      <section class="dashboard-weekly-summary" id="dashboard-weekly-summary" aria-labelledby="dashboard-weekly-title" aria-live="polite">
+      <section class="dashboard-weekly-summary" id="dashboard-weekly-summary" aria-labelledby="dashboard-weekly-title" aria-describedby="dashboard-weekly-chart-description dashboard-weekly-rhythm" aria-live="polite">
         <div class="dashboard-weekly-heading"><div><p class="eyebrow">نظرة على نشاطك</p><h3 id="dashboard-weekly-title">ملخص أسبوعك</h3><p id="dashboard-weekly-period">آخر سبعة أيام من التدريب</p></div><span class="dashboard-weekly-mark" aria-hidden="true">٧</span></div>
         <div class="dashboard-weekly-metrics">
           <div><strong id="dashboard-weekly-attempts">٠</strong><span>محاولة تدريب</span></div>
@@ -172,11 +172,13 @@
           <div><strong id="dashboard-weekly-incorrect">٠</strong><span>إجابات تحتاج مراجعة</span></div>
           <div><strong id="dashboard-weekly-streak">٠</strong><span>أيام متتالية حتى اليوم</span></div>
           <div><strong id="dashboard-weekly-active-rate">٠٪</strong><span>نسبة أيام النشاط</span></div>
+          <div><strong id="dashboard-weekly-active-average">٠</strong><span>متوسط المحاولات في أيام النشاط</span></div>
         </div>
         <p class="dashboard-weekly-chart-description" id="dashboard-weekly-chart-description">يعرض المخطط محاولات التدريب في كل يوم. مرّر المؤشر فوق العمود لمعرفة التاريخ والعدد، أو افتح تفاصيل الأيام السبعة.</p>
         <div class="dashboard-weekly-chart" id="dashboard-weekly-chart" aria-hidden="true"></div>
         <details class="dashboard-weekly-details" id="dashboard-weekly-details"><summary aria-controls="dashboard-weekly-chart-accessible">عرض تفاصيل الأيام السبعة</summary><ol class="dashboard-weekly-chart-accessible" id="dashboard-weekly-chart-accessible" aria-label="تفاصيل النشاط اليومي خلال آخر سبعة أيام"></ol></details>
         <div class="dashboard-weekly-insights">
+          <p id="dashboard-weekly-rhythm" class="dashboard-weekly-rhythm" role="status">سيظهر نمط نشاطك بعد تسجيل محاولات التدريب.</p>
           <p id="dashboard-weekly-comparison" class="dashboard-weekly-comparison" aria-live="polite">ستظهر مقارنة نشاطك بعد توفر بيانات أسبوعية.</p>
           <p id="dashboard-weekly-best">سيظهر البحث الأقوى بعد تسجيل محاولات كافية.</p>
           <p id="dashboard-weekly-focus">ستظهر أولوية التدريب بعد تسجيل محاولات كافية.</p>

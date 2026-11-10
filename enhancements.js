@@ -686,6 +686,19 @@
       return count <= 10 ? number + " محاولات تدريب" : number + " محاولة تدريب";
     };
     const accuracy = weekly.length ? Math.round(correct / weekly.length * 100) : null;
+    // Show the pace on days when the learner actually practiced, not only the seven-day average.
+    const activeDayAverage = activeDays ? weekly.length / activeDays : 0;
+    const activityRhythm = activeDays === 0 ? "none"
+      : activeDays <= 2 ? "occasional"
+      : activeDays <= 4 ? "intermittent"
+      : activeDays < 7 ? "frequent" : "daily";
+    const activityRhythmLabel = {
+      none:"لم يُسجّل نشاط خلال هذا الأسبوع.",
+      occasional:"نشاط في يوم أو يومين من الأسبوع.",
+      intermittent:"نشاط متفرق على عدة أيام.",
+      frequent:"نشاط متكرر في معظم أيام الأسبوع.",
+      daily:"نشاط يومي طوال الأيام السبعة."
+    }[activityRhythm];
     const topicMap = new Map();
     weekly.forEach(item => {
       const topic = typeof item.topic === "string" && item.topic.trim() ? item.topic.trim() : "بحث غير محدد";
@@ -706,6 +719,8 @@
     const incorrectNode = document.getElementById("dashboard-weekly-incorrect");
     const streakNode = document.getElementById("dashboard-weekly-streak");
     const activeRateNode = document.getElementById("dashboard-weekly-active-rate");
+    const activeDayAverageNode = document.getElementById("dashboard-weekly-active-average");
+    const rhythmNode = document.getElementById("dashboard-weekly-rhythm");
     const streakInsightNode = document.getElementById("dashboard-weekly-streak-insight");
     const lastActivityNode = document.getElementById("dashboard-weekly-last-activity");
     const comparisonNode = document.getElementById("dashboard-weekly-comparison");
@@ -717,6 +732,8 @@
     if (incorrectNode) incorrectNode.textContent = incorrect.toLocaleString("ar-u-nu-arab");
     if (streakNode) streakNode.textContent = currentStreak.toLocaleString("ar-u-nu-arab");
     if (activeRateNode) activeRateNode.textContent = activeRate.toLocaleString("ar-u-nu-arab") + "٪";
+    if (activeDayAverageNode) activeDayAverageNode.textContent = activeDayAverage.toLocaleString("ar", { maximumFractionDigits:1 });
+    if (rhythmNode) rhythmNode.textContent = activityRhythmLabel;
     if (streakInsightNode) {
       const streakCount = longestStreak.toLocaleString("ar-u-nu-arab");
       const streakLabel = longestStreak === 1 ? "يوم متتالٍ" : longestStreak === 2 ? "يومان متتاليان" : "أيام متتالية";
@@ -748,7 +765,10 @@
       }
     }
     const period = document.getElementById("dashboard-weekly-period");
-    if (period) period.textContent = days[0].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"})+" – "+days[6].date.toLocaleDateString("ar-SY",{day:"numeric",month:"short"});
+    if (period) {
+      const periodOptions = { day:"numeric", month:"short", year:"numeric" };
+      period.textContent = days[0].date.toLocaleDateString("ar-SY",periodOptions)+" – "+days[6].date.toLocaleDateString("ar-SY",periodOptions);
+    }
     const chart = document.getElementById("dashboard-weekly-chart");
     if (chart) {
       const maxCount = Math.max(1,...days.map(day=>day.count));
@@ -807,6 +827,10 @@
     panel.dataset.currentStreak = String(currentStreak);
     panel.dataset.longestStreak = String(longestStreak);
     panel.dataset.activeRate = String(activeRate);
+    panel.dataset.activeDayAverage = String(Number(activeDayAverage.toFixed(1)));
+    panel.dataset.activityRhythm = activityRhythm;
+    panel.dataset.weekStart = days[0].key;
+    panel.dataset.weekEnd = days[6].key;
     panel.dataset.daysSinceLastActivity = daysSinceLastActivity === null ? "" : String(daysSinceLastActivity);
     panel.dataset.lastActivityDate = latestAttemptDate ? dayKey(latestAttemptDate) : "";
     panel.dataset.currentStreakEnd = currentStreak ? days[6].key : "";
