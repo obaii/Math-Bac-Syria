@@ -672,8 +672,10 @@ const assert = require("node:assert/strict");
       focusTopic: await page.evaluate(() => topics[1]), actionVisible: true
     }, "the weekly summary should calculate seven-day totals, active days, accuracy, strongest topic, and review priority");
     const accessibleWeeklyLabels = await page.locator("#dashboard-weekly-chart-accessible li").allTextContents();
-    assert.ok(accessibleWeeklyLabels.every(label => label.includes(": ") && label.endsWith("محاولة تدريب")),
-      "each accessible day entry should include its full date and localized attempt count");
+    assert.ok(accessibleWeeklyLabels.every(label => {
+      const normalizedLabel = label.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, "").trim();
+      return normalizedLabel.includes(": ") && /محاولة\s+تدريب$/.test(normalizedLabel);
+    }), "each accessible day entry should include its full date and localized attempt count");
     const weeklyDetails = page.locator("#dashboard-weekly-details");
     const weeklyDetailsSummary = weeklyDetails.locator("summary");
     assert.equal(await weeklyDetails.evaluate(element => element.open), false,
