@@ -50,8 +50,23 @@ if (!library || !Array.isArray(library.examples)) {
   if (examples.filter(item => item.topic === "مصطلحات المنطق الرياضي").length !== 6) failures.push("Expected six authored examples covering mathematical logic and induction foundations.");
   if (examples.filter(item => item.topic === "تطبيقات الأعداد العقدية").length !== 15) failures.push("Expected fifteen complex-number geometry applications.");
   const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
-  if (ministerialExamples.length !== 19 || ministerialExamples.some(item => item.sourceYear !== 2017)) failures.push("Expected nineteen adaptations from verified 2017 ministerial models.");
-  if (examples.length !== 364) failures.push(`Expected exactly 364 current examples, found ${examples.length}.`);
+  const inspiredExamples = examples.filter(item => item.sourceType === "تدريب مستوحى من نموذج وزاري");
+  if (ministerialExamples.length !== 19 ||
+      ministerialExamples.some(item => item.sourceYear !== 2017) ||
+      inspiredExamples.length !== 20 ||
+      inspiredExamples.some(item => item.sourceYear !== 2023 || !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/")) {
+    failures.push("Expected 19 original ministerial examples and 20 separately labelled original practice variants inspired by the 2023 model.");
+  }
+  if (examples.length !== 384) failures.push(`Expected exactly 384 current examples, found ${examples.length}.`);
+  const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
+  if (inspiredAutomatedExamples.length !== 20 ||
+      inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
+        !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/" ||
+        !Array.isArray(item.steps) || item.steps.length < 3)) {
+    failures.push("The 20 original variants must retain source inspiration metadata and detailed solution steps.");
+  }
   if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain nine verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2025 && item.sourceSession === "الدورة الأولى").length !== 10) failures.push("The 2025 first-session source batch should contain ten verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
@@ -309,7 +324,7 @@ if (!library || !Array.isArray(library.examples)) {
       if (typeof item[field] !== "string" || !item[field].trim()) failures.push(`${label}: missing ${field}.`);
     }
     if (!["أساسي", "متوسط", "متقدم"].includes(item.level)) failures.push(label + ": invalid difficulty level.");
-    if (!["تدريبي مؤلف", "دورة امتحانية", "نموذج وزاري"].includes(item.sourceType)) failures.push(label + ": invalid source type.");
+    if (!["تدريبي مؤلف", "دورة امتحانية", "نموذج وزاري", "تدريب مستوحى من نموذج وزاري"].includes(item.sourceType)) failures.push(label + ": invalid source type.");
     if (item.sourceType !== "تدريبي مؤلف" && (!Number.isInteger(item.sourceYear) || item.sourceYear < 2017 || !item.sourceLabel || !item.sourceReference)) failures.push(label + ": sourced examples need a verified year, label, and reference.");
     if (item.sourceType !== "تدريبي مؤلف") {
       try {

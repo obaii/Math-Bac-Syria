@@ -3,13 +3,13 @@
   "title": "خريطة اقتراحية لربط عناوين مكتبة الأمثلة بدروس كتاب الرياضيات السوري",
   "status": "provisional-not-verified",
   "summary": {
-    "labelCount": 314,
-    "studentCurriculumLabels": 308,
+    "labelCount": 317,
+    "studentCurriculumLabels": 311,
     "supplementaryLabels": 6,
-    "studentExamples": 358,
+    "studentExamples": 378,
     "supplementaryExamples": 6,
     "high": 153,
-    "medium": 147,
+    "medium": 150,
     "low": 8,
     "unmapped": 8
   },
@@ -238,8 +238,8 @@
       "lessonLabel": "الاحتمال الشرطي",
       "exampleCount": 2,
       "exampleIds": [
-        "prob-001",
-        "exam22-prob-002"
+        "exam22-prob-002",
+        "prob-001"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -660,16 +660,20 @@
     {
       "inventoryIndex": 33,
       "topic": "الاشتقاق",
-      "lessonLabel": "اشتقاق تابع مركب",
-      "exampleCount": 2,
+      "lessonLabel": "اشتقاق تابع مركّب",
+      "exampleCount": 3,
       "exampleIds": [
         "der-002",
-        "der-016"
+        "der-016",
+        "ministerial23-auto-031"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 2,
+        "تدريب مستوحى من نموذج وزاري": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "suggestedLessonId": "derivatives-04",
       "suggestedLessonTitle": "اشتقاق تابع مركّب",
       "confidence": "high",
@@ -800,6 +804,25 @@
     {
       "inventoryIndex": 40,
       "topic": "الاشتقاق",
+      "lessonLabel": "العدد المشتق والتابع المشتق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "derivative-first-principle-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "derivatives-01",
+      "suggestedLessonTitle": "العدد المشتق والتابع المشتق",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 41,
+      "topic": "الاشتقاق",
       "lessonLabel": "القيم الحدية المحلية",
       "exampleCount": 1,
       "exampleIds": [
@@ -817,7 +840,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 41,
+      "inventoryIndex": 42,
       "topic": "الاشتقاق",
       "lessonLabel": "القيم الحدية من التمثيل البياني",
       "exampleCount": 1,
@@ -838,7 +861,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 42,
+      "inventoryIndex": 43,
       "topic": "الاشتقاق",
       "lessonLabel": "القيم القصوى",
       "exampleCount": 1,
@@ -857,7 +880,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 43,
+      "inventoryIndex": 44,
       "topic": "الاشتقاق",
       "lessonLabel": "القيمة الحدية المحلية من جدول التغيرات",
       "exampleCount": 1,
@@ -878,7 +901,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 44,
+      "inventoryIndex": 45,
       "topic": "الاشتقاق",
       "lessonLabel": "القيمة الصغرى المطلقة لتابع",
       "exampleCount": 1,
@@ -899,7 +922,51 @@
       "verified": false
     },
     {
-      "inventoryIndex": 45,
+      "inventoryIndex": 46,
+      "topic": "الاشتقاق",
+      "lessonLabel": "المشتقات من مراتب عليا",
+      "exampleCount": 2,
+      "exampleIds": [
+        "derivative-higher-001",
+        "ministerial23-auto-027"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "derivatives-05",
+      "suggestedLessonTitle": "المشتقات من مراتب عليا",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 47,
+      "topic": "الاشتقاق",
+      "lessonLabel": "تطبيقات الاشتقاق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-021"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "derivatives-03",
+      "suggestedLessonTitle": "تطبيقات الاشتقاق",
+      "confidence": "medium",
+      "rationale": "عنوان التسمية يطابق عنوان الدرس في خريطة المنهاج الحالية؛ يبقى هذا ربطاً مقترحاً إلى حين فحص نص السؤال والكتاب والتحقق المستقل.",
+      "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 48,
       "topic": "الاشتقاق",
       "lessonLabel": "تعيين معاملات تابع من نقطة وميل مماس",
       "exampleCount": 1,
@@ -920,7 +987,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 46,
+      "inventoryIndex": 49,
       "topic": "الاشتقاق",
       "lessonLabel": "تعيين معاملات تابع ناطق بشرطي قيمة حدية",
       "exampleCount": 1,
@@ -941,7 +1008,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 47,
+      "inventoryIndex": 50,
       "topic": "الاشتقاق",
       "lessonLabel": "حساب قيمة تابع ومماس عند فاصلة معلومة",
       "exampleCount": 1,
@@ -962,7 +1029,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 48,
+      "inventoryIndex": 51,
       "topic": "الاشتقاق",
       "lessonLabel": "دراسة اتجاه التغير",
       "exampleCount": 1,
@@ -981,7 +1048,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 49,
+      "inventoryIndex": 52,
       "topic": "الاشتقاق",
       "lessonLabel": "دراسة إشارة المشتقة والرتابة",
       "exampleCount": 1,
@@ -1000,7 +1067,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 50,
+      "inventoryIndex": 53,
       "topic": "الاشتقاق",
       "lessonLabel": "دراسة التغيرات",
       "exampleCount": 1,
@@ -1019,7 +1086,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 51,
+      "inventoryIndex": 54,
       "topic": "الاشتقاق",
       "lessonLabel": "دراسة تابع أسي وجدول تغيراته",
       "exampleCount": 1,
@@ -1040,7 +1107,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 52,
+      "inventoryIndex": 55,
       "topic": "الاشتقاق",
       "lessonLabel": "قاعدة السلسلة واشتقاق تابع مركب",
       "exampleCount": 1,
@@ -1061,7 +1128,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 53,
+      "inventoryIndex": 56,
       "topic": "الاشتقاق",
       "lessonLabel": "قاعدة جداء تابعين",
       "exampleCount": 1,
@@ -1080,7 +1147,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 54,
+      "inventoryIndex": 57,
       "topic": "الاشتقاق",
       "lessonLabel": "مبرهنة القيم المتوسطة والجذر الوحيد",
       "exampleCount": 1,
@@ -1101,7 +1168,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 55,
+      "inventoryIndex": 58,
       "topic": "الاشتقاق",
       "lessonLabel": "مشتقة تابع مركب",
       "exampleCount": 1,
@@ -1120,7 +1187,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 56,
+      "inventoryIndex": 59,
       "topic": "الاشتقاق",
       "lessonLabel": "مشتقة جداء تابعين",
       "exampleCount": 1,
@@ -1139,7 +1206,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 57,
+      "inventoryIndex": 60,
       "topic": "الاشتقاق",
       "lessonLabel": "مشتقة خارج قسمة",
       "exampleCount": 1,
@@ -1158,7 +1225,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 58,
+      "inventoryIndex": 61,
       "topic": "الاشتقاق",
       "lessonLabel": "معادلة المماس",
       "exampleCount": 3,
@@ -1182,7 +1249,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 59,
+      "inventoryIndex": 62,
       "topic": "الاشتقاق",
       "lessonLabel": "معادلة المماس عند نقطة",
       "exampleCount": 1,
@@ -1203,7 +1270,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 60,
+      "inventoryIndex": 63,
       "topic": "الاشتقاق",
       "lessonLabel": "مماس المنحني",
       "exampleCount": 1,
@@ -1222,7 +1289,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 61,
+      "inventoryIndex": 64,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "إحداثيات رؤوس مكعب",
       "exampleCount": 1,
@@ -1243,7 +1310,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 62,
+      "inventoryIndex": 65,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "إحداثيات شعاع",
       "exampleCount": 1,
@@ -1262,7 +1329,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 63,
+      "inventoryIndex": 66,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "إحداثيات منتصف قطعة",
       "exampleCount": 1,
@@ -1281,7 +1348,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 64,
+      "inventoryIndex": 67,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "إحداثيات نقطة",
       "exampleCount": 1,
@@ -1300,7 +1367,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 65,
+      "inventoryIndex": 68,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "استقامية ثلاث نقاط",
       "exampleCount": 1,
@@ -1319,7 +1386,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 66,
+      "inventoryIndex": 69,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "استقامية شعاعين",
       "exampleCount": 1,
@@ -1338,7 +1405,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 67,
+      "inventoryIndex": 70,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "استقامية نقاط",
       "exampleCount": 1,
@@ -1357,7 +1424,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 68,
+      "inventoryIndex": 71,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "المركبات والإحداثيات",
       "exampleCount": 1,
@@ -1376,7 +1443,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 69,
+      "inventoryIndex": 72,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "تقسيم قطعة مستقيمة",
       "exampleCount": 1,
@@ -1397,7 +1464,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 70,
+      "inventoryIndex": 73,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "شرط توازي شعاعين",
       "exampleCount": 1,
@@ -1416,7 +1483,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 71,
+      "inventoryIndex": 74,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "طول شعاع",
       "exampleCount": 1,
@@ -1435,7 +1502,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 72,
+      "inventoryIndex": 75,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "مجموعة نقاط تحقق علاقة شعاعية",
       "exampleCount": 1,
@@ -1456,7 +1523,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 73,
+      "inventoryIndex": 76,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "منتصف قطعة",
       "exampleCount": 1,
@@ -1475,7 +1542,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 74,
+      "inventoryIndex": 77,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "منتصف قطعة في الفراغ",
       "exampleCount": 1,
@@ -1494,7 +1561,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 75,
+      "inventoryIndex": 78,
       "topic": "الأعداد العقدية",
       "lessonLabel": "إكمال المربع في معادلة عقدية",
       "exampleCount": 1,
@@ -1515,7 +1582,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 76,
+      "inventoryIndex": 79,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الجذران التربيعيان لعدد عقدي",
       "exampleCount": 1,
@@ -1536,7 +1603,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 77,
+      "inventoryIndex": 80,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الجذور التربيعية",
       "exampleCount": 1,
@@ -1555,7 +1622,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 78,
+      "inventoryIndex": 81,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الجذور التكعيبية للوحدة وعلاقاتها",
       "exampleCount": 1,
@@ -1576,7 +1643,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 79,
+      "inventoryIndex": 82,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الدوران في المستوى العقدي",
       "exampleCount": 1,
@@ -1597,18 +1664,22 @@
       "verified": false
     },
     {
-      "inventoryIndex": 80,
+      "inventoryIndex": 83,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي لعدد عقدي",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
-        "exam19-complex-003"
+        "exam19-complex-003",
+        "ministerial23-auto-008",
+        "ministerial23-auto-009"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من نموذج وزاري": 2
       },
       "years": [
-        2019
+        2019,
+        2023
       ],
       "suggestedLessonId": "complex-05",
       "suggestedLessonTitle": "الشكل الأسّي لعدد عقدي",
@@ -1618,7 +1689,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 81,
+      "inventoryIndex": 84,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي للعدد العقدي",
       "exampleCount": 1,
@@ -1639,7 +1710,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 82,
+      "inventoryIndex": 85,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل المثلثي",
       "exampleCount": 3,
@@ -1663,7 +1734,28 @@
       "verified": false
     },
     {
-      "inventoryIndex": 83,
+      "inventoryIndex": 86,
+      "topic": "الأعداد العقدية",
+      "lessonLabel": "الشكل المثلّثي لعدد عقدي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-006"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "complex-03",
+      "suggestedLessonTitle": "الشكل المثلّثي لعدد عقدي",
+      "confidence": "medium",
+      "rationale": "عنوان التسمية يطابق عنوان الدرس في خريطة المنهاج الحالية؛ يبقى هذا ربطاً مقترحاً إلى حين فحص نص السؤال والكتاب والتحقق المستقل.",
+      "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 87,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل المثلثي والطويلة",
       "exampleCount": 1,
@@ -1682,7 +1774,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 84,
+      "inventoryIndex": 88,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل المثلثي والقسمة في C",
       "exampleCount": 1,
@@ -1703,7 +1795,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 85,
+      "inventoryIndex": 89,
       "topic": "الأعداد العقدية",
       "lessonLabel": "العمليات على الأعداد العقدية",
       "exampleCount": 1,
@@ -1722,7 +1814,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 86,
+      "inventoryIndex": 90,
       "topic": "الأعداد العقدية",
       "lessonLabel": "القوى البسيطة للعدد التخيلي",
       "exampleCount": 1,
@@ -1741,7 +1833,28 @@
       "verified": false
     },
     {
-      "inventoryIndex": 87,
+      "inventoryIndex": 91,
+      "topic": "الأعداد العقدية",
+      "lessonLabel": "المعادلة من الدرجة الثانية ذات الأمثال الحقيقيّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-007"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "complex-06",
+      "suggestedLessonTitle": "المعادلة من الدرجة الثانية ذات الأمثال الحقيقيّة",
+      "confidence": "medium",
+      "rationale": "عنوان التسمية يطابق عنوان الدرس في خريطة المنهاج الحالية؛ يبقى هذا ربطاً مقترحاً إلى حين فحص نص السؤال والكتاب والتحقق المستقل.",
+      "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 92,
       "topic": "الأعداد العقدية",
       "lessonLabel": "جذرا معادلة من الدرجة الثانية في C",
       "exampleCount": 1,
@@ -1762,7 +1875,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 88,
+      "inventoryIndex": 93,
       "topic": "الأعداد العقدية",
       "lessonLabel": "حساب خارج قسمة عقديين",
       "exampleCount": 1,
@@ -1783,7 +1896,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 89,
+      "inventoryIndex": 94,
       "topic": "الأعداد العقدية",
       "lessonLabel": "حل معادلة عقدية",
       "exampleCount": 1,
@@ -1802,7 +1915,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 90,
+      "inventoryIndex": 95,
       "topic": "الأعداد العقدية",
       "lessonLabel": "حل معادلة عقدية من الشكل z²=a",
       "exampleCount": 1,
@@ -1821,7 +1934,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 91,
+      "inventoryIndex": 96,
       "topic": "الأعداد العقدية",
       "lessonLabel": "حل معادلة من الدرجة الثانية في C",
       "exampleCount": 2,
@@ -1844,7 +1957,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 92,
+      "inventoryIndex": 97,
       "topic": "الأعداد العقدية",
       "lessonLabel": "حلقة العدد العقدي",
       "exampleCount": 1,
@@ -1863,7 +1976,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 93,
+      "inventoryIndex": 98,
       "topic": "الأعداد العقدية",
       "lessonLabel": "طويلة عدد عقدي",
       "exampleCount": 2,
@@ -1883,7 +1996,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 94,
+      "inventoryIndex": 99,
       "topic": "الأعداد العقدية",
       "lessonLabel": "عمليات على الأعداد العقدية",
       "exampleCount": 1,
@@ -1902,28 +2015,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 95,
-      "topic": "الأعداد العقدية",
-      "lessonLabel": "قسمة الأعداد العقدية",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exam17-complex-003"
-      ],
-      "sourceTypes": {
-        "دورة امتحانية": 1
-      },
-      "years": [
-        2017
-      ],
-      "suggestedLessonId": "complex-01",
-      "suggestedLessonTitle": "مجموعة الأعداد العقديّة",
-      "confidence": "medium",
-      "rationale": "مجموعة الأعداد العقدية والعمليات عليها",
-      "reviewStatus": "suggested-review",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 96,
+      "inventoryIndex": 100,
       "topic": "الأعداد العقدية",
       "lessonLabel": "قسمة عددين عقديين",
       "exampleCount": 1,
@@ -1942,7 +2034,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 97,
+      "inventoryIndex": 101,
       "topic": "الأعداد العقدية",
       "lessonLabel": "قسمة عددين عقديين والشكل الأسي",
       "exampleCount": 1,
@@ -1963,19 +2055,27 @@
       "verified": false
     },
     {
-      "inventoryIndex": 98,
+      "inventoryIndex": 102,
       "topic": "الأعداد العقدية",
       "lessonLabel": "مرافق عدد عقدي",
-      "exampleCount": 3,
+      "exampleCount": 6,
       "exampleIds": [
         "cx-003",
         "cx-007",
-        "cx-013"
+        "cx-013",
+        "exam17-complex-003",
+        "ministerial23-auto-002",
+        "ministerial23-auto-004"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 3
+        "تدريبي مؤلف": 3,
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من نموذج وزاري": 2
       },
-      "years": [],
+      "years": [
+        2017,
+        2023
+      ],
       "suggestedLessonId": "complex-02",
       "suggestedLessonTitle": "مرافق عدد عقدي",
       "confidence": "high",
@@ -1984,7 +2084,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 99,
+      "inventoryIndex": 103,
       "topic": "الأعداد العقدية",
       "lessonLabel": "نسبة عددين عقديين والدوران",
       "exampleCount": 1,
@@ -2005,7 +2105,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 100,
+      "inventoryIndex": 104,
       "topic": "التابع الأسي",
       "lessonLabel": "اشتقاق التابع الأسي المركب",
       "exampleCount": 1,
@@ -2024,7 +2124,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 101,
+      "inventoryIndex": 105,
       "topic": "التابع الأسي",
       "lessonLabel": "المتراجحات الأسية",
       "exampleCount": 1,
@@ -2045,7 +2145,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 102,
+      "inventoryIndex": 106,
       "topic": "التابع الأسي",
       "lessonLabel": "المعادلات الأسية",
       "exampleCount": 1,
@@ -2066,7 +2166,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 103,
+      "inventoryIndex": 107,
       "topic": "التابع الأسي",
       "lessonLabel": "حل متراجحة أسية",
       "exampleCount": 1,
@@ -2085,13 +2185,13 @@
       "verified": false
     },
     {
-      "inventoryIndex": 104,
+      "inventoryIndex": 108,
       "topic": "التابع الأسي",
       "lessonLabel": "حل معادلات أسية",
       "exampleCount": 2,
       "exampleIds": [
-        "exp-002",
-        "exam23-exp-001"
+        "exam23-exp-001",
+        "exp-002"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -2108,7 +2208,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 105,
+      "inventoryIndex": 109,
       "topic": "التابع الأسي",
       "lessonLabel": "حل معادلة أسية",
       "exampleCount": 2,
@@ -2128,7 +2228,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 106,
+      "inventoryIndex": 110,
       "topic": "التابع الأسي",
       "lessonLabel": "خواص الأسية",
       "exampleCount": 1,
@@ -2147,7 +2247,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 107,
+      "inventoryIndex": 111,
       "topic": "التابع الأسي",
       "lessonLabel": "خواص التابع الأسي",
       "exampleCount": 1,
@@ -2166,7 +2266,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 108,
+      "inventoryIndex": 112,
       "topic": "التابع الأسي",
       "lessonLabel": "خواص القوى الأسية",
       "exampleCount": 1,
@@ -2185,7 +2285,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 109,
+      "inventoryIndex": 113,
+      "topic": "التابع الأسي",
+      "lessonLabel": "دراسة التوابع الأسّية بالأساس a",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-base-a-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "exponential-05",
+      "suggestedLessonTitle": "دراسة التوابع الأسّية بالأساس a",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 114,
       "topic": "التابع الأسي",
       "lessonLabel": "دراسة تغير تابع أسي",
       "exampleCount": 1,
@@ -2204,7 +2323,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 110,
+      "inventoryIndex": 115,
       "topic": "التابع الأسي",
       "lessonLabel": "متراجحات أسية",
       "exampleCount": 2,
@@ -2224,7 +2343,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 111,
+      "inventoryIndex": 116,
       "topic": "التابع الأسي",
       "lessonLabel": "مشتقة تابع أسي مركب",
       "exampleCount": 1,
@@ -2243,7 +2362,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 112,
+      "inventoryIndex": 117,
       "topic": "التابع الأسي",
       "lessonLabel": "معادلات أسية",
       "exampleCount": 2,
@@ -2263,7 +2382,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 113,
+      "inventoryIndex": 118,
+      "topic": "التابع الأسي",
+      "lessonLabel": "معادلات تفاضليّة بسيطة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-diff-eq-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "exponential-06",
+      "suggestedLessonTitle": "معادلات تفاضليّة بسيطة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 119,
       "topic": "التابع الأسي",
       "lessonLabel": "نهايات التابع الأسي",
       "exampleCount": 1,
@@ -2282,7 +2420,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 114,
+      "inventoryIndex": 120,
+      "topic": "التابع الأسي",
+      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع الأسي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-limit-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "exponential-04",
+      "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع الأسي",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 121,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "اشتقاق اللوغاريتم",
       "exampleCount": 1,
@@ -2301,7 +2458,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 115,
+      "inventoryIndex": 122,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "حل متراجحة لوغاريتمية",
       "exampleCount": 2,
@@ -2321,7 +2478,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 116,
+      "inventoryIndex": 123,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "حل معادلة لوغاريتمية",
       "exampleCount": 2,
@@ -2341,7 +2498,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 117,
+      "inventoryIndex": 124,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "حل معادلة لوغاريتمية مع مراعاة المجال",
       "exampleCount": 1,
@@ -2362,7 +2519,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 118,
+      "inventoryIndex": 125,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "خواص اللوغاريتم",
       "exampleCount": 1,
@@ -2381,7 +2538,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 119,
+      "inventoryIndex": 126,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "خواص اللوغاريتم النيبيري",
       "exampleCount": 1,
@@ -2400,7 +2557,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 120,
+      "inventoryIndex": 127,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "خواص اللوغاريتم وحساب القيم",
       "exampleCount": 1,
@@ -2419,7 +2576,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 121,
+      "inventoryIndex": 128,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "فردية تابع لوغاريتمي وتغيراته",
       "exampleCount": 1,
@@ -2440,7 +2597,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 122,
+      "inventoryIndex": 129,
+      "topic": "التابع اللوغاريتمي",
+      "lessonLabel": "لوغاريتم جداء ضرب",
+      "exampleCount": 1,
+      "exampleIds": [
+        "log-product-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "logarithm-02",
+      "suggestedLessonTitle": "لوغاريتم جداء ضرب",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 130,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "متراجحات لوغاريتمية",
       "exampleCount": 1,
@@ -2459,7 +2635,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 123,
+      "inventoryIndex": 131,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "مجال التعريف",
       "exampleCount": 2,
@@ -2479,7 +2655,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 124,
+      "inventoryIndex": 132,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "مجال تعريف",
       "exampleCount": 1,
@@ -2498,7 +2674,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 125,
+      "inventoryIndex": 133,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "مشتقة اللوغاريتم النيبيري",
       "exampleCount": 1,
@@ -2517,7 +2693,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 126,
+      "inventoryIndex": 134,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "معادلات لوغاريتمية",
       "exampleCount": 2,
@@ -2537,7 +2713,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 127,
+      "inventoryIndex": 135,
+      "topic": "التابع اللوغاريتمي",
+      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "log-limit-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "logarithm-05",
+      "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 136,
       "topic": "التحليل التوافقي",
       "lessonLabel": "اختيار لجنة",
       "exampleCount": 1,
@@ -2556,7 +2751,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 128,
+      "inventoryIndex": 137,
       "topic": "التحليل التوافقي",
       "lessonLabel": "اختيار مجموعة دون اعتبار الترتيب",
       "exampleCount": 1,
@@ -2575,7 +2770,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 129,
+      "inventoryIndex": 138,
       "topic": "التحليل التوافقي",
       "lessonLabel": "اختيار مع ترتيب",
       "exampleCount": 1,
@@ -2594,7 +2789,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 130,
+      "inventoryIndex": 139,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التباديل",
       "exampleCount": 1,
@@ -2613,7 +2808,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 131,
+      "inventoryIndex": 140,
       "topic": "التحليل التوافقي",
       "lessonLabel": "الترتيبات",
       "exampleCount": 1,
@@ -2632,7 +2827,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 132,
+      "inventoryIndex": 141,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوافيق",
       "exampleCount": 4,
@@ -2657,7 +2852,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 133,
+      "inventoryIndex": 142,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوافيق مع شرط",
       "exampleCount": 1,
@@ -2676,7 +2871,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 134,
+      "inventoryIndex": 143,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوافيق مع شروط",
       "exampleCount": 1,
@@ -2697,7 +2892,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 135,
+      "inventoryIndex": 144,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوافيق واختيار المواضع",
       "exampleCount": 1,
@@ -2718,7 +2913,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 136,
+      "inventoryIndex": 145,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوزيعات الشاملة ومبدأ العد",
       "exampleCount": 1,
@@ -2739,7 +2934,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 137,
+      "inventoryIndex": 146,
       "topic": "التحليل التوافقي",
       "lessonLabel": "الحد الثابت في منشور ذي حدين",
       "exampleCount": 1,
@@ -2760,7 +2955,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 138,
+      "inventoryIndex": 147,
       "topic": "التحليل التوافقي",
       "lessonLabel": "الحد المستقل عن المتغير في مفكوك",
       "exampleCount": 1,
@@ -2781,7 +2976,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 139,
+      "inventoryIndex": 148,
       "topic": "التحليل التوافقي",
       "lessonLabel": "ترتيب الرموز مع التكرار وبدونه",
       "exampleCount": 1,
@@ -2802,7 +2997,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 140,
+      "inventoryIndex": 149,
       "topic": "التحليل التوافقي",
       "lessonLabel": "ترتيب عناصر مع تثبيت عنصر",
       "exampleCount": 1,
@@ -2823,7 +3018,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 141,
+      "inventoryIndex": 150,
       "topic": "التحليل التوافقي",
       "lessonLabel": "ترتيب عناصر مع شرط على المراكز الأولى",
       "exampleCount": 1,
@@ -2844,7 +3039,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 142,
+      "inventoryIndex": 151,
       "topic": "التحليل التوافقي",
       "lessonLabel": "عدد الترتيبات دون تكرار",
       "exampleCount": 1,
@@ -2863,7 +3058,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 143,
+      "inventoryIndex": 152,
       "topic": "التحليل التوافقي",
       "lessonLabel": "عدد كلمات من أحرف مختلفة",
       "exampleCount": 1,
@@ -2882,7 +3077,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 144,
+      "inventoryIndex": 153,
       "topic": "التحليل التوافقي",
       "lessonLabel": "قاعدة الضرب في العد",
       "exampleCount": 1,
@@ -2903,7 +3098,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 145,
+      "inventoryIndex": 154,
       "topic": "التحليل التوافقي",
       "lessonLabel": "مبدأ الضرب",
       "exampleCount": 1,
@@ -2922,7 +3117,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 146,
+      "inventoryIndex": 155,
       "topic": "التحليل التوافقي",
       "lessonLabel": "مجموعة قيم مجموع إشارات",
       "exampleCount": 1,
@@ -2943,7 +3138,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 147,
+      "inventoryIndex": 156,
       "topic": "التحليل التوافقي",
       "lessonLabel": "معامل حد في مفكوك ثنائي الحدين",
       "exampleCount": 1,
@@ -2962,7 +3157,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 148,
+      "inventoryIndex": 157,
       "topic": "التحليل التوافقي",
       "lessonLabel": "معاملات ثنائية الحد",
       "exampleCount": 1,
@@ -2981,7 +3176,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 149,
+      "inventoryIndex": 158,
       "topic": "التحليل التوافقي",
       "lessonLabel": "مفكوك ثنائي الحدين",
       "exampleCount": 1,
@@ -3000,7 +3195,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 150,
+      "inventoryIndex": 159,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "التكامل المحدد",
       "exampleCount": 2,
@@ -3020,7 +3215,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 151,
+      "inventoryIndex": 160,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "التكامل بالتبديل",
       "exampleCount": 1,
@@ -3039,7 +3234,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 152,
+      "inventoryIndex": 161,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "التكامل بالتبديل البسيط",
       "exampleCount": 1,
@@ -3058,7 +3253,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 153,
+      "inventoryIndex": 162,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "التكامل بالتجزئة",
       "exampleCount": 2,
@@ -3078,7 +3273,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 154,
+      "inventoryIndex": 163,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "التوابع الأصلية",
       "exampleCount": 1,
@@ -3097,7 +3292,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 155,
+      "inventoryIndex": 164,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "القسمة الإقليدية للتابع الكسري",
       "exampleCount": 1,
@@ -3118,7 +3313,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 156,
+      "inventoryIndex": 165,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "المساحة باستعمال التكامل",
       "exampleCount": 2,
@@ -3138,7 +3333,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 157,
+      "inventoryIndex": 166,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "المساحة والتكامل",
       "exampleCount": 1,
@@ -3157,7 +3352,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 158,
+      "inventoryIndex": 167,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "تابع أصلي",
       "exampleCount": 1,
@@ -3176,7 +3371,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 159,
+      "inventoryIndex": 168,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "تابع أصلي لقوة كثيرة حدود",
       "exampleCount": 1,
@@ -3195,7 +3390,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 160,
+      "inventoryIndex": 169,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "تكامل تابع كسري بعد التحليل",
       "exampleCount": 1,
@@ -3216,7 +3411,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 161,
+      "inventoryIndex": 170,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "تكامل تابع يحوي قيمة مطلقة",
       "exampleCount": 1,
@@ -3237,7 +3432,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 162,
+      "inventoryIndex": 171,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "تكامل مجموع حدود كثيرة حدود",
       "exampleCount": 1,
@@ -3256,7 +3451,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 163,
+      "inventoryIndex": 172,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "حساب مساحة",
       "exampleCount": 1,
@@ -3275,7 +3470,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 164,
+      "inventoryIndex": 173,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "حساب مساحة بين منحنى ومقارب",
       "exampleCount": 1,
@@ -3296,7 +3491,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 165,
+      "inventoryIndex": 174,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "حساب مساحة محصورة بالتكامل",
       "exampleCount": 1,
@@ -3317,7 +3512,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 166,
+      "inventoryIndex": 175,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "حساب مساحة محصورة بتابع موجب",
       "exampleCount": 1,
@@ -3336,7 +3531,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 167,
+      "inventoryIndex": 176,
       "topic": "التكامل والتابع الأصلي",
       "lessonLabel": "خاصية خطية التكامل المحدد",
       "exampleCount": 1,
@@ -3355,7 +3550,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 168,
+      "inventoryIndex": 177,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "إسقاط شعاع",
       "exampleCount": 1,
@@ -3374,7 +3569,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 169,
+      "inventoryIndex": 178,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "التعامد",
       "exampleCount": 1,
@@ -3393,7 +3588,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 170,
+      "inventoryIndex": 179,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "الجداء السلمي بالإحداثيات",
       "exampleCount": 1,
@@ -3412,7 +3607,47 @@
       "verified": false
     },
     {
-      "inventoryIndex": 171,
+      "inventoryIndex": 180,
+      "topic": "الجداء السلمي في الفراغ",
+      "lessonLabel": "الجداء السلّمي في الفراغ",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-011"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "dot-product-02",
+      "suggestedLessonTitle": "الجداء السلّمي في الفراغ",
+      "confidence": "medium",
+      "rationale": "عنوان التسمية يطابق عنوان الدرس في خريطة المنهاج الحالية؛ يبقى هذا ربطاً مقترحاً إلى حين فحص نص السؤال والكتاب والتحقق المستقل.",
+      "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 181,
+      "topic": "الجداء السلمي في الفراغ",
+      "lessonLabel": "الجداء السلّمي في المستوي، تذكرة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "dot-plane-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "dot-product-01",
+      "suggestedLessonTitle": "الجداء السلّمي في المستوي، تذكرة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 182,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "الزاوية بين شعاعين",
       "exampleCount": 1,
@@ -3431,7 +3666,30 @@
       "verified": false
     },
     {
-      "inventoryIndex": 172,
+      "inventoryIndex": 183,
+      "topic": "الجداء السلمي في الفراغ",
+      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
+      "exampleCount": 2,
+      "exampleIds": [
+        "ministerial23-auto-030",
+        "plane-cartesian-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "dot-product-04",
+      "suggestedLessonTitle": "المعادلة الديكارتيّة لمستوٍ",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 184,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "تعامد شعاعين",
       "exampleCount": 2,
@@ -3451,7 +3709,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 173,
+      "inventoryIndex": 185,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "تعامد مستقيمين",
       "exampleCount": 1,
@@ -3472,7 +3730,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 174,
+      "inventoryIndex": 186,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "تعامد مستقيمين باستعمال الجداء السلمي",
       "exampleCount": 1,
@@ -3493,7 +3751,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 175,
+      "inventoryIndex": 187,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب الجداء السلمي",
       "exampleCount": 1,
@@ -3512,7 +3770,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 176,
+      "inventoryIndex": 188,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب الجداء السلمي من الإحداثيات",
       "exampleCount": 1,
@@ -3533,7 +3791,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 177,
+      "inventoryIndex": 189,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب جيب تمام زاوية بين شعاعين",
       "exampleCount": 1,
@@ -3554,7 +3812,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 178,
+      "inventoryIndex": 190,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب زاوية باستعمال الجداء السلمي",
       "exampleCount": 1,
@@ -3573,7 +3831,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 179,
+      "inventoryIndex": 191,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب زاوية بين شعاعين",
       "exampleCount": 1,
@@ -3592,7 +3850,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 180,
+      "inventoryIndex": 192,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب طول باستخدام الجداء",
       "exampleCount": 1,
@@ -3611,7 +3869,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 181,
+      "inventoryIndex": 193,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "زاوية شعاعين",
       "exampleCount": 1,
@@ -3630,7 +3888,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 182,
+      "inventoryIndex": 194,
       "topic": "المتتاليات",
       "lessonLabel": "إثبات أن متتالية هندسية",
       "exampleCount": 1,
@@ -3651,7 +3909,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 183,
+      "inventoryIndex": 195,
       "topic": "المتتاليات",
       "lessonLabel": "استنتاج متراجحة من دراسة تابع",
       "exampleCount": 1,
@@ -3672,7 +3930,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 184,
+      "inventoryIndex": 196,
       "topic": "المتتاليات",
       "lessonLabel": "الإثبات بالتدريج",
       "exampleCount": 1,
@@ -3691,7 +3949,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 185,
+      "inventoryIndex": 197,
       "topic": "المتتاليات",
       "lessonLabel": "البرهان بالتراجع على حصر متتالية",
       "exampleCount": 1,
@@ -3712,7 +3970,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 186,
+      "inventoryIndex": 198,
       "topic": "المتتاليات",
       "lessonLabel": "الحد العام لمتتالية هندسية",
       "exampleCount": 1,
@@ -3733,7 +3991,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 187,
+      "inventoryIndex": 199,
       "topic": "المتتاليات",
       "lessonLabel": "المتتاليات الحسابية",
       "exampleCount": 1,
@@ -3752,7 +4010,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 188,
+      "inventoryIndex": 200,
       "topic": "المتتاليات",
       "lessonLabel": "المتتاليات الهندسية",
       "exampleCount": 1,
@@ -3771,7 +4029,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 189,
+      "inventoryIndex": 201,
       "topic": "المتتاليات",
       "lessonLabel": "المتتالية الحسابية",
       "exampleCount": 3,
@@ -3792,7 +4050,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 190,
+      "inventoryIndex": 202,
       "topic": "المتتاليات",
       "lessonLabel": "المتتالية الهندسية",
       "exampleCount": 2,
@@ -3812,26 +4070,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 191,
-      "topic": "المتتاليات",
-      "lessonLabel": "تحديد أساس متتالية حسابية",
-      "exampleCount": 1,
-      "exampleIds": [
-        "seq-006"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "sequences-01",
-      "suggestedLessonTitle": "عموميّات عن المتتاليات",
-      "confidence": "medium",
-      "rationale": "عموميات عن المتتاليات",
-      "reviewStatus": "suggested-review",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 192,
+      "inventoryIndex": 203,
       "topic": "المتتاليات",
       "lessonLabel": "تحديد أساس متتالية هندسية",
       "exampleCount": 1,
@@ -3850,7 +4089,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 193,
+      "inventoryIndex": 204,
       "topic": "المتتاليات",
       "lessonLabel": "تحديد حد متتالية حسابية من حدين",
       "exampleCount": 1,
@@ -3869,7 +4108,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 194,
+      "inventoryIndex": 205,
       "topic": "المتتاليات",
       "lessonLabel": "تحليل فرق حدين متتاليين",
       "exampleCount": 1,
@@ -3890,7 +4129,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 195,
+      "inventoryIndex": 206,
       "topic": "المتتاليات",
       "lessonLabel": "تحويل متتالية تراجعية إلى هندسية وحسابية",
       "exampleCount": 1,
@@ -3911,7 +4150,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 196,
+      "inventoryIndex": 207,
       "topic": "المتتاليات",
       "lessonLabel": "دراسة رتابة متتالية من فرق حدين",
       "exampleCount": 1,
@@ -3932,7 +4171,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 197,
+      "inventoryIndex": 208,
       "topic": "المتتاليات",
       "lessonLabel": "رتابة المتتاليات الهندسية",
       "exampleCount": 1,
@@ -3953,14 +4192,14 @@
       "verified": false
     },
     {
-      "inventoryIndex": 198,
+      "inventoryIndex": 209,
       "topic": "المتتاليات",
       "lessonLabel": "رتابة متتالية",
       "exampleCount": 3,
       "exampleIds": [
-        "seq-005",
         "exam18-seq-001",
-        "exam18-seq-002"
+        "exam18-seq-002",
+        "seq-005"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -3977,7 +4216,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 199,
+      "inventoryIndex": 210,
       "topic": "المتتاليات",
       "lessonLabel": "رتابة متتالية حسابية",
       "exampleCount": 1,
@@ -3996,7 +4235,39 @@
       "verified": false
     },
     {
-      "inventoryIndex": 200,
+      "inventoryIndex": 211,
+      "topic": "المتتاليات",
+      "lessonLabel": "عموميّات عن المتتاليات",
+      "exampleCount": 9,
+      "exampleIds": [
+        "exam19-seq-001",
+        "ministerial23-auto-001",
+        "ministerial23-auto-010",
+        "ministerial23-auto-014",
+        "ministerial23-auto-017",
+        "ministerial23-auto-019",
+        "ministerial23-auto-020",
+        "seq-006",
+        "seq-007"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 2,
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من نموذج وزاري": 6
+      },
+      "years": [
+        2019,
+        2023
+      ],
+      "suggestedLessonId": "sequences-01",
+      "suggestedLessonTitle": "عموميّات عن المتتاليات",
+      "confidence": "medium",
+      "rationale": "عنوان التسمية يطابق عنوان الدرس في خريطة المنهاج الحالية؛ يبقى هذا ربطاً مقترحاً إلى حين فحص نص السؤال والكتاب والتحقق المستقل.",
+      "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 212,
       "topic": "المتتاليات",
       "lessonLabel": "متتالية تراجعية رتيبة ومحدودة",
       "exampleCount": 1,
@@ -4017,7 +4288,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 201,
+      "inventoryIndex": 213,
       "topic": "المتتاليات",
       "lessonLabel": "متتاليتان متجاورتان",
       "exampleCount": 2,
@@ -4040,14 +4311,14 @@
       "verified": false
     },
     {
-      "inventoryIndex": 202,
+      "inventoryIndex": 214,
       "topic": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية حسابية",
       "exampleCount": 3,
       "exampleIds": [
-        "seq-004",
+        "exam25-seq-002",
         "ministerial17-arithmetic-001",
-        "exam25-seq-002"
+        "seq-004"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -4066,16 +4337,15 @@
       "verified": false
     },
     {
-      "inventoryIndex": 203,
+      "inventoryIndex": 215,
       "topic": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية هندسية",
-      "exampleCount": 2,
+      "exampleCount": 1,
       "exampleIds": [
-        "seq-007",
         "seq-010"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 1
       },
       "years": [],
       "suggestedLessonId": "sequences-01",
@@ -4086,7 +4356,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 204,
+      "inventoryIndex": 216,
       "topic": "المتتاليات",
       "lessonLabel": "مجموع متتالية باستعمال خواص اللوغاريتم",
       "exampleCount": 1,
@@ -4107,7 +4377,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 205,
+      "inventoryIndex": 217,
       "topic": "المتتاليات",
       "lessonLabel": "مجموع متتالية حسابية",
       "exampleCount": 1,
@@ -4126,28 +4396,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 206,
-      "topic": "المتتاليات",
-      "lessonLabel": "مجموع متتالية هندسية",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exam19-seq-001"
-      ],
-      "sourceTypes": {
-        "دورة امتحانية": 1
-      },
-      "years": [
-        2019
-      ],
-      "suggestedLessonId": "sequences-01",
-      "suggestedLessonTitle": "عموميّات عن المتتاليات",
-      "confidence": "medium",
-      "rationale": "عموميات عن المتتاليات",
-      "reviewStatus": "suggested-review",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 207,
+      "inventoryIndex": 218,
       "topic": "المتتاليات",
       "lessonLabel": "نهاية متتالية تراجعية رتيبة ومحدودة",
       "exampleCount": 1,
@@ -4168,7 +4417,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 208,
+      "inventoryIndex": 219,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "التمثيل الوسيطي لمستقيم تقاطع مستويين",
       "exampleCount": 1,
@@ -4189,7 +4438,28 @@
       "verified": false
     },
     {
-      "inventoryIndex": 209,
+      "inventoryIndex": 220,
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "التمثيلات الوسيطيّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-033"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "suggestedLessonId": "lines-planes-02",
+      "suggestedLessonTitle": "التمثيلات الوسيطيّة",
+      "confidence": "medium",
+      "rationale": "عنوان التسمية يطابق عنوان الدرس في خريطة المنهاج الحالية؛ يبقى هذا ربطاً مقترحاً إلى حين فحص نص السؤال والكتاب والتحقق المستقل.",
+      "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 221,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "الكرة والمستوى",
       "exampleCount": 1,
@@ -4210,7 +4480,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 210,
+      "inventoryIndex": 222,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المسافة من نقطة إلى مستقيم",
       "exampleCount": 1,
@@ -4231,7 +4501,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 211,
+      "inventoryIndex": 223,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المسافة من نقطة إلى مستوى",
       "exampleCount": 1,
@@ -4252,7 +4522,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 212,
+      "inventoryIndex": 224,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المعادلة الديكارتية لمستوى",
       "exampleCount": 1,
@@ -4271,7 +4541,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 213,
+      "inventoryIndex": 225,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "انتماء نقطة إلى مستوى",
       "exampleCount": 1,
@@ -4290,7 +4560,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 214,
+      "inventoryIndex": 226,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تحديد وضع مستقيم بالنسبة إلى مستوى",
       "exampleCount": 1,
@@ -4309,7 +4579,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 215,
+      "inventoryIndex": 227,
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "تقاطع ثلاثة مستويات",
+      "exampleCount": 1,
+      "exampleIds": [
+        "three-planes-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "lines-planes-04",
+      "suggestedLessonTitle": "تقاطع ثلاثة مستويات",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 228,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تقاطع مستقيم مع مستوى",
       "exampleCount": 1,
@@ -4330,7 +4619,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 216,
+      "inventoryIndex": 229,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تقاطع مستقيم ومستوى",
       "exampleCount": 2,
@@ -4353,7 +4642,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 217,
+      "inventoryIndex": 230,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تقاطع مستويين في الفراغ",
       "exampleCount": 1,
@@ -4374,7 +4663,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 218,
+      "inventoryIndex": 231,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تمثيل مستقيم بمعرفة نقطة وشعاع توجيه",
       "exampleCount": 1,
@@ -4395,7 +4684,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 219,
+      "inventoryIndex": 232,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تمثيل مستقيم في الفراغ",
       "exampleCount": 1,
@@ -4416,13 +4705,13 @@
       "verified": false
     },
     {
-      "inventoryIndex": 220,
+      "inventoryIndex": 233,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تمثيل وسيطي لمستقيم",
       "exampleCount": 2,
       "exampleIds": [
-        "line-002",
-        "exam17-3d-002"
+        "exam17-3d-002",
+        "line-002"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -4439,7 +4728,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 221,
+      "inventoryIndex": 234,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "توازي المستويات والاستواء الخطي",
       "exampleCount": 1,
@@ -4460,7 +4749,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 222,
+      "inventoryIndex": 235,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "توازي مستقيم ومستوى",
       "exampleCount": 1,
@@ -4479,7 +4768,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 223,
+      "inventoryIndex": 236,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "توازي مستقيمين",
       "exampleCount": 1,
@@ -4498,7 +4787,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 224,
+      "inventoryIndex": 237,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "توازي مستويين",
       "exampleCount": 2,
@@ -4518,7 +4807,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 225,
+      "inventoryIndex": 238,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "حساب الزاوية باستعمال الجداء السلمي",
       "exampleCount": 1,
@@ -4539,7 +4828,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 226,
+      "inventoryIndex": 239,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "شرط تماس مستوى مع كرة",
       "exampleCount": 1,
@@ -4560,7 +4849,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 227,
+      "inventoryIndex": 240,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة كرة مركزها معلوم وتمس مستوى",
       "exampleCount": 1,
@@ -4581,7 +4870,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 228,
+      "inventoryIndex": 241,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستقيم",
       "exampleCount": 1,
@@ -4600,7 +4889,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 229,
+      "inventoryIndex": 242,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستقيم يمر بنقطة وله شعاع توجيه",
       "exampleCount": 1,
@@ -4619,13 +4908,13 @@
       "verified": false
     },
     {
-      "inventoryIndex": 230,
+      "inventoryIndex": 243,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستوى",
       "exampleCount": 2,
       "exampleIds": [
-        "line-008",
-        "exam17-3d-001"
+        "exam17-3d-001",
+        "line-008"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -4642,7 +4931,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 231,
+      "inventoryIndex": 244,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستوى من نقطة وناظم",
       "exampleCount": 1,
@@ -4661,7 +4950,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 232,
+      "inventoryIndex": 245,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستوى يمر بثلاث نقاط",
       "exampleCount": 1,
@@ -4682,7 +4971,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 233,
+      "inventoryIndex": 246,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستوى يمر بنقطة ويعامد مستويين",
       "exampleCount": 1,
@@ -4703,7 +4992,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 234,
+      "inventoryIndex": 247,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "مماسية مستوى لكرة",
       "exampleCount": 1,
@@ -4724,7 +5013,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 235,
+      "inventoryIndex": 248,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "إثبات المقارب المائل بمبرهنة الإحاطة",
       "exampleCount": 1,
@@ -4745,7 +5034,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 236,
+      "inventoryIndex": 249,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "إثبات وجود جذر موجب ووحدانيته",
       "exampleCount": 1,
@@ -4766,7 +5055,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 237,
+      "inventoryIndex": 250,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "إثبات وجود مقارب مائل",
       "exampleCount": 1,
@@ -4787,7 +5076,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 238,
+      "inventoryIndex": 251,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "استمرار تابع معرف على أجزاء",
       "exampleCount": 1,
@@ -4806,7 +5095,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 239,
+      "inventoryIndex": 252,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "الاستمرار",
       "exampleCount": 3,
@@ -4827,7 +5116,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 240,
+      "inventoryIndex": 253,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "الاستمرار عند نقطة",
       "exampleCount": 1,
@@ -4846,7 +5135,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 241,
+      "inventoryIndex": 254,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "الدوال الدورية",
       "exampleCount": 1,
@@ -4867,7 +5156,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 242,
+      "inventoryIndex": 255,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب الأفقي",
       "exampleCount": 1,
@@ -4888,7 +5177,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 243,
+      "inventoryIndex": 256,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب الأفقي والشاقولي",
       "exampleCount": 1,
@@ -4909,7 +5198,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 244,
+      "inventoryIndex": 257,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب العمودي",
       "exampleCount": 1,
@@ -4928,20 +5217,24 @@
       "verified": false
     },
     {
-      "inventoryIndex": 245,
+      "inventoryIndex": 258,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب المائل",
-      "exampleCount": 2,
+      "exampleCount": 4,
       "exampleIds": [
+        "exam17-limit-002",
         "lim-003",
-        "exam17-limit-002"
+        "ministerial23-auto-023",
+        "ministerial23-auto-024"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من نموذج وزاري": 2
       },
       "years": [
-        2017
+        2017,
+        2023
       ],
       "suggestedLessonId": "limits-06",
       "suggestedLessonTitle": "المقارب المائل",
@@ -4951,7 +5244,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 246,
+      "inventoryIndex": 259,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب المائل لتابع أسي",
       "exampleCount": 1,
@@ -4972,7 +5265,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 247,
+      "inventoryIndex": 260,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "النهايات عند اللانهاية",
       "exampleCount": 1,
@@ -4991,7 +5284,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 248,
+      "inventoryIndex": 261,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "النهايات عند نقطة",
       "exampleCount": 2,
@@ -5011,7 +5304,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 249,
+      "inventoryIndex": 262,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "النهايات غير المعينة والتحليل",
       "exampleCount": 1,
@@ -5030,7 +5323,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 250,
+      "inventoryIndex": 263,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "الوضع النسبي بالنسبة إلى مقارب مائل",
       "exampleCount": 1,
@@ -5051,7 +5344,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 251,
+      "inventoryIndex": 264,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "تابع الجزء الصحيح ومبرهنة الإحاطة",
       "exampleCount": 1,
@@ -5072,7 +5365,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 252,
+      "inventoryIndex": 265,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "تحويل منحنى بدلالة f(−x)",
       "exampleCount": 1,
@@ -5093,7 +5386,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 253,
+      "inventoryIndex": 266,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "تعيين وسيط للاستمرار",
       "exampleCount": 1,
@@ -5112,7 +5405,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 254,
+      "inventoryIndex": 267,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "حل متراجحة بيانياً",
       "exampleCount": 1,
@@ -5133,7 +5426,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 255,
+      "inventoryIndex": 268,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "صورة مجال باستعمال جدول التغيرات",
       "exampleCount": 1,
@@ -5154,7 +5447,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 256,
+      "inventoryIndex": 269,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "عدد حلول معادلة بيانياً",
       "exampleCount": 1,
@@ -5175,7 +5468,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 257,
+      "inventoryIndex": 270,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "عدد حلول معادلة من جدول التغيرات",
       "exampleCount": 1,
@@ -5196,7 +5489,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 258,
+      "inventoryIndex": 271,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "قراءة النهايات من جدول التغيرات",
       "exampleCount": 1,
@@ -5217,7 +5510,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 259,
+      "inventoryIndex": 272,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "قراءة النهايات والمقاربات من الرسم",
       "exampleCount": 1,
@@ -5238,7 +5531,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 260,
+      "inventoryIndex": 273,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "قراءة جدول التغيرات وحساب النهايات",
       "exampleCount": 1,
@@ -5259,7 +5552,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 261,
+      "inventoryIndex": 274,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "مبرهنة القيم المتوسطة وتعيين جذر",
       "exampleCount": 1,
@@ -5280,7 +5573,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 262,
+      "inventoryIndex": 275,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "مركز تناظر منحنى تابع",
       "exampleCount": 1,
@@ -5301,7 +5594,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 263,
+      "inventoryIndex": 276,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهايات عند اللانهاية",
       "exampleCount": 1,
@@ -5322,7 +5615,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 264,
+      "inventoryIndex": 277,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهايات مثلثية أساسية",
       "exampleCount": 1,
@@ -5341,7 +5634,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 265,
+      "inventoryIndex": 278,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهايات مجموع تابع أسي وخطي",
       "exampleCount": 1,
@@ -5362,7 +5655,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 266,
+      "inventoryIndex": 279,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية باستعمال المرافق",
       "exampleCount": 1,
@@ -5381,7 +5674,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 267,
+      "inventoryIndex": 280,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية تابع عند عدد حقيقي",
       "exampleCount": 1,
@@ -5400,7 +5693,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 268,
+      "inventoryIndex": 281,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية تابع كسري عند اللانهاية",
       "exampleCount": 1,
@@ -5419,7 +5712,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 269,
+      "inventoryIndex": 282,
+      "topic": "النهايات والاستمرار",
+      "lessonLabel": "نهاية تابع مركّب",
+      "exampleCount": 1,
+      "exampleIds": [
+        "lim-composite-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "limits-05",
+      "suggestedLessonTitle": "نهاية تابع مركّب",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 283,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية تابع ومقارب أفقي",
       "exampleCount": 1,
@@ -5440,7 +5752,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 270,
+      "inventoryIndex": 284,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية فرق مربعين",
       "exampleCount": 1,
@@ -5459,7 +5771,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 271,
+      "inventoryIndex": 285,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية كسرية عند اللانهاية",
       "exampleCount": 1,
@@ -5478,7 +5790,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 272,
+      "inventoryIndex": 286,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "الانسحاب في المستوي العقدي",
       "exampleCount": 1,
@@ -5497,7 +5809,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 273,
+      "inventoryIndex": 287,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "التحويل بالتشابه المباشر",
       "exampleCount": 1,
@@ -5516,7 +5828,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 274,
+      "inventoryIndex": 288,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "التماثل المركزي",
       "exampleCount": 1,
@@ -5535,7 +5847,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 275,
+      "inventoryIndex": 289,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "التماثل المركزي مركزه نقطة معلومة",
       "exampleCount": 1,
@@ -5554,7 +5866,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 276,
+      "inventoryIndex": 290,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "التناظر المركزي",
       "exampleCount": 1,
@@ -5573,7 +5885,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 277,
+      "inventoryIndex": 291,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "الدوران",
       "exampleCount": 1,
@@ -5592,7 +5904,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 278,
+      "inventoryIndex": 292,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "الدوران حول مركز غير المبدأ",
       "exampleCount": 1,
@@ -5611,7 +5923,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 279,
+      "inventoryIndex": 293,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "الدوران في المستوي العقدي",
       "exampleCount": 1,
@@ -5630,7 +5942,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 280,
+      "inventoryIndex": 294,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "الدوران مركزه المبدأ",
       "exampleCount": 1,
@@ -5649,7 +5961,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 281,
+      "inventoryIndex": 295,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "تحويل تشابه مباشر",
       "exampleCount": 1,
@@ -5668,7 +5980,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 282,
+      "inventoryIndex": 296,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "تعامد مستقيمين في المستوى",
       "exampleCount": 1,
@@ -5689,7 +6001,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 283,
+      "inventoryIndex": 297,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "تعيين تحويل هندسي من لاحقته",
       "exampleCount": 1,
@@ -5708,7 +6020,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 284,
+      "inventoryIndex": 298,
+      "topic": "تطبيقات الأعداد العقدية",
+      "lessonLabel": "تمثيل الأشعّة بأعداد عقديّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "complex-vector-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "complex-geometry-01",
+      "suggestedLessonTitle": "تمثيل الأشعّة بأعداد عقديّة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 299,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "صورة نقطة بدوران مركزه نقطة معلومة",
       "exampleCount": 1,
@@ -5729,7 +6060,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 285,
+      "inventoryIndex": 300,
       "topic": "تطبيقات الأعداد العقدية",
       "lessonLabel": "مركز التشابه المباشر",
       "exampleCount": 1,
@@ -5748,7 +6079,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 286,
+      "inventoryIndex": 301,
       "topic": "مصطلحات المنطق الرياضي",
       "lessonLabel": "الاقتضاء والاقتضاء المعاكس",
       "exampleCount": 1,
@@ -5767,7 +6098,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 287,
+      "inventoryIndex": 302,
       "topic": "مصطلحات المنطق الرياضي",
       "lessonLabel": "البرهان بالتدريج وربطه بقضية الشمول",
       "exampleCount": 1,
@@ -5786,7 +6117,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 288,
+      "inventoryIndex": 303,
       "topic": "مصطلحات المنطق الرياضي",
       "lessonLabel": "الروابط المنطقية: و أو",
       "exampleCount": 1,
@@ -5805,7 +6136,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 289,
+      "inventoryIndex": 304,
       "topic": "مصطلحات المنطق الرياضي",
       "lessonLabel": "الشرط اللازم والشرط الكافي",
       "exampleCount": 1,
@@ -5824,7 +6155,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 290,
+      "inventoryIndex": 305,
       "topic": "مصطلحات المنطق الرياضي",
       "lessonLabel": "المكمّمات ونفي قضية شمول",
       "exampleCount": 1,
@@ -5843,7 +6174,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 291,
+      "inventoryIndex": 306,
       "topic": "مصطلحات المنطق الرياضي",
       "lessonLabel": "المكمّمات ونفي قضية وجود",
       "exampleCount": 1,
@@ -5862,7 +6193,26 @@
       "verified": false
     },
     {
-      "inventoryIndex": 292,
+      "inventoryIndex": 307,
+      "topic": "نهاية متتالية",
+      "lessonLabel": "متتاليات متجاورة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "seq-adjacent-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "sequence-limits-04",
+      "suggestedLessonTitle": "متتاليات متجاورة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 308,
       "topic": "نهاية متتالية",
       "lessonLabel": "مقارنة متتاليتين",
       "exampleCount": 1,
@@ -5881,7 +6231,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 293,
+      "inventoryIndex": 309,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهايات الجذور",
       "exampleCount": 1,
@@ -5900,7 +6250,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 294,
+      "inventoryIndex": 310,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهايات المتتاليات الكسرية",
       "exampleCount": 1,
@@ -5919,7 +6269,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 295,
+      "inventoryIndex": 311,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية باستعمال مبرهنة الحصر",
       "exampleCount": 1,
@@ -5938,7 +6288,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 296,
+      "inventoryIndex": 312,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية جذرية بالقسمة على n",
       "exampleCount": 1,
@@ -5957,7 +6307,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 297,
+      "inventoryIndex": 313,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية رتيبة ومحدودة",
       "exampleCount": 2,
@@ -5980,14 +6330,14 @@
       "verified": false
     },
     {
-      "inventoryIndex": 298,
+      "inventoryIndex": 314,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية كسرية",
       "exampleCount": 3,
       "exampleIds": [
-        "seq-limit-004",
         "exam18-seq-003",
-        "exam18-seq-004"
+        "exam18-seq-004",
+        "seq-limit-004"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -6004,7 +6354,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 299,
+      "inventoryIndex": 315,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية معرفة بعلاقة رجعية",
       "exampleCount": 2,
@@ -6024,14 +6374,14 @@
       "verified": false
     },
     {
-      "inventoryIndex": 300,
+      "inventoryIndex": 316,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية هندسية",
       "exampleCount": 3,
       "exampleIds": [
+        "ministerial17-sequence-003",
         "seq-limit-002",
-        "seq-limit-006",
-        "ministerial17-sequence-003"
+        "seq-limit-006"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 2,
@@ -6048,7 +6398,7 @@
       "verified": false
     },
     {
-      "inventoryIndex": 301,
+      "inventoryIndex": 317,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية مجموع هندسي",
       "exampleCount": 1,
@@ -6066,253 +6416,6 @@
       "confidence": "medium",
       "rationale": "نهايات المتتاليات الهندسية وخواصها",
       "reviewStatus": "suggested-review",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 302,
-      "topic": "النهايات والاستمرار",
-      "lessonLabel": "نهاية تابع مركّب",
-      "exampleCount": 1,
-      "exampleIds": [
-        "lim-composite-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "limits-05",
-      "suggestedLessonTitle": "نهاية تابع مركّب",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 303,
-      "topic": "الاشتقاق",
-      "lessonLabel": "العدد المشتق والتابع المشتق",
-      "exampleCount": 1,
-      "exampleIds": [
-        "derivative-first-principle-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "derivatives-01",
-      "suggestedLessonTitle": "العدد المشتق والتابع المشتق",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 304,
-      "topic": "الاشتقاق",
-      "lessonLabel": "المشتقات من مراتب عليا",
-      "exampleCount": 1,
-      "exampleIds": [
-        "derivative-higher-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "derivatives-05",
-      "suggestedLessonTitle": "المشتقات من مراتب عليا",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 305,
-      "topic": "التابع اللوغاريتمي",
-      "lessonLabel": "لوغاريتم جداء ضرب",
-      "exampleCount": 1,
-      "exampleIds": [
-        "log-product-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "logarithm-02",
-      "suggestedLessonTitle": "لوغاريتم جداء ضرب",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 306,
-      "topic": "التابع اللوغاريتمي",
-      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
-      "exampleCount": 1,
-      "exampleIds": [
-        "log-limit-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "logarithm-05",
-      "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 307,
-      "topic": "التابع الأسي",
-      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع الأسي",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exp-limit-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "exponential-04",
-      "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع الأسي",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 308,
-      "topic": "التابع الأسي",
-      "lessonLabel": "دراسة التوابع الأسّية بالأساس a",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exp-base-a-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "exponential-05",
-      "suggestedLessonTitle": "دراسة التوابع الأسّية بالأساس a",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 309,
-      "topic": "التابع الأسي",
-      "lessonLabel": "معادلات تفاضليّة بسيطة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exp-diff-eq-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "exponential-06",
-      "suggestedLessonTitle": "معادلات تفاضليّة بسيطة",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 310,
-      "topic": "نهاية متتالية",
-      "lessonLabel": "متتاليات متجاورة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "seq-adjacent-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "sequence-limits-04",
-      "suggestedLessonTitle": "متتاليات متجاورة",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 311,
-      "topic": "الجداء السلمي في الفراغ",
-      "lessonLabel": "الجداء السلّمي في المستوي، تذكرة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "dot-plane-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "dot-product-01",
-      "suggestedLessonTitle": "الجداء السلّمي في المستوي، تذكرة",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 312,
-      "topic": "الجداء السلمي في الفراغ",
-      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
-      "exampleCount": 1,
-      "exampleIds": [
-        "plane-cartesian-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "dot-product-04",
-      "suggestedLessonTitle": "المعادلة الديكارتيّة لمستوٍ",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 313,
-      "topic": "المستقيمات والمستويات في الفراغ",
-      "lessonLabel": "تقاطع ثلاثة مستويات",
-      "exampleCount": 1,
-      "exampleIds": [
-        "three-planes-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "lines-planes-04",
-      "suggestedLessonTitle": "تقاطع ثلاثة مستويات",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 314,
-      "topic": "تطبيقات الأعداد العقدية",
-      "lessonLabel": "تمثيل الأشعّة بأعداد عقديّة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "complex-vector-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "suggestedLessonId": "complex-geometry-01",
-      "suggestedLessonTitle": "تمثيل الأشعّة بأعداد عقديّة",
-      "confidence": "high",
-      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
-      "reviewStatus": "suggested-high-confidence",
       "verified": false
     }
   ]

@@ -1,7 +1,7 @@
-const CACHE_NAME = "math-bac-syria-v147";
+const CACHE_NAME = "math-bac-syria-v148";
 const CORE_FILES = [
   "./", "./index.html", "./security-utils.js", "./search-utils.js", "./style.css", "./style-overrides.css", "./student-tools.css", "./homepage-polish.css", "./homepage-feedback.js",
-  "./app.js", "./curriculum-progress.js", "./curriculum-progress.css", "./curriculum-map.json", "./questions.js", "./questions_vectors_additional.js", "./questions_typed_additional.js", "./question-diagrams.js",
+  "./app.js", "./curriculum-progress.js", "./curriculum-progress.css", "./curriculum-map.json", "./questions.js", "./questions_vectors_additional.js", "./questions_typed_additional.js", "./questions_automated_additional.js", "./question-diagrams.js",
   "./merge-questions.js", "./solution-guides.js", "./solved-examples.js", "./solved-examples.css", "./enhancements.js", "./math-assistant.css", "./math-assistant.js", "./scientific-calculator.js", "./function-plotter.js", "./geometry-tools.js", "./formula-library.js", "./flashcards.js",
   "./manifest.webmanifest", "./pwa-install.js", "./onboarding.js", "./assets/icon.svg", "./assets/icon-192.png", "./assets/icon-512.png"
 ];
