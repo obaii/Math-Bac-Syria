@@ -26,10 +26,9 @@ expect(lessons.reduce((sum, lesson) => sum + lesson.labels, 0) === summary.stude
   "Per-lesson assigned label counts must exclude unresolved labels.");
 expect(lessons.reduce((sum, lesson) => sum + lesson.examples, 0) === summary.studentExamples - summary.unmappedExamples,
   "Per-lesson assigned example counts must exclude unresolved examples.");
+const report = renderMarkdown({ lessons, summary });
 expect(report.includes("الدوال الدورية") && report.includes("مركز تناظر منحنى تابع"),
   "The report must list ambiguous labels separately rather than forcing a lesson assignment.");
-
-const report = renderMarkdown({ lessons, summary });
 expect(report.includes("لا يثبت تغطية الدرس") && report.includes("لا تعني أن محتوى الأمثلة يطابق"),
   "The generated report must clearly distinguish suggestions from verified lesson coverage.");
 expect(report.includes("دروس بلا اقتراحات") && report.includes("مراجعة يدوية"),
