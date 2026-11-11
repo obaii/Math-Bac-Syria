@@ -302,11 +302,14 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 20) errors.push(`دفعة الأرشيف المؤتمت يجب أن تضم 20 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
+  if (rawAutomatedAdditional !== 40) errors.push(`دفعتا الأرشيف المؤتمت يجب أن تضما 40 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
-    question.sourceType !== "تدريب مستوحى من نموذج وزاري" || question.sourceYear !== 2023 ||
-    !question.sourceLabel || !question.sourceReference || question.type !== "mcq")) {
-    errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بنوع الإلهام وسنته ومرجعه وتصنيف الاختيار من متعدد.");
+    !["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType) ||
+    ![2018, 2023].includes(question.sourceYear) ||
+    !question.sourceLabel || !question.sourceReference || question.type !== "mcq" ||
+    !Array.isArray(question.options) || question.options.length !== 4 ||
+    !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3)) {
+    errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بالمصدر والسنة وأربعة خيارات وإجابة صحيحة صالحة.");
   }
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);

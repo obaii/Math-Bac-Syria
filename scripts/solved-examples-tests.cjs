@@ -59,14 +59,22 @@ if (!library || !Array.isArray(library.examples)) {
     failures.push("Expected 19 original ministerial examples and 20 separately labelled original practice variants inspired by the 2023 model.");
   }
   const inspiredCycleExamples = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية");
-  if (inspiredCycleExamples.length !== 20 ||
-      inspiredCycleExamples.some(item => item.sourceYear !== 2024 ||
-        !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+  const inspired2024Examples = inspiredCycleExamples.filter(item => item.sourceYear === 2024);
+  const inspired2018Examples = inspiredCycleExamples.filter(item => item.sourceYear === 2018);
+  if (inspired2024Examples.length !== 20 ||
+      inspired2024Examples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
         item.sourceReference !== "https://www.zarkachat.com/exam-questions-12-math-syria-2024/" ||
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2024 first-session exam.");
   }
-  if (examples.length !== 404) failures.push(`Expected exactly 404 current examples, found ${examples.length}.`);
+  if (inspired2018Examples.length !== 20 ||
+      inspired2018Examples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.3lom4all.com/object/MG20788/" ||
+        item.sourceSession !== "الدورة الأولى 2018" ||
+        !Array.isArray(item.steps) || item.steps.length < 3)) {
+    failures.push("Expected 20 detailed original practice variants inspired by the 2018 first-session exam.");
+  }
+  if (examples.length !== 424) failures.push(`Expected exactly 424 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
@@ -74,6 +82,14 @@ if (!library || !Array.isArray(library.examples)) {
         item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/" ||
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("The 20 original variants must retain source inspiration metadata and detailed solution steps.");
+  }
+  const limitVariant = examples.find(item => item.id === "ministerial23-auto-021");
+  if (!limitVariant || !limitVariant.question.includes("بدلالة f(1)") || !limitVariant.answer.includes("2f(1)")) {
+    failures.push("The 2023 ministerial-inspired limit exercise must ask for the result in terms of f(1).");
+  }
+  const asymptoteVariant = examples.find(item => item.id === "ministerial23-auto-024");
+  if (!asymptoteVariant || !asymptoteVariant.steps.join(" ").includes("−4")) {
+    failures.push("The 2023 ministerial-inspired asymptote solution must retain the negative conjugate numerator.");
   }
   if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain nine verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2025 && item.sourceSession === "الدورة الأولى").length !== 10) failures.push("The 2025 first-session source batch should contain ten verified adaptations.");

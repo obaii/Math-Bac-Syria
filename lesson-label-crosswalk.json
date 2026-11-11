@@ -6,7 +6,7 @@
     "labelCount": 321,
     "studentCurriculumLabels": 315,
     "supplementaryLabels": 6,
-    "studentExamples": 398,
+    "studentExamples": 418,
     "supplementaryExamples": 6,
     "high": 153,
     "medium": 154,
@@ -1689,12 +1689,14 @@
       "inventoryIndex": 84,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الدوران في المستوى العقدي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam18-complex-001"
+        "exam18-complex-001",
+        "exam18-cycle1-002"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2018
@@ -1845,14 +1847,19 @@
       "inventoryIndex": 91,
       "topic": "الأعداد العقدية",
       "lessonLabel": "العمليات على الأعداد العقدية",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
-        "cx-001"
+        "cx-001",
+        "exam18-cycle1-003",
+        "exam18-cycle1-005"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "complex-01",
       "suggestedLessonTitle": "مجموعة الأعداد العقديّة",
       "confidence": "medium",
@@ -2026,15 +2033,19 @@
       "inventoryIndex": 100,
       "topic": "الأعداد العقدية",
       "lessonLabel": "طويلة عدد عقدي",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "cx-008",
-        "cx-016"
+        "cx-016",
+        "exam18-cycle1-001"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 2,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "complex-04",
       "suggestedLessonTitle": "خواص طويلة عدد عقدي وزاويته",
       "confidence": "medium",
@@ -2065,14 +2076,18 @@
       "inventoryIndex": 102,
       "topic": "الأعداد العقدية",
       "lessonLabel": "قسمة عددين عقديين",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "cx-010"
+        "cx-010",
+        "exam18-cycle1-004"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "complex-01",
       "suggestedLessonTitle": "مجموعة الأعداد العقديّة",
       "confidence": "medium",
@@ -2632,15 +2647,18 @@
       "inventoryIndex": 130,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "دراسة التابع اللوغاريتمي ln",
-      "exampleCount": 2,
+      "exampleCount": 4,
       "exampleIds": [
+        "exam18-cycle1-017",
+        "exam18-cycle1-020",
         "exam24-cycle1-018",
         "exam24-cycle1-019"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
+        2018,
         2024
       ],
       "suggestedLessonId": "logarithm-03",
@@ -2713,15 +2731,19 @@
       "inventoryIndex": 134,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "مجال التعريف",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam18-cycle1-015",
         "log-001",
         "log-013"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 2,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "logarithm-01",
       "suggestedLessonTitle": "التابع اللوغاريتمي النيبيري",
       "confidence": "medium",
@@ -2752,14 +2774,18 @@
       "inventoryIndex": 136,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "مشتقة اللوغاريتم النيبيري",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle1-016",
         "log-008"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "logarithm-04",
       "suggestedLessonTitle": "مشتق التابع المركب ln∘u",
       "confidence": "high",
@@ -2791,8 +2817,9 @@
       "inventoryIndex": 138,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
-      "exampleCount": 4,
+      "exampleCount": 5,
       "exampleIds": [
+        "exam18-cycle1-018",
         "exam24-cycle1-013",
         "exam24-cycle1-014",
         "exam24-cycle1-020",
@@ -2800,9 +2827,10 @@
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 3
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
+        2018,
         2024
       ],
       "suggestedLessonId": "logarithm-05",
@@ -2911,19 +2939,22 @@
       "inventoryIndex": 144,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوافيق",
-      "exampleCount": 4,
+      "exampleCount": 5,
       "exampleIds": [
         "comb-001",
         "comb-010",
         "comb-014",
-        "exam17-comb-001"
+        "exam17-comb-001",
+        "exam18-cycle1-012"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 3,
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2017
+        2017,
+        2018
       ],
       "suggestedLessonId": "combinatorics-02",
       "suggestedLessonTitle": "التّوافيق",
@@ -4276,15 +4307,18 @@
       "inventoryIndex": 212,
       "topic": "المتتاليات",
       "lessonLabel": "رتابة متتالية",
-      "exampleCount": 3,
+      "exampleCount": 5,
       "exampleIds": [
+        "exam18-cycle1-006",
+        "exam18-cycle1-008",
         "exam18-seq-001",
         "exam18-seq-002",
         "seq-005"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "دورة امتحانية": 2
+        "دورة امتحانية": 2,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018
@@ -4372,14 +4406,16 @@
       "inventoryIndex": 216,
       "topic": "المتتاليات",
       "lessonLabel": "متتاليتان متجاورتان",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam18-cycle1-009",
         "exam18-seq-005",
         "seq-adj-001"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2018
@@ -4546,15 +4582,18 @@
       "inventoryIndex": 224,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "الكرة والمستوى",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam17-sphere-001"
+        "exam17-sphere-001",
+        "exam18-cycle1-011"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2017
+        2017,
+        2018
       ],
       "suggestedLessonId": "lines-planes-01",
       "suggestedLessonTitle": "المستقيم والمستوي بصفتهما مراكز أبعاد متناسبة",
@@ -4588,12 +4627,14 @@
       "inventoryIndex": 226,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المسافة من نقطة إلى مستوى",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle1-010",
         "exam18-plane-001"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2018
@@ -5327,9 +5368,10 @@
       "inventoryIndex": 262,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب المائل",
-      "exampleCount": 4,
+      "exampleCount": 5,
       "exampleIds": [
         "exam17-limit-002",
+        "exam18-cycle1-019",
         "lim-003",
         "ministerial23-auto-023",
         "ministerial23-auto-024"
@@ -5337,10 +5379,12 @@
       "sourceTypes": {
         "تدريبي مؤلف": 1,
         "دورة امتحانية": 1,
-        "تدريب مستوحى من نموذج وزاري": 2
+        "تدريب مستوحى من نموذج وزاري": 2,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2017,
+        2018,
         2023
       ],
       "suggestedLessonId": "limits-06",
@@ -5725,14 +5769,19 @@
       "inventoryIndex": 281,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهايات مثلثية أساسية",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam18-cycle1-013",
+        "exam18-cycle1-014",
         "lim-005"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "limits-02",
       "suggestedLessonTitle": "نهاية تابع عند عدد حقيقي",
       "confidence": "medium",
@@ -6423,16 +6472,19 @@
       "inventoryIndex": 317,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية رتيبة ومحدودة",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam18-cycle1-007",
         "exam22-seq-004",
         "seq-mono-bound-001"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2022
       ],
       "suggestedLessonId": "sequence-limits-03",
