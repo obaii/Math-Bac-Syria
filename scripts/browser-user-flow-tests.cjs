@@ -413,7 +413,7 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-year").selectOption("2021");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 9, "the 2021 source filter should show nine adaptations");
     await page.locator("#solved-example-year").selectOption("2022");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 35, "the 2022 source filter should show 35 adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 55, "the 2022 source filter should show all 55 adaptations, including the new 2022 batch");
     await page.locator("#solved-example-year").selectOption("2025");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 30, "the 2025 source filter should show ten archived adaptations and twenty new practice variants");
     await page.locator("#solved-example-year").selectOption("");
