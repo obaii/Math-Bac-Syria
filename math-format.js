@@ -35,26 +35,7 @@
   }
 
   function formatPlainTextSegment(segment) {
-    let value = segment;
-
-    // Standardize limit notation so the variable always approaches infinity:
-    // lim(x→+∞), lim(x->∞), and the reversed-arrow typo all become x -> +∞.
-    value = value.replace(/\blim\s*\(\s*([xn])\s*(?:→|->|⟶|←|<-)\s*([+＋−-]?\s*(?:∞|infinity))\s*\)/gi,
-      function (_, variable, destination) {
-        const sign = destination.replace(/\s/g, "").replace("＋", "+").replace("−", "-");
-        return "\\(\\lim_{" + variable + "\\to" + sign.replace("infinity", "\\infty") + "}\\)";
-      });
-
-    value = value.replace(/(?<![A-Za-z0-9_])([xn])\s*(?:←|<-)\s*([+＋−-]?\s*∞)/g,
-      function (_, variable, destination) {
-        return "\\(" + variable + "\\to" + destination.replace(/\s/g, "").replace("＋", "+").replace("−", "-") + "\\)";
-      });
-    value = value.replace(/(?<![A-Za-z0-9_])([xn])\s*(?:→|->|⟶)\s*([+＋−-]?\s*∞)/g,
-      function (_, variable, destination) {
-        return "\\(" + variable + "\\to" + destination.replace(/\s/g, "").replace("＋", "+").replace("−", "-") + "\\)";
-      });
-
-    return value.replace(PLAIN_MATH_RUN, function (candidate) {
+    return segment.replace(PLAIN_MATH_RUN, function (candidate) {
       if (!MATH_OPERATOR.test(candidate) || !/[A-Za-z0-9∞πθ]/.test(candidate)) return candidate;
       const leading = candidate.match(/^\s*/)?.[0] || "";
       const trailing = candidate.match(/\s*$/)?.[0] || "";
