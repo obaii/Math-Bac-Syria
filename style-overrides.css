@@ -2157,3 +2157,65 @@ body.dark-mode #bookmark-list .bookmark-number {
     font-size: .8rem;
   }
 }
+
+
+/* 2026-11: Keep Arabic question and review counters intact on narrow screens. */
+#quiz .question-card .question-label {
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: .4rem;
+  width: max-content;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: visible;
+}
+#quiz .question-card #question-number {
+  display: inline-block;
+  flex: 0 0 auto;
+  min-width: max-content;
+  white-space: nowrap;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+#student-tools .tools-actions button#bookmark-review,
+#student-tools .tools-actions button#guided-review {
+  display: inline-flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: .35rem;
+  row-gap: .1rem;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  line-height: 1.55;
+}
+#student-tools #bookmark-count,
+#student-tools #guided-count {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.45em;
+  padding-inline: .2em;
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+@media (max-width: 420px) {
+  #quiz .question-card .question-label {
+    gap: .3rem;
+    padding-inline: 8px;
+    font-size: .88rem;
+  }
+  #student-tools .tools-actions button#bookmark-review,
+  #student-tools .tools-actions button#guided-review {
+    padding-inline: 10px;
+  }
+}
