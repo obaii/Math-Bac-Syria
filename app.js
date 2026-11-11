@@ -1427,7 +1427,7 @@ function showQuestion(){
   const q=quizQuestions[index];
   const type=getQuestionType(q);
   $("question-number").textContent=(index+1).toLocaleString("ar") + " من " + quizQuestions.length.toLocaleString("ar");
-  $("progress").textContent="السؤال " + (index+1).toLocaleString("ar") + " / " + quizQuestions.length.toLocaleString("ar");
+  $("progress").innerHTML='<span class="progress-label">السؤال</span><b class="progress-fraction" dir="ltr"><span>' + (index+1).toLocaleString("ar") + '</span><span aria-hidden="true">/</span><span>' + quizQuestions.length.toLocaleString("ar") + '</span></b>';
   updateQuizProgress(index);
   const questionHost = $("question-text");
   const promptCopy = document.createElement("div");
