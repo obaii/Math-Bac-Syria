@@ -67,11 +67,12 @@ function buildAudit() {
     verifiedLabels: (crosswalk.entries || []).filter(row => row.verified === true).length
   };
 
-  return { lessons, summary };
+  const unresolvedRows = studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null);
+  return { lessons, summary, unresolvedRows };
 }
 
 function renderMarkdown(audit) {
-  const { lessons, summary } = audit;
+  const { lessons, summary, unresolvedRows } = audit;
   const lines = [
     "# تقرير خريطة الاقتراحات الأولية للأمثلة المحلولة",
     "",
@@ -111,7 +112,7 @@ function renderMarkdown(audit) {
     "",
     "| الموضوع | عنوان التسمية | أمثلة | معرّفات الأمثلة |",
     "|---|---|---:|---|",
-    ...studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null)
+    ...unresolvedRows
       .map(row => "| " + row.topic + " | " + row.lessonLabel + " | " + row.exampleCount + " | " + (row.exampleIds || []).join(", ") + " |"),
     "",
     "## طريقة قراءة التقرير",
