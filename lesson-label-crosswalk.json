@@ -9,9 +9,9 @@
     "studentExamples": 498,
     "supplementaryExamples": 6,
     "high": 153,
-    "medium": 157,
-    "low": 9,
-    "unmapped": 9
+    "medium": 158,
+    "low": 8,
+    "unmapped": 8
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -6826,11 +6826,11 @@
       "years": [
         2022
       ],
-      "suggestedLessonId": null,
-      "suggestedLessonTitle": null,
-      "confidence": "low",
-      "rationale": "عنوان فرعي وارد في مسائل مستوحاة من دورة 2022؛ يحتاج إلى مراجعة نص السؤال والكتاب قبل اقتراح درس مطابق.",
-      "reviewStatus": "unmapped",
+      "suggestedLessonId": "exponential-03",
+      "suggestedLessonTitle": "دراسة التابع الأسي",
+      "confidence": "medium",
+      "rationale": "يطابق عنوان الدرس المقابل في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة نص السؤال والكتاب.",
+      "reviewStatus": "suggested-review",
       "verified": false
     }
   ]
