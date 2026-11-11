@@ -586,6 +586,7 @@
       }[id];
       element.addEventListener("click", () => {
         if (exclusivePanel) closeOtherReviewPanels(exclusivePanel);
+        else if (id === "smart-review" || id === "intensive-training-start") closeOtherReviewPanels(null);
         handler();
       });
       element.dataset.enhancementBound = "true";
@@ -1464,7 +1465,13 @@
     const output = document.getElementById("review-assistant-output");
     const button = document.getElementById("review-assistant-generate");
     if (!panel || !status || !output || !button) return;
+    if (!panel.hidden) {
+      panel.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      return;
+    }
     panel.hidden = false;
+    button.setAttribute("aria-expanded", "true");
     panel.setAttribute("aria-busy", "true");
     button.disabled = true;
     const snapshot = buildReviewAssistantSnapshot();
