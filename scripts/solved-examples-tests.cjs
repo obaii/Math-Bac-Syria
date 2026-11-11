@@ -50,8 +50,18 @@ if (!library || !Array.isArray(library.examples)) {
   if (examples.filter(item => item.topic === "مصطلحات المنطق الرياضي").length !== 6) failures.push("Expected six authored examples covering mathematical logic and induction foundations.");
   if (examples.filter(item => item.topic === "تطبيقات الأعداد العقدية").length !== 15) failures.push("Expected fifteen complex-number geometry applications.");
   const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
-  if (ministerialExamples.length !== 19 || ministerialExamples.some(item => item.sourceYear !== 2017)) failures.push("Expected nineteen adaptations from verified 2017 ministerial models.");
-  if (examples.length !== 364) failures.push(`Expected exactly 364 current examples, found ${examples.length}.`);
+  if (ministerialExamples.length !== 39 ||
+      ministerialExamples.filter(item => item.sourceYear === 2017).length !== 19 ||
+      ministerialExamples.filter(item => item.sourceYear === 2023 && item.sourceLabel.includes("النموذج الوزاري المؤتمت المؤرشف")).length !== 20) {
+    failures.push("Expected 19 earlier ministerial adaptations and 20 newly sourced archived automated-model examples.");
+  }
+  if (examples.length !== 384) failures.push(`Expected exactly 384 current examples, found ${examples.length}.`);
+  const archivedAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
+  if (archivedAutomatedExamples.length !== 20 ||
+      archivedAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "نموذج وزاري" ||
+        item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/" || !Array.isArray(item.steps) || item.steps.length < 3)) {
+    failures.push("The 20 archived automated-model examples must retain their source and detailed solution steps.");
+  }
   if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain nine verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2025 && item.sourceSession === "الدورة الأولى").length !== 10) failures.push("The 2025 first-session source batch should contain ten verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
