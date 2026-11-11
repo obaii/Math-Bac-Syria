@@ -392,6 +392,53 @@ const assert = require("node:assert/strict");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 544, "the library should render all 544 solved examples");
+    const completeLibraryAudit = await page.evaluate(() => {
+      const examples = window.solvedExamplesLibrary.examples;
+      const cards = Array.from(document.querySelectorAll("#solved-examples-list .solved-example-card"));
+      const byId = new Map(cards.map(card => [card.dataset.exampleId, card]));
+      const missing = [];
+      let checkedMathFields = 0;
+      for (const item of examples) {
+        const card = byId.get(item.id);
+        if (!card) {
+          missing.push(item.id + ": card missing");
+          continue;
+        }
+        const stepNodes = card.querySelectorAll("ol li");
+        const fields = [
+          [".solved-example-question", item.question, card.querySelector(".solved-example-question")],
+          [".solved-example-idea", "الفكرة الأساسية: " + item.keyIdea, card.querySelector(".solved-example-idea")],
+          [".solved-example-answer", "النتيجة: " + item.answer, card.querySelector(".solved-example-answer")],
+          [".solved-example-check", "التحقق: " + item.check, card.querySelector(".solved-example-check")]
+        ];
+        item.steps.forEach((step, index) => fields.push(["step " + (index + 1), step, stepNodes[index]]));
+        for (const [label, raw, node] of fields) {
+          if (!node) {
+            missing.push(item.id + ": " + label + " missing");
+            continue;
+          }
+          const prepared = window.formatMathContent(String(raw || ""));
+          if (/\\\(|\\\[/g.test(prepared)) {
+            checkedMathFields += 1;
+            if (!node.querySelector("mjx-container")) missing.push(item.id + ": " + label + " not typeset");
+          }
+        }
+      }
+      return {
+        examples: examples.length,
+        renderedCards: cards.length,
+        checkedMathFields,
+        missing: missing.slice(0, 25),
+        missingCount: missing.length
+      };
+    });
+    assert.equal(completeLibraryAudit.examples, 544, "the complete audit should read every solved example");
+    assert.equal(completeLibraryAudit.renderedCards, 544, "every solved example should have a rendered card");
+    assert.ok(completeLibraryAudit.checkedMathFields > 0, "the complete audit should inspect mathematical fields across the library");
+    assert.equal(completeLibraryAudit.missingCount, 0,
+      "every formula in every solved-example question, idea, step, answer, and check should be typeset: " +
+      JSON.stringify(completeLibraryAudit.missing));
+
     await page.waitForFunction(() => {
       const card = document.querySelector("#solved-examples-list .solved-example-card");
       return card &&
