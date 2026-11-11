@@ -62,7 +62,7 @@ for (const [field, value] of Object.entries(summary)) {
   if (crosswalk.summary[field] !== value) failures.push("Crosswalk summary mismatch for " + field + ".");
 }
 if (studentRows.length !== 318 || supplementaryRows.length !== 6) failures.push("Expected 318 student-curriculum labels and 6 supplementary labels.");
-if (summary.studentExamples !== 418 || summary.supplementaryExamples !== 6) failures.push("Expected 418 student-curriculum examples and 6 supplementary examples.");
+if (summary.studentExamples !== 438 || summary.supplementaryExamples !== 6) failures.push("Expected 438 student-curriculum examples and 6 supplementary examples.");
 console.log("Solved-example lesson-label crosswalk: " + rows.length + "/324 labels.");
 console.log("Student curriculum: " + studentRows.length + " labels / " + summary.studentExamples + " examples.");
 console.log("Supplementary teacher-guide material excluded: " + supplementaryRows.length + " labels / " + summary.supplementaryExamples + " examples.");
