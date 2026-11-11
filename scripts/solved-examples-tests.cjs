@@ -92,7 +92,7 @@ if (!library || !Array.isArray(library.examples)) {
   if (inspired2025Examples.length !== 20 || inspired2025Examples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") || item.sourceReference !== "https://www.syria4our.net/math-secondary-exam-syria-2025/" || !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2025 first-session exam.");
   }
-  if (examples.length !== 484) failures.push(`Expected exactly 484 current examples, found ${examples.length}.`);
+  if (examples.length !== 504) failures.push(`Expected exactly 504 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
