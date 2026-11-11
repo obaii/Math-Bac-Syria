@@ -1058,14 +1058,15 @@
       "inventoryIndex": 52,
       "topic": "الاشتقاق",
       "lessonLabel": "دراسة اتجاه التغير",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "der-004",
+        "exam18-cycle2-003",
         "exam18-cycle2-010"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018
@@ -5741,17 +5742,14 @@
       "inventoryIndex": 277,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "قراءة جدول التغيرات وحساب النهايات",
-      "exampleCount": 2,
+      "exampleCount": 1,
       "exampleIds": [
-        "exam18-cycle2-003",
         "exam19-func-001"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "دورة امتحانية": 1
       },
       "years": [
-        2018,
         2019
       ],
       "suggestedLessonId": null,
