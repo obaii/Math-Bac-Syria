@@ -2462,6 +2462,67 @@ const assert = require("node:assert/strict");
     await page.locator("#section-menu").waitFor({ state: "hidden" });
     await page.setViewportSize({ width: 1365, height: 900 });
 
+
+    // Verify the shared automated-question renderer applies math formatting to the prompt,
+    // every multiple-choice option, the answer summary, and the detailed solution.
+    const automatedQuestionMath = await page.evaluate(async () => {
+      if (typeof showQuestion !== "function" || typeof submitQuestionAnswer !== "function") {
+        return { rendererAvailable: false };
+      }
+      const fixture = {
+        topic: "النهايات والاستمرار",
+        q: "اختبر الكسر (2+3i)/(1−2i)، والأس 3^×، والنهاية lim(x→+∞).",
+        options: ["1/2", "3^×", "lim(x→+∞)"],
+        answer: 0,
+        type: "mcq",
+        level: "متوسط",
+        keyIdea: "نحوّل (2+3i)/(1−2i) إلى كسر واضح ونضبط الأس 3^×.",
+        steps: [
+          "نكتب الكسر 1/2 بصورة رياضية.",
+          "نكتب الأس 3^× على صورة 3^x.",
+          "نكتب النهاية lim(x→+∞) باتجاه x نحو اللانهاية الموجبة."
+        ],
+        solution: "الحل: 1/2"
+      };
+      quizQuestions = [fixture];
+      index = 0;
+      answered = false;
+      reviewMode = true;
+      sessionMistakes = [];
+      currentTopic = fixture.topic;
+      showQuestion();
+      await window.MathJax.startup.promise;
+      await window.MathJax.typesetPromise([
+        document.querySelector("#question-text"),
+        document.querySelector("#options")
+      ]);
+      const promptMath = document.querySelectorAll("#question-text mjx-container").length;
+      const optionMath = [...document.querySelectorAll("#options .option")].map(option => option.querySelectorAll("mjx-container").length);
+      submitQuestionAnswer(1);
+      await window.MathJax.typesetPromise([document.querySelector("#feedback")]);
+      const solution = document.querySelector("#feedback .solution");
+      return {
+        rendererAvailable: true,
+        promptMath,
+        optionMath,
+        answerSummaryMath: document.querySelector("#feedback > div mjx-container") ? 1 : 0,
+        solutionMath: solution ? solution.querySelectorAll("mjx-container").length : 0,
+        normalizedFraction: window.formatMathContent("1/2").includes("\\frac{1}{2}"),
+        normalizedExponent: window.formatMathContent("3^×").includes("3^{x}"),
+        normalizedLimit: window.formatMathContent("lim(x→+∞)").includes("\\lim_{x\\to+\\infty}"),
+        topicCount: topics.length
+      };
+    });
+    assert.equal(automatedQuestionMath.rendererAvailable, true, "the automated question renderer should be available");
+    assert.equal(automatedQuestionMath.topicCount, 14, "the shared renderer should serve all 14 research topics");
+    assert.ok(automatedQuestionMath.promptMath >= 3, "the automated question prompt should typeset its fraction, exponent, and limit");
+    assert.deepEqual(automatedQuestionMath.optionMath, [1, 1, 1], "each multiple-choice option should render its own mathematical expression");
+    assert.ok(automatedQuestionMath.answerSummaryMath > 0, "the correct-answer summary should typeset the mathematical option");
+    assert.ok(automatedQuestionMath.solutionMath >= 4, "the detailed solution idea and every step should typeset mathematical expressions");
+    assert.equal(automatedQuestionMath.normalizedFraction, true, "the automated question renderer should normalize slash fractions");
+    assert.equal(automatedQuestionMath.normalizedExponent, true, "the automated question renderer should normalize the malformed exponent example");
+    assert.equal(automatedQuestionMath.normalizedLimit, true, "the automated question renderer should normalize limit arrows from x towards infinity");
+
     assert.deepEqual(pageErrors, [], "no uncaught browser JavaScript errors should occur during the flow");
     console.log("PASS: desktop flows, topic cards, bookmarks, quiz feedback, exam simulation, 360/390px responsive layout, question diagram bounds, MathJax rendering, and offline launch");
   } finally {
