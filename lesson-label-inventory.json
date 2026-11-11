@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "description": "Inventory of every lesson label used by the solved-examples library. Labels are descriptive subtopic labels, not yet certified as exact textbook lesson titles.",
   "exampleCount": 444,
-  "uniqueTopicLessonLabels": 324,
+  "uniqueTopicLessonLabels": 325,
   "mappingPolicy": "Each label remains pending until its content is matched to one of the 63 student-book lessons. Teacher-guide supplementary topics remain separate.",
   "entries": [
     {
@@ -1898,6 +1898,25 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع الأسي",
+      "unit": "التابع الأسي",
+      "lessonLabel": "دراسة التابع الأسي",
+      "exampleCount": 3,
+      "exampleIds": [
+        "exam22-cycle1-017",
+        "exam22-cycle1-018",
+        "exam22-cycle1-020"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 3
+      },
+      "years": [
+        2022
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
