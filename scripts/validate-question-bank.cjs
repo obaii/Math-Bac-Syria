@@ -311,15 +311,17 @@ try {
     !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3)) {
     errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بالمصدر والسنة وأربعة خيارات وإجابة صحيحة صالحة.");
   }
+  const firstSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2018");
   const secondSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الثانية 2018");
-  if (secondSessionAutomated.length !== 20 || secondSessionAutomated.some(question => {
-    const match = String(question.sourceLabel || "").match(/السؤال الفرعي (\\d+)/);
+  const hasInvalid2018AnswerIndex = [...firstSessionAutomated, ...secondSessionAutomated].some(question => {
+    const match = String(question.sourceLabel || "").match(/السؤال الفرعي (\d+)/);
     if (!match) return true;
     const number = Number(match[1]);
     const expectedIndex = (4 - (((number - 1) * 3) % 4)) % 4;
     return question.answer !== expectedIndex;
-  })) {
-    errors.push("إجابات أسئلة الدورة الثانية 2018 المؤتمتة لا تطابق مواضع الخيارات الصحيحة المتوقعة.");
+  });
+  if (firstSessionAutomated.length !== 20 || secondSessionAutomated.length !== 20 || hasInvalid2018AnswerIndex) {
+    errors.push("يجب أن تضم كل دورة من دورتي 2018 عشرين سؤالاً مؤتمتاً، وأن تطابق مفاتيح الإجابة مواضع الخيارات الصحيحة.");
   }
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
