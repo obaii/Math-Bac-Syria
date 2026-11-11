@@ -398,13 +398,19 @@ if (!library || !Array.isArray(library.examples)) {
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
 if (!/solved-examples\.js\?v=[A-Za-z0-9._-]+/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
 if (!/solved-examples\.css\?v=[A-Za-z0-9._-]+/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
+if (index.indexOf("math-format.js") < 0 || index.indexOf("math-format.js") > index.indexOf("solved-examples.js")) failures.push("The shared math formatter must load before the solved examples library.");
 if (index.indexOf("solved-examples.js") > index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
 
 if (!source.includes('id = "solved-examples-library"') && !source.includes('section.id = "solved-examples-library"')) {
   failures.push("The dedicated solved examples panel was not found.");
 }
 if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')) failures.push("The solved examples panel needs an accessible label.");
-if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
+if (!source.includes("item.question") || !source.includes("question.textContent = formatSolvedExampleMath(item.question)")) failures.push("Solved-example questions must pass through the shared math formatter while remaining safe text.");
+if (!source.includes("function formatSolvedExampleMath(value)") || !source.includes("window.formatMathContent")) failures.push("The solved examples library must use the shared math formatter.");
+if (!source.includes('idea.textContent = "الفكرة الأساسية: " + formatSolvedExampleMath(item.keyIdea)')) failures.push("Solved-example key ideas must format mathematical notation.");
+if (!source.includes("li.textContent=formatSolvedExampleMath(step)")) failures.push("Every solved-example solution step must format mathematical notation.");
+if (!source.includes('answer.textContent = "النتيجة: " + formatSolvedExampleMath(item.answer)')) failures.push("Solved-example answers must format mathematical notation.");
+if (!source.includes('check.textContent = "التحقق: " + formatSolvedExampleMath(item.check)')) failures.push("Solved-example checks must format mathematical notation.");
 if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
 if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must display available visuals beside their questions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
