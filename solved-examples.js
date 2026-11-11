@@ -615,7 +615,9 @@
     }).join("");
   }
 
+  let renderRevision = 0;
   function render() {
+    const currentRender = ++renderRevision;
     const term = searchInput.value.trim();
     const filtered = examples.filter(item =>
       (!topicSelect.value || item.topic === topicSelect.value) &&
@@ -657,9 +659,12 @@
       article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
     });
     if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
-      const typesetExamples = () => window.MathJax.typesetPromise([list]).catch(error => {
-        console.warn("تعذر تنسيق صيغة رياضية في مكتبة الأمثلة المحلولة", error);
-      });
+      const typesetExamples = () => {
+        if (currentRender !== renderRevision) return Promise.resolve();
+        return window.MathJax.typesetPromise([list]).catch(error => {
+          console.warn("تعذر تنسيق صيغة رياضية في مكتبة الأمثلة المحلولة", error);
+        });
+      };
       if (window.MathJax.startup && window.MathJax.startup.promise) {
         window.MathJax.startup.promise.then(typesetExamples).catch(error => {
           console.warn("تعذر تهيئة تنسيق مكتبة الأمثلة المحلولة", error);
