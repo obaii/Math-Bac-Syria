@@ -83,10 +83,11 @@ try {
   load("questions.js");
   load("questions_vectors_additional.js");
   load("questions_typed_additional.js");
+  load("questions_automated_additional.js");
   load("merge-questions.js");
   load("solved-examples.js");
   const bank = vm.runInContext(
-    "({ topics, questions, vectorQuestionsAdditional, typedQuestionsAdditional })",
+    "({ topics, questions, vectorQuestionsAdditional, typedQuestionsAdditional, automatedQuestionsAdditional })",
     context
   );
   topics = bank.topics || [];
