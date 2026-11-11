@@ -58,15 +58,21 @@ if (!library || !Array.isArray(library.examples)) {
         item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/")) {
     failures.push("Expected 19 original ministerial examples and 20 separately labelled original practice variants inspired by the 2023 model.");
   }
-  const inspiredCycleExamples = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية");
-  if (inspiredCycleExamples.length !== 20 ||
-      inspiredCycleExamples.some(item => item.sourceYear !== 2024 ||
-        !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+  const inspiredCycle2024 = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2024);
+  const inspiredCycle2025 = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2025);
+  if (inspiredCycle2024.length !== 20 ||
+      inspiredCycle2024.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
         item.sourceReference !== "https://www.zarkachat.com/exam-questions-12-math-syria-2024/" ||
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2024 first-session exam.");
   }
-  if (examples.length !== 404) failures.push(`Expected exactly 404 current examples, found ${examples.length}.`);
+  if (inspiredCycle2025.length !== 20 ||
+      inspiredCycle2025.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.syria4our.net/math-secondary-exam-syria-2025/" ||
+        !Array.isArray(item.steps) || item.steps.length < 2)) {
+    failures.push("Expected 20 detailed original practice variants inspired by the 2025 first-session exam.");
+  }
+  if (examples.length !== 464) failures.push(`Expected exactly 464 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
