@@ -3,11 +3,17 @@
 
   const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<[^>]*>)/g;
   const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹()[\]{}.+\-−×÷*/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
-  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*/^√∫∑]/;
+  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹]/;
 
   function normalizePlainExpression(expression) {
     let value = expression.trim();
     if (!value) return expression;
+
+    value = value.replace(/\blim\s*\(\s*([xn])\s*(?:→|->|⟶|←|<-)\s*([+＋−-]?\s*(?:∞|infinity))\s*\)/gi,
+      function (_, variable, destination) {
+        const sign = destination.replace(/\s/g, "").replace("＋", "+").replace("−", "-").toLowerCase();
+        return "\\lim_{" + variable + "\\to" + sign.replace("infinity", "\\infty") + "}";
+      });
 
     // A caret followed by the multiplication glyph is a common keyboard typo
     // for the variable x in an exponent (for example, 3^×).
