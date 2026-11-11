@@ -16,16 +16,18 @@ expect(summary.mediumConfidenceLabels === 147, "Medium-confidence suggestion cou
 expect(summary.lowConfidenceLabels === 8, "Low-confidence suggestion count must match the crosswalk.");
 expect(summary.manualReviewLabels === 8 && summary.manualReviewExamples === 8,
   "All eight manually flagged labels must remain visible as unresolved.");
+expect(summary.unmappedLabels === 8 && summary.unmappedExamples === 8,
+  "All eight ambiguous labels must remain unassigned until manual review.");
 expect(summary.verifiedLabels === 0, "No provisional suggestion may be reported as verified.");
 expect(summary.lessonsWithSuggestions === 63 && summary.lessonsWithoutSuggestions === 0, "All 63 lessons should now have at least one provisional example suggestion.");
 expect(lessons.length === 63 && new Set(lessons.map(lesson => lesson.id)).size === 63,
   "Every lesson must have a unique stable lesson ID.");
-expect(lessons.reduce((sum, lesson) => sum + lesson.labels, 0) === summary.studentLabels,
-  "Per-lesson label counts must sum to the student-label total.");
-expect(lessons.reduce((sum, lesson) => sum + lesson.examples, 0) === summary.studentExamples,
-  "Per-lesson example counts must sum to the student-example total.");
-expect(lessons.reduce((sum, lesson) => sum + lesson.manualReviewLabels, 0) === summary.manualReviewLabels,
-  "Per-lesson manual-review counts must reconcile with the summary.");
+expect(lessons.reduce((sum, lesson) => sum + lesson.labels, 0) === summary.studentLabels - summary.unmappedLabels,
+  "Per-lesson assigned label counts must exclude unresolved labels.");
+expect(lessons.reduce((sum, lesson) => sum + lesson.examples, 0) === summary.studentExamples - summary.unmappedExamples,
+  "Per-lesson assigned example counts must exclude unresolved examples.");
+expect(report.includes("الدوال الدورية") && report.includes("مركز تناظر منحنى تابع"),
+  "The report must list ambiguous labels separately rather than forcing a lesson assignment.");
 
 const report = renderMarkdown({ lessons, summary });
 expect(report.includes("لا يثبت تغطية الدرس") && report.includes("لا تعني أن محتوى الأمثلة يطابق"),
@@ -39,7 +41,7 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log("PASS: 63 lessons, 308 student labels, and 358 examples reconcile.");
-  console.log("PASS: 8 manual-review labels remain explicitly unresolved.");
+  console.log("PASS: 8 manual-review labels remain explicitly unresolved and unassigned.");
   console.log("PASS: provisional suggestions are never counted as verified coverage.");
   console.log("PASS: per-lesson totals and generated-report safeguards are consistent.");
 }
