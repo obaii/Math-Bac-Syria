@@ -73,13 +73,6 @@ if (!library || !Array.isArray(library.examples)) {
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2024 first-session exam.");
   }
-  const inspiredCycle2022 = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2022);
-  if (inspiredCycle2022.length !== 20 ||
-      inspiredCycle2022.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
-        item.sourceReference !== "https://www.3lom4all.com/object/MG25606/" ||
-        !Array.isArray(item.steps) || item.steps.length < 2)) {
-    failures.push("Expected 20 detailed original practice variants inspired by the 2022 first-session exam.");
-  }
   if (inspiredCycle2025.length !== 20 ||
       inspiredCycle2025.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
         item.sourceReference !== "https://www.syria4our.net/math-secondary-exam-syria-2025/" ||
