@@ -35,3 +35,18 @@ body.dark-mode .solved-example-idea,body.dark-mode .solved-examples-controls inp
 }
 .solved-example-card:focus-within { border-color: #8aa8ff; }
 .solved-example-source { overflow-wrap: anywhere; }
+
+
+/* Keep mathematical notation legible and left-to-right inside solved examples. */
+#solved-examples-library mjx-container {
+  direction: ltr;
+  unicode-bidi: isolate;
+  max-width: 100%;
+  overflow-x: auto;
+  vertical-align: middle;
+}
+#solved-examples-library mjx-container[display="true"] {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
