@@ -8318,3 +8318,114 @@ body.dark-mode .learning-path-confidence[data-confidence="established"] {
     background: Canvas;
   }
 }
+
+
+/* 2026-11: Final RTL-safe layout for quiz fractions and review counters.
+   Keep this block last so earlier homepage polish rules cannot re-enable wrapping. */
+#quiz #progress.progress {
+  display: inline-flex !important;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  width: max-content;
+  max-width: 100%;
+  height: auto;
+  min-height: 38px;
+  margin: 0;
+  padding: 6px 12px;
+  overflow: visible;
+  white-space: nowrap;
+  direction: rtl;
+  unicode-bidi: isolate;
+  border: 1px solid var(--hp-border);
+  border-radius: 999px;
+  background: var(--hp-surface-soft);
+  color: var(--hp-ink);
+  line-height: 1.35;
+  font-weight: 800;
+}
+#quiz #progress .progress-fraction {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+  direction: ltr;
+  unicode-bidi: isolate;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+#quiz #progress .progress-fraction > span {
+  display: inline-block;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+#quiz .question-card .question-label {
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: .4rem;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: visible;
+}
+#quiz .question-card #question-number {
+  display: inline-block;
+  flex: 0 0 auto;
+  min-width: max-content;
+  white-space: nowrap;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+#student-tools .tools-actions button#bookmark-review,
+#student-tools .tools-actions button#guided-review {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-align: center;
+}
+#student-tools .review-action-label {
+  min-width: 0;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+#student-tools .review-action-count {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+#student-tools .review-action-count > span {
+  display: inline-block;
+  flex: 0 0 auto;
+  min-width: 1ch;
+  white-space: nowrap;
+}
+@media (max-width: 420px) {
+  #quiz #progress.progress {
+    gap: .3rem;
+    min-height: 34px;
+    padding: 5px 9px;
+    font-size: .88rem;
+  }
+  #student-tools .tools-actions button#bookmark-review,
+  #student-tools .tools-actions button#guided-review {
+    gap: .2rem;
+    padding-inline: 6px;
+    font-size: .88rem;
+  }
+}
