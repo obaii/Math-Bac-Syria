@@ -58,6 +58,13 @@ if (!library || !Array.isArray(library.examples)) {
         item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/")) {
     failures.push("Expected 19 original ministerial examples and 20 separately labelled original practice variants inspired by the 2023 model.");
   }
+  const inspiredCycle2022 = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2022);
+  if (inspiredCycle2022.length !== 20 ||
+      inspiredCycle2022.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.3lom4all.com/object/MG25606/" ||
+        !Array.isArray(item.steps) || item.steps.length < 2)) {
+    failures.push("Expected 20 detailed original practice variants inspired by the 2022 first-session exam.");
+  }
   const inspiredCycle2024 = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2024);
   const inspiredCycle2025 = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2025);
   if (inspiredCycle2024.length !== 20 ||
