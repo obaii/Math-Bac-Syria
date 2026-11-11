@@ -395,7 +395,7 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 40, "the adapted cycle-source filter should show the expected examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 60, "the adapted cycle-source filter should show the expected examples");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من نموذج وزاري");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the adapted ministerial-model filter should show 20 examples");
     await page.locator("#solved-example-source").selectOption("");
