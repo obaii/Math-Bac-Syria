@@ -302,10 +302,10 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 80) errors.push(`دفعتا الأرشيف المؤتمت يجب أن تضما 80 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
+  if (rawAutomatedAdditional !== 100) errors.push(`أرشيف الأسئلة المؤتمتة يجب أن يضم 100 سؤال، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
     !["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType) ||
-    ![2018, 2019, 2023].includes(question.sourceYear) ||
+    ![2018, 2019, 2023, 2025].includes(question.sourceYear) ||
     !question.sourceLabel || !question.sourceReference || question.type !== "mcq" ||
     !Array.isArray(question.options) || question.options.length !== 4 ||
     !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3)) {
@@ -314,6 +314,14 @@ try {
   const firstSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2018");
   const secondSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الثانية 2018");
   const first2019Automated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2019");
+  const first2025Automated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2025");
+  if (first2025Automated.length !== 20 || first2025Automated.some(question =>
+    question.sourceReference !== "https://www.syria4our.net/math-secondary-exam-syria-2025/" ||
+    !String(question.sourceLabel || "").includes("صياغة تدريبية أصلية") ||
+    !["أساسي", "متوسط", "متقدم"].includes(question.level))) {
+    errors.push("يجب أن تضم دفعة 2025 عشرين سؤالاً مؤتمتاً معتمداً على صياغة تدريبية ومصدر ومستوى واضح.");
+  }
+
   const hasInvalidCycleAnswerIndex = [...firstSessionAutomated, ...secondSessionAutomated, ...first2019Automated].some(question => {
     const match = String(question.sourceLabel || "").match(/السؤال الفرعي (\d+)/);
     if (!match) return true;

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "description": "Inventory of every lesson label used by the solved-examples library. Labels are descriptive subtopic labels, not yet certified as exact textbook lesson titles.",
-  "exampleCount": 464,
-  "uniqueTopicLessonLabels": 321,
+  "exampleCount": 484,
+  "uniqueTopicLessonLabels": 324,
   "mappingPolicy": "Each label remains pending until its content is matched to one of the 63 student-book lessons. Teacher-guide supplementary topics remain separate.",
   "entries": [
     {
@@ -203,16 +203,19 @@
       "topic": "الاحتمالات",
       "unit": "الاحتمالات",
       "lessonLabel": "الاحتمالات المشروطة",
-      "exampleCount": 2,
+      "exampleCount": 4,
       "exampleIds": [
         "exam24-cycle1-011",
-        "exam24-cycle1-012"
+        "exam24-cycle1-012",
+        "exam25-auto-005",
+        "exam25-auto-006"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
-        2024
+        2024,
+        2025
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -296,6 +299,24 @@
       },
       "years": [
         2017
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الاحتمالات",
+      "unit": "الاحتمالات",
+      "lessonLabel": "المتحوّلات العشوائيّة",
+      "exampleCount": 2,
+      "exampleIds": [
+        "exam25-auto-007",
+        "exam25-auto-008"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 2
+      },
+      "years": [
+        2025
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -1400,23 +1421,30 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي لعدد عقدي",
-      "exampleCount": 5,
+      "exampleCount": 11,
       "exampleIds": [
         "exam19-complex-003",
         "exam24-cycle1-009",
         "exam24-cycle1-010",
+        "exam25-auto-015",
+        "exam25-auto-016",
+        "exam25-auto-017",
+        "exam25-auto-018",
+        "exam25-auto-019",
+        "exam25-auto-020",
         "ministerial23-auto-008",
         "ministerial23-auto-009"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
         "تدريب مستوحى من نموذج وزاري": 2,
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 8
       },
       "years": [
         2019,
         2023,
-        2024
+        2024,
+        2025
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -2417,22 +2445,25 @@
       "topic": "التحليل التوافقي",
       "unit": "التحليل التوافقي",
       "lessonLabel": "التوافيق",
-      "exampleCount": 5,
+      "exampleCount": 7,
       "exampleIds": [
         "comb-001",
         "comb-010",
         "comb-014",
         "exam17-comb-001",
-        "exam18-cycle1-012"
+        "exam18-cycle1-012",
+        "exam25-auto-001",
+        "exam25-auto-002"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 3,
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
         2017,
-        2018
+        2018,
+        2025
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -2535,6 +2566,24 @@
       },
       "years": [
         2019
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التحليل التوافقي",
+      "unit": "التّحليل التّوافقي",
+      "lessonLabel": "إنشاء قوائم من عناصر مجموعة",
+      "exampleCount": 2,
+      "exampleIds": [
+        "exam25-auto-003",
+        "exam25-auto-004"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 2
+      },
+      "years": [
+        2025
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -3564,9 +3613,13 @@
       "topic": "المتتاليات",
       "unit": "المتتاليات",
       "lessonLabel": "عموميّات عن المتتاليات",
-      "exampleCount": 9,
+      "exampleCount": 13,
       "exampleIds": [
         "exam19-seq-001",
+        "exam25-auto-009",
+        "exam25-auto-010",
+        "exam25-auto-011",
+        "exam25-auto-012",
         "ministerial23-auto-001",
         "ministerial23-auto-010",
         "ministerial23-auto-014",
@@ -3579,11 +3632,13 @@
       "sourceTypes": {
         "تدريبي مؤلف": 2,
         "دورة امتحانية": 1,
-        "تدريب مستوحى من نموذج وزاري": 6
+        "تدريب مستوحى من نموذج وزاري": 6,
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
         2019,
-        2023
+        2023,
+        2025
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -5201,6 +5256,24 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "نهاية متتالية",
+      "unit": "نهاية متتالية",
+      "lessonLabel": "تقارب المتتاليات المطّردة",
+      "exampleCount": 2,
+      "exampleIds": [
+        "exam25-auto-013",
+        "exam25-auto-014"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 2
+      },
+      "years": [
+        2025
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
