@@ -599,6 +599,22 @@
     const option = document.createElement("option"); option.value = topic; option.textContent = topic; topicSelect.appendChild(option);
   });
 
+  function formatSolvedExampleMath(value) {
+    const raw = String(value ?? "");
+    const formatted = typeof window.formatMathContent === "function"
+      ? window.formatMathContent(raw)
+      : raw;
+    return formatted.split(/(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g).map(part => {
+      if (/^(?:\\\(|\\\[)/.test(part)) return part;
+      return part
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }).join("");
+  }
+
   function render() {
     const term = searchInput.value.trim();
     const filtered = examples.filter(item =>
@@ -609,17 +625,19 @@
       (!term || window.MathSearchUtils.matches([item.question,item.lesson,item.keyIdea,item.topic,item.sourceLabel || "",item.sourceSession || "",item.sourceYear || ""].join(" "), term))
     );
     count.textContent = `عرض ${filtered.length} من ${examples.length} مثالاً`;
+    if (window.MathJax && typeof window.MathJax.typesetClear === "function") window.MathJax.typesetClear([list]);
     list.replaceChildren();
     if (!filtered.length) {
       const empty = document.createElement("p"); empty.className = "solved-examples-empty"; empty.textContent = "لا توجد أمثلة مطابقة. جرّب تغيير كلمات البحث أو المرشحات."; list.appendChild(empty); return;
     }
     filtered.forEach((item,index) => {
       const article = document.createElement("article"); article.className = "solved-example-card";
+      article.dataset.exampleId = item.id;
       const heading = document.createElement("div"); heading.className = "solved-example-meta";
-      const title = document.createElement("h4"); title.textContent = `مثال ${index+1}: ${item.lesson}`;
-      const tags = document.createElement("span"); tags.textContent = `${item.topic} · ${item.level}`;
+      const title = document.createElement("h4"); title.innerHTML = formatSolvedExampleMath(`مثال ${index+1}: ${item.lesson}`);
+      const tags = document.createElement("span"); tags.innerHTML = formatSolvedExampleMath(`${item.topic} · ${item.level}`);
       heading.append(title,tags);
-      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = item.question;
+      const question = document.createElement("p"); question.className = "solved-example-question"; question.innerHTML = formatSolvedExampleMath(item.question);
       const diagramMarkup = typeof window.getQuestionDiagram === "function"
         ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
         : "";
@@ -630,15 +648,26 @@
         source.textContent = "المصدر: " + details.join(" · ");
         article.append(heading,source,question);
       } else article.append(heading,question);
-      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + item.keyIdea;
+      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.innerHTML = formatSolvedExampleMath("الفكرة الأساسية: " + item.keyIdea);
       const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "شرح الحل خطوة بخطوة";
-      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=step;steps.appendChild(li);});
+      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.innerHTML=formatSolvedExampleMath(step);steps.appendChild(li);});
       if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
-      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = "النتيجة: " + item.answer;
-      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = "التحقق: " + item.check;
+      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.innerHTML = formatSolvedExampleMath("النتيجة: " + item.answer);
+      const check = document.createElement("p"); check.className = "solved-example-check"; check.innerHTML = formatSolvedExampleMath("التحقق: " + item.check);
       article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
     });
-    if (window.MathJax && typeof window.MathJax.typesetPromise === "function") window.MathJax.typesetPromise([list]).catch(()=>{});
+    if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+      const typesetExamples = () => window.MathJax.typesetPromise([list]).catch(error => {
+        console.warn("تعذر تنسيق صيغة رياضية في مكتبة الأمثلة المحلولة", error);
+      });
+      if (window.MathJax.startup && window.MathJax.startup.promise) {
+        window.MathJax.startup.promise.then(typesetExamples).catch(error => {
+          console.warn("تعذر تهيئة تنسيق مكتبة الأمثلة المحلولة", error);
+        });
+      } else {
+        typesetExamples();
+      }
+    }
   }
   [searchInput,topicSelect,levelSelect,sourceSelect,yearSelect].forEach(control => control.addEventListener("input",render));
   [topicSelect,levelSelect,sourceSelect,yearSelect].forEach(control => control.addEventListener("change",render));
