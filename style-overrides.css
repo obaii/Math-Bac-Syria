@@ -2256,3 +2256,18 @@ body.dark-mode #bookmark-list .bookmark-number {
   overflow-y: hidden;
   padding-bottom: 2px;
 }
+
+
+/* Prevent grid intrinsic sizing from widening the page around long solved-example formulas. */
+#solved-examples-library,
+#solved-examples-list,
+#solved-examples-list .solved-example-card {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+#solved-examples-list .solved-example-card mjx-container {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
