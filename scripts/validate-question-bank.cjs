@@ -19,16 +19,17 @@ try {
   const originalQuestions = vm.runInContext("questions.slice()", context);
   load("questions_vectors_additional.js");
   load("questions_typed_additional.js");
+  load("questions_automated_additional.js");
   load("merge-questions.js");
   load("solution-guides.js");
   const data = vm.runInContext(
-    "({ topics, questions, additional: vectorQuestionsAdditional, typedAdditional: typedQuestionsAdditional })",
+    "({ topics, questions, additional: vectorQuestionsAdditional, typedAdditional: typedQuestionsAdditional, automatedAdditional: automatedQuestionsAdditional })",
     context
   );
-  const { topics, questions, additional, typedAdditional } = data;
+  const { topics, questions, additional, typedAdditional, automatedAdditional } = data;
   const errors = [];
   const expectedQuestionCount = new Set(
-    [...originalQuestions, ...additional, ...typedAdditional]
+    [...originalQuestions, ...additional, ...typedAdditional, ...automatedAdditional]
       .filter(question => question && typeof question === "object")
       .map(question => `${question.topic}::${question.q}`)
   ).size;
@@ -46,7 +47,8 @@ try {
   const rawCollections = [
     ["questions.js", originalQuestions],
     ["questions_vectors_additional.js", additional],
-    ["questions_typed_additional.js", typedAdditional]
+    ["questions_typed_additional.js", typedAdditional],
+    ["questions_automated_additional.js", automatedAdditional]
   ];
   const rawDefinitions = new Map();
   for (const [sourceFile, collection] of rawCollections) {
@@ -223,7 +225,8 @@ try {
     const validSources = {
       "questions.js":"original-bank",
       "questions_vectors_additional.js":"vector-supplement",
-      "questions_typed_additional.js":"typed-supplement"
+      "questions_typed_additional.js":"typed-supplement",
+      "questions_automated_additional.js":"automated-archive"
     };
     if (!q.source || typeof q.source !== "object" || validSources[q.source.file] !== q.source.kind) {
       errors.push(`${label}: مصدر السؤال أو نوع مصدره غير موثق.`);
@@ -298,10 +301,18 @@ try {
 
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
+  const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
+  if (rawAutomatedAdditional !== 20) errors.push(`دفعة الأرشيف المؤتمت يجب أن تضم 20 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
+  if ((automatedAdditional || []).some(question =>
+    question.sourceType !== "نموذج وزاري مؤتمت — أرشيف" || question.sourceYear !== 2023 ||
+    !question.sourceLabel || !question.sourceReference || question.type !== "mcq")) {
+    errors.push("أسئلة الأرشيف المؤتمت يجب أن تحتفظ بنوع المصدر وسنته ومرجعه وتصنيف الاختيار من متعدد.");
+  }
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
   console.log(`مدخلات ملف الأسئلة الإضافية: ${rawAdditional}`);
   console.log(`مدخلات الأسئلة ذات الأنماط الجديدة: ${rawTypedAdditional}`);
+  console.log(`أسئلة النموذج الوزاري المؤتمت المؤرشفة: ${rawAutomatedAdditional}`);
   console.log("توزيع الأنماط: " + [...typeCounts].map(([type, count]) => type + ": " + count).join("، "));
   console.log("\nتوزيع الأسئلة حسب البحث:");
   for (const [topic, bucket] of counts) {
