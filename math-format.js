@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<[^>]*>)/g;
+  const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<\/?(?:strong|em|span|div|p|br|ol|ul|li|sub|sup|small|code|a|section|table|tbody|thead|tr|td|th)\b[^>]*>)/gi;
   const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹()[\]{}.+\-−×÷*\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
   const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹]/;
 
