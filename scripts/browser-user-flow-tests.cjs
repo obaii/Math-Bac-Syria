@@ -461,10 +461,23 @@ const assert = require("node:assert/strict");
         viewport: document.documentElement.clientWidth,
         pageWidth: document.documentElement.scrollWidth,
         cardWidth: card?.clientWidth || 0,
-        mathInsideCard: !!(cardRect && mathRect && mathRect.left >= cardRect.left - 1 && mathRect.right <= cardRect.right + 1)
+        mathInsideCard: !!(cardRect && mathRect && mathRect.left >= cardRect.left - 1 && mathRect.right <= cardRect.right + 1),
+        overflowingElements: [...document.querySelectorAll("body *")].filter(element => {
+          const style = getComputedStyle(element);
+          if (style.display === "none" || style.visibility === "hidden") return false;
+          const rect = element.getBoundingClientRect();
+          return rect.left < -1 || rect.right > document.documentElement.clientWidth + 1;
+        }).slice(0, 12).map(element => ({
+          tag: element.tagName,
+          id: element.id,
+          className: typeof element.className === "string" ? element.className : "",
+          left: Math.round(element.getBoundingClientRect().left),
+          right: Math.round(element.getBoundingClientRect().right),
+          width: Math.round(element.getBoundingClientRect().width)
+        }))
       };
     });
-    assert.ok(solvedMathMobile.pageWidth <= solvedMathMobile.viewport + 2, "solved-example formulas should not cause horizontal page overflow on a 360px phone");
+    assert.ok(solvedMathMobile.pageWidth <= solvedMathMobile.viewport + 2, "solved-example formulas should not cause horizontal page overflow on a 360px phone: " + JSON.stringify(solvedMathMobile));
     assert.ok(solvedMathMobile.cardWidth > 0 && solvedMathMobile.mathInsideCard, "solved-example formulas should stay within their card on a 360px phone");
     await page.setViewportSize({ width: 1365, height: 900 });
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
