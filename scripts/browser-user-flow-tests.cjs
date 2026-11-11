@@ -427,7 +427,7 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-topic").selectOption("مصطلحات المنطق الرياضي");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "the mathematical logic topic should show its six new examples");
     await page.locator("#solved-example-topic").selectOption("نهاية متتالية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 23, "the sequence-limit topic should show all 23 examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 25, "the sequence-limit topic should show all 25 examples, including the two new 2022 adaptations");
     await page.locator("#solved-example-topic").selectOption("تطبيقات الأعداد العقدية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "complex geometry topic should show all fifteen examples");
     await page.locator("#solved-example-topic").selectOption("");
