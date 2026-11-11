@@ -296,7 +296,7 @@ const assert = require("node:assert/strict");
     });
     assert.match(rtlCounterLayout.className, /quiz-question-progress/,
       "the question counter should use a dedicated class instead of Bootstrap's generic progress class");
-    assert.doesNotMatch(rtlCounterLayout.className, /(^|\\s)progress($|\\s)/,
+    assert.doesNotMatch(rtlCounterLayout.className, /(^|\s)progress($|\s)/,
       "the question counter should not inherit Bootstrap .progress styles");
     assert.equal(rtlCounterLayout.display, "inline-flex", "the question counter should remain a single inline flex row");
     assert.equal(rtlCounterLayout.whiteSpace, "nowrap", "the question counter should never wrap");
