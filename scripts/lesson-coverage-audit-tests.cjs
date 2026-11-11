@@ -40,7 +40,7 @@ if (failures.length) {
   for (const failure of failures) console.error("- " + failure);
   process.exitCode = 1;
 } else {
-  console.log("PASS: 63 lessons, 319 student labels, and 498 examples reconcile.");
+  console.log("PASS: 63 lessons, 319 student labels, and 518 examples reconcile.");
   console.log("PASS: 8 manual-review labels remain explicitly unresolved and unassigned.");
   console.log("PASS: provisional suggestions are never counted as verified coverage.");
   console.log("PASS: per-lesson totals and generated-report safeguards are consistent.");
