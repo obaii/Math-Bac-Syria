@@ -2073,6 +2073,58 @@ const assert = require("node:assert/strict");
     assert.ok(mathResult.width > 0 && mathResult.left >= -1 && mathResult.right <= mathResult.viewport + 1, "the rendered equation should fit within the mobile viewport");
     assert.ok(mathResult.pageWidth <= mathResult.viewport + 2, "a rendered equation should not create page-level horizontal overflow");
 
+    // Exercise real MCQ records from the merged 14-research question bank.
+    for (const mathKind of ["fraction", "exponent", "limit"]) {
+      const setup = await page.evaluate(kind => {
+        const pattern = kind === "fraction" ? /\\frac/ : kind === "exponent" ? /\^/ : /\\lim|lim|∞|infty/;
+        const question = questions.find(item => {
+          if (getQuestionType(item) !== "mcq" || !Array.isArray(item.options) ||
+              item.options.length < 2 || !Number.isInteger(item.answer)) return false;
+          const allMath = [item.q, ...item.options, item.solution || ""].join(" ");
+          return /\\\(/.test(item.q) && item.options.some(option => /\\\(/.test(option)) &&
+            /\\\(/.test(item.solution || "") && pattern.test(allMath);
+        });
+        if (!question) return { found: false };
+        startQuiz(question.topic);
+        quizQuestions = [question];
+        index = 0;
+        showQuestion();
+        return {
+          found: true,
+          wrongIndex: (question.answer + 1) % question.options.length,
+          question: question.q,
+          options: question.options,
+          solution: question.solution
+        };
+      }, mathKind);
+      assert.equal(setup.found, true, "the automated question bank should contain a real MCQ with " + mathKind + " notation in its prompt, options, and solution");
+      assert.match(setup.question, /\\\(/, "the selected MCQ prompt should contain mathematical notation");
+      assert.ok(setup.options.some(option => /\\\(/.test(option)), "the selected MCQ should include formatted mathematical options");
+      await page.waitForFunction(() =>
+        document.querySelector("#question-text mjx-container") &&
+        document.querySelector("#options mjx-container"), null, { timeout: 15000 });
+      const bankQuestionMath = await page.evaluate(() => ({
+        prompt: document.querySelectorAll("#question-text mjx-container").length,
+        options: document.querySelectorAll("#options mjx-container").length,
+        direction: getComputedStyle(document.querySelector("#options mjx-container")).direction,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      }));
+      assert.ok(bankQuestionMath.prompt > 0, "the actual MCQ prompt should be typeset by MathJax");
+      assert.ok(bankQuestionMath.options > 0, "the actual MCQ options should be typeset by MathJax");
+      assert.equal(bankQuestionMath.direction, "ltr", "mathematical options should be isolated left-to-right");
+      assert.ok(bankQuestionMath.pageWidth <= bankQuestionMath.viewport + 2, "actual MCQ notation should not create mobile page overflow");
+      await page.locator("#options [data-option]").nth(setup.wrongIndex).click();
+      await page.waitForFunction(() =>
+        document.querySelector("#feedback .solution mjx-container"), null, { timeout: 15000 });
+      const bankSolutionMath = await page.locator("#feedback").evaluate(node => ({
+        solution: node.querySelectorAll(".solution mjx-container").length,
+        feedback: node.querySelectorAll(":scope > div mjx-container").length
+      }));
+      assert.ok(bankSolutionMath.solution > 0, "the actual MCQ detailed solution should be typeset");
+    }
+
+
     // A slightly wider phone should also keep the page and controls within the viewport.
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: "domcontentloaded" });
