@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "description": "Inventory of every lesson label used by the solved-examples library. Labels are descriptive subtopic labels, not yet certified as exact textbook lesson titles.",
-  "exampleCount": 364,
-  "uniqueTopicLessonLabels": 314,
+  "exampleCount": 384,
+  "uniqueTopicLessonLabels": 318,
   "mappingPolicy": "Each label remains pending until its content is matched to one of the 63 student-book lessons. Teacher-guide supplementary topics remain separate.",
   "entries": [
     {
@@ -182,8 +182,8 @@
       "lessonLabel": "الاحتمال الشرطي",
       "exampleCount": 2,
       "exampleIds": [
-        "prob-001",
-        "exam22-prob-002"
+        "exam22-prob-002",
+        "prob-001"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -520,16 +520,20 @@
     {
       "topic": "الاشتقاق",
       "unit": "الاشتقاق",
-      "lessonLabel": "اشتقاق تابع مركب",
-      "exampleCount": 2,
+      "lessonLabel": "اشتقاق تابع مركّب",
+      "exampleCount": 3,
       "exampleIds": [
         "der-002",
-        "der-016"
+        "der-016",
+        "ministerial23-auto-031"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 2,
+        "نموذج وزاري": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -631,6 +635,21 @@
     },
     {
       "topic": "الاشتقاق",
+      "unit": "التوابع: الاشتقاق",
+      "lessonLabel": "العدد المشتق والتابع المشتق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "derivative-first-principle-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الاشتقاق",
       "unit": "الاشتقاق",
       "lessonLabel": "القيم الحدية المحلية",
       "exampleCount": 1,
@@ -706,6 +725,25 @@
       },
       "years": [
         2022
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الاشتقاق",
+      "unit": "التوابع: الاشتقاق",
+      "lessonLabel": "المشتقات من مراتب عليا",
+      "exampleCount": 2,
+      "exampleIds": [
+        "derivative-higher-001",
+        "ministerial23-auto-027"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1,
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -1272,15 +1310,19 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي لعدد عقدي",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
-        "exam19-complex-003"
+        "exam19-complex-003",
+        "ministerial23-auto-008",
+        "ministerial23-auto-009"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "نموذج وزاري": 2
       },
       "years": [
-        2019
+        2019,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -1318,6 +1360,23 @@
       },
       "years": [
         2017
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الأعداد العقدية",
+      "unit": "الأعداد العقديّة",
+      "lessonLabel": "الشكل المثلّثي لعدد عقدي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-006"
+      ],
+      "sourceTypes": {
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -1381,6 +1440,23 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الأعداد العقدية",
+      "unit": "الأعداد العقديّة",
+      "lessonLabel": "المعادلة من الدرجة الثانية ذات الأمثال الحقيقيّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-007"
+      ],
+      "sourceTypes": {
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -1516,23 +1592,6 @@
     {
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
-      "lessonLabel": "قسمة الأعداد العقدية",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exam17-complex-003"
-      ],
-      "sourceTypes": {
-        "دورة امتحانية": 1
-      },
-      "years": [
-        2017
-      ],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "الأعداد العقدية",
-      "unit": "الأعداد العقدية",
       "lessonLabel": "قسمة عددين عقديين",
       "exampleCount": 1,
       "exampleIds": [
@@ -1566,16 +1625,24 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "مرافق عدد عقدي",
-      "exampleCount": 3,
+      "exampleCount": 6,
       "exampleIds": [
         "cx-003",
         "cx-007",
-        "cx-013"
+        "cx-013",
+        "exam17-complex-003",
+        "ministerial23-auto-002",
+        "ministerial23-auto-004"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 3
+        "تدريبي مؤلف": 3,
+        "دورة امتحانية": 1,
+        "نموذج وزاري": 2
       },
-      "years": [],
+      "years": [
+        2017,
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -1666,8 +1733,8 @@
       "lessonLabel": "حل معادلات أسية",
       "exampleCount": 2,
       "exampleIds": [
-        "exp-002",
-        "exam23-exp-001"
+        "exam23-exp-001",
+        "exp-002"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -1743,6 +1810,21 @@
     {
       "topic": "التابع الأسي",
       "unit": "التابع الأسي",
+      "lessonLabel": "دراسة التوابع الأسّية بالأساس a",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-base-a-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع الأسي",
+      "unit": "التابع الأسي",
       "lessonLabel": "دراسة تغير تابع أسي",
       "exampleCount": 1,
       "exampleIds": [
@@ -1805,10 +1887,40 @@
     {
       "topic": "التابع الأسي",
       "unit": "التابع الأسي",
+      "lessonLabel": "معادلات تفاضليّة بسيطة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-diff-eq-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع الأسي",
+      "unit": "التابع الأسي",
       "lessonLabel": "نهايات التابع الأسي",
       "exampleCount": 1,
       "exampleIds": [
         "exp-014"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع الأسي",
+      "unit": "التابع الأسي",
+      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع الأسي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-limit-001"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1
@@ -1945,6 +2057,21 @@
     },
     {
       "topic": "التابع اللوغاريتمي",
+      "unit": "التابع اللوغاريتمي النيبيري",
+      "lessonLabel": "لوغاريتم جداء ضرب",
+      "exampleCount": 1,
+      "exampleIds": [
+        "log-product-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع اللوغاريتمي",
       "unit": "التابع اللوغاريتمي",
       "lessonLabel": "متراجحات لوغاريتمية",
       "exampleCount": 1,
@@ -2015,6 +2142,21 @@
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 2
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع اللوغاريتمي",
+      "unit": "التابع اللوغاريتمي النيبيري",
+      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "log-limit-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
       },
       "years": [],
       "mappedLessonId": null,
@@ -2721,11 +2863,58 @@
     },
     {
       "topic": "الجداء السلمي في الفراغ",
+      "unit": "الجداء السلّمي في الفراغ",
+      "lessonLabel": "الجداء السلّمي في الفراغ",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-011"
+      ],
+      "sourceTypes": {
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الجداء السلمي في الفراغ",
+      "unit": "الجداء السلّمي في الفراغ",
+      "lessonLabel": "الجداء السلّمي في المستوي، تذكرة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "dot-plane-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الجداء السلمي في الفراغ",
       "unit": "الجداء السلمي في الفراغ",
       "lessonLabel": "الزاوية بين شعاعين",
       "exampleCount": 1,
       "exampleIds": [
         "dot-011"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الجداء السلمي في الفراغ",
+      "unit": "الجداء السلّمي في الفراغ",
+      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
+      "exampleCount": 1,
+      "exampleIds": [
+        "plane-cartesian-001"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1
@@ -3042,21 +3231,6 @@
     {
       "topic": "المتتاليات",
       "unit": "المتتاليات",
-      "lessonLabel": "تحديد أساس متتالية حسابية",
-      "exampleCount": 1,
-      "exampleIds": [
-        "seq-006"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "المتتاليات",
-      "unit": "المتتاليات",
       "lessonLabel": "تحديد أساس متتالية هندسية",
       "exampleCount": 1,
       "exampleIds": [
@@ -3158,9 +3332,9 @@
       "lessonLabel": "رتابة متتالية",
       "exampleCount": 3,
       "exampleIds": [
-        "seq-005",
         "exam18-seq-001",
-        "exam18-seq-002"
+        "exam18-seq-002",
+        "seq-005"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -3184,6 +3358,34 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "المتتاليات",
+      "unit": "المتتاليات",
+      "lessonLabel": "عموميّات عن المتتاليات",
+      "exampleCount": 9,
+      "exampleIds": [
+        "exam19-seq-001",
+        "ministerial23-auto-001",
+        "ministerial23-auto-010",
+        "ministerial23-auto-014",
+        "ministerial23-auto-017",
+        "ministerial23-auto-019",
+        "ministerial23-auto-020",
+        "seq-006",
+        "seq-007"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 2,
+        "دورة امتحانية": 1,
+        "نموذج وزاري": 6
+      },
+      "years": [
+        2019,
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -3229,9 +3431,9 @@
       "lessonLabel": "مجموع حدود متتالية حسابية",
       "exampleCount": 3,
       "exampleIds": [
-        "seq-004",
+        "exam25-seq-002",
         "ministerial17-arithmetic-001",
-        "exam25-seq-002"
+        "seq-004"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -3249,13 +3451,12 @@
       "topic": "المتتاليات",
       "unit": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية هندسية",
-      "exampleCount": 2,
+      "exampleCount": 1,
       "exampleIds": [
-        "seq-007",
         "seq-010"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 1
       },
       "years": [],
       "mappedLessonId": null,
@@ -3296,23 +3497,6 @@
     {
       "topic": "المتتاليات",
       "unit": "المتتاليات",
-      "lessonLabel": "مجموع متتالية هندسية",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exam19-seq-001"
-      ],
-      "sourceTypes": {
-        "دورة امتحانية": 1
-      },
-      "years": [
-        2019
-      ],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "المتتاليات",
-      "unit": "المتتاليات",
       "lessonLabel": "نهاية متتالية تراجعية رتيبة ومحدودة",
       "exampleCount": 1,
       "exampleIds": [
@@ -3340,6 +3524,23 @@
       },
       "years": [
         2022
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "unit": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "التمثيلات الوسيطيّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-033"
+      ],
+      "sourceTypes": {
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -3398,6 +3599,23 @@
     {
       "topic": "المستقيمات والمستويات في الفراغ",
       "unit": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-030"
+      ],
+      "sourceTypes": {
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "unit": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المعادلة الديكارتية لمستوى",
       "exampleCount": 1,
       "exampleIds": [
@@ -3432,6 +3650,21 @@
       "exampleCount": 1,
       "exampleIds": [
         "line-007"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "unit": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "تقاطع ثلاثة مستويات",
+      "exampleCount": 1,
+      "exampleIds": [
+        "three-planes-001"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1
@@ -3533,8 +3766,8 @@
       "lessonLabel": "تمثيل وسيطي لمستقيم",
       "exampleCount": 2,
       "exampleIds": [
-        "line-002",
-        "exam17-3d-002"
+        "exam17-3d-002",
+        "line-002"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -3696,8 +3929,8 @@
       "lessonLabel": "معادلة مستوى",
       "exampleCount": 2,
       "exampleIds": [
-        "line-008",
-        "exam17-3d-001"
+        "exam17-3d-001",
+        "line-008"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -3943,17 +4176,21 @@
       "topic": "النهايات والاستمرار",
       "unit": "التوابع والنهايات والاستمرار",
       "lessonLabel": "المقارب المائل",
-      "exampleCount": 2,
+      "exampleCount": 4,
       "exampleIds": [
+        "exam17-limit-002",
         "lim-003",
-        "exam17-limit-002"
+        "ministerial23-auto-023",
+        "ministerial23-auto-024"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "نموذج وزاري": 2
       },
       "years": [
-        2017
+        2017,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -4068,6 +4305,23 @@
       },
       "years": [
         2022
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "النهايات والاستمرار",
+      "unit": "التوابع: النهايات والاستمرار",
+      "lessonLabel": "تطبيقات الاشتقاق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-021"
+      ],
+      "sourceTypes": {
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -4336,6 +4590,21 @@
     },
     {
       "topic": "النهايات والاستمرار",
+      "unit": "التوابع: النهايات والاستمرار",
+      "lessonLabel": "نهاية تابع مركّب",
+      "exampleCount": 1,
+      "exampleIds": [
+        "lim-composite-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "النهايات والاستمرار",
       "unit": "النهايات والاستمرار",
       "lessonLabel": "نهاية تابع ومقارب أفقي",
       "exampleCount": 1,
@@ -4565,6 +4834,21 @@
     },
     {
       "topic": "تطبيقات الأعداد العقدية",
+      "unit": "تطبيقات الأعداد العقديّة في الهندسة",
+      "lessonLabel": "تمثيل الأشعّة بأعداد عقديّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "complex-vector-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "تطبيقات الأعداد العقدية",
       "unit": "تطبيقات الأعداد العقدية",
       "lessonLabel": "صورة نقطة بدوران مركزه نقطة معلومة",
       "exampleCount": 1,
@@ -4687,6 +4971,21 @@
     },
     {
       "topic": "نهاية متتالية",
+      "unit": "نهاية متتالية",
+      "lessonLabel": "متتاليات متجاورة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "seq-adjacent-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "نهاية متتالية",
       "unit": "نهاية المتتالية",
       "lessonLabel": "مقارنة متتاليتين",
       "exampleCount": 1,
@@ -4785,9 +5084,9 @@
       "lessonLabel": "نهاية متتالية كسرية",
       "exampleCount": 3,
       "exampleIds": [
-        "seq-limit-004",
         "exam18-seq-003",
-        "exam18-seq-004"
+        "exam18-seq-004",
+        "seq-limit-004"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -4821,9 +5120,9 @@
       "lessonLabel": "نهاية متتالية هندسية",
       "exampleCount": 3,
       "exampleIds": [
+        "ministerial17-sequence-003",
         "seq-limit-002",
-        "seq-limit-006",
-        "ministerial17-sequence-003"
+        "seq-limit-006"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 2,
@@ -4851,218 +5150,18 @@
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
-    },
-    {
-      "topic": "النهايات والاستمرار",
-      "unit": "التوابع: النهايات والاستمرار",
-      "lessonLabel": "نهاية تابع مركّب",
-      "exampleCount": 1,
-      "exampleIds": [
-        "lim-composite-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "الاشتقاق",
-      "unit": "التوابع: الاشتقاق",
-      "lessonLabel": "العدد المشتق والتابع المشتق",
-      "exampleCount": 1,
-      "exampleIds": [
-        "derivative-first-principle-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "الاشتقاق",
-      "unit": "التوابع: الاشتقاق",
-      "lessonLabel": "المشتقات من مراتب عليا",
-      "exampleCount": 1,
-      "exampleIds": [
-        "derivative-higher-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "التابع اللوغاريتمي",
-      "unit": "التابع اللوغاريتمي النيبيري",
-      "lessonLabel": "لوغاريتم جداء ضرب",
-      "exampleCount": 1,
-      "exampleIds": [
-        "log-product-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "التابع اللوغاريتمي",
-      "unit": "التابع اللوغاريتمي النيبيري",
-      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
-      "exampleCount": 1,
-      "exampleIds": [
-        "log-limit-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "التابع الأسي",
-      "unit": "التابع الأسي",
-      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع الأسي",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exp-limit-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "التابع الأسي",
-      "unit": "التابع الأسي",
-      "lessonLabel": "دراسة التوابع الأسّية بالأساس a",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exp-base-a-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "التابع الأسي",
-      "unit": "التابع الأسي",
-      "lessonLabel": "معادلات تفاضليّة بسيطة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exp-diff-eq-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "نهاية متتالية",
-      "unit": "نهاية متتالية",
-      "lessonLabel": "متتاليات متجاورة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "seq-adjacent-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "الجداء السلمي في الفراغ",
-      "unit": "الجداء السلّمي في الفراغ",
-      "lessonLabel": "الجداء السلّمي في المستوي، تذكرة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "dot-plane-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "الجداء السلمي في الفراغ",
-      "unit": "الجداء السلّمي في الفراغ",
-      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
-      "exampleCount": 1,
-      "exampleIds": [
-        "plane-cartesian-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "المستقيمات والمستويات في الفراغ",
-      "unit": "المستقيمات والمستويات في الفراغ",
-      "lessonLabel": "تقاطع ثلاثة مستويات",
-      "exampleCount": 1,
-      "exampleIds": [
-        "three-planes-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "تطبيقات الأعداد العقدية",
-      "unit": "تطبيقات الأعداد العقديّة في الهندسة",
-      "lessonLabel": "تمثيل الأشعّة بأعداد عقديّة",
-      "exampleCount": 1,
-      "exampleIds": [
-        "complex-vector-001"
-      ],
-      "sourceTypes": {
-        "تدريبي مؤلف": 1
-      },
-      "years": [],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
     }
   ],
   "summary": {
     "byTopic": [
       {
-        "topic": "المتتاليات",
-        "count": 35,
-        "distinctLessonLabels": 26
-      },
-      {
         "topic": "النهايات والاستمرار",
-        "count": 42,
-        "distinctLessonLabels": 38
+        "count": 45,
+        "distinctLessonLabels": 39
       },
       {
         "topic": "الاشتقاق",
-        "count": 36,
+        "count": 38,
         "distinctLessonLabels": 33
       },
       {
@@ -5081,24 +5180,39 @@
         "distinctLessonLabels": 18
       },
       {
+        "topic": "المتتاليات",
+        "count": 41,
+        "distinctLessonLabels": 25
+      },
+      {
+        "topic": "نهاية متتالية",
+        "count": 17,
+        "distinctLessonLabels": 11
+      },
+      {
         "topic": "الأشعة في الفراغ",
         "count": 14,
         "distinctLessonLabels": 14
       },
       {
         "topic": "الجداء السلمي في الفراغ",
-        "count": 17,
-        "distinctLessonLabels": 16
+        "count": 18,
+        "distinctLessonLabels": 17
       },
       {
         "topic": "المستقيمات والمستويات في الفراغ",
-        "count": 32,
-        "distinctLessonLabels": 28
+        "count": 34,
+        "distinctLessonLabels": 30
       },
       {
         "topic": "الأعداد العقدية",
-        "count": 31,
-        "distinctLessonLabels": 25
+        "count": 37,
+        "distinctLessonLabels": 26
+      },
+      {
+        "topic": "تطبيقات الأعداد العقدية",
+        "count": 15,
+        "distinctLessonLabels": 15
       },
       {
         "topic": "التحليل التوافقي",
@@ -5109,16 +5223,6 @@
         "topic": "الاحتمالات",
         "count": 32,
         "distinctLessonLabels": 29
-      },
-      {
-        "topic": "نهاية متتالية",
-        "count": 17,
-        "distinctLessonLabels": 11
-      },
-      {
-        "topic": "تطبيقات الأعداد العقدية",
-        "count": 15,
-        "distinctLessonLabels": 15
       },
       {
         "topic": "مصطلحات المنطق الرياضي",
@@ -5137,7 +5241,7 @@
       },
       {
         "sourceType": "نموذج وزاري",
-        "count": 19
+        "count": 39
       }
     ]
   }
