@@ -302,11 +302,13 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 20) errors.push(`دفعة الأرشيف المؤتمت يجب أن تضم 20 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
-  if ((automatedAdditional || []).some(question =>
-    question.sourceType !== "تدريب مستوحى من نموذج وزاري" || question.sourceYear !== 2023 ||
-    !question.sourceLabel || !question.sourceReference || question.type !== "mcq")) {
-    errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بنوع الإلهام وسنته ومرجعه وتصنيف الاختيار من متعدد.");
+  if (rawAutomatedAdditional !== 60) errors.push(`ملف الأسئلة المؤتمتة المستوحاة يجب أن يضم 60 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
+  if ((automatedAdditional || []).some(question => {
+    const valid2023 = question.sourceType === "تدريب مستوحى من نموذج وزاري" && question.sourceYear === 2023;
+    const valid2025 = question.sourceType === "تدريب مستوحى من دورة امتحانية" && question.sourceYear === 2025;
+    return !(valid2023 || valid2025) || !question.sourceLabel || !question.sourceReference || question.type !== "mcq";
+  })) {
+    errors.push("أسئلة التدريب المؤتمت يجب أن تحتفظ بنوع المصدر وسنته ومرجعه وتصنيف الاختيار من متعدد.");
   }
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
