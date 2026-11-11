@@ -66,7 +66,7 @@ if (!library || !Array.isArray(library.examples)) {
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2024 first-session exam.");
   }
-  if (examples.length !== 404) failures.push(`Expected exactly 384 current examples, found ${examples.length}.`);
+  if (examples.length !== 404) failures.push(`Expected exactly 404 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
