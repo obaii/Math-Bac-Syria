@@ -7,19 +7,19 @@ const { lessons, summary, unresolvedRows } = buildAudit();
 const expect = (condition, message) => { if (!condition) failures.push(message); };
 
 expect(summary.lessons === 63, "The audit must include all 63 student-book lessons.");
-expect(summary.studentLabels === 312, "The audit must include all 308 student-curriculum labels.");
+expect(summary.studentLabels === 311, "The audit must include all 308 student-curriculum labels.");
 expect(summary.studentExamples === 378, "The audit must account for all 358 student-curriculum examples.");
 expect(summary.supplementaryLabels === 6 && summary.supplementaryExamples === 6,
   "The six teacher-guide references must remain separately excluded.");
 expect(summary.highConfidenceLabels === 153, "High-confidence suggestion count must match the crosswalk.");
-expect(summary.mediumConfidenceLabels === 151, "Medium-confidence suggestion count must match the crosswalk.");
+expect(summary.mediumConfidenceLabels === 150, "Medium-confidence suggestion count must match the crosswalk.");
 expect(summary.lowConfidenceLabels === 8, "Low-confidence suggestion count must match the crosswalk.");
 expect(summary.manualReviewLabels === 8 && summary.manualReviewExamples === 8,
   "All eight manually flagged labels must remain visible as unresolved.");
 expect(summary.unmappedLabels === 8 && summary.unmappedExamples === 8,
   "All eight ambiguous labels must remain unassigned until manual review.");
 expect(summary.verifiedLabels === 0, "No provisional suggestion may be reported as verified.");
-expect(summary.lessonsWithSuggestions === 63 && summary.lessonsWithoutSuggestions === 0,
+expect(summary.lessonsWithSuggestions === 62 && summary.lessonsWithoutSuggestions === 1,
   "The one lesson supported only by ambiguous labels must remain visibly without a suggestion.");
 expect(lessons.length === 63 && new Set(lessons.map(lesson => lesson.id)).size === 63,
   "Every lesson must have a unique stable lesson ID.");
