@@ -46,12 +46,12 @@ if (!library || !Array.isArray(library.examples)) {
   if (examExamples.filter(item => item.sourceYear === 2021).length !== 9) failures.push("The 2021 first-session source batch should contain 9 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2022).length !== 35) failures.push("The 2022 first-session source batch should contain 35 adaptations.");
   const authoredExamples = examples.filter(item => item.sourceType === "تدريبي مؤلف");
-  if (authoredExamples.length !== 214) failures.push(`Expected 214 authored practice examples, found ${authoredExamples.length}.`);
+  if (authoredExamples.length !== 227) failures.push(`Expected 214 authored practice examples, found ${authoredExamples.length}.`);
   if (examples.filter(item => item.topic === "مصطلحات المنطق الرياضي").length !== 6) failures.push("Expected six authored examples covering mathematical logic and induction foundations.");
-  if (examples.filter(item => item.topic === "تطبيقات الأعداد العقدية").length !== 14) failures.push("Expected fourteen complex-number geometry applications.");
+  if (examples.filter(item => item.topic === "تطبيقات الأعداد العقدية").length !== 15) failures.push("Expected fourteen complex-number geometry applications.");
   const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
   if (ministerialExamples.length !== 19 || ministerialExamples.some(item => item.sourceYear !== 2017)) failures.push("Expected nineteen adaptations from verified 2017 ministerial models.");
-  if (examples.length !== 351) failures.push(`Expected exactly 351 current examples, found ${examples.length}.`);
+  if (examples.length !== 364) failures.push(`Expected exactly 351 current examples, found ${examples.length}.`);
   if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain nine verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2025 && item.sourceSession === "الدورة الأولى").length !== 10) failures.push("The 2025 first-session source batch should contain ten verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
@@ -269,6 +269,29 @@ if (!library || !Array.isArray(library.examples)) {
     if (!example || testCase.steps.some(fragment => !solution.includes(fragment)) ||
         !example.answer.includes(testCase.answer)) {
       failures.push("Foundational probability regression failed for " + testCase.id + ".");
+    }
+  }
+
+
+  const lessonTargetedExamples = [
+    ["lim-composite-001", "النهايات والاستمرار", "نهاية تابع مركّب"],
+    ["derivative-first-principle-001", "الاشتقاق", "العدد المشتق والتابع المشتق"],
+    ["derivative-higher-001", "الاشتقاق", "المشتقات من مراتب عليا"],
+    ["log-product-001", "التابع اللوغاريتمي", "لوغاريتم جداء ضرب"],
+    ["log-limit-001", "التابع اللوغاريتمي", "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي"],
+    ["exp-limit-001", "التابع الأسي", "نهايات مهمّة تتعلّق بالتابع الأسي"],
+    ["exp-base-a-001", "التابع الأسي", "دراسة التوابع الأسّية بالأساس a"],
+    ["exp-diff-eq-001", "التابع الأسي", "معادلات تفاضليّة بسيطة"],
+    ["seq-adjacent-001", "نهاية متتالية", "متتاليات متجاورة"],
+    ["dot-plane-001", "الجداء السلمي في الفراغ", "الجداء السلّمي في المستوي، تذكرة"],
+    ["plane-cartesian-001", "الجداء السلمي في الفراغ", "المعادلة الديكارتيّة لمستوٍ"],
+    ["three-planes-001", "المستقيمات والمستويات في الفراغ", "تقاطع ثلاثة مستويات"],
+    ["complex-vector-001", "تطبيقات الأعداد العقدية", "تمثيل الأشعّة بأعداد عقديّة"]
+  ];
+  for (const [id, topic, lesson] of lessonTargetedExamples) {
+    const item = examples.find(example => example.id === id);
+    if (!item || item.topic !== topic || item.lesson !== lesson || item.sourceType !== "تدريبي مؤلف") {
+      failures.push("Missing lesson-targeted solved example: " + id + ".");
     }
   }
 
