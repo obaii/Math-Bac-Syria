@@ -2157,6 +2157,8 @@ const assert = require("node:assert/strict");
     // Verify all three spaced-review buckets and that unscheduled mistakes are due immediately.
     await page.evaluate(() => {
       const [dueQuestion, upcomingQuestion, laterQuestion] = questions.slice(0, 3);
+      const guidedQuestion = questions.find(question => Array.isArray(question.steps) && question.steps.length > 0);
+      if (!guidedQuestion) throw new Error("no question with detailed solution steps is available");
       const keyOf = q => `${q.topic}::${q.q}`;
       const now = Date.now();
       localStorage.setItem("mathBacSyriaProgressV1", JSON.stringify({
@@ -2165,7 +2167,7 @@ const assert = require("node:assert/strict");
         topicStats: {}, attempts: [], seenQuestions: {}
       }));
       localStorage.setItem("mathBacSyriaStudentToolsV1", JSON.stringify({
-        bookmarks: [], reviewQuestions: [],
+        bookmarks: [keyOf(dueQuestion)], reviewQuestions: [],
         schedule: {
           [keyOf(upcomingQuestion)]: { stage: 1, due: now + 3 * 86400000 },
           [keyOf(laterQuestion)]: { stage: 2, due: now + 10 * 86400000 }
@@ -2189,6 +2191,30 @@ const assert = require("node:assert/strict");
     const reviewSummary = await page.locator("#review-plan .review-plan-summary").innerText();
     assert.ok(reviewSummary.includes("مستحق اليوم") && reviewSummary.includes("خلال ٧ أيام") && reviewSummary.includes("متقن مبدئياً") && reviewSummary.includes("يحتاج تثبيتاً"), "the spaced-review summary should expose due, upcoming, mastered, and struggling counts");
     assert.ok((await page.locator("#review-plan").innerText()).includes("مراجعة أولى"), "newly due questions should have an understandable first-review status");
+
+    // Review panels must be mutually exclusive, and the saved count must have one pair of parentheses.
+    await page.locator("#bookmark-review").click();
+    await page.locator("#bookmark-list").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#bookmark-review .review-action-label").innerText(), "إخفاء المسائل المحفوظة", "the saved-problems label should not contain an extra parenthesis");
+    assert.match(await page.locator("#bookmark-review .review-action-count").innerText(), /^\(\s*[٠-٩0-9]+\s*\)$/u, "the saved count should contain exactly one pair of parentheses");
+    await page.locator("#guided-review").click();
+    await page.locator("#guided-question-list").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#bookmark-list").isHidden(), true, "opening detailed solutions should close saved problems");
+    await page.locator("#progress-report-toggle").click();
+    await page.locator("#progress-report").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#guided-question-list").isHidden(), true, "opening the progress report should close detailed solutions");
+    await page.locator("#review-assistant-generate").click();
+    await page.locator("#review-assistant-panel").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#progress-report").isHidden(), true, "opening the review assistant should close the progress report");
+    await page.locator("#bookmark-review").click();
+    await page.locator("#bookmark-list").waitFor({ state: "visible" });
+    assert.equal(await page.locator("#review-assistant-panel").isHidden(), true, "opening saved problems should close the review assistant");
+    await page.locator("#bookmark-review").click();
+    assert.equal(await page.locator("#bookmark-list").isHidden(), true, "clicking the active saved-problems button again should close its content");
+    await page.locator("#guided-review").click();
+    await page.locator("#guided-question-list").waitFor({ state: "visible" });
+    await page.locator("#guided-review").click();
+    assert.equal(await page.locator("#guided-question-list").isHidden(), true, "clicking the active detailed-solutions button again should close its content");
 
     // The mistake log should list valid missed questions and launch focused practice.
     const mistakeLogButton = page.locator("#mistake-log-toggle");
