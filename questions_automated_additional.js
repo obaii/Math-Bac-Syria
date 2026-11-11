@@ -1,6 +1,6 @@
-/* أسئلة اختيار من متعدد بصياغة أصلية مستوحاة من أفكار نموذج الوزارة المؤتمت المنشور عام 2023.
+/* أسئلة اختيار من متعدد بصياغة أصلية مستوحاة من نموذج وزاري مؤتمت منشور عام 2023 ومن أفكار امتحان الدورة الأولى 2025.
  * هذه مسائل تدريبية معدّلة وليست نسخاً حرفية من النموذج الأصلي؛ يجب تدقيق كل فكرة على الكتابين قبل اعتمادها نهائياً.
- * مصدر النسخة المصورة: https://www.zarkachat.com/exam-form-12-math-scientific-syria/
+ * المراجع: https://www.zarkachat.com/exam-form-12-math-scientific-syria/ وhttps://www.syria4our.net/math-secondary-exam-syria-2025/
  */
 const automatedQuestionsAdditional = [
   {"topic":"المتتاليات","q":"ثلاثة حدود متتالية a,b,c من متتالية هندسية تحقق abc=512 وa+b+c=28 وa<b<c. أوجد a+c.","options":["18","20","24","16"],"answer":1,"solution":"من b²=ac نحصل على abc=b³=512، ومنه b=8. ثم a+c=28−8=20.","level":"متوسط","sourceLabel":"صياغة تدريبية أصلية مستوحاة من فكرة السؤال 1 في النموذج الوزاري المؤتمت المنشور عام 2023","type":"mcq","sourceType":"تدريب مستوحى من نموذج وزاري","sourceYear":2023,"sourceSession":"نموذج وزاري 2023 — تدريب أصلي مستوحى من الفكرة","sourceReference":"https://www.zarkachat.com/exam-form-12-math-scientific-syria/"},
