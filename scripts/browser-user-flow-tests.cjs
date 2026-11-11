@@ -392,6 +392,56 @@ const assert = require("node:assert/strict");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 544, "the library should render all 544 solved examples");
+    await page.waitForFunction(() => {
+      const card = document.querySelector("#solved-examples-list .solved-example-card");
+      return card &&
+        card.querySelector(".solved-example-question mjx-container") &&
+        card.querySelector("ol li mjx-container") &&
+        card.querySelector(".solved-example-answer mjx-container");
+    }, null, { timeout: 15000 });
+    // Verify actual saved examples: a fraction, an exponent, and a limit.
+    const libraryMathCases = [
+      { id: "prob-001", topic: "الاحتمالات", fields: [".solved-example-question", "ol", ".solved-example-answer", ".solved-example-check"] },
+      { id: "der-002", topic: "الاشتقاق", fields: [".solved-example-question", "ol", ".solved-example-answer"] },
+      { id: "lim-003", topic: "النهايات والاستمرار", fields: [".solved-example-question", "ol", ".solved-example-answer"] }
+    ];
+    for (const testCase of libraryMathCases) {
+      await page.locator("#solved-example-topic").selectOption(testCase.topic);
+      await page.waitForFunction(id => {
+        const card = document.querySelector('[data-example-id="' + id + '"]');
+        return card && card.querySelector(".solved-example-question mjx-container") &&
+          card.querySelector("ol mjx-container") && card.querySelector(".solved-example-answer mjx-container");
+      }, testCase.id, { timeout: 15000 });
+      const libraryFieldAudit = await page.locator('[data-example-id="' + testCase.id + '"]').evaluate((card, selectors) =>
+        selectors.map(selector => ({
+          selector,
+          rendered: !!card.querySelector(selector + " mjx-container"),
+          count: card.querySelectorAll(selector + " mjx-container").length
+        })), testCase.fields);
+      for (const field of libraryFieldAudit) {
+        assert.equal(field.rendered, true, testCase.id + " should typeset formulas in " + field.selector);
+      }
+    }
+    await page.locator("#solved-example-topic").selectOption("النهايات والاستمرار");
+    await page.setViewportSize({ width: 360, height: 800 });
+    const solvedLibraryMobileMath = await page.locator('[data-example-id="lim-003"] .solved-example-question mjx-container').first().evaluate(node => {
+      const rect = node.getBoundingClientRect();
+      return {
+        direction: getComputedStyle(node).direction,
+        left: rect.left,
+        right: rect.right,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      };
+    });
+    assert.equal(solvedLibraryMobileMath.direction, "ltr", "solved-library formulas should be isolated left-to-right in Arabic text");
+    assert.ok(solvedLibraryMobileMath.left >= -1 && solvedLibraryMobileMath.right <= solvedLibraryMobileMath.viewport + 1,
+      "solved-library limit notation should fit within a narrow phone viewport");
+    assert.ok(solvedLibraryMobileMath.pageWidth <= solvedLibraryMobileMath.viewport + 2,
+      "solved-library formulas should not create horizontal page overflow on phones");
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await page.locator("#solved-example-topic").selectOption("");
+
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
