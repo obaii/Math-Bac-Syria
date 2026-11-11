@@ -1986,20 +1986,25 @@ const assert = require("node:assert/strict");
     assert.ok(diagramResult.svgLeft >= -1 && diagramResult.svgRight <= diagramResult.viewport + 1, "diagram SVG should fit inside the mobile viewport");
     assert.ok(diagramResult.pageWidth <= diagramResult.viewport + 2, "a diagram should not create page-level horizontal overflow");
 
-    // Exercise MathJax with a representative fraction and radical, without changing saved question data.
+    // Exercise the shared question formatter with fractions, exponents, and limit arrows.
     const mathResult = await page.evaluate(async () => {
       const node = document.querySelector("#question-text");
-      node.innerHTML = String.raw`اختبار عرض المعادلة: \( \frac{1}{2}+\sqrt{3} \)`;
+      if (typeof window.formatMathContent !== "function") return { formatter: false };
+      const formatted = window.formatMathContent("اختبار: z=(2+3i)/(1−2i)، و 3^×، و lim(x→+∞).");
+      node.innerHTML = formatted + " \\(\\frac{1}{2}+\\sqrt{3}\\)";
       if (!window.MathJax || typeof window.MathJax.typesetPromise !== "function") {
-        return { available: false };
+        return { formatter: true, available: false, formatted };
       }
       await window.MathJax.typesetPromise([node]);
-      const rendered = node.querySelector("mjx-container");
-      if (!rendered) return { available: true, rendered: false };
-      const rect = rendered.getBoundingClientRect();
+      const rendered = node.querySelectorAll("mjx-container");
+      const first = rendered[0];
+      if (!first) return { formatter: true, available: true, rendered: false, formatted };
+      const rect = first.getBoundingClientRect();
       return {
+        formatter: true,
         available: true,
-        rendered: true,
+        rendered: rendered.length >= 4,
+        formatted,
         left: rect.left,
         right: rect.right,
         width: rect.width,
@@ -2007,8 +2012,12 @@ const assert = require("node:assert/strict");
         pageWidth: document.documentElement.scrollWidth
       };
     });
+    assert.equal(mathResult.formatter, true, "the shared math formatter should load before the quiz renderer");
     assert.equal(mathResult.available, true, "MathJax should load for equation rendering");
-    assert.equal(mathResult.rendered, true, "a fraction and radical should be typeset by MathJax");
+    assert.equal(mathResult.rendered, true, "fractions, exponents, limit arrows, and radicals should all be typeset");
+    assert.ok(mathResult.formatted.includes("\\frac{(2+3i)}{(1−2i)}"), "plain slash fractions should become stacked fractions");
+    assert.ok(mathResult.formatted.includes("3^{x}"), "a malformed exponent glyph should become x in the exponent");
+    assert.ok(mathResult.formatted.includes("\\lim_{x\\to+\\infty}"), "the limit arrow should point from x towards positive infinity");
     assert.ok(mathResult.width > 0 && mathResult.left >= -1 && mathResult.right <= mathResult.viewport + 1, "the rendered equation should fit within the mobile viewport");
     assert.ok(mathResult.pageWidth <= mathResult.viewport + 2, "a rendered equation should not create page-level horizontal overflow");
 
