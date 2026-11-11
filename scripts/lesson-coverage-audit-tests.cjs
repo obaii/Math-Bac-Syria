@@ -7,12 +7,12 @@ const { lessons, summary, unresolvedRows } = buildAudit();
 const expect = (condition, message) => { if (!condition) failures.push(message); };
 
 expect(summary.lessons === 63, "The audit must include all 63 student-book lessons.");
-expect(summary.studentLabels === 318, "The audit must include all 318 student-curriculum labels.");
-expect(summary.studentExamples === 478, "The audit must account for all 478 student-curriculum examples.");
+expect(summary.studentLabels === 319, "The audit must include all 319 student-curriculum labels.");
+expect(summary.studentExamples === 498, "The audit must account for all 498 student-curriculum examples.");
 expect(summary.supplementaryLabels === 6 && summary.supplementaryExamples === 6,
   "The six teacher-guide references must remain separately excluded.");
 expect(summary.highConfidenceLabels === 153, "High-confidence suggestion count must match the crosswalk.");
-expect(summary.mediumConfidenceLabels === 157, "Medium-confidence suggestion count must match the crosswalk.");
+expect(summary.mediumConfidenceLabels === 158, "Medium-confidence suggestion count must match the crosswalk.");
 expect(summary.lowConfidenceLabels === 8, "Low-confidence suggestion count must match the crosswalk.");
 expect(summary.manualReviewLabels === 8 && summary.manualReviewExamples === 8,
   "All eight manually flagged labels must remain visible as unresolved.");
@@ -40,7 +40,7 @@ if (failures.length) {
   for (const failure of failures) console.error("- " + failure);
   process.exitCode = 1;
 } else {
-  console.log("PASS: 63 lessons, 308 student labels, and 358 examples reconcile.");
+  console.log("PASS: 63 lessons, 309 student labels, and 378 examples reconcile.");
   console.log("PASS: 8 manual-review labels remain explicitly unresolved and unassigned.");
   console.log("PASS: provisional suggestions are never counted as verified coverage.");
   console.log("PASS: per-lesson totals and generated-report safeguards are consistent.");
