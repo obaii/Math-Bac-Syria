@@ -313,7 +313,7 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 120) errors.push(`أرشيف الأسئلة المؤتمتة يجب أن يضم 100 سؤال، والموجود ${rawAutomatedAdditional}.`);
+  if (rawAutomatedAdditional !== 120) errors.push(`أرشيف الأسئلة المؤتمتة يجب أن يضم 120 سؤالاً، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
     !["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType) ||
     ![2018, 2019, 2022, 2023, 2025].includes(question.sourceYear) ||
