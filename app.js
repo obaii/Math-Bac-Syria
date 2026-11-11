@@ -1328,7 +1328,7 @@ function showSimilarPracticeQuestion(current, host) {
   note.textContent = "هذا تدريب إضافي من الأسئلة الموجودة، ولا يدخل في علامة الاختبار أو سجل تقدمك.";
   const prompt = document.createElement("p");
   prompt.className = "similar-practice-question";
-  prompt.innerHTML = formatQuestionMath(escapeMathMarkup(question.q));
+  prompt.innerHTML = escapeMathMarkup(question.q);
   const controls = document.createElement("div");
   controls.className = "similar-practice-options";
   const result = document.createElement("p");
@@ -1362,7 +1362,7 @@ function showSimilarPracticeQuestion(current, host) {
     result.textContent = correct ? "إجابة صحيحة، أحسنت!" : "ليست هذه الإجابة الصحيحة. راجع الحل ثم حاول في تمرين آخر.";
     result.classList.add(correct ? "good" : "bad");
     result.hidden = false;
-    solution.innerHTML = formatQuestionMath(escapeMathMarkup("الحل: " + String(question.solution || "")));
+    solution.innerHTML = escapeMathMarkup("الحل: " + String(question.solution || ""));
     solution.hidden = false;
     typeset();
   };
@@ -1374,7 +1374,7 @@ function showSimilarPracticeQuestion(current, host) {
       button.type = "button";
       button.className = "option similar-practice-option";
       button.dataset.similarOption = String(index);
-      button.innerHTML = formatQuestionMath(escapeMathMarkup(option));
+      button.innerHTML = escapeMathMarkup(option);
       button.addEventListener("click", () => finish(index));
       controls.append(button);
     });
@@ -1445,7 +1445,7 @@ function showQuestion(){
   const options = $("options");
   options.replaceChildren();
   if (type === "mcq") {
-    options.innerHTML=q.options.map((option,i)=>'<button class="option" data-option="' + i + '" type="button"><span class="letter">' + letters[i] + '</span><span>' + formatQuestionMath(escapeMathMarkup(option)) + '</span></button>').join("");
+    options.innerHTML=q.options.map((option,i)=>'<button class="option" data-option="' + i + '" type="button"><span class="letter">' + letters[i] + '</span><span>' + escapeMathMarkup(option) + '</span></button>').join("");
     options.querySelectorAll("[data-option]").forEach(btn=>btn.addEventListener("click",()=>chooseAnswer(Number(btn.dataset.option))));
   } else if (type === "true-false") {
     for (const [value, label] of [[true, "صح"], [false, "خطأ"]]) {
@@ -1499,7 +1499,7 @@ function showQuestion(){
     hintButton.onclick = () => {
       if (shownHints >= hints.length) return;
       shownHints += 1;
-      hintText.innerHTML = formatQuestionMath(escapeMathMarkup(hints[shownHints - 1]));
+      hintText.innerHTML = escapeMathMarkup(hints[shownHints - 1]);
       hintText.hidden = false;
       hintButton.disabled = shownHints >= hints.length;
       hintButton.textContent = shownHints >= hints.length
@@ -1596,15 +1596,15 @@ function submitQuestionAnswer(response){
     Array.isArray(q.steps) && q.steps.length > 0 &&
     q.steps.every(step => typeof step === "string" && step.trim());
   const solutionMethod = !hasGuidedSteps && Array.isArray(q.hints) && q.hints.length
-    ? '<div class="solution-method"><strong>منهجية الحل خطوة بخطوة:</strong><ol>' + q.hints.map(step => '<li>' + escapeSolutionText(step) + '</li>').join("") + '</ol></div>'
+    ? '<div class="solution-method"><strong>منهجية الحل خطوة بخطوة:</strong><ol>' + q.hints.map(step => '<li>' + escapeMathMarkup(step) + '</li>').join("") + '</ol></div>'
     : "";
   const solutionContent = formatQuestionMath(hasGuidedSteps
-    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + formatQuestionMath(escapeSolutionText(q.keyIdea)) + '</div></div><strong class="solution-steps-title">شرح الحل خطوة بخطوة:</strong><ol class="solution-steps">' + q.steps.map(step => '<li>' + formatQuestionMath(escapeSolutionText(step)) + '</li>').join("") + '</ol>'
-    : '<div class="solution-original">' + formatQuestionMath(q.solution) + '</div>' + solutionMethod);
+    ? '<div class="solution-key-idea"><strong>الفكرة الأساسية:</strong><div>' + escapeMathMarkup(q.keyIdea) + '</div></div><strong class="solution-steps-title">شرح الحل خطوة بخطوة:</strong><ol class="solution-steps">' + q.steps.map(step => '<li>' + escapeMathMarkup(step) + '</li>').join("") + '</ol>'
+    : '<div class="solution-original">' + escapeMathMarkup(q.solution) + '</div>' + solutionMethod);
   const answerSummary = type === "mcq"
-    ? (isCorrect ? "اختيارك صحيح." : "الإجابة الصحيحة هي: " + letters[q.answer] + " — " + formatQuestionMath(escapeMathMarkup(q.options[q.answer])))
-    : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + formatQuestionMath(escapeSolutionText(formatExpectedAnswer(q))));
-  const submittedSummary = type === "mcq" ? "" : '<div>إجابتك: ' + formatQuestionMath(escapeSolutionText(type === "true-false" ? (response ? "صح" : "خطأ") : response)) + '</div>';
+    ? (isCorrect ? "اختيارك صحيح." : "الإجابة الصحيحة هي: " + letters[q.answer] + " — " + escapeMathMarkup(q.options[q.answer]))
+    : (isCorrect ? "إجابتك صحيحة." : "الإجابة الصحيحة هي: " + escapeMathMarkup(formatExpectedAnswer(q)));
+  const submittedSummary = type === "mcq" ? "" : '<div>إجابتك: ' + escapeMathMarkup(type === "true-false" ? (response ? "صح" : "خطأ") : response) + '</div>';
   fb.innerHTML='<strong>' + (isCorrect?"✓ إجابة صحيحة، أحسنت!":"✗ إجابة غير صحيحة") + '</strong><div>' + answerSummary + '</div>' + submittedSummary +
     (isCorrect ? "" : '<section class="error-reflection" aria-labelledby="error-reflection-title"><strong id="error-reflection-title">ما السبب الأقرب لوقوعك في الخطأ؟</strong><p>اختيارك اختياري ويساعدك على فهم نمط المراجعة؛ لا تستنتج المنصة السبب تلقائياً.</p><div class="error-reflection-options">' +
       [["concept","لم أفهم المفهوم"],["law","اخترت قانوناً غير مناسب"],["calculation","خطأ في الحساب"],["sign","خطأ في الإشارة أو الترتيب"],["reading","لم أفهم المطلوب جيداً"],["steps","تعثر في خطوات الحل"],["other","سبب آخر / لست متأكداً"]].map(([value,label]) => '<button type="button" data-error-reason="' + value + '">' + label + '</button>').join("") +
@@ -1722,12 +1722,16 @@ function startSessionMistakeQuiz(){
   window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 function escapeMathMarkup(value){
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+  const formatted = formatQuestionMath(value);
+  return formatted.split(/(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g).map(part => {
+    if (/^(?:\\\(|\\\[)/.test(part)) return part;
+    return part
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }).join("");
 }
 function formatQuestionMath(value){
   const text = String(value ?? "");
