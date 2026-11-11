@@ -63,7 +63,7 @@ for (const [field, value] of Object.entries(summary)) {
 }
 if (studentRows.length !== 311 || supplementaryRows.length !== 6) failures.push("Expected 311 student-curriculum labels and 6 supplementary labels.");
 if (summary.studentExamples !== 378 || summary.supplementaryExamples !== 6) failures.push("Expected 378 student-curriculum examples and 6 supplementary examples.");
-console.log("Solved-example lesson-label crosswalk: " + rows.length + "/318 labels.");
+console.log("Solved-example lesson-label crosswalk: " + rows.length + "/317 labels.");
 console.log("Student curriculum: " + studentRows.length + " labels / " + summary.studentExamples + " examples.");
 console.log("Supplementary teacher-guide material excluded: " + supplementaryRows.length + " labels / " + summary.supplementaryExamples + " examples.");
 console.log("Provisional suggestions: " + summary.high + " high, " + summary.medium + " medium, " + summary.low + " low confidence.");
