@@ -2,7 +2,7 @@
   "use strict";
 
   const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<[^>]*>)/g;
-  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹()[\]{}.+\-−×÷*/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
+  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹()[\]{}.+\-−×÷*\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
   const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹]/;
 
   function normalizePlainExpression(expression) {
