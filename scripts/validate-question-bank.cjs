@@ -304,9 +304,9 @@ try {
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
   if (rawAutomatedAdditional !== 20) errors.push(`دفعة الأرشيف المؤتمت يجب أن تضم 20 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
-    question.sourceType !== "نموذج وزاري مؤتمت — أرشيف" || question.sourceYear !== 2023 ||
+    question.sourceType !== "تدريب مستوحى من نموذج وزاري" || question.sourceYear !== 2023 ||
     !question.sourceLabel || !question.sourceReference || question.type !== "mcq")) {
-    errors.push("أسئلة الأرشيف المؤتمت يجب أن تحتفظ بنوع المصدر وسنته ومرجعه وتصنيف الاختيار من متعدد.");
+    errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بنوع الإلهام وسنته ومرجعه وتصنيف الاختيار من متعدد.");
   }
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
