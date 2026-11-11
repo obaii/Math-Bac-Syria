@@ -50,3 +50,23 @@ body.dark-mode .solved-example-idea,body.dark-mode .solved-examples-controls inp
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+#solved-examples-library,
+#solved-examples-library .solved-examples-list,
+#solved-examples-library .solved-example-card {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+#solved-examples-library .solved-example-card mjx-container {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+#solved-examples-library .solved-example-card mjx-container[display="true"] {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  text-align: left;
+}
