@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "description": "Inventory of every lesson label used by the solved-examples library. Labels are descriptive subtopic labels, not yet certified as exact textbook lesson titles.",
   "exampleCount": 384,
-  "uniqueTopicLessonLabels": 318,
+  "uniqueTopicLessonLabels": 317,
   "mappingPolicy": "Each label remains pending until its content is matched to one of the 63 student-book lessons. Teacher-guide supplementary topics remain separate.",
   "entries": [
     {
@@ -740,6 +740,23 @@
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
+        "نموذج وزاري": 1
+      },
+      "years": [
+        2023
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الاشتقاق",
+      "unit": "التوابع: الاشتقاق",
+      "lessonLabel": "تطبيقات الاشتقاق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "ministerial23-auto-021"
+      ],
+      "sourceTypes": {
         "نموذج وزاري": 1
       },
       "years": [
@@ -2912,14 +2929,18 @@
       "topic": "الجداء السلمي في الفراغ",
       "unit": "الجداء السلّمي في الفراغ",
       "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "ministerial23-auto-030",
         "plane-cartesian-001"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "نموذج وزاري": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -3592,23 +3613,6 @@
       },
       "years": [
         2018
-      ],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "المستقيمات والمستويات في الفراغ",
-      "unit": "المستقيمات والمستويات في الفراغ",
-      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
-      "exampleCount": 1,
-      "exampleIds": [
-        "ministerial23-auto-030"
-      ],
-      "sourceTypes": {
-        "نموذج وزاري": 1
-      },
-      "years": [
-        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -4305,23 +4309,6 @@
       },
       "years": [
         2022
-      ],
-      "mappedLessonId": null,
-      "auditStatus": "pending"
-    },
-    {
-      "topic": "النهايات والاستمرار",
-      "unit": "التوابع: النهايات والاستمرار",
-      "lessonLabel": "تطبيقات الاشتقاق",
-      "exampleCount": 1,
-      "exampleIds": [
-        "ministerial23-auto-021"
-      ],
-      "sourceTypes": {
-        "نموذج وزاري": 1
-      },
-      "years": [
-        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -5156,13 +5143,13 @@
     "byTopic": [
       {
         "topic": "النهايات والاستمرار",
-        "count": 45,
-        "distinctLessonLabels": 39
+        "count": 44,
+        "distinctLessonLabels": 38
       },
       {
         "topic": "الاشتقاق",
-        "count": 38,
-        "distinctLessonLabels": 33
+        "count": 39,
+        "distinctLessonLabels": 34
       },
       {
         "topic": "التابع اللوغاريتمي",
@@ -5196,13 +5183,13 @@
       },
       {
         "topic": "الجداء السلمي في الفراغ",
-        "count": 18,
+        "count": 19,
         "distinctLessonLabels": 17
       },
       {
         "topic": "المستقيمات والمستويات في الفراغ",
-        "count": 34,
-        "distinctLessonLabels": 30
+        "count": 33,
+        "distinctLessonLabels": 29
       },
       {
         "topic": "الأعداد العقدية",
