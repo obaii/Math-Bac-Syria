@@ -436,7 +436,7 @@
       <label>ابحث في الأمثلة <input id="solved-example-search" type="search" placeholder="اكتب فكرة أو كلمة من السؤال"></label>
       <label>الموضوع <select id="solved-example-topic"><option value="">جميع الأبحاث</option></select></label>
       <label>المستوى <select id="solved-example-level"><option value="">جميع المستويات</option><option>أساسي</option><option>متوسط</option><option>متقدم</option></select></label>
-      <label>نوع المصدر <select id="solved-example-source"><option value="">كل أنواع المصادر</option><option value="تدريبي مؤلف">أمثلة تدريبية مؤلفة</option><option value="دورة امتحانية">دورات امتحانية</option><option value="نموذج وزاري">نماذج وزارية</option><option value="تدريب مستوحى من نموذج وزاري">تدريبات مستوحاة من نماذج وزارية</option></select></label>
+      <label>نوع المصدر <select id="solved-example-source"><option value="">كل أنواع المصادر</option><option value="تدريبي مؤلف">أمثلة تدريبية مؤلفة</option><option value="دورة امتحانية">دورات امتحانية</option><option value="نموذج وزاري">نماذج وزارية</option><option value="تدريب مستوحى من نموذج وزاري">تدريبات مستوحاة من نماذج وزارية</option><option value="تدريب مستوحى من دورة امتحانية">تدريبات مستوحاة من أسئلة الدورات</option></select></label>
       <label>سنة المصدر <select id="solved-example-year"><option value="">كل السنوات</option></select></label>
     </div>
     <div id="solved-examples-list" class="solved-examples-list" aria-live="polite"></div>`;
