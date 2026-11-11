@@ -314,7 +314,7 @@ try {
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
   console.log(`مدخلات ملف الأسئلة الإضافية: ${rawAdditional}`);
   console.log(`مدخلات الأسئلة ذات الأنماط الجديدة: ${rawTypedAdditional}`);
-  console.log(`أسئلة النموذج الوزاري المؤتمت المؤرشفة: ${rawAutomatedAdditional}`);
+  console.log(`الأسئلة المؤتمتة المستوحاة: ${rawAutomatedAdditional}`);
   console.log("توزيع الأنماط: " + [...typeCounts].map(([type, count]) => type + ": " + count).join("، "));
   console.log("\nتوزيع الأسئلة حسب البحث:");
   for (const [topic, bucket] of counts) {
