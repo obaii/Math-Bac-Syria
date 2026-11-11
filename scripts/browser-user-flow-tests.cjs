@@ -423,7 +423,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 227, "the authored-example filter should show all 227 current examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 34, "topic filtering should show all 34 probability examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 38, "topic filtering should show all 38 probability examples");
     await page.locator("#solved-example-topic").selectOption("مصطلحات المنطق الرياضي");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "the mathematical logic topic should show its six new examples");
     await page.locator("#solved-example-topic").selectOption("نهاية متتالية");
