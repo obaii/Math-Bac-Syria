@@ -6472,16 +6472,19 @@
       "inventoryIndex": 317,
       "topic": "نهاية متتالية",
       "lessonLabel": "نهاية متتالية رتيبة ومحدودة",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam18-cycle1-007",
         "exam22-seq-004",
         "seq-mono-bound-001"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2022
       ],
       "suggestedLessonId": "sequence-limits-03",
