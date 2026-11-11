@@ -577,7 +577,17 @@
     const bindClick = (id, handler) => {
       const element = document.getElementById(id);
       if (!element || element.dataset.enhancementBound === "true") return;
-      element.addEventListener("click", handler);
+      const exclusivePanel = {
+        "review-assistant-generate": "review-assistant-panel",
+        "review-plan-toggle": "review-plan",
+        "bookmark-review": "bookmark-list",
+        "guided-review": "guided-question-list",
+        "progress-report-toggle": "progress-report"
+      }[id];
+      element.addEventListener("click", () => {
+        if (exclusivePanel) closeOtherReviewPanels(exclusivePanel);
+        handler();
+      });
       element.dataset.enhancementBound = "true";
     };
     bindClick("smart-review", startSmartReview);
@@ -1056,7 +1066,7 @@
       button.id = "mistake-log-toggle";
       button.textContent = "سجل الأخطاء (0)";
       button.setAttribute("aria-expanded", "false");
-      button.addEventListener("click", toggleMistakeLog);
+      button.addEventListener("click", () => { closeOtherReviewPanels("mistake-log"); toggleMistakeLog(); });
       actions.appendChild(button);
     }
     if (!document.getElementById("mistake-log")) {
@@ -1172,6 +1182,23 @@
       document.getElementById("quiz")?.classList.remove("hidden");
     }));
     typesetMath(section);
+  };
+  const reviewPanelButtonIds = {
+    "review-assistant-panel": "review-assistant-generate",
+    "review-plan": "review-plan-toggle",
+    "bookmark-list": "bookmark-review",
+    "guided-question-list": "guided-review",
+    "progress-report": "progress-report-toggle",
+    "mistake-log": "mistake-log-toggle"
+  };
+  const closeOtherReviewPanels = activePanelId => {
+    Object.entries(reviewPanelButtonIds).forEach(([panelId, buttonId]) => {
+      if (panelId === activePanelId) return;
+      const panel = document.getElementById(panelId);
+      if (panel) panel.hidden = true;
+      const button = document.getElementById(buttonId);
+      if (button) button.setAttribute("aria-expanded", "false");
+    });
   };
   const toggleMistakeLog = () => {
     const section = document.getElementById("mistake-log");
@@ -1304,7 +1331,9 @@
     const bookmarkButton = document.getElementById("bookmark-review");
     if (bookmarkButton) {
       bookmarkButton.setAttribute("aria-expanded", String(!list.hidden));
-      bookmarkButton.firstChild && (bookmarkButton.firstChild.textContent = !list.hidden ? "إخفاء المسائل المحفوظة (" : "عرض المسائل المحفوظة (");
+      const bookmarkLabel = bookmarkButton.querySelector(".review-action-label");
+      if (bookmarkLabel) bookmarkLabel.textContent = !list.hidden ? "إخفاء المسائل المحفوظة" : "عرض المسائل المحفوظة";
+      else bookmarkButton.textContent = (!list.hidden ? "إخفاء المسائل المحفوظة" : "عرض المسائل المحفوظة") + " (" + (count?.textContent || "0") + ")";
     }
     list.querySelectorAll("[data-bookmark-key]").forEach(btn => btn.addEventListener("click", () => {
       const q = byKey(btn.dataset.bookmarkKey);
