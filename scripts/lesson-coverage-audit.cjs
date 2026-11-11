@@ -32,6 +32,7 @@ function buildAudit() {
   const byId = new Map(lessons.map(lesson => [lesson.id, lesson]));
   const studentRows = (crosswalk.entries || []).filter(row => row.reviewStatus !== "supplementary-excluded");
   for (const row of studentRows) {
+    if (row.suggestedLessonId === null && row.reviewStatus === "needs-manual-review") continue;
     const lesson = byId.get(row.suggestedLessonId);
     if (!lesson) {
       throw new Error("Invalid or absent suggested lesson for label: " + row.lessonLabel);
@@ -59,6 +60,8 @@ function buildAudit() {
     lowConfidenceLabels: studentRows.filter(row => row.confidence === "low").length,
     manualReviewLabels: studentRows.filter(row => row.reviewStatus === "needs-manual-review").length,
     manualReviewExamples: studentRows.filter(row => row.reviewStatus === "needs-manual-review").reduce((sum, row) => sum + row.exampleCount, 0),
+    unmappedLabels: studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null).length,
+    unmappedExamples: studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null).reduce((sum, row) => sum + row.exampleCount, 0),
     lessonsWithSuggestions: lessons.filter(lesson => lesson.labels > 0).length,
     lessonsWithoutSuggestions: lessons.filter(lesson => lesson.labels === 0).length,
     verifiedLabels: (crosswalk.entries || []).filter(row => row.verified === true).length
@@ -86,6 +89,8 @@ function renderMarkdown(audit) {
     "| اقتراحات منخفضة الثقة | " + summary.lowConfidenceLabels + " |",
     "| تسميات تتطلب مراجعة يدوية | " + summary.manualReviewLabels + " |",
     "| أمثلة ضمن التسميات التي تتطلب مراجعة يدوية | " + summary.manualReviewExamples + " |",
+    "| تسميات بقيت بلا إسناد إلى درس | " + summary.unmappedLabels + " |",
+    "| أمثلة بقيت بلا إسناد إلى درس | " + summary.unmappedExamples + " |",
     "| دروس لها اقتراح واحد على الأقل | " + summary.lessonsWithSuggestions + " |",
     "| دروس بلا اقتراحات | " + summary.lessonsWithoutSuggestions + " |",
     "| روابط مثبتة رياضياً/كتابياً | " + summary.verifiedLabels + " |",
@@ -102,11 +107,18 @@ function renderMarkdown(audit) {
   }
   lines.push(
     "",
+    "## تسميات لم يُحسم درسها",
+    "",
+    "| الموضوع | عنوان التسمية | أمثلة | معرّفات الأمثلة |",
+    "|---|---|---:|---|",
+    ...studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null)
+      .map(row => "| " + row.topic + " | " + row.lessonLabel + " | " + row.exampleCount + " | " + (row.exampleIds || []).join(", ") + " |"),
+    "",
     "## طريقة قراءة التقرير",
     "",
     "- «التسميات المقترحة» تعني وجود تسميات أمثلة أُسندت آلياً إلى الدرس المقترح، ولا تعني أن محتوى الأمثلة يطابق جميع مفاهيم الدرس.",
     "- مستويات الثقة تصف قوة الاقتراح النصي، وليست حكماً على صحة الحل الرياضي.",
-    "- التسميات التي تتطلب مراجعة يدوية تبقى ظاهرة في العدد الإجمالي، لكنها لا تعدّ تغطية مؤكدة.",
+    "- التسميات التي تتطلب مراجعة يدوية تبقى ظاهرة في العدد الإجمالي، ولا تُسند إلى درس تخميناً؛ تظهر في جدول مستقل حتى تُراجع من نص السؤال والكتاب.",
     "- لا يُعلن اكتمال أي درس قبل مطابقة محتواه وأمثلته مع كتاب الطالب وإعادة حل المسائل والتحقق من مصادرها.",
     ""
   );
