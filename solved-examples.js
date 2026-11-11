@@ -601,18 +601,9 @@
 
   function formatSolvedExampleMath(value) {
     const raw = String(value ?? "");
-    const formatted = typeof window.formatMathContent === "function"
+    return typeof window.formatMathContent === "function"
       ? window.formatMathContent(raw)
       : raw;
-    return formatted.split(/(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g).map(part => {
-      if (/^(?:\\\(|\\\[)/.test(part)) return part;
-      return part
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }).join("");
   }
 
   let renderRevision = 0;
@@ -636,10 +627,10 @@
       const article = document.createElement("article"); article.className = "solved-example-card";
       article.dataset.exampleId = item.id;
       const heading = document.createElement("div"); heading.className = "solved-example-meta";
-      const title = document.createElement("h4"); title.innerHTML = formatSolvedExampleMath(`مثال ${index+1}: ${item.lesson}`);
-      const tags = document.createElement("span"); tags.innerHTML = formatSolvedExampleMath(`${item.topic} · ${item.level}`);
+      const title = document.createElement("h4"); title.textContent = formatSolvedExampleMath(`مثال ${index+1}: ${item.lesson}`);
+      const tags = document.createElement("span"); tags.textContent = formatSolvedExampleMath(`${item.topic} · ${item.level}`);
       heading.append(title,tags);
-      const question = document.createElement("p"); question.className = "solved-example-question"; question.innerHTML = formatSolvedExampleMath(item.question);
+      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = formatSolvedExampleMath(item.question);
       const diagramMarkup = typeof window.getQuestionDiagram === "function"
         ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
         : "";
@@ -650,12 +641,12 @@
         source.textContent = "المصدر: " + details.join(" · ");
         article.append(heading,source,question);
       } else article.append(heading,question);
-      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.innerHTML = formatSolvedExampleMath("الفكرة الأساسية: " + item.keyIdea);
+      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = formatSolvedExampleMath("الفكرة الأساسية: " + item.keyIdea);
       const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "شرح الحل خطوة بخطوة";
-      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.innerHTML=formatSolvedExampleMath(step);steps.appendChild(li);});
+      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=formatSolvedExampleMath(step);steps.appendChild(li);});
       if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
-      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.innerHTML = formatSolvedExampleMath("النتيجة: " + item.answer);
-      const check = document.createElement("p"); check.className = "solved-example-check"; check.innerHTML = formatSolvedExampleMath("التحقق: " + item.check);
+      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = formatSolvedExampleMath("النتيجة: " + item.answer);
+      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = formatSolvedExampleMath("التحقق: " + item.check);
       article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
     });
     if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
