@@ -46,7 +46,7 @@ if (!library || !Array.isArray(library.examples)) {
   if (examExamples.filter(item => item.sourceYear === 2021).length !== 9) failures.push("The 2021 first-session source batch should contain 9 adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2022).length !== 35) failures.push("The 2022 first-session source batch should contain 35 adaptations.");
   const authoredExamples = examples.filter(item => item.sourceType === "تدريبي مؤلف");
-  if (authoredExamples.length !== 247) failures.push(`Expected 227 authored practice examples, found ${authoredExamples.length}.`);
+  if (authoredExamples.length !== 227) failures.push(`Expected 227 authored practice examples, found ${authoredExamples.length}.`);
   if (examples.filter(item => item.topic === "مصطلحات المنطق الرياضي").length !== 6) failures.push("Expected six authored examples covering mathematical logic and induction foundations.");
   if (examples.filter(item => item.topic === "تطبيقات الأعداد العقدية").length !== 15) failures.push("Expected fifteen complex-number geometry applications.");
   const ministerialExamples = examples.filter(item => item.sourceType === "نموذج وزاري");
