@@ -11,7 +11,7 @@
     "high": 153,
     "medium": 147,
     "low": 8,
-    "unmapped": 0
+    "unmapped": 8
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -4859,10 +4859,10 @@
       "years": [
         2018
       ],
-      "suggestedLessonId": "limits-03",
-      "suggestedLessonTitle": "العمليات على النهايات",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عمليات على النهايات أو موضوع عام يحتاج مراجعة",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5085,10 +5085,10 @@
       "years": [
         2022
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5125,10 +5125,10 @@
       "years": [
         2017
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5146,10 +5146,10 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5209,10 +5209,10 @@
       "years": [
         2022
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5230,10 +5230,10 @@
       "years": [
         2021
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5251,10 +5251,10 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
@@ -5293,10 +5293,10 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": "limits-07",
-      "suggestedLessonTitle": "الاستمرار",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
       "confidence": "low",
-      "rationale": "عنوان دراسة تابع/تمثيل بياني يحتاج مطابقة مع الدرس الأصلي",
+      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
       "reviewStatus": "needs-manual-review",
       "verified": false
     },
