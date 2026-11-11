@@ -58,7 +58,15 @@ if (!library || !Array.isArray(library.examples)) {
         item.sourceReference !== "https://www.zarkachat.com/exam-form-12-math-scientific-syria/")) {
     failures.push("Expected 19 original ministerial examples and 20 separately labelled original practice variants inspired by the 2023 model.");
   }
-  if (examples.length !== 384) failures.push(`Expected exactly 384 current examples, found ${examples.length}.`);
+  const inspiredCycleExamples = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية");
+  if (inspiredCycleExamples.length !== 20 ||
+      inspiredCycleExamples.some(item => item.sourceYear !== 2024 ||
+        !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.zarkachat.com/exam-questions-12-math-syria-2024/" ||
+        !Array.isArray(item.steps) || item.steps.length < 3)) {
+    failures.push("Expected 20 detailed original practice variants inspired by the 2024 first-session exam.");
+  }
+  if (examples.length !== 404) failures.push(`Expected exactly 384 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
@@ -324,7 +332,7 @@ if (!library || !Array.isArray(library.examples)) {
       if (typeof item[field] !== "string" || !item[field].trim()) failures.push(`${label}: missing ${field}.`);
     }
     if (!["أساسي", "متوسط", "متقدم"].includes(item.level)) failures.push(label + ": invalid difficulty level.");
-    if (!["تدريبي مؤلف", "دورة امتحانية", "نموذج وزاري", "تدريب مستوحى من نموذج وزاري"].includes(item.sourceType)) failures.push(label + ": invalid source type.");
+    if (!["تدريبي مؤلف", "دورة امتحانية", "نموذج وزاري", "تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(item.sourceType)) failures.push(label + ": invalid source type.");
     if (item.sourceType !== "تدريبي مؤلف" && (!Number.isInteger(item.sourceYear) || item.sourceYear < 2017 || !item.sourceLabel || !item.sourceReference)) failures.push(label + ": sourced examples need a verified year, label, and reference.");
     if (item.sourceType !== "تدريبي مؤلف") {
       try {
