@@ -432,7 +432,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "complex geometry topic should show all fifteen examples");
     await page.locator("#solved-example-topic").selectOption("");
     await page.locator("#solved-example-search").fill("اِسْتِقْلال حادثتين");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 4, "normalized multiword search should find all four relevant worked examples despite Arabic diacritics");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 5, "normalized multiword search should find all five relevant worked examples after the 2025 additions");
     await page.locator("#solved-example-search").fill("");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
