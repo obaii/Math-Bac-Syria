@@ -14,8 +14,15 @@ const assert = require("node:assert/strict");
 
     async function openTool(id) {
       const menu = page.locator("#section-menu");
-      if (!(await menu.isVisible())) await page.locator("#section-menu-toggle").click();
+      const toggle = page.locator("#section-menu-toggle");
       const link = page.locator("#section-menu a.quick-start-card[data-panel-toggle='" + id + "']");
+      if (!(await link.isVisible())) {
+        await toggle.click();
+        // From an open destination, the first activation returns home; the
+        // second opens the menu. This mirrors the tested homepage navigation flow.
+        if (!(await link.isVisible())) await toggle.click();
+      }
+      await link.waitFor({ state: "visible", timeout: 8000 });
       await link.click();
       await page.locator("#" + id).waitFor({ state: "visible", timeout: 8000 });
     }
