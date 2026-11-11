@@ -8,7 +8,7 @@ const expect = (condition, message) => { if (!condition) failures.push(message);
 
 expect(summary.lessons === 63, "The audit must include all 63 student-book lessons.");
 expect(summary.studentLabels === 319, "The audit must include all 319 student-curriculum labels.");
-expect(summary.studentExamples === 498, "The audit must account for all 498 student-curriculum examples.");
+expect(summary.studentExamples === 518, "The audit must account for all 518 student-curriculum examples.");
 expect(summary.supplementaryLabels === 6 && summary.supplementaryExamples === 6,
   "The six teacher-guide references must remain separately excluded.");
 expect(summary.highConfidenceLabels === 153, "High-confidence suggestion count must match the crosswalk.");
@@ -40,7 +40,7 @@ if (failures.length) {
   for (const failure of failures) console.error("- " + failure);
   process.exitCode = 1;
 } else {
-  console.log("PASS: 63 lessons, 319 student labels, and 498 examples reconcile.");
+  console.log("PASS: 63 lessons, 319 student labels, and 518 examples reconcile.");
   console.log("PASS: 8 manual-review labels remain explicitly unresolved and unassigned.");
   console.log("PASS: provisional suggestions are never counted as verified coverage.");
   console.log("PASS: per-lesson totals and generated-report safeguards are consistent.");
