@@ -92,11 +92,15 @@ if (!library || !Array.isArray(library.examples)) {
   if (inspired2022SecondExamples.length !== 20 || inspired2022SecondExamples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") || item.sourceReference !== "https://www.3lom4all.com/results-syria/%D8%A3%D8%B3%D8%A6%D9%84%D8%A9-%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2022-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7-%D8%AF%D9%88%D8%B1%D8%A92-%D9%85%D8%B9-%D8%A7%D9%84%D8%AD%D9%84/" || item.sourceReferenceSecondary !== "https://www.almanahij-sy.com/2022/08/2022.html" || !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2022 second-session exam.");
   }
+  const inspired2023FirstExamples = inspiredCycleExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الأولى 2023");
+  if (inspired2023FirstExamples.length !== 20 || inspired2023FirstExamples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") || item.sourceReference !== "https://www.3lom4all.com/results-syria/%D8%AD%D9%84-%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2023-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7-%D8%AF%D9%88%D8%B1%D8%A9-%D8%A7%D9%88%D9%84/" || item.sourceReferenceSecondary !== "https://www.3lom4all.com/results-syria/%D8%B3%D9%84%D9%85-%D8%AA%D8%B5%D8%AD%D9%8A%D8%AD-%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2023-%D8%AF%D9%88%D8%B1%D8%A9-%D8%A7%D9%88%D9%84%D9%89-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7/" || item.sourceReferenceTertiary !== "https://www.baccalaureate.education/2023/06/2023_59.html" || !Array.isArray(item.steps) || item.steps.length < 3)) {
+    failures.push("Expected 20 detailed original practice variants inspired by the 2023 first-session exam.");
+  }
   const inspired2025Examples = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية" && item.sourceYear === 2025);
   if (inspired2025Examples.length !== 20 || inspired2025Examples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") || item.sourceReference !== "https://www.syria4our.net/math-secondary-exam-syria-2025/" || !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2025 first-session exam.");
   }
-  if (examples.length !== 524) failures.push(`Expected exactly 524 current examples, found ${examples.length}.`);
+  if (examples.length !== 544) failures.push(`Expected exactly 524 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||
