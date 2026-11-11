@@ -3,15 +3,15 @@
   "title": "خريطة اقتراحية لربط عناوين مكتبة الأمثلة بدروس كتاب الرياضيات السوري",
   "status": "provisional-not-verified",
   "summary": {
-    "labelCount": 324,
-    "studentCurriculumLabels": 318,
+    "labelCount": 327,
+    "studentCurriculumLabels": 321,
     "supplementaryLabels": 6,
-    "studentExamples": 478,
+    "studentExamples": 498,
     "supplementaryExamples": 6,
     "high": 153,
     "medium": 157,
-    "low": 8,
-    "unmapped": 8
+    "low": 11,
+    "unmapped": 11
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -263,17 +263,20 @@
       "inventoryIndex": 13,
       "topic": "الاحتمالات",
       "lessonLabel": "الاحتمالات المشروطة",
-      "exampleCount": 4,
+      "exampleCount": 6,
       "exampleIds": [
         "exam24-cycle1-011",
         "exam24-cycle1-012",
         "exam25-auto-005",
-        "exam25-auto-006"
+        "exam25-auto-006",
+        "exam22-cycle1-003",
+        "exam22-cycle1-004"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 4
+        "تدريب مستوحى من دورة امتحانية": 6
       },
       "years": [
+        2022,
         2024,
         2025
       ],
@@ -1014,14 +1017,18 @@
       "inventoryIndex": 49,
       "topic": "الاشتقاق",
       "lessonLabel": "تطبيقات الاشتقاق",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
-        "ministerial23-auto-021"
+        "ministerial23-auto-021",
+        "exam22-cycle1-009",
+        "exam22-cycle1-010"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من نموذج وزاري": 1
+        "تدريب مستوحى من نموذج وزاري": 1,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
+        2022,
         2023
       ],
       "suggestedLessonId": "derivatives-03",
@@ -2584,14 +2591,18 @@
       "inventoryIndex": 123,
       "topic": "التابع الأسي",
       "lessonLabel": "نهايات مهمّة تتعلّق بالتابع الأسي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exp-limit-001"
+        "exp-limit-001",
+        "exam22-cycle1-019"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2022
+      ],
       "suggestedLessonId": "exponential-04",
       "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع الأسي",
       "confidence": "high",
@@ -3190,15 +3201,17 @@
       "inventoryIndex": 152,
       "topic": "التحليل التوافقي",
       "lessonLabel": "إنشاء قوائم من عناصر مجموعة",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam25-auto-003",
-        "exam25-auto-004"
+        "exam25-auto-004",
+        "exam22-cycle1-008"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
+        2022,
         2025
       ],
       "suggestedLessonId": "combinatorics-01",
@@ -3847,14 +3860,18 @@
       "inventoryIndex": 185,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "الجداء السلّمي في الفراغ",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
-        "ministerial23-auto-011"
+        "ministerial23-auto-011",
+        "exam22-cycle1-001",
+        "exam22-cycle1-002"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من نموذج وزاري": 1
+        "تدريب مستوحى من نموذج وزاري": 1,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
+        2022,
         2023
       ],
       "suggestedLessonId": "dot-product-02",
@@ -4916,16 +4933,19 @@
       "inventoryIndex": 235,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تقاطع مستقيمات ومستويات",
-      "exampleCount": 3,
+      "exampleCount": 5,
       "exampleIds": [
         "exam24-cycle1-015",
         "exam24-cycle1-016",
-        "exam24-cycle1-017"
+        "exam24-cycle1-017",
+        "exam22-cycle1-015",
+        "exam22-cycle1-016"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 3
+        "تدريب مستوحى من دورة امتحانية": 5
       },
       "years": [
+        2022,
         2024
       ],
       "suggestedLessonId": "lines-planes-03",
@@ -5533,23 +5553,25 @@
       "inventoryIndex": 264,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب المائل",
-      "exampleCount": 5,
+      "exampleCount": 6,
       "exampleIds": [
         "exam17-limit-002",
         "exam18-cycle1-019",
         "lim-003",
         "ministerial23-auto-023",
-        "ministerial23-auto-024"
+        "ministerial23-auto-024",
+        "exam22-cycle1-006"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
         "دورة امتحانية": 1,
         "تدريب مستوحى من نموذج وزاري": 2,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2017,
         2018,
+        2022,
         2023
       ],
       "suggestedLessonId": "limits-06",
@@ -6004,14 +6026,18 @@
       "inventoryIndex": 286,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "نهاية تابع عند عدد حقيقي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "lim-001"
+        "lim-001",
+        "exam22-cycle1-005"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2022
+      ],
       "suggestedLessonId": "limits-02",
       "suggestedLessonTitle": "نهاية تابع عند عدد حقيقي",
       "confidence": "medium",
@@ -6523,15 +6549,18 @@
       "inventoryIndex": 313,
       "topic": "نهاية متتالية",
       "lessonLabel": "تقارب المتتاليات المطّردة",
-      "exampleCount": 2,
+      "exampleCount": 4,
       "exampleIds": [
         "exam25-auto-013",
-        "exam25-auto-014"
+        "exam25-auto-014",
+        "exam22-cycle1-011",
+        "exam22-cycle1-012"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
+        2022,
         2025
       ],
       "suggestedLessonId": "sequence-limits-03",
@@ -6774,6 +6803,72 @@
       "confidence": "medium",
       "rationale": "نهايات المتتاليات الهندسية وخواصها",
       "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 325,
+      "topic": "التحليل التوافقي",
+      "lessonLabel": "التّوافيق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exam22-cycle1-007"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 1
+      },
+      "years": [
+        2022
+      ],
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "عنوان فرعي وارد في مسائل مستوحاة من دورة 2022؛ يحتاج إلى مراجعة نص السؤال والكتاب قبل اقتراح درس مطابق.",
+      "reviewStatus": "unmapped",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 326,
+      "topic": "الأعداد العقدية",
+      "lessonLabel": "الشكل الأسّي لعدد عقدي",
+      "exampleCount": 2,
+      "exampleIds": [
+        "exam22-cycle1-013",
+        "exam22-cycle1-014"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 2
+      },
+      "years": [
+        2022
+      ],
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "عنوان فرعي وارد في مسائل مستوحاة من دورة 2022؛ يحتاج إلى مراجعة نص السؤال والكتاب قبل اقتراح درس مطابق.",
+      "reviewStatus": "unmapped",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 327,
+      "topic": "التابع الأسي",
+      "lessonLabel": "دراسة التابع الأسي",
+      "exampleCount": 3,
+      "exampleIds": [
+        "exam22-cycle1-017",
+        "exam22-cycle1-018",
+        "exam22-cycle1-020"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 3
+      },
+      "years": [
+        2022
+      ],
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "عنوان فرعي وارد في مسائل مستوحاة من دورة 2022؛ يحتاج إلى مراجعة نص السؤال والكتاب قبل اقتراح درس مطابق.",
+      "reviewStatus": "unmapped",
       "verified": false
     }
   ]
