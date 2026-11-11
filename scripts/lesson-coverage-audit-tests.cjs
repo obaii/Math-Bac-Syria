@@ -19,7 +19,8 @@ expect(summary.manualReviewLabels === 8 && summary.manualReviewExamples === 8,
 expect(summary.unmappedLabels === 8 && summary.unmappedExamples === 8,
   "All eight ambiguous labels must remain unassigned until manual review.");
 expect(summary.verifiedLabels === 0, "No provisional suggestion may be reported as verified.");
-expect(summary.lessonsWithSuggestions === 63 && summary.lessonsWithoutSuggestions === 0, "All 63 lessons should now have at least one provisional example suggestion.");
+expect(summary.lessonsWithSuggestions === 62 && summary.lessonsWithoutSuggestions === 1,
+  "The one lesson supported only by ambiguous labels must remain visibly without a suggestion.");
 expect(lessons.length === 63 && new Set(lessons.map(lesson => lesson.id)).size === 63,
   "Every lesson must have a unique stable lesson ID.");
 expect(lessons.reduce((sum, lesson) => sum + lesson.labels, 0) === summary.studentLabels - summary.unmappedLabels,
