@@ -3,15 +3,15 @@
   "title": "خريطة اقتراحية لربط عناوين مكتبة الأمثلة بدروس كتاب الرياضيات السوري",
   "status": "provisional-not-verified",
   "summary": {
-    "labelCount": 327,
-    "studentCurriculumLabels": 321,
+    "labelCount": 325,
+    "studentCurriculumLabels": 319,
     "supplementaryLabels": 6,
     "studentExamples": 498,
     "supplementaryExamples": 6,
     "high": 153,
     "medium": 157,
-    "low": 11,
-    "unmapped": 11
+    "low": 9,
+    "unmapped": 9
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -1780,7 +1780,7 @@
       "inventoryIndex": 86,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي لعدد عقدي",
-      "exampleCount": 11,
+      "exampleCount": 13,
       "exampleIds": [
         "exam19-complex-003",
         "exam24-cycle1-009",
@@ -1792,15 +1792,18 @@
         "exam25-auto-019",
         "exam25-auto-020",
         "ministerial23-auto-008",
-        "ministerial23-auto-009"
+        "ministerial23-auto-009",
+        "exam22-cycle1-013",
+        "exam22-cycle1-014"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
         "تدريب مستوحى من نموذج وزاري": 2,
-        "تدريب مستوحى من دورة امتحانية": 8
+        "تدريب مستوحى من دورة امتحانية": 10
       },
       "years": [
         2019,
+        2022,
         2023,
         2024,
         2025
@@ -3044,7 +3047,7 @@
       "inventoryIndex": 145,
       "topic": "التحليل التوافقي",
       "lessonLabel": "التوافيق",
-      "exampleCount": 7,
+      "exampleCount": 8,
       "exampleIds": [
         "comb-001",
         "comb-010",
@@ -3052,16 +3055,18 @@
         "exam17-comb-001",
         "exam18-cycle1-012",
         "exam25-auto-001",
-        "exam25-auto-002"
+        "exam25-auto-002",
+        "exam22-cycle1-007"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 3,
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 3
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
         2017,
         2018,
+        2022,
         2025
       ],
       "suggestedLessonId": "combinatorics-02",
@@ -6807,49 +6812,6 @@
     },
     {
       "inventoryIndex": 325,
-      "topic": "التحليل التوافقي",
-      "lessonLabel": "التّوافيق",
-      "exampleCount": 1,
-      "exampleIds": [
-        "exam22-cycle1-007"
-      ],
-      "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 1
-      },
-      "years": [
-        2022
-      ],
-      "suggestedLessonId": null,
-      "suggestedLessonTitle": null,
-      "confidence": "low",
-      "rationale": "عنوان فرعي وارد في مسائل مستوحاة من دورة 2022؛ يحتاج إلى مراجعة نص السؤال والكتاب قبل اقتراح درس مطابق.",
-      "reviewStatus": "unmapped",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 326,
-      "topic": "الأعداد العقدية",
-      "lessonLabel": "الشكل الأسّي لعدد عقدي",
-      "exampleCount": 2,
-      "exampleIds": [
-        "exam22-cycle1-013",
-        "exam22-cycle1-014"
-      ],
-      "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 2
-      },
-      "years": [
-        2022
-      ],
-      "suggestedLessonId": null,
-      "suggestedLessonTitle": null,
-      "confidence": "low",
-      "rationale": "عنوان فرعي وارد في مسائل مستوحاة من دورة 2022؛ يحتاج إلى مراجعة نص السؤال والكتاب قبل اقتراح درس مطابق.",
-      "reviewStatus": "unmapped",
-      "verified": false
-    },
-    {
-      "inventoryIndex": 327,
       "topic": "التابع الأسي",
       "lessonLabel": "دراسة التابع الأسي",
       "exampleCount": 3,
