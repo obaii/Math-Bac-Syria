@@ -2219,3 +2219,23 @@ body.dark-mode #bookmark-list .bookmark-number {
     padding-inline: 10px;
   }
 }
+
+
+/* Mathematical notation is isolated left-to-right inside the Arabic RTL interface. */
+#quiz mjx-container,
+.similar-practice-card mjx-container {
+  direction: ltr;
+  unicode-bidi: isolate;
+  max-width: 100%;
+  overflow-x: auto;
+  vertical-align: middle;
+}
+#quiz .question-prompt-copy mjx-container,
+#quiz .option mjx-container,
+#quiz .feedback mjx-container,
+#quiz #question-hint-text mjx-container {
+  text-align: left;
+}
+#quiz .option mjx-container {
+  display: inline-block;
+}
