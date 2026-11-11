@@ -32,7 +32,7 @@ const cases = [
   {
     name: "inequality signs are formatted rather than treated as HTML",
     input: "إذا كان x<3 وx>1.",
-    expected: /\\\\\(x<3\\\\\).*\\\\\(x>1\\\\\)/
+    expected: /\\\(x<3\\\).*\\\(x>1\\\)/
   },
   {
     name: "existing MathJax expressions are not double wrapped",
