@@ -404,12 +404,12 @@ if (!source.includes('id = "solved-examples-library"') && !source.includes('sect
   failures.push("The dedicated solved examples panel was not found.");
 }
 if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')) failures.push("The solved examples panel needs an accessible label.");
-if (!source.includes("item.question") || !source.includes("question.innerHTML = formatSolvedExampleMath(item.question)")) failures.push("Solved-example questions must pass through the shared math formatter.");
+if (!source.includes("item.question") || !source.includes("question.textContent = formatSolvedExampleMath(item.question)")) failures.push("Solved-example questions must pass through the shared math formatter.");
 const mathRenderAssertions = [
-  "idea.innerHTML = formatSolvedExampleMath",
-  "li.innerHTML=formatSolvedExampleMath(step)",
-  "answer.innerHTML = formatSolvedExampleMath",
-  "check.innerHTML = formatSolvedExampleMath",
+  "idea.textContent = formatSolvedExampleMath",
+  "li.textContent=formatSolvedExampleMath(step)",
+  "answer.textContent = formatSolvedExampleMath",
+  "check.textContent = formatSolvedExampleMath",
   "article.dataset.exampleId = item.id",
   "window.formatMathContent(raw)",
   "window.MathJax.typesetClear([list])",
