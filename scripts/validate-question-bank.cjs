@@ -28,6 +28,11 @@ try {
   );
   const { topics, questions, additional, typedAdditional, automatedAdditional } = data;
   const errors = [];
+  const inspired2023FirstAutomated = automatedAdditional.filter(question => question.sourceYear === 2023 && question.sourceSession === "الدورة الأولى 2023" && question.sourceType === "تدريب مستوحى من دورة امتحانية");
+  if (inspired2023FirstAutomated.length !== 20 || inspired2023FirstAutomated.some(question => question.type !== "mcq" || !Array.isArray(question.options) || question.options.length !== 4 || !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3 || !question.sourceLabel.includes("صياغة اختيار من متعدد أصلية") || question.sourceReference !== "https://www.3lom4all.com/results-syria/%D8%AD%D9%84-%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2023-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7-%D8%AF%D9%88%D8%B1%D8%A9-%D8%A7%D9%88%D9%84/" || question.sourceReferenceSecondary !== "https://www.3lom4all.com/results-syria/%D8%B3%D9%84%D9%85-%D8%AA%D8%B5%D8%AD%D9%8A%D8%AD-%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2023-%D8%AF%D9%88%D8%B1%D8%A9-%D8%A7%D9%88%D9%84%D9%89-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7/" || question.sourceReferenceTertiary !== "https://www.baccalaureate.education/2023/06/2023_59.html")) {
+    errors.push("Expected 20 validated original automated MCQs inspired by the 2023 first-session exam.");
+  }
+
   const inspired2022SecondAutomated = automatedAdditional.filter(question =>
     question.sourceYear === 2022 && question.sourceSession === "الدورة الثانية 2022" &&
     question.sourceType === "تدريب مستوحى من دورة امتحانية");
@@ -313,7 +318,7 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 120) errors.push(`أرشيف الأسئلة المؤتمتة يجب أن يضم 120 سؤالاً، والموجود ${rawAutomatedAdditional}.`);
+  if (rawAutomatedAdditional !== 140) errors.push(`أرشيف الأسئلة المؤتمتة يجب أن يضم 140 سؤالاً، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
     !["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType) ||
     ![2018, 2019, 2022, 2023, 2025].includes(question.sourceYear) ||

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "description": "Inventory of every lesson label used by the solved-examples library. Labels are descriptive subtopic labels, not yet certified as exact textbook lesson titles.",
-  "exampleCount": 524,
+  "exampleCount": 544,
   "uniqueTopicLessonLabels": 325,
   "mappingPolicy": "Each label remains pending until its content is matched to one of the 63 student-book lessons. Teacher-guide supplementary topics remain separate.",
   "entries": [
@@ -28,16 +28,20 @@
       "topic": "الاحتمالات",
       "unit": "الاحتمالات",
       "lessonLabel": "احتمال المتممة",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "prob-005",
         "prob-011",
-        "prob-015"
+        "prob-015",
+        "exam23-cycle1-002"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 3
+        "تدريبي مؤلف": 3,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -105,18 +109,20 @@
       "topic": "الاحتمالات",
       "unit": "الاحتمالات",
       "lessonLabel": "احتمال حدث باستعمال التوافيق",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam19-prob-001",
-        "exam22-cycle2-004"
+        "exam22-cycle2-004",
+        "exam23-cycle1-001"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2019,
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -388,14 +394,18 @@
       "topic": "الاحتمالات",
       "unit": "الاحتمالات",
       "lessonLabel": "توزيع احتمال متغير عشوائي وحساب التباين",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "prob-013"
+        "prob-013",
+        "exam23-cycle1-003"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -854,15 +864,18 @@
       "topic": "الاشتقاق",
       "unit": "الاشتقاق",
       "lessonLabel": "تعيين معاملات تابع من نقطة وميل مماس",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam22-rational-001"
+        "exam22-rational-001",
+        "exam23-cycle1-007"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -888,15 +901,18 @@
       "topic": "الاشتقاق",
       "unit": "الاشتقاق",
       "lessonLabel": "حساب قيمة تابع ومماس عند فاصلة معلومة",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam22-function-010"
+        "exam22-function-010",
+        "exam23-cycle1-006"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -940,14 +956,18 @@
       "topic": "الاشتقاق",
       "unit": "الاشتقاق",
       "lessonLabel": "دراسة التغيرات",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "der-013"
+        "der-013",
+        "exam23-cycle1-005"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -1410,14 +1430,17 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "الجذور التكعيبية للوحدة وعلاقاتها",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam25-complex-002"
+        "exam25-complex-002",
+        "exam23-cycle1-013"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2023,
         2025
       ],
       "mappedLessonId": null,
@@ -1448,7 +1471,7 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي لعدد عقدي",
-      "exampleCount": 13,
+      "exampleCount": 14,
       "exampleIds": [
         "exam19-complex-003",
         "exam24-cycle1-009",
@@ -1462,12 +1485,13 @@
         "ministerial23-auto-008",
         "ministerial23-auto-009",
         "exam22-cycle1-013",
-        "exam22-cycle1-014"
+        "exam22-cycle1-014",
+        "exam23-cycle1-012"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
         "تدريب مستوحى من نموذج وزاري": 2,
-        "تدريب مستوحى من دورة امتحانية": 10
+        "تدريب مستوحى من دورة امتحانية": 11
       },
       "years": [
         2019,
@@ -1700,20 +1724,22 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "حل معادلة من الدرجة الثانية في C",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "cx-004",
         "exam19-cycle1-013",
-        "ministerial17-complexroots-001"
+        "ministerial17-complexroots-001",
+        "exam23-cycle1-011"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
         "نموذج وزاري": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2017,
-        2019
+        2019,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -2843,14 +2869,18 @@
       "topic": "التكامل والتابع الأصلي",
       "unit": "التكامل والتابع الأصلي",
       "lessonLabel": "التكامل بالتبديل",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "int-013"
+        "int-013",
+        "exam23-cycle1-020"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -3210,17 +3240,18 @@
       "topic": "الجداء السلمي في الفراغ",
       "unit": "الجداء السلّمي في الفراغ",
       "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
-      "exampleCount": 4,
+      "exampleCount": 5,
       "exampleIds": [
         "ministerial23-auto-030",
         "plane-cartesian-001",
         "exam22-cycle2-007",
-        "exam22-cycle2-008"
+        "exam22-cycle2-008",
+        "exam23-cycle1-015"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
         "تدريب مستوحى من نموذج وزاري": 1,
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
         2022,
@@ -3301,17 +3332,19 @@
       "topic": "الجداء السلمي في الفراغ",
       "unit": "الجداء السلمي في الفراغ",
       "lessonLabel": "حساب الجداء السلمي من الإحداثيات",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam22-vector-001",
-        "exam22-cycle2-009"
+        "exam22-cycle2-009",
+        "exam23-cycle1-014"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -3721,15 +3754,18 @@
       "topic": "المتتاليات",
       "unit": "المتتاليات",
       "lessonLabel": "متتالية تراجعية رتيبة ومحدودة",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam20-seq-001"
+        "exam20-seq-001",
+        "exam23-cycle1-018"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2020
+        2020,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -3781,20 +3817,22 @@
       "topic": "المتتاليات",
       "unit": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية هندسية",
-      "exampleCount": 4,
+      "exampleCount": 5,
       "exampleIds": [
         "exam18-cycle2-009",
         "exam19-cycle1-007",
         "exam19-cycle1-008",
-        "seq-010"
+        "seq-010",
+        "exam23-cycle1-019"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 3
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
         2018,
-        2019
+        2019,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -3926,18 +3964,20 @@
       "topic": "المستقيمات والمستويات في الفراغ",
       "unit": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المسافة من نقطة إلى مستوى",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "exam18-cycle1-010",
         "exam18-cycle2-018",
-        "exam18-plane-001"
+        "exam18-plane-001",
+        "exam23-cycle1-016"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
-        2018
+        2018,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -4006,15 +4046,18 @@
       "topic": "المستقيمات والمستويات في الفراغ",
       "unit": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تقاطع مستقيم مع مستوى",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam22-space-004"
+        "exam22-space-004",
+        "exam23-cycle1-017"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -4395,15 +4438,18 @@
       "topic": "النهايات والاستمرار",
       "unit": "النهايات والاستمرار",
       "lessonLabel": "إثبات وجود جذر موجب ووحدانيته",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam22-function-008"
+        "exam22-function-008",
+        "exam23-cycle1-010"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -4546,20 +4592,21 @@
       "topic": "النهايات والاستمرار",
       "unit": "التوابع والنهايات والاستمرار",
       "lessonLabel": "المقارب المائل",
-      "exampleCount": 6,
+      "exampleCount": 7,
       "exampleIds": [
         "exam17-limit-002",
         "exam18-cycle1-019",
         "lim-003",
         "ministerial23-auto-023",
         "ministerial23-auto-024",
-        "exam22-cycle1-006"
+        "exam22-cycle1-006",
+        "exam23-cycle1-004"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
         "دورة امتحانية": 1,
         "تدريب مستوحى من نموذج وزاري": 2,
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
         2017,
@@ -4606,15 +4653,19 @@
       "topic": "النهايات والاستمرار",
       "unit": "النهايات والاستمرار",
       "lessonLabel": "النهايات عند نقطة",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "lim-015",
-        "lim-017"
+        "lim-017",
+        "exam23-cycle1-009"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 2,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2023
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -5558,17 +5609,19 @@
       "topic": "التابع الأسي",
       "unit": "التابع الأسي",
       "lessonLabel": "دراسة التابع الأسي",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "exam22-cycle1-017",
         "exam22-cycle1-018",
-        "exam22-cycle1-020"
+        "exam22-cycle1-020",
+        "exam23-cycle1-008"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 3
+        "تدريب مستوحى من دورة امتحانية": 4
       },
       "years": [
-        2022
+        2022,
+        2023
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
