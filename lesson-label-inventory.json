@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "description": "Inventory of every lesson label used by the solved-examples library. Labels are descriptive subtopic labels, not yet certified as exact textbook lesson titles.",
-  "exampleCount": 384,
-  "uniqueTopicLessonLabels": 317,
+  "exampleCount": 404,
+  "uniqueTopicLessonLabels": 321,
   "mappingPolicy": "Each label remains pending until its content is matched to one of the 63 student-book lessons. Teacher-guide supplementary topics remain separate.",
   "entries": [
     {
@@ -191,6 +191,24 @@
       },
       "years": [
         2022
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الاحتمالات",
+      "unit": "الاحتمالات",
+      "lessonLabel": "الاحتمالات المشروطة",
+      "exampleCount": 2,
+      "exampleIds": [
+        "exam24-cycle1-011",
+        "exam24-cycle1-012"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 2
+      },
+      "years": [
+        2024
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -1148,6 +1166,23 @@
     },
     {
       "topic": "الأشعة في الفراغ",
+      "unit": "الأشعّة في الفراغ",
+      "lessonLabel": "المعلم في الفراغ",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exam24-cycle1-001"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 1
+      },
+      "years": [
+        2024
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "الأشعة في الفراغ",
       "unit": "الأشعة في الفراغ",
       "lessonLabel": "تقسيم قطعة مستقيمة",
       "exampleCount": 1,
@@ -1327,19 +1362,23 @@
       "topic": "الأعداد العقدية",
       "unit": "الأعداد العقدية",
       "lessonLabel": "الشكل الأسي لعدد عقدي",
-      "exampleCount": 3,
+      "exampleCount": 5,
       "exampleIds": [
         "exam19-complex-003",
+        "exam24-cycle1-009",
+        "exam24-cycle1-010",
         "ministerial23-auto-008",
         "ministerial23-auto-009"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من نموذج وزاري": 2
+        "تدريب مستوحى من نموذج وزاري": 2,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2019,
-        2023
+        2023,
+        2024
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -1905,14 +1944,20 @@
       "topic": "التابع الأسي",
       "unit": "التابع الأسي",
       "lessonLabel": "معادلات تفاضليّة بسيطة",
-      "exampleCount": 1,
+      "exampleCount": 4,
       "exampleIds": [
+        "exam24-cycle1-003",
+        "exam24-cycle1-004",
+        "exam24-cycle1-005",
         "exp-diff-eq-001"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 3
       },
-      "years": [],
+      "years": [
+        2024
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -2057,6 +2102,24 @@
     },
     {
       "topic": "التابع اللوغاريتمي",
+      "unit": "التابع اللوغاريتمي النيبيري",
+      "lessonLabel": "دراسة التابع اللوغاريتمي ln",
+      "exampleCount": 2,
+      "exampleIds": [
+        "exam24-cycle1-018",
+        "exam24-cycle1-019"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 2
+      },
+      "years": [
+        2024
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "التابع اللوغاريتمي",
       "unit": "التابع اللوغاريتمي",
       "lessonLabel": "فردية تابع لوغاريتمي وتغيراته",
       "exampleCount": 1,
@@ -2168,14 +2231,20 @@
       "topic": "التابع اللوغاريتمي",
       "unit": "التابع اللوغاريتمي النيبيري",
       "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
-      "exampleCount": 1,
+      "exampleCount": 4,
       "exampleIds": [
+        "exam24-cycle1-013",
+        "exam24-cycle1-014",
+        "exam24-cycle1-020",
         "log-limit-001"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 3
       },
-      "years": [],
+      "years": [
+        2024
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -3553,15 +3622,18 @@
       "topic": "المستقيمات والمستويات في الفراغ",
       "unit": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "التمثيلات الوسيطيّة",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam24-cycle1-002",
         "ministerial23-auto-033"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من نموذج وزاري": 1
+        "تدريب مستوحى من نموذج وزاري": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2023
+        2023,
+        2024
       ],
       "mappedLessonId": null,
       "auditStatus": "pending"
@@ -3708,6 +3780,25 @@
       },
       "years": [
         2017,
+        2024
+      ],
+      "mappedLessonId": null,
+      "auditStatus": "pending"
+    },
+    {
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "unit": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "تقاطع مستقيمات ومستويات",
+      "exampleCount": 3,
+      "exampleIds": [
+        "exam24-cycle1-015",
+        "exam24-cycle1-016",
+        "exam24-cycle1-017"
+      ],
+      "sourceTypes": {
+        "تدريب مستوحى من دورة امتحانية": 3
+      },
+      "years": [
         2024
       ],
       "mappedLessonId": null,
@@ -4960,14 +5051,20 @@
       "topic": "نهاية متتالية",
       "unit": "نهاية متتالية",
       "lessonLabel": "متتاليات متجاورة",
-      "exampleCount": 1,
+      "exampleCount": 4,
       "exampleIds": [
+        "exam24-cycle1-006",
+        "exam24-cycle1-007",
+        "exam24-cycle1-008",
         "seq-adjacent-001"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 3
       },
-      "years": [],
+      "years": [
+        2024
+      ],
       "mappedLessonId": null,
       "auditStatus": "pending"
     },
@@ -5142,9 +5239,9 @@
   "summary": {
     "byTopic": [
       {
-        "topic": "النهايات والاستمرار",
-        "count": 44,
-        "distinctLessonLabels": 38
+        "topic": "الاحتمالات",
+        "count": 34,
+        "distinctLessonLabels": 30
       },
       {
         "topic": "الاشتقاق",
@@ -5152,54 +5249,24 @@
         "distinctLessonLabels": 34
       },
       {
-        "topic": "التابع اللوغاريتمي",
-        "count": 19,
-        "distinctLessonLabels": 15
-      },
-      {
-        "topic": "التابع الأسي",
-        "count": 21,
-        "distinctLessonLabels": 17
-      },
-      {
-        "topic": "التكامل والتابع الأصلي",
-        "count": 21,
-        "distinctLessonLabels": 18
-      },
-      {
-        "topic": "المتتاليات",
-        "count": 41,
-        "distinctLessonLabels": 25
-      },
-      {
-        "topic": "نهاية متتالية",
-        "count": 17,
-        "distinctLessonLabels": 11
-      },
-      {
         "topic": "الأشعة في الفراغ",
-        "count": 14,
-        "distinctLessonLabels": 14
-      },
-      {
-        "topic": "الجداء السلمي في الفراغ",
-        "count": 19,
-        "distinctLessonLabels": 17
-      },
-      {
-        "topic": "المستقيمات والمستويات في الفراغ",
-        "count": 33,
-        "distinctLessonLabels": 29
+        "count": 15,
+        "distinctLessonLabels": 15
       },
       {
         "topic": "الأعداد العقدية",
-        "count": 37,
+        "count": 39,
         "distinctLessonLabels": 26
       },
       {
-        "topic": "تطبيقات الأعداد العقدية",
-        "count": 15,
-        "distinctLessonLabels": 15
+        "topic": "التابع الأسي",
+        "count": 24,
+        "distinctLessonLabels": 17
+      },
+      {
+        "topic": "التابع اللوغاريتمي",
+        "count": 24,
+        "distinctLessonLabels": 16
       },
       {
         "topic": "التحليل التوافقي",
@@ -5207,14 +5274,44 @@
         "distinctLessonLabels": 23
       },
       {
-        "topic": "الاحتمالات",
-        "count": 32,
-        "distinctLessonLabels": 29
+        "topic": "التكامل والتابع الأصلي",
+        "count": 21,
+        "distinctLessonLabels": 18
+      },
+      {
+        "topic": "الجداء السلمي في الفراغ",
+        "count": 19,
+        "distinctLessonLabels": 17
+      },
+      {
+        "topic": "المتتاليات",
+        "count": 41,
+        "distinctLessonLabels": 25
+      },
+      {
+        "topic": "المستقيمات والمستويات في الفراغ",
+        "count": 37,
+        "distinctLessonLabels": 30
+      },
+      {
+        "topic": "النهايات والاستمرار",
+        "count": 44,
+        "distinctLessonLabels": 38
+      },
+      {
+        "topic": "تطبيقات الأعداد العقدية",
+        "count": 15,
+        "distinctLessonLabels": 15
       },
       {
         "topic": "مصطلحات المنطق الرياضي",
         "count": 6,
         "distinctLessonLabels": 6
+      },
+      {
+        "topic": "نهاية متتالية",
+        "count": 20,
+        "distinctLessonLabels": 11
       }
     ],
     "bySourceType": [
@@ -5232,6 +5329,10 @@
       },
       {
         "sourceType": "تدريب مستوحى من نموذج وزاري",
+        "count": 20
+      },
+      {
+        "sourceType": "تدريب مستوحى من دورة امتحانية",
         "count": 20
       }
     ]
