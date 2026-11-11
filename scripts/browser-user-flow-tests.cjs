@@ -392,6 +392,81 @@ const assert = require("node:assert/strict");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 544, "the library should render all 544 solved examples");
+    await page.waitForFunction(() => window.MathJax && window.MathJax.startup && window.MathJax.startup.promise);
+    const solvedMathAudit = await page.evaluate(async () => {
+      const library = window.solvedExamplesLibrary;
+      const list = document.querySelector("#solved-examples-list");
+      const cards = [...list.querySelectorAll(".solved-example-card")];
+      await window.MathJax.startup.promise;
+      window.MathJax.typesetClear([list]);
+      await window.MathJax.typesetPromise([list]);
+      let expectedFields = 0;
+      let renderedFields = 0;
+      const missingFields = [];
+      library.examples.forEach((example, index) => {
+        const card = cards[index];
+        if (!card) {
+          missingFields.push(example.id + ":card");
+          return;
+        }
+        const stepNodes = [...card.querySelectorAll("ol li")];
+        const fields = [
+          ["question", example.question, card.querySelector(".solved-example-question")],
+          ["keyIdea", "الفكرة الأساسية: " + example.keyIdea, card.querySelector(".solved-example-idea")],
+          ...example.steps.map((step, stepIndex) => ["step" + (stepIndex + 1), step, stepNodes[stepIndex]]),
+          ["answer", "النتيجة: " + example.answer, card.querySelector(".solved-example-answer")],
+          ["check", "التحقق: " + example.check, card.querySelector(".solved-example-check")]
+        ];
+        fields.forEach(([fieldName, value, node]) => {
+          const formatted = window.formatMathContent(String(value ?? ""));
+          const expectsMath = formatted.includes("\\(") || formatted.includes("\\[");
+          if (!expectsMath) return;
+          expectedFields += 1;
+          if (node && node.querySelector("mjx-container")) renderedFields += 1;
+          else missingFields.push(example.id + ":" + fieldName);
+        });
+      });
+      const firstMath = list.querySelector("mjx-container");
+      const rect = firstMath ? firstMath.getBoundingClientRect() : null;
+      return {
+        examples: library.examples.length,
+        cards: cards.length,
+        expectedFields,
+        renderedFields,
+        missingFields: missingFields.slice(0, 12),
+        mathNodes: list.querySelectorAll("mjx-container").length,
+        firstMath: rect ? { left: rect.left, right: rect.right, width: rect.width } : null,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      };
+    });
+    assert.equal(solvedMathAudit.examples, 544, "the math audit should inspect every solved example in the library");
+    assert.equal(solvedMathAudit.cards, 544, "every solved example should have a rendered card");
+    assert.ok(solvedMathAudit.expectedFields > 0, "the solved example data should contain mathematical expressions in its question and solution fields");
+    assert.equal(solvedMathAudit.renderedFields, solvedMathAudit.expectedFields,
+      "every formula-bearing solved-example question, idea, step, answer, and check must be typeset");
+    assert.deepEqual(solvedMathAudit.missingFields, [], "no formula-bearing field may remain unrendered in the solved examples library");
+    assert.ok(solvedMathAudit.mathNodes > 0, "MathJax should create rendered math nodes throughout the solved examples library");
+    assert.ok(solvedMathAudit.firstMath && solvedMathAudit.firstMath.width > 0, "the solved examples library should contain visible rendered mathematics");
+    assert.ok(solvedMathAudit.pageWidth <= solvedMathAudit.viewport + 2, "desktop solved-example formulas should not create page-level horizontal overflow");
+
+    await page.setViewportSize({ width: 360, height: 800 });
+    const solvedMathMobile = await page.evaluate(() => {
+      const library = document.querySelector("#solved-examples-library");
+      const card = library.querySelector(".solved-example-card");
+      const math = card && card.querySelector("mjx-container");
+      const cardRect = card?.getBoundingClientRect();
+      const mathRect = math?.getBoundingClientRect();
+      return {
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        cardWidth: card?.clientWidth || 0,
+        mathInsideCard: !!(cardRect && mathRect && mathRect.left >= cardRect.left - 1 && mathRect.right <= cardRect.right + 1)
+      };
+    });
+    assert.ok(solvedMathMobile.pageWidth <= solvedMathMobile.viewport + 2, "solved-example formulas should not cause horizontal page overflow on a 360px phone");
+    assert.ok(solvedMathMobile.cardWidth > 0 && solvedMathMobile.mathInsideCard, "solved-example formulas should stay within their card on a 360px phone");
+    await page.setViewportSize({ width: 1365, height: 900 });
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
