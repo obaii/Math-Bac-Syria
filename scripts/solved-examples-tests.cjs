@@ -404,8 +404,23 @@ if (!source.includes('id = "solved-examples-library"') && !source.includes('sect
   failures.push("The dedicated solved examples panel was not found.");
 }
 if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')) failures.push("The solved examples panel needs an accessible label.");
-if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
-if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
+if (!source.includes("item.question") || !source.includes("question.innerHTML = formatSolvedExampleMath(item.question)")) failures.push("Solved-example questions must pass through the shared math formatter.");
+const mathRenderAssertions = [
+  "idea.innerHTML = formatSolvedExampleMath",
+  "li.innerHTML=formatSolvedExampleMath(step)",
+  "answer.innerHTML = formatSolvedExampleMath",
+  "check.innerHTML = formatSolvedExampleMath",
+  "article.dataset.exampleId = item.id",
+  "window.formatMathContent(raw)",
+  "window.MathJax.typesetClear([list])",
+  "window.MathJax.typesetPromise([list])"
+];
+for (const assertion of mathRenderAssertions) {
+  if (!source.includes(assertion)) failures.push("Solved-example math rendering is missing: " + assertion);
+}
+if (!index.includes("math-format.js") || index.indexOf("math-format.js") > index.indexOf("solved-examples.js")) {
+  failures.push("The shared math formatter must load before the solved examples library.");
+}
 if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must display available visuals beside their questions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
 if (!source.includes('source.textContent = "المصدر: "') || source.includes("فتح مرجع المصدر")) failures.push("Sourced examples must retain attribution while omitting the source-opening link.");
