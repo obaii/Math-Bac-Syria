@@ -391,7 +391,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 424, "the library should render all 424 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 444, "the library should render all 444 solved examples");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
@@ -401,6 +401,9 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-year").selectOption("2017");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 34, "the 2017 source filter should include the 15 exam adaptations and 19 ministry examples");
+    await page.locator("#solved-example-year").selectOption("2022");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the 2022 source-year filter should show its 20 adapted examples");
+    await page.locator("#solved-example-year").selectOption("");
     await page.locator("#solved-example-year").selectOption("2019");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 21, "the 2019 source filter should show 21 adaptations");
     await page.locator("#solved-example-year").selectOption("2020");
