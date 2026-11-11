@@ -400,7 +400,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the adapted ministerial-model filter should show 20 examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-year").selectOption("2017");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "the 2017 source filter should show 15 adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 34, "the 2017 source filter should include the 15 exam adaptations and 19 ministry examples");
     await page.locator("#solved-example-year").selectOption("2019");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 21, "the 2019 source filter should show 21 adaptations");
     await page.locator("#solved-example-year").selectOption("2020");
