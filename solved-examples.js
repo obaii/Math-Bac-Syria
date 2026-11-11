@@ -599,6 +599,11 @@
     const option = document.createElement("option"); option.value = topic; option.textContent = topic; topicSelect.appendChild(option);
   });
 
+  function formatSolvedExampleMath(value) {
+    const text = String(value ?? "");
+    return typeof window.formatMathContent === "function" ? window.formatMathContent(text) : text;
+  }
+
   function render() {
     const term = searchInput.value.trim();
     const filtered = examples.filter(item =>
@@ -619,7 +624,7 @@
       const title = document.createElement("h4"); title.textContent = `مثال ${index+1}: ${item.lesson}`;
       const tags = document.createElement("span"); tags.textContent = `${item.topic} · ${item.level}`;
       heading.append(title,tags);
-      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = item.question;
+      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = formatSolvedExampleMath(item.question);
       const diagramMarkup = typeof window.getQuestionDiagram === "function"
         ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
         : "";
@@ -630,12 +635,12 @@
         source.textContent = "المصدر: " + details.join(" · ");
         article.append(heading,source,question);
       } else article.append(heading,question);
-      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + item.keyIdea;
+      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + formatSolvedExampleMath(item.keyIdea);
       const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "شرح الحل خطوة بخطوة";
-      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=step;steps.appendChild(li);});
+      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=formatSolvedExampleMath(step);steps.appendChild(li);});
       if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
-      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = "النتيجة: " + item.answer;
-      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = "التحقق: " + item.check;
+      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = "النتيجة: " + formatSolvedExampleMath(item.answer);
+      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = "التحقق: " + formatSolvedExampleMath(item.check);
       article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
     });
     if (window.MathJax && typeof window.MathJax.typesetPromise === "function") window.MathJax.typesetPromise([list]).catch(()=>{});
