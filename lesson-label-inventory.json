@@ -842,14 +842,15 @@
       "topic": "الاشتقاق",
       "unit": "الاشتقاق",
       "lessonLabel": "دراسة اتجاه التغير",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "der-004",
+        "exam18-cycle2-003",
         "exam18-cycle2-010"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018
@@ -4625,17 +4626,14 @@
       "topic": "النهايات والاستمرار",
       "unit": "النهايات والاستمرار",
       "lessonLabel": "قراءة جدول التغيرات وحساب النهايات",
-      "exampleCount": 2,
+      "exampleCount": 1,
       "exampleIds": [
-        "exam18-cycle2-003",
         "exam19-func-001"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "دورة امتحانية": 1
       },
       "years": [
-        2018,
         2019
       ],
       "mappedLessonId": null,
@@ -5350,29 +5348,14 @@
   "summary": {
     "byTopic": [
       {
-        "topic": "الاحتمالات",
-        "count": 34,
-        "distinctLessonLabels": 30
+        "topic": "النهايات والاستمرار",
+        "count": 49,
+        "distinctLessonLabels": 38
       },
       {
         "topic": "الاشتقاق",
-        "count": 44,
+        "count": 45,
         "distinctLessonLabels": 34
-      },
-      {
-        "topic": "الأشعة في الفراغ",
-        "count": 16,
-        "distinctLessonLabels": 15
-      },
-      {
-        "topic": "الأعداد العقدية",
-        "count": 47,
-        "distinctLessonLabels": 26
-      },
-      {
-        "topic": "التابع الأسي",
-        "count": 25,
-        "distinctLessonLabels": 17
       },
       {
         "topic": "التابع اللوغاريتمي",
@@ -5380,9 +5363,9 @@
         "distinctLessonLabels": 16
       },
       {
-        "topic": "التحليل التوافقي",
-        "count": 27,
-        "distinctLessonLabels": 23
+        "topic": "التابع الأسي",
+        "count": 25,
+        "distinctLessonLabels": 17
       },
       {
         "topic": "التكامل والتابع الأصلي",
@@ -5390,14 +5373,24 @@
         "distinctLessonLabels": 18
       },
       {
-        "topic": "الجداء السلمي في الفراغ",
-        "count": 20,
-        "distinctLessonLabels": 17
-      },
-      {
         "topic": "المتتاليات",
         "count": 46,
         "distinctLessonLabels": 25
+      },
+      {
+        "topic": "نهاية متتالية",
+        "count": 21,
+        "distinctLessonLabels": 11
+      },
+      {
+        "topic": "الأشعة في الفراغ",
+        "count": 16,
+        "distinctLessonLabels": 15
+      },
+      {
+        "topic": "الجداء السلمي في الفراغ",
+        "count": 20,
+        "distinctLessonLabels": 17
       },
       {
         "topic": "المستقيمات والمستويات في الفراغ",
@@ -5405,9 +5398,9 @@
         "distinctLessonLabels": 30
       },
       {
-        "topic": "النهايات والاستمرار",
-        "count": 50,
-        "distinctLessonLabels": 38
+        "topic": "الأعداد العقدية",
+        "count": 47,
+        "distinctLessonLabels": 26
       },
       {
         "topic": "تطبيقات الأعداد العقدية",
@@ -5415,14 +5408,19 @@
         "distinctLessonLabels": 15
       },
       {
+        "topic": "التحليل التوافقي",
+        "count": 27,
+        "distinctLessonLabels": 23
+      },
+      {
+        "topic": "الاحتمالات",
+        "count": 34,
+        "distinctLessonLabels": 30
+      },
+      {
         "topic": "مصطلحات المنطق الرياضي",
         "count": 6,
         "distinctLessonLabels": 6
-      },
-      {
-        "topic": "نهاية متتالية",
-        "count": 21,
-        "distinctLessonLabels": 11
       }
     ],
     "bySourceType": [
