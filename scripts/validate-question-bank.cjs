@@ -302,7 +302,7 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 40) errors.push(`دفعتا الأرشيف المؤتمت يجب أن تضما 40 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
+  if (rawAutomatedAdditional !== 60) errors.push(`دفعتا الأرشيف المؤتمت يجب أن تضما 60 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
     !["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType) ||
     ![2018, 2023].includes(question.sourceYear) ||
@@ -310,6 +310,18 @@ try {
     !Array.isArray(question.options) || question.options.length !== 4 ||
     !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3)) {
     errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بالمصدر والسنة وأربعة خيارات وإجابة صحيحة صالحة.");
+  }
+  const firstSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2018");
+  const secondSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الثانية 2018");
+  const hasInvalid2018AnswerIndex = [...firstSessionAutomated, ...secondSessionAutomated].some(question => {
+    const match = String(question.sourceLabel || "").match(/السؤال الفرعي (\d+)/);
+    if (!match) return true;
+    const number = Number(match[1]);
+    const expectedIndex = (4 - (((number - 1) * 3) % 4)) % 4;
+    return question.answer !== expectedIndex;
+  });
+  if (firstSessionAutomated.length !== 20 || secondSessionAutomated.length !== 20 || hasInvalid2018AnswerIndex) {
+    errors.push("يجب أن تضم كل دورة من دورتي 2018 عشرين سؤالاً مؤتمتاً، وأن تطابق مفاتيح الإجابة مواضع الخيارات الصحيحة.");
   }
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);

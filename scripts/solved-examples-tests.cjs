@@ -60,21 +60,27 @@ if (!library || !Array.isArray(library.examples)) {
   }
   const inspiredCycleExamples = examples.filter(item => item.sourceType === "تدريب مستوحى من دورة امتحانية");
   const inspired2024Examples = inspiredCycleExamples.filter(item => item.sourceYear === 2024);
-  const inspired2018Examples = inspiredCycleExamples.filter(item => item.sourceYear === 2018);
+  const inspired2018FirstExamples = inspiredCycleExamples.filter(item => item.sourceYear === 2018 && item.sourceSession === "الدورة الأولى 2018");
+  const inspired2018SecondExamples = inspiredCycleExamples.filter(item => item.sourceYear === 2018 && item.sourceSession === "الدورة الثانية 2018");
   if (inspired2024Examples.length !== 20 ||
       inspired2024Examples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
         item.sourceReference !== "https://www.zarkachat.com/exam-questions-12-math-syria-2024/" ||
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2024 first-session exam.");
   }
-  if (inspired2018Examples.length !== 20 ||
-      inspired2018Examples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+  if (inspired2018FirstExamples.length !== 20 ||
+      inspired2018FirstExamples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
         item.sourceReference !== "https://www.3lom4all.com/object/MG20788/" ||
-        item.sourceSession !== "الدورة الأولى 2018" ||
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("Expected 20 detailed original practice variants inspired by the 2018 first-session exam.");
   }
-  if (examples.length !== 424) failures.push(`Expected exactly 424 current examples, found ${examples.length}.`);
+  if (inspired2018SecondExamples.length !== 20 ||
+      inspired2018SecondExamples.some(item => !item.sourceLabel.includes("صياغة تدريبية أصلية") ||
+        item.sourceReference !== "https://www.3lom4all.com/object/MG21269/" ||
+        !Array.isArray(item.steps) || item.steps.length < 3)) {
+    failures.push("Expected 20 detailed original practice variants inspired by the 2018 second-session exam.");
+  }
+  if (examples.length !== 444) failures.push(`Expected exactly 444 current examples, found ${examples.length}.`);
   const inspiredAutomatedExamples = examples.filter(item => item.id.startsWith("ministerial23-auto-"));
   if (inspiredAutomatedExamples.length !== 20 ||
       inspiredAutomatedExamples.some(item => item.sourceYear !== 2023 || item.sourceType !== "تدريب مستوحى من نموذج وزاري" ||

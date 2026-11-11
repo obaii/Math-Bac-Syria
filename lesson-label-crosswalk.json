@@ -6,7 +6,7 @@
     "labelCount": 321,
     "studentCurriculumLabels": 315,
     "supplementaryLabels": 6,
-    "studentExamples": 418,
+    "studentExamples": 438,
     "supplementaryExamples": 6,
     "high": 153,
     "medium": 154,
@@ -905,14 +905,18 @@
       "inventoryIndex": 45,
       "topic": "الاشتقاق",
       "lessonLabel": "القيمة الحدية المحلية من جدول التغيرات",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam18-cycle2-001",
+        "exam18-cycle2-002",
         "exam19-func-003"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
+        2018,
         2019
       ],
       "suggestedLessonId": "derivatives-03",
@@ -1054,14 +1058,19 @@
       "inventoryIndex": 52,
       "topic": "الاشتقاق",
       "lessonLabel": "دراسة اتجاه التغير",
-      "exampleCount": 1,
+      "exampleCount": 3,
       "exampleIds": [
-        "der-004"
+        "der-004",
+        "exam18-cycle2-003",
+        "exam18-cycle2-010"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 2
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "derivatives-03",
       "suggestedLessonTitle": "تطبيقات الاشتقاق",
       "confidence": "high",
@@ -1172,14 +1181,17 @@
       "inventoryIndex": 58,
       "topic": "الاشتقاق",
       "lessonLabel": "مبرهنة القيم المتوسطة والجذر الوحيد",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-011",
         "exam24-function-002"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2024
       ],
       "suggestedLessonId": "derivatives-03",
@@ -1250,17 +1262,20 @@
       "inventoryIndex": 62,
       "topic": "الاشتقاق",
       "lessonLabel": "معادلة المماس",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "der-003",
         "der-017",
+        "exam18-cycle2-012",
         "exam19-func-007"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 2,
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2019
       ],
       "suggestedLessonId": "derivatives-03",
@@ -1354,14 +1369,18 @@
       "inventoryIndex": 67,
       "topic": "الأشعة في الفراغ",
       "lessonLabel": "إحداثيات منتصف قطعة",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-007",
         "vec-004"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "vectors-05",
       "suggestedLessonTitle": "مركز الأبعاد المتناسبة في الفراغ",
       "confidence": "high",
@@ -1762,18 +1781,21 @@
       "inventoryIndex": 87,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل المثلثي",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "cx-011",
         "exam17-complex-001",
-        "exam17-complex-002"
+        "exam17-complex-002",
+        "exam18-cycle2-015"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "دورة امتحانية": 2
+        "دورة امتحانية": 2,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2017
+        2017,
+        2018
       ],
       "suggestedLessonId": "complex-03",
       "suggestedLessonTitle": "الشكل المثلّثي لعدد عقدي",
@@ -1807,14 +1829,18 @@
       "inventoryIndex": 89,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل المثلثي والطويلة",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "cx-002"
+        "cx-002",
+        "exam18-cycle2-014"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "complex-03",
       "suggestedLessonTitle": "الشكل المثلّثي لعدد عقدي",
       "confidence": "high",
@@ -1847,15 +1873,16 @@
       "inventoryIndex": 91,
       "topic": "الأعداد العقدية",
       "lessonLabel": "العمليات على الأعداد العقدية",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "cx-001",
         "exam18-cycle1-003",
-        "exam18-cycle1-005"
+        "exam18-cycle1-005",
+        "exam18-cycle2-016"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
         2018
@@ -2231,14 +2258,18 @@
       "inventoryIndex": 109,
       "topic": "التابع الأسي",
       "lessonLabel": "حل متراجحة أسية",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-013",
         "exp-009"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "exponential-03",
       "suggestedLessonTitle": "دراسة التابع الأسي",
       "confidence": "medium",
@@ -2647,15 +2678,16 @@
       "inventoryIndex": 130,
       "topic": "التابع اللوغاريتمي",
       "lessonLabel": "دراسة التابع اللوغاريتمي ln",
-      "exampleCount": 4,
+      "exampleCount": 5,
       "exampleIds": [
         "exam18-cycle1-017",
         "exam18-cycle1-020",
+        "exam18-cycle2-020",
         "exam24-cycle1-018",
         "exam24-cycle1-019"
       ],
       "sourceTypes": {
-        "تدريب مستوحى من دورة امتحانية": 4
+        "تدريب مستوحى من دورة امتحانية": 5
       },
       "years": [
         2018,
@@ -3703,14 +3735,18 @@
       "inventoryIndex": 182,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "الجداء السلمي بالإحداثيات",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "dot-001"
+        "dot-001",
+        "exam18-cycle2-006"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "dot-product-02",
       "suggestedLessonTitle": "الجداء السلّمي في الفراغ",
       "confidence": "high",
@@ -4125,14 +4161,18 @@
       "inventoryIndex": 203,
       "topic": "المتتاليات",
       "lessonLabel": "المتتاليات الهندسية",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-008",
         "seq-002"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "sequences-01",
       "suggestedLessonTitle": "عموميّات عن المتتاليات",
       "confidence": "medium",
@@ -4457,14 +4497,18 @@
       "inventoryIndex": 218,
       "topic": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية هندسية",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-009",
         "seq-010"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2018
+      ],
       "suggestedLessonId": "sequences-01",
       "suggestedLessonTitle": "عموميّات عن المتتاليات",
       "confidence": "medium",
@@ -4627,14 +4671,15 @@
       "inventoryIndex": 226,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "المسافة من نقطة إلى مستوى",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam18-cycle1-010",
+        "exam18-cycle2-018",
         "exam18-plane-001"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018
@@ -5000,14 +5045,17 @@
       "inventoryIndex": 244,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة كرة مركزها معلوم وتمس مستوى",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-019",
         "exam22-space-006"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2022
       ],
       "suggestedLessonId": "lines-planes-01",
@@ -5101,14 +5149,17 @@
       "inventoryIndex": 249,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستوى يمر بثلاث نقاط",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-017",
         "exam19-3d-004"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2019
       ],
       "suggestedLessonId": "lines-planes-01",
@@ -5307,14 +5358,17 @@
       "inventoryIndex": 259,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب الأفقي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-005",
         "exam19-func-002"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2019
       ],
       "suggestedLessonId": "limits-01",
@@ -5622,14 +5676,17 @@
       "inventoryIndex": 274,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "عدد حلول معادلة من جدول التغيرات",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam18-cycle2-004",
         "exam22-roots-001"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2018,
         2022
       ],
       "suggestedLessonId": "limits-08",
