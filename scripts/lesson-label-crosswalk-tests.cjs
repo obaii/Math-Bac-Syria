@@ -20,7 +20,7 @@ const key = item => String(item.topic).normalize("NFKC").replace(/[\\u064B-\\u06
 const sourceKeys = new Set(inventory.entries.map(key));
 const rows = crosswalk.entries || [];
 if (crosswalk.status !== "provisional-not-verified") failures.push("Crosswalk must remain explicitly provisional.");
-if (rows.length !== inventory.entries.length || rows.length !== 325) failures.push("Crosswalk must contain all 325 inventory labels.");
+if (rows.length !== inventory.entries.length || rows.length !== 324) failures.push("Crosswalk must contain all 324 inventory labels.");
 if (new Set(rows.map(key)).size !== rows.length) failures.push("Crosswalk contains duplicate topic/lesson labels.");
 if (sourceKeys.size !== rows.length || rows.some(row => !sourceKeys.has(key(row)))) failures.push("Crosswalk labels do not exactly match the source inventory.");
 for (const row of rows) {
@@ -61,9 +61,9 @@ const summary = {
 for (const [field, value] of Object.entries(summary)) {
   if (crosswalk.summary[field] !== value) failures.push("Crosswalk summary mismatch for " + field + ".");
 }
-if (studentRows.length !== 319 || supplementaryRows.length !== 6) failures.push("Expected 319 student-curriculum labels and 6 supplementary labels.");
+if (studentRows.length !== 318 || supplementaryRows.length !== 6) failures.push("Expected 318 student-curriculum labels and 6 supplementary labels.");
 if (summary.studentExamples !== 418 || summary.supplementaryExamples !== 6) failures.push("Expected 418 student-curriculum examples and 6 supplementary examples.");
-console.log("Solved-example lesson-label crosswalk: " + rows.length + "/325 labels.");
+console.log("Solved-example lesson-label crosswalk: " + rows.length + "/324 labels.");
 console.log("Student curriculum: " + studentRows.length + " labels / " + summary.studentExamples + " examples.");
 console.log("Supplementary teacher-guide material excluded: " + supplementaryRows.length + " labels / " + summary.supplementaryExamples + " examples.");
 console.log("Provisional suggestions: " + summary.high + " high, " + summary.medium + " medium, " + summary.low + " low confidence.");
