@@ -273,6 +273,52 @@ const assert = require("node:assert/strict");
     const resumeTopic = await page.locator("#topic-grid [data-topic]").first().getAttribute("data-topic");
     await page.locator('#topic-grid [data-topic="' + resumeTopic + '"]').click();
     await page.locator("#quiz").waitFor({ state: "visible" });
+    const rtlCounterLayout = await page.evaluate(() => {
+      const progress = document.querySelector("#progress");
+      const label = progress?.querySelector(".progress-label");
+      const fraction = progress?.querySelector(".progress-fraction");
+      const counts = Array.from(document.querySelectorAll("#student-tools .review-action-count")).map(counter => ({
+        childCount: counter.children.length,
+        childIds: Array.from(counter.children).map(child => child.id || child.className),
+        whiteSpace: getComputedStyle(counter).whiteSpace,
+        direction: getComputedStyle(counter).direction,
+        parens: Array.from(counter.querySelectorAll(".review-action-paren")).map(paren => paren.textContent)
+      }));
+      return {
+        className: progress?.className,
+        display: progress ? getComputedStyle(progress).display : "",
+        whiteSpace: progress ? getComputedStyle(progress).whiteSpace : "",
+        labelText: label?.textContent,
+        labelWhiteSpace: label ? getComputedStyle(label).whiteSpace : "",
+        fractionWhiteSpace: fraction ? getComputedStyle(fraction).whiteSpace : "",
+        counts
+      };
+    });
+    assert.match(rtlCounterLayout.className, /quiz-question-progress/,
+      "the question counter should use a dedicated class instead of Bootstrap's generic progress class");
+    assert.doesNotMatch(rtlCounterLayout.className, /(^|\s)progress($|\s)/,
+      "the question counter should not inherit Bootstrap .progress styles");
+    assert.ok(["flex", "inline-flex"].includes(rtlCounterLayout.display), "the question counter should remain a flex row (flex items may report blockified display)");
+    assert.equal(rtlCounterLayout.whiteSpace, "nowrap", "the question counter should never wrap");
+    assert.equal(rtlCounterLayout.labelText, "السؤال", "the question counter should keep its complete Arabic label");
+    assert.equal(rtlCounterLayout.labelWhiteSpace, "nowrap", "the Arabic label should not split");
+    assert.equal(rtlCounterLayout.fractionWhiteSpace, "nowrap", "the numeric fraction should remain on one line");
+    assert.equal(rtlCounterLayout.counts.length, 2, "both review buttons should expose an isolated count");
+    for (const count of rtlCounterLayout.counts) {
+      assert.equal(count.childCount, 3, "each review count should contain separate opening parenthesis, number, and closing parenthesis elements");
+      assert.equal(count.whiteSpace, "nowrap", "review count and parentheses should never wrap");
+      assert.equal(count.direction, "ltr", "review count should isolate its left-to-right number order");
+      assert.deepEqual(count.parens, ["(", ")"], "review count should retain both visible parentheses");
+    }
+    await page.setViewportSize({ width: 360, height: 800 });
+    const narrowCounterRows = await page.evaluate(() => {
+      const label = document.querySelector("#progress .progress-label").getBoundingClientRect();
+      const fraction = document.querySelector("#progress .progress-fraction").getBoundingClientRect();
+      return { labelTop: label.top, fractionTop: fraction.top };
+    });
+    assert.ok(Math.abs(narrowCounterRows.labelTop - narrowCounterRows.fractionTop) < 1,
+      "the question label and fraction should remain aligned on one row on narrow phones");
+    await page.setViewportSize({ width: 1365, height: 900 });
     const savedQuestionNumber = await page.locator("#question-number").innerText();
     const savedQuestionText = await page.locator("#question-text").innerText();
     await page.reload({ waitUntil: "domcontentloaded" });

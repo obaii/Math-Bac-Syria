@@ -28,7 +28,7 @@
    <link rel="stylesheet" href="style-overrides.css?v=20261110-1003">
   <link rel="stylesheet" href="curriculum-progress.css?v=20261105-2">
   <link rel="stylesheet" href="student-tools.css?v=20261106-1">
-  <link rel="stylesheet" href="homepage-polish.css?v=20261111-rtl1">
+  <link rel="stylesheet" href="homepage-polish.css?v=20261111-rtl2">
   <script>
     window.MathJax = {
       tex: {
@@ -366,8 +366,8 @@
       <div class="tools-actions">
         <button type="button" id="smart-review">المراجعة الذكية المستحقة</button>
         <button type="button" id="review-assistant-generate" aria-controls="review-assistant-panel">مساعد المراجعة الذكي</button>
-        <button type="button" id="bookmark-review"><span class="review-action-label">مراجعة المسائل المحفوظة</span><span class="review-action-count" dir="ltr">(<span id="bookmark-count">0</span>)</span></button>
-        <button type="button" id="guided-review" aria-expanded="false"><span class="review-action-label">الأسئلة ذات الحل التفصيلي</span><span class="review-action-count" dir="ltr">(<span id="guided-count">0</span>)</span></button>
+        <button type="button" id="bookmark-review"><span class="review-action-label">مراجعة المسائل المحفوظة</span><span class="review-action-count" dir="ltr"><span class="review-action-paren" aria-hidden="true">(</span><span id="bookmark-count">0</span><span class="review-action-paren" aria-hidden="true">)</span></span></button>
+        <button type="button" id="guided-review" aria-expanded="false"><span class="review-action-label">الأسئلة ذات الحل التفصيلي</span><span class="review-action-count" dir="ltr"><span class="review-action-paren" aria-hidden="true">(</span><span id="guided-count">0</span><span class="review-action-paren" aria-hidden="true">)</span></span></button>
         <button type="button" id="progress-report-toggle" aria-expanded="false">تقرير تقدّمي حسب البحث</button>
         <button type="button" id="export-progress">تصدير التقدم JSON</button>
         <button type="button" id="import-progress-button">استيراد نسخة احتياطية</button>
@@ -524,7 +524,7 @@
     <button id="back" class="back">→ العودة إلى الأبحاث</button>
     <div class="quiz-head">
       <div><p class="eyebrow">الاختبار الحالي</p><h2 id="quiz-title"></h2></div>
-      <span id="progress" class="progress"></span>
+      <span id="progress" class="quiz-question-progress"></span>
       <span id="progress-percent" class="progress-percent" aria-live="polite">٠٪ مكتمل</span>
     </div>
     <div id="quiz-progress-track" class="progress-track" role="progressbar" aria-label="نسبة الأسئلة التي تمت الإجابة عنها" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar" aria-hidden="true"></div></div>
