@@ -7,12 +7,12 @@ const { lessons, summary, unresolvedRows } = buildAudit();
 const expect = (condition, message) => { if (!condition) failures.push(message); };
 
 expect(summary.lessons === 63, "The audit must include all 63 student-book lessons.");
-expect(summary.studentLabels === 315, "The audit must include all 308 student-curriculum labels.");
-expect(summary.studentExamples === 398, "The audit must account for all 358 student-curriculum examples.");
+expect(summary.studentLabels === 319, "The audit must include all 308 student-curriculum labels.");
+expect(summary.studentExamples === 418, "The audit must account for all 358 student-curriculum examples.");
 expect(summary.supplementaryLabels === 6 && summary.supplementaryExamples === 6,
   "The six teacher-guide references must remain separately excluded.");
 expect(summary.highConfidenceLabels === 153, "High-confidence suggestion count must match the crosswalk.");
-expect(summary.mediumConfidenceLabels === 154, "Medium-confidence suggestion count must match the crosswalk.");
+expect(summary.mediumConfidenceLabels === 158, "Medium-confidence suggestion count must match the crosswalk.");
 expect(summary.lowConfidenceLabels === 8, "Low-confidence suggestion count must match the crosswalk.");
 expect(summary.manualReviewLabels === 8 && summary.manualReviewExamples === 8,
   "All eight manually flagged labels must remain visible as unresolved.");
