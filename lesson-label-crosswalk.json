@@ -3,12 +3,12 @@
   "title": "خريطة اقتراحية لربط عناوين مكتبة الأمثلة بدروس كتاب الرياضيات السوري",
   "status": "provisional-not-verified",
   "summary": {
-    "labelCount": 301,
-    "studentCurriculumLabels": 295,
+    "labelCount": 314,
+    "studentCurriculumLabels": 308,
     "supplementaryLabels": 6,
-    "studentExamples": 345,
+    "studentExamples": 358,
     "supplementaryExamples": 6,
-    "high": 140,
+    "high": 153,
     "medium": 147,
     "low": 8,
     "unmapped": 0
@@ -6066,6 +6066,253 @@
       "confidence": "medium",
       "rationale": "نهايات المتتاليات الهندسية وخواصها",
       "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 302,
+      "topic": "النهايات والاستمرار",
+      "lessonLabel": "نهاية تابع مركّب",
+      "exampleCount": 1,
+      "exampleIds": [
+        "lim-composite-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "limits-05",
+      "suggestedLessonTitle": "نهاية تابع مركّب",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 303,
+      "topic": "الاشتقاق",
+      "lessonLabel": "العدد المشتق والتابع المشتق",
+      "exampleCount": 1,
+      "exampleIds": [
+        "derivative-first-principle-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "derivatives-01",
+      "suggestedLessonTitle": "العدد المشتق والتابع المشتق",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 304,
+      "topic": "الاشتقاق",
+      "lessonLabel": "المشتقات من مراتب عليا",
+      "exampleCount": 1,
+      "exampleIds": [
+        "derivative-higher-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "derivatives-05",
+      "suggestedLessonTitle": "المشتقات من مراتب عليا",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 305,
+      "topic": "التابع اللوغاريتمي",
+      "lessonLabel": "لوغاريتم جداء ضرب",
+      "exampleCount": 1,
+      "exampleIds": [
+        "log-product-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "logarithm-02",
+      "suggestedLessonTitle": "لوغاريتم جداء ضرب",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 306,
+      "topic": "التابع اللوغاريتمي",
+      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "log-limit-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "logarithm-05",
+      "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع اللوغاريتمي",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 307,
+      "topic": "التابع الأسي",
+      "lessonLabel": "نهايات مهمّة تتعلّق بالتابع الأسي",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-limit-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "exponential-04",
+      "suggestedLessonTitle": "نهايات مهمّة تتعلّق بالتابع الأسي",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 308,
+      "topic": "التابع الأسي",
+      "lessonLabel": "دراسة التوابع الأسّية بالأساس a",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-base-a-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "exponential-05",
+      "suggestedLessonTitle": "دراسة التوابع الأسّية بالأساس a",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 309,
+      "topic": "التابع الأسي",
+      "lessonLabel": "معادلات تفاضليّة بسيطة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "exp-diff-eq-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "exponential-06",
+      "suggestedLessonTitle": "معادلات تفاضليّة بسيطة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 310,
+      "topic": "نهاية متتالية",
+      "lessonLabel": "متتاليات متجاورة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "seq-adjacent-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "sequence-limits-04",
+      "suggestedLessonTitle": "متتاليات متجاورة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 311,
+      "topic": "الجداء السلمي في الفراغ",
+      "lessonLabel": "الجداء السلّمي في المستوي، تذكرة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "dot-plane-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "dot-product-01",
+      "suggestedLessonTitle": "الجداء السلّمي في المستوي، تذكرة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 312,
+      "topic": "الجداء السلمي في الفراغ",
+      "lessonLabel": "المعادلة الديكارتيّة لمستوٍ",
+      "exampleCount": 1,
+      "exampleIds": [
+        "plane-cartesian-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "dot-product-04",
+      "suggestedLessonTitle": "المعادلة الديكارتيّة لمستوٍ",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 313,
+      "topic": "المستقيمات والمستويات في الفراغ",
+      "lessonLabel": "تقاطع ثلاثة مستويات",
+      "exampleCount": 1,
+      "exampleIds": [
+        "three-planes-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "lines-planes-04",
+      "suggestedLessonTitle": "تقاطع ثلاثة مستويات",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 314,
+      "topic": "تطبيقات الأعداد العقدية",
+      "lessonLabel": "تمثيل الأشعّة بأعداد عقديّة",
+      "exampleCount": 1,
+      "exampleIds": [
+        "complex-vector-001"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": "complex-geometry-01",
+      "suggestedLessonTitle": "تمثيل الأشعّة بأعداد عقديّة",
+      "confidence": "high",
+      "rationale": "أُنشئ المثال خصيصاً لعنوان الدرس المطابق في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة صفحات النسخة المعتمدة.",
+      "reviewStatus": "suggested-high-confidence",
       "verified": false
     }
   ]
