@@ -6,7 +6,7 @@
     "labelCount": 321,
     "studentCurriculumLabels": 315,
     "supplementaryLabels": 6,
-    "studentExamples": 438,
+    "studentExamples": 458,
     "supplementaryExamples": 6,
     "high": 153,
     "medium": 154,
@@ -21,14 +21,18 @@
       "inventoryIndex": 1,
       "topic": "الاحتمالات",
       "lessonLabel": "احتمال اتحاد حادثتين متنافيتين",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-009",
         "prob-006"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2019
+      ],
       "suggestedLessonId": "probability-01",
       "suggestedLessonTitle": "الاحتمالات المشروطة",
       "confidence": "medium",
@@ -384,14 +388,18 @@
       "inventoryIndex": 19,
       "topic": "الاحتمالات",
       "lessonLabel": "المتغير العشوائي والتوقع",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-012",
         "prob-002"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2019
+      ],
       "suggestedLessonId": "probability-02",
       "suggestedLessonTitle": "المتحوّلات العشوائيّة",
       "confidence": "high",
@@ -504,14 +512,18 @@
       "inventoryIndex": 25,
       "topic": "الاحتمالات",
       "lessonLabel": "توزيع متغير عشوائي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-010",
         "prob-022"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2019
+      ],
       "suggestedLessonId": "probability-02",
       "suggestedLessonTitle": "المتحوّلات العشوائيّة",
       "confidence": "high",
@@ -599,12 +611,14 @@
       "inventoryIndex": 30,
       "topic": "الاحتمالات",
       "lessonLabel": "قانون متحول عشوائي متقطع",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-011",
         "exam19-prob-002"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2019
@@ -905,15 +919,16 @@
       "inventoryIndex": 45,
       "topic": "الاشتقاق",
       "lessonLabel": "القيمة الحدية المحلية من جدول التغيرات",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "exam18-cycle2-001",
         "exam18-cycle2-002",
+        "exam19-cycle1-002",
         "exam19-func-003"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 2
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
         2018,
@@ -1708,17 +1723,19 @@
       "inventoryIndex": 84,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الدوران في المستوى العقدي",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam18-complex-001",
-        "exam18-cycle1-002"
+        "exam18-cycle1-002",
+        "exam19-cycle1-014"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
-        2018
+        2018,
+        2019
       ],
       "suggestedLessonId": "complex-04",
       "suggestedLessonTitle": "خواص طويلة عدد عقدي وزاويته",
@@ -1829,17 +1846,19 @@
       "inventoryIndex": 89,
       "topic": "الأعداد العقدية",
       "lessonLabel": "الشكل المثلثي والطويلة",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "cx-002",
-        "exam18-cycle2-014"
+        "exam18-cycle2-014",
+        "exam19-cycle1-015"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
-        2018
+        2018,
+        2019
       ],
       "suggestedLessonId": "complex-03",
       "suggestedLessonTitle": "الشكل المثلّثي لعدد عقدي",
@@ -2018,17 +2037,20 @@
       "inventoryIndex": 98,
       "topic": "الأعداد العقدية",
       "lessonLabel": "حل معادلة من الدرجة الثانية في C",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "cx-004",
+        "exam19-cycle1-013",
         "ministerial17-complexroots-001"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "نموذج وزاري": 1
+        "نموذج وزاري": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2017
+        2017,
+        2019
       ],
       "suggestedLessonId": "complex-06",
       "suggestedLessonTitle": "المعادلة من الدرجة الثانية ذات الأمثال الحقيقيّة",
@@ -2400,14 +2422,18 @@
       "inventoryIndex": 116,
       "topic": "التابع الأسي",
       "lessonLabel": "دراسة تغير تابع أسي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-020",
         "exp-006"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2019
+      ],
       "suggestedLessonId": "exponential-03",
       "suggestedLessonTitle": "دراسة التابع الأسي",
       "confidence": "high",
@@ -2503,14 +2529,18 @@
       "inventoryIndex": 121,
       "topic": "التابع الأسي",
       "lessonLabel": "نهايات التابع الأسي",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-019",
         "exp-014"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 1
+        "تدريبي مؤلف": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2019
+      ],
       "suggestedLessonId": "exponential-01",
       "suggestedLessonTitle": "التابع الأسي النيبري",
       "confidence": "medium",
@@ -3102,12 +3132,14 @@
       "inventoryIndex": 150,
       "topic": "التحليل التوافقي",
       "lessonLabel": "الحد المستقل عن المتغير في مفكوك",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam19-comb-001"
+        "exam19-comb-001",
+        "exam19-cycle1-003"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2019
@@ -3860,15 +3892,18 @@
       "inventoryIndex": 188,
       "topic": "الجداء السلمي في الفراغ",
       "lessonLabel": "تعامد مستقيمين",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam17-3d-005"
+        "exam17-3d-005",
+        "exam19-cycle1-006"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
-        2017
+        2017,
+        2019
       ],
       "suggestedLessonId": "dot-product-03",
       "suggestedLessonTitle": "التعامد في الفراغ",
@@ -4497,17 +4532,20 @@
       "inventoryIndex": 218,
       "topic": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية هندسية",
-      "exampleCount": 2,
+      "exampleCount": 4,
       "exampleIds": [
         "exam18-cycle2-009",
+        "exam19-cycle1-007",
+        "exam19-cycle1-008",
         "seq-010"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 3
       },
       "years": [
-        2018
+        2018,
+        2019
       ],
       "suggestedLessonId": "sequences-01",
       "suggestedLessonTitle": "عموميّات عن المتتاليات",
@@ -4859,12 +4897,14 @@
       "inventoryIndex": 235,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "تمثيل مستقيم بمعرفة نقطة وشعاع توجيه",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "exam19-3d-001"
+        "exam19-3d-001",
+        "exam19-cycle1-005"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
         2019
@@ -4983,15 +5023,19 @@
       "inventoryIndex": 241,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "توازي مستويين",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
+        "exam19-cycle1-017",
         "line-003",
         "line-011"
       ],
       "sourceTypes": {
-        "تدريبي مؤلف": 2
+        "تدريبي مؤلف": 2,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
-      "years": [],
+      "years": [
+        2019
+      ],
       "suggestedLessonId": "lines-planes-01",
       "suggestedLessonTitle": "المستقيم والمستوي بصفتهما مراكز أبعاد متناسبة",
       "confidence": "medium",
@@ -5045,17 +5089,19 @@
       "inventoryIndex": 244,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة كرة مركزها معلوم وتمس مستوى",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam18-cycle2-019",
+        "exam19-cycle1-018",
         "exam22-space-006"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018,
+        2019,
         2022
       ],
       "suggestedLessonId": "lines-planes-01",
@@ -5149,14 +5195,15 @@
       "inventoryIndex": 249,
       "topic": "المستقيمات والمستويات في الفراغ",
       "lessonLabel": "معادلة مستوى يمر بثلاث نقاط",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam18-cycle2-017",
-        "exam19-3d-004"
+        "exam19-3d-004",
+        "exam19-cycle1-016"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018,
@@ -5358,14 +5405,15 @@
       "inventoryIndex": 259,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "المقارب الأفقي",
-      "exampleCount": 2,
+      "exampleCount": 3,
       "exampleIds": [
         "exam18-cycle2-005",
+        "exam19-cycle1-001",
         "exam19-func-002"
       ],
       "sourceTypes": {
         "دورة امتحانية": 1,
-        "تدريب مستوحى من دورة امتحانية": 1
+        "تدريب مستوحى من دورة امتحانية": 2
       },
       "years": [
         2018,
@@ -5531,14 +5579,17 @@
       "inventoryIndex": 267,
       "topic": "النهايات والاستمرار",
       "lessonLabel": "الوضع النسبي بالنسبة إلى مقارب مائل",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
+        "exam19-cycle1-004",
         "exam22-function-002"
       ],
       "sourceTypes": {
-        "دورة امتحانية": 1
+        "دورة امتحانية": 1,
+        "تدريب مستوحى من دورة امتحانية": 1
       },
       "years": [
+        2019,
         2022
       ],
       "suggestedLessonId": "limits-06",
