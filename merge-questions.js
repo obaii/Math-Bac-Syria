@@ -79,4 +79,7 @@
   if (typeof typedQuestionsAdditional !== "undefined") {
     appendUnique(typedQuestionsAdditional, { file:"questions_typed_additional.js", kind:"typed-supplement" });
   }
+  if (typeof automatedQuestionsAdditional !== "undefined") {
+    appendUnique(automatedQuestionsAdditional, { file:"questions_automated_additional.js", kind:"automated-archive" });
+  }
 })();
