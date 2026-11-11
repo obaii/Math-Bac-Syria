@@ -392,6 +392,10 @@ const assert = require("node:assert/strict");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 544, "the library should render all 544 solved examples");
+    await page.evaluate(async () => {
+      await window.MathJax.startup.promise;
+      await window.MathJax.typesetPromise([document.querySelector("#solved-examples-list")]);
+    });
     const completeLibraryAudit = await page.evaluate(() => {
       const examples = window.solvedExamplesLibrary.examples;
       const cards = Array.from(document.querySelectorAll("#solved-examples-list .solved-example-card"));
