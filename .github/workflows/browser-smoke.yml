@@ -75,3 +75,5 @@ jobs:
         run: node scripts/homepage-small-screen-text-tests.cjs
       - name: Run interactive math assistant tests
         run: node scripts/math-assistant-tests.cjs
+      - name: Run math tools interactive browser tests
+        run: node scripts/math-tools-interaction-tests.cjs
