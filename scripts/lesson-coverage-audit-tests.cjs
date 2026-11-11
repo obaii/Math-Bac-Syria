@@ -3,7 +3,7 @@
 
 const { buildAudit, renderMarkdown } = require("./lesson-coverage-audit.cjs");
 const failures = [];
-const { lessons, summary } = buildAudit();
+const { lessons, summary, unresolvedRows } = buildAudit();
 const expect = (condition, message) => { if (!condition) failures.push(message); };
 
 expect(summary.lessons === 63, "The audit must include all 63 student-book lessons.");
@@ -26,7 +26,7 @@ expect(lessons.reduce((sum, lesson) => sum + lesson.labels, 0) === summary.stude
   "Per-lesson assigned label counts must exclude unresolved labels.");
 expect(lessons.reduce((sum, lesson) => sum + lesson.examples, 0) === summary.studentExamples - summary.unmappedExamples,
   "Per-lesson assigned example counts must exclude unresolved examples.");
-const report = renderMarkdown({ lessons, summary });
+const report = renderMarkdown({ lessons, summary, unresolvedRows });
 expect(report.includes("الدوال الدورية") && report.includes("مركز تناظر منحنى تابع"),
   "The report must list ambiguous labels separately rather than forcing a lesson assignment.");
 expect(report.includes("لا يثبت تغطية الدرس") && report.includes("لا تعني أن محتوى الأمثلة يطابق"),
