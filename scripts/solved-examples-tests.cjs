@@ -83,6 +83,14 @@ if (!library || !Array.isArray(library.examples)) {
         !Array.isArray(item.steps) || item.steps.length < 3)) {
     failures.push("The 20 original variants must retain source inspiration metadata and detailed solution steps.");
   }
+  const limitVariant = examples.find(item => item.id === "ministerial23-auto-021");
+  if (!limitVariant || !limitVariant.question.includes("بدلالة f(1)") || !limitVariant.answer.includes("2f(1)")) {
+    failures.push("The 2023 ministerial-inspired limit exercise must ask for the result in terms of f(1).");
+  }
+  const asymptoteVariant = examples.find(item => item.id === "ministerial23-auto-024");
+  if (!asymptoteVariant || !asymptoteVariant.steps.join(" ").includes("−4")) {
+    failures.push("The 2023 ministerial-inspired asymptote solution must retain the negative conjugate numerator.");
+  }
   if (examExamples.filter(item => item.sourceYear === 2024 && item.sourceSession === "الدورة الثانية").length !== 9) failures.push("The 2024 second-session source batch should contain nine verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2025 && item.sourceSession === "الدورة الأولى").length !== 10) failures.push("The 2025 first-session source batch should contain ten verified adaptations.");
   if (examExamples.filter(item => item.sourceYear === 2023 && item.sourceSession === "الدورة الثانية").length !== 2) failures.push("The 2023 second-session source batch should contain two verified adaptations.");
