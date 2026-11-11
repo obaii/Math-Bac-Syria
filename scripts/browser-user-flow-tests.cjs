@@ -298,7 +298,7 @@ const assert = require("node:assert/strict");
       "the question counter should use a dedicated class instead of Bootstrap's generic progress class");
     assert.doesNotMatch(rtlCounterLayout.className, /(^|\s)progress($|\s)/,
       "the question counter should not inherit Bootstrap .progress styles");
-    assert.equal(rtlCounterLayout.display, "inline-flex", "the question counter should remain a single inline flex row");
+    assert.ok(["flex", "inline-flex"].includes(rtlCounterLayout.display), "the question counter should remain a flex row (flex items may report blockified display)");
     assert.equal(rtlCounterLayout.whiteSpace, "nowrap", "the question counter should never wrap");
     assert.equal(rtlCounterLayout.labelText, "السؤال", "the question counter should keep its complete Arabic label");
     assert.equal(rtlCounterLayout.labelWhiteSpace, "nowrap", "the Arabic label should not split");
