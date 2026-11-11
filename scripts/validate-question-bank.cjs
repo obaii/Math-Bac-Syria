@@ -302,7 +302,7 @@ try {
   const rawAdditional = Array.isArray(additional) ? additional.length : 0;
   const rawTypedAdditional = Array.isArray(typedAdditional) ? typedAdditional.length : 0;
   const rawAutomatedAdditional = Array.isArray(automatedAdditional) ? automatedAdditional.length : 0;
-  if (rawAutomatedAdditional !== 40) errors.push(`دفعتا الأرشيف المؤتمت يجب أن تضما 40 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
+  if (rawAutomatedAdditional !== 60) errors.push(`دفعتا الأرشيف المؤتمت يجب أن تضما 60 سؤالاً بالضبط، والموجود ${rawAutomatedAdditional}.`);
   if ((automatedAdditional || []).some(question =>
     !["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType) ||
     ![2018, 2023].includes(question.sourceYear) ||
