@@ -489,7 +489,7 @@ const assert = require("node:assert/strict");
     assert.ok(solvedLibraryMobileMath.left >= -1 && solvedLibraryMobileMath.right <= solvedLibraryMobileMath.viewport + 1,
       "solved-library limit notation should fit within a narrow phone viewport");
     assert.ok(solvedLibraryMobileMath.pageWidth <= solvedLibraryMobileMath.viewport + 2,
-      "solved-library formulas should not create horizontal page overflow on phones");
+      "solved-library formulas should not create horizontal page overflow on phones (page=" + solvedLibraryMobileMath.pageWidth + ", viewport=" + solvedLibraryMobileMath.viewport + ")");
     await page.setViewportSize({ width: 1365, height: 900 });
     await page.locator("#solved-example-topic").selectOption("");
 
