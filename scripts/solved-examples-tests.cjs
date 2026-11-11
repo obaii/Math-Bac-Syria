@@ -32,6 +32,10 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
+  const logarithmicDomainExample = examples.find(item => item.id === "log-012");
+  if (!logarithmicDomainExample || !logarithmicDomainExample.steps[0].includes("\\lt")) {
+    failures.push("The logarithmic domain inequality must use explicit TeX less-than operators.");
+  }
   const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
   for (const id of diagramExamples) {
     const item = examples.find(example => example.id === id);
