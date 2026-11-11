@@ -29,6 +29,8 @@ jobs:
           node --check security-utils.js
           node --check scripts/security-utils-tests.cjs
           node --check search-utils.js
+          node --check math-format.js
+          node --check scripts/math-format-tests.cjs
           node --check app.js
           node --check curriculum-progress.js
           node --check scripts/curriculum-progress-tests.cjs
@@ -105,6 +107,8 @@ jobs:
         run: node scripts/search-utils-tests.cjs
       - name: Validate questions and math delimiters
         run: node scripts/validate-question-bank.cjs
+      - name: Test Arabic mathematical notation formatting
+        run: node scripts/math-format-tests.cjs
       - name: Run verified answer regression checks
         run: node scripts/answer-regression-tests.cjs
       - name: Check supplemental question diagrams
