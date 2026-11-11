@@ -30,6 +30,11 @@ const cases = [
     expected: /\\\(3\^\{x\}\\\)/
   },
   {
+    name: "inequality signs are formatted rather than treated as HTML",
+    input: "إذا كان x<3 وx>1.",
+    expected: /\\\\\(x<3\\\\\).*\\\\\(x>1\\\\\)/
+  },
+  {
     name: "existing MathJax expressions are not double wrapped",
     input: "القيمة هي \\(x^2+1\\).",
     expected: /القيمة هي \\(x\^2\+1\\)\./
