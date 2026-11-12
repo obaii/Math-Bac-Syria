@@ -47,6 +47,42 @@ const cases = [
     name: "HTML structure is preserved while formulas are formatted",
     input: "<strong>القيمة:</strong> 1/2",
     expected: "<strong>القيمة:</strong> \\(\\frac{1}{2}\\)"
+  },
+
+  {
+    name: "explicit TeX slash fractions become stacked fractions",
+    input: "احسب \\(1/2\\).",
+    expected: "\\(\\frac{1}{2}\\)"
+  },
+  {
+    name: "nested fractions inside radicals are normalized",
+    input: "الجذر \\(\\sqrt{1+4/n}\\).",
+    expected: "\\(\\sqrt{1+\\frac{4}{n}}\\)"
+  },
+  {
+    name: "a grouped denominator keeps its exponent inside the fraction",
+    input: "\\(2/(x+1)^2\\)",
+    expected: "\\(\\frac{2}{(x+1)^2}\\)"
+  },
+  {
+    name: "compound TeX exponents are grouped",
+    input: "\\(x^(n+1)\\)",
+    expected: "\\(x^{(n+1)}\\)"
+  },
+  {
+    name: "a reversed-order TeX limit is rewritten as x tending to infinity",
+    input: "\\(\\lim_{+\\infty\\to x}f(x)\\)",
+    expected: "\\(\\lim_{x\\to+\\infty}f(x)\\)"
+  },
+  {
+    name: "a left-pointing TeX limit arrow is rewritten in the correct direction",
+    input: "\\(\\lim_{x\\leftarrow+\\infty}f(x)\\)",
+    expected: "\\(\\lim_{x\\to+\\infty}f(x)\\)"
+  },
+  {
+    name: "display-math fractions are normalized without losing display delimiters",
+    input: "\\[3/6=1/2\\]",
+    expected: "\\[\\frac{3}{6}=\\frac{1}{2}\\]"
   }
 ];
 
