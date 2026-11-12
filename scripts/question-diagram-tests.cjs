@@ -82,7 +82,7 @@ if (!tangentDiagram || !tangentDiagram.includes('cx="170" cy="148"') ||
 }
 const spatialQuestion = questions.find(q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"));
 const spatialDiagram = spatialQuestion && getDiagram(spatialQuestion);
-const dYAtC = 30.410526 + (240 - 205) * (165 - 30.410526) / (300 - 205);
+const dYAtC = 30.416667 + (240 - 205) * (165 - 30.416667) / (300 - 205);
 const abcYAtA = 193.889 + (150 - 35) * (57.778 - 193.889) / (280 - 35);
 const abcYAtC = 193.889 + (240 - 35) * (57.778 - 193.889) / (280 - 35);
 if (!spatialDiagram || spatialDiagram.includes("d′") || spatialDiagram.includes(">P<") ||
