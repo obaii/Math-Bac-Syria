@@ -4,10 +4,9 @@ const path = require("node:path");
 const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const context = vm.createContext({ console });
-for (const file of ["questions.js", "questions_vectors_additional.js", "merge-questions.js", "questions_typed_additional.js", "question-diagrams.js"]) {
+for (const file of ["questions.js", "questions_vectors_additional.js", "questions_typed_additional.js", "questions_automated_additional.js", "merge-questions.js", "question-diagrams.js"]) {
   vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context, { filename: file, timeout: 5000 });
 }
-vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const loaded = vm.runInContext("({ questions, getQuestionDiagram })", context);
 const questions = loaded.questions;
 const getDiagram = loaded.getQuestionDiagram;
@@ -28,7 +27,14 @@ const cases = [
   { name: "sphere center and radius sketch", match: q => q.q.includes("ما معادلة الكرة مركزها مبدأ الإحداثيات"), labels: ["كرة", "نصف القطر", "O"] },
   { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2") && q.q.includes("عند النقطة ذات الفاصلة 1"), labels: ["A(1,1)", "y=2x−1", "f(x)=x²"] },
   { name: "plane normal vector sketch", match: q => q.q.includes("المستوى المار بالنقطة A(1,0,2) والناظم له"), labels: ["مستوى", "شعاع ناظم", "n"] },
-  { name: "spatial lines sketch", match: q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"), labels: ["A(1,1,1)", "B(0,0,z)", "C(α,β,γ)", "المستقيم ABC", "d"] }
+  { name: "spatial lines sketch", match: q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"), labels: ["A(1,1,1)", "B(0,0,z)", "C(α,β,γ)", "المستقيم ABC", "d"] },
+  { name: "tangent data from variation table", match: q => q.q.includes("f′(−1)=0") && q.q.includes("f(−1)=1"), labels: ["−1", "0", "1"] },
+  { name: "local maximum data table", match: q => q.q.includes("قيمة عظمى محلية عند x=−2") && q.q.includes("قيمة الجدول هناك 4"), labels: ["−2", "عظمى محلية", "4"] },
+  { name: "local minimum data table", match: q => q.q.includes("قيمة صغرى محلية عند x=2") && q.q.includes("f(2)=−1"), labels: ["2", "صغرى محلية", "−1"] },
+  { name: "derivative-sign variation table", match: q => q.q.includes("f′ موجبة على (−∞,−2)"), labels: ["(−∞,−2)", "(−2,2)", "(2,+∞)", "قيمة عظمى", "قيمة صغرى"] },
+  { name: "continuous variation and root-count table", match: q => q.q.includes("f متصلاً على R ومتزايداً تماماً من النهاية"), labels: ["2 ↗", "4", "−1 ↗ +∞"] },
+  { name: "limit data table", match: q => q.q.includes("من جدول تغيرات f على R") && q.q.includes("f(x)→3"), labels: ["x→−∞", "x→+∞", "f(x)→+∞", "f(x)→3"] },
+  { name: "monotonic interval image table", match: q => q.q.includes("تكون f متزايدة تماماً على المجال [−1,2]"), labels: ["−1", "2", "−2", "4"] }
 ];
 let failures = 0;
 for (const testCase of cases) {
