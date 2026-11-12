@@ -2115,6 +2115,7 @@ body.dark-mode .solved-example-card > ol > li::before {
 }
 #bookmark-list .bookmark-number {
   display: inline-grid;
+  white-space: nowrap;
   place-items: center;
   width: 2rem;
   min-width: 2rem;

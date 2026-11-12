@@ -76,6 +76,7 @@ jobs:
           node --check scripts/exam-review-navigation-tests.cjs
           node --check scripts/exam-result-summary-tests.cjs
           node --check scripts/user-flow-smoke-tests.cjs
+          node --check scripts/final-platform-release-audit.cjs
           node --check scientific-calculator.js
           node --check function-plotter.js
           node --check geometry-tools.js

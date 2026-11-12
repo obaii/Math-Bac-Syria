@@ -77,3 +77,5 @@ jobs:
         run: node scripts/math-assistant-tests.cjs
       - name: Run math tools interactive browser tests
         run: node scripts/math-tools-interaction-tests.cjs
+      - name: Run comprehensive final platform release audit
+        run: node scripts/final-platform-release-audit.cjs
