@@ -81,9 +81,13 @@ try {
         level: question.level
       });
       const previous = rawDefinitions.get(key);
-      if (previous && previous.payload !== payload) {
-        errors.push(`تعريف متعارض للسؤال "${normalize(question.q)}" بين ${previous.sourceFile} و${sourceFile}؛ أُوقف الدمج الآمن بدلاً من إسقاط إحدى النسختين بصمت.`);
-      } else if (!previous) {
+      if (previous) {
+        if (previous.payload !== payload) {
+          errors.push(`تعريف متعارض للسؤال "${normalize(question.q)}" بين ${previous.sourceFile} و${sourceFile}؛ أُوقف الدمج الآمن بدلاً من إسقاط إحدى النسختين بصمت.`);
+        } else {
+          errors.push(`سجل مكرر للسؤال "${normalize(question.q)}" في ${previous.sourceFile} و${sourceFile}؛ يجب أن يظهر كل سؤال مرة واحدة فقط في الملفات المصدرية.`);
+        }
+      } else {
         rawDefinitions.set(key, { payload, sourceFile, sourceIndex });
       }
     }
@@ -296,6 +300,14 @@ try {
   if (typedTopics.size < 8) {
     errors.push(`الأسئلة ذات الإجابة المباشرة موزعة على ${typedTopics.size} أبحاث فقط؛ المطلوب ثمانية أبحاث على الأقل.`);
   }
+  for (const topic of topics || []) {
+    const bucket = counts.get(topic);
+    for (const level of allowedLevels) {
+      if (!bucket || !bucket.levels[level]) {
+        errors.push(`البحث "${topic}" لا يحتوي أسئلة بمستوى "${level}"؛ يجب أن تتوفر المستويات الثلاثة في كل بحث.`);
+      }
+    }
+  }
 
   const guidedQuestions = (questions || []).filter(q =>
     typeof q.keyIdea === "string" && q.keyIdea.trim() &&
@@ -327,28 +339,34 @@ try {
     !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3)) {
     errors.push("أسئلة التدريب المؤتمت المستوحاة يجب أن تحتفظ بالمصدر والسنة وأربعة خيارات وإجابة صحيحة صالحة.");
   }
-  const firstSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2018");
-  const secondSessionAutomated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الثانية 2018");
-  const first2019Automated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2019");
+  const expectedArchiveSessions = [
+    "الدورة الأولى 2018",
+    "الدورة الثانية 2018",
+    "الدورة الأولى 2019",
+    "الدورة الثانية 2022",
+    "الدورة الأولى 2023",
+    "نموذج وزاري 2023 — تدريب أصلي مستوحى من الفكرة",
+    "الدورة الأولى 2025"
+  ];
+  const archiveSessionCounts = new Map(expectedArchiveSessions.map(session => [
+    session,
+    (automatedAdditional || []).filter(question => question.sourceSession === session).length
+  ]));
+  for (const [session, count] of archiveSessionCounts) {
+    if (count !== 20) {
+      errors.push(`يجب أن تضم المجموعة "${session}" عشرين سؤالاً مؤتمتاً، والموجود ${count}.`);
+    }
+  }
   const first2025Automated = (automatedAdditional || []).filter(question => question.sourceSession === "الدورة الأولى 2025");
-  if (first2025Automated.length !== 20 || first2025Automated.some(question =>
+  if (first2025Automated.some(question =>
     question.sourceReference !== "https://www.syria4our.net/math-secondary-exam-syria-2025/" ||
     !String(question.sourceLabel || "").includes("صياغة تدريبية أصلية") ||
     !["أساسي", "متوسط", "متقدم"].includes(question.level))) {
-    errors.push("يجب أن تضم دفعة 2025 عشرين سؤالاً مؤتمتاً معتمداً على صياغة تدريبية ومصدر ومستوى واضح.");
+    errors.push("يجب أن تحتفظ أسئلة 2025 بمصدرها وصياغتها التدريبية ومستوى الصعوبة الواضح.");
   }
-
-  const hasInvalidCycleAnswerIndex = [...firstSessionAutomated, ...secondSessionAutomated, ...first2019Automated].some(question => {
-    const match = String(question.sourceLabel || "").match(/السؤال الفرعي (\d+)/);
-    if (!match) return true;
-    const number = Number(match[1]);
-    const expectedIndex = (4 - (((number - 1) * 3) % 4)) % 4;
-    return question.answer !== expectedIndex;
-  });
-  if (firstSessionAutomated.length !== 20 || secondSessionAutomated.length !== 20 ||
-      first2019Automated.length !== 20 || hasInvalidCycleAnswerIndex) {
-    errors.push("يجب أن تضم كل دورة موثقة عشرين سؤالاً مؤتمتاً، وأن تطابق مفاتيح الإجابة مواضع الخيارات الصحيحة.");
-  }
+  // Structural checks cannot establish mathematical correctness. Never infer the
+  // correct option from a repeating answer-index pattern or from the answer field itself.
+  warnings.push("فحص بنية الأرشيف لا يثبت صحة الإجابات رياضياً؛ يلزم تدقيق مستقل لكل سؤال بالرجوع إلى حل موثوق أو اشتقاق رياضي موثق.");
   console.log(`عدد الأبحاث: ${topics.length}`);
   console.log(`الأسئلة بعد الدمج وإزالة التطابق التام: ${questions.length}`);
   console.log(`مدخلات ملف الأسئلة الإضافية: ${rawAdditional}`);

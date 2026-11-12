@@ -2,6 +2,8 @@
 "use strict";
 
 // Browser-level audit: every topic, all answer evaluators, and real rendered feedback.
+// Keep the browser assertions synchronized with the audited 609-question inventory.
+// This guard intentionally fails if the merged bank and its audited inventory diverge.
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
 
@@ -35,7 +37,7 @@ const { chromium } = require("playwright");
 
     assert.equal(inventory.topics.length, 14, "all 14 curriculum topics should be available");
     assert.equal(inventory.cards.length, 14, "the homepage should render exactly 14 topic cards");
-    assert.equal(inventory.total, 601, "the merged automated bank should expose all 601 questions");
+    assert.equal(inventory.total, 609, "the merged automated bank should expose all 609 questions");
     for (const item of inventory.topicCounts) {
       assert.ok(item.total > 0, item.topic + " should contain questions");
       const card = inventory.cards.find(candidate => candidate.topic === item.topic);
@@ -81,7 +83,7 @@ const { chromium } = require("playwright");
       }
       return { total: questions.length, counts, errors };
     });
-    assert.equal(engine.total, 601, "all merged questions should be included in answer-engine checks");
+    assert.equal(engine.total, 609, "all 609 merged questions should be included in answer-engine checks");
     assert.deepEqual(engine.errors, [], "all stored answers and wrong-answer boundaries should pass the answer engine");
     assert.ok(engine.counts.mcq > 0, "MCQ questions should be present");
     for (const type of ["true-false", "numeric", "short-text"]) {

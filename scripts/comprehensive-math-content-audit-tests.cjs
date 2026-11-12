@@ -80,8 +80,8 @@ const hasReversedLimit = formula =>
   /x\s*(?:\\leftarrow|←)\s*(?:\\infty|∞)/i.test(formula);
 
 if (!Array.isArray(topics) || topics.length !== 14) fail("The bank must expose the 14 curriculum research topics.");
-if (!Array.isArray(questions) || questions.length !== 601) {
-  fail("Expected 601 unique merged questions, found " + (questions || []).length + ".");
+if (!Array.isArray(questions) || questions.length !== 609) {
+  fail("Expected 609 unique merged questions, found " + (questions || []).length + ".");
 }
 if (!Array.isArray(examples) || examples.length !== 600) {
   fail("Expected 600 solved examples, found " + (examples || []).length + ".");
@@ -89,7 +89,7 @@ if (!Array.isArray(examples) || examples.length !== 600) {
 
 const mcq = (questions || []).filter(question => (question.type || "mcq") === "mcq");
 const typed = (questions || []).filter(question => question.type && question.type !== "mcq");
-if (mcq.length !== 586) fail("Expected 586 multiple-choice questions, found " + mcq.length + ".");
+if (mcq.length !== 594) fail("Expected 594 multiple-choice questions, found " + mcq.length + ".");
 if (typed.length !== 15) fail("Expected 15 typed-answer questions, found " + typed.length + ".");
 
 const questionIds = new Set();

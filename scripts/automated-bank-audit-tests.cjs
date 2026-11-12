@@ -78,8 +78,8 @@ try {
   if (!Array.isArray(topics) || topics.length !== 14 || new Set(topics).size !== 14) {
     fail("The automated bank must expose exactly 14 unique curriculum topics.");
   }
-  if (!Array.isArray(questions) || questions.length !== 601) {
-    fail("Expected 601 merged questions, found " + (questions || []).length + ".");
+  if (!Array.isArray(questions) || questions.length !== 609) {
+    fail("Expected 609 merged questions, found " + (questions || []).length + ".");
   }
   if (!Array.isArray(typed) || typed.length !== 15) {
     fail("Expected 15 typed-answer source records, found " + (typed || []).length + ".");
@@ -212,6 +212,32 @@ try {
         !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3) {
       fail(label + " is not a valid four-option automated MCQ.");
     }
+  }
+
+  // Require a separate expected-answer regression entry for every archived item.
+  const regressionSource = fs.readFileSync(path.join(root, "scripts/answer-regression-tests.cjs"), "utf8");
+  const regressionCases = [...regressionSource.matchAll(/\{\s*"contains"\s*:\s*"((?:\\.|[^"\\])*)"\s*,\s*"expected"\s*:\s*"((?:\\.|[^"\\])*)"\s*\}/g)]
+    .map(match => ({
+      contains: normalize(JSON.parse('"' + match[1] + '"')),
+      expected: normalize(JSON.parse('"' + match[2] + '"'))
+    }));
+  let archivedRegressionCoverage = 0;
+  for (const [index, archived] of (automated || []).entries()) {
+    const prompt = normalize(archived.q);
+    const matches = regressionCases.filter(test => prompt.includes(test.contains));
+    if (matches.length !== 1) {
+      fail("Archived question #" + (index + 1) + " must have exactly one independent regression case; found " + matches.length + ".");
+      continue;
+    }
+    const selected = normalize(archived.options?.[archived.answer]);
+    if (selected !== matches[0].expected) {
+      fail("Archived question #" + (index + 1) + " answer key disagrees with its separately stored regression expectation.");
+    } else {
+      archivedRegressionCoverage++;
+    }
+  }
+  if (archivedRegressionCoverage !== 140) {
+    fail("Expected independent regression coverage for all 140 archived questions; verified " + archivedRegressionCoverage + ".");
   }
 
   // Independently re-derived answer checkpoints: at least one per curriculum research.

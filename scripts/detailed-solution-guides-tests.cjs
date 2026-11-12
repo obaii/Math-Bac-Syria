@@ -20,6 +20,7 @@ for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
   "questions_typed_additional.js",
+  "questions_automated_additional.js",
   "merge-questions.js",
   "solution-guides.js"
 ]) {
@@ -58,8 +59,8 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 45) {
-  failures.push(`Expected exactly 45 curated guides (33 existing plus 12 new), found ${guided.length}.`);
+if (guided.length !== 53) {
+  failures.push(`Expected exactly 53 curated guides after adding eight foundational questions, found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
