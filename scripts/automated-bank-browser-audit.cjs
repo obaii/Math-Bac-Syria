@@ -2,6 +2,7 @@
 "use strict";
 
 // Browser-level audit: every topic, all answer evaluators, and real rendered feedback.
+// Keep the browser assertions synchronized with the audited 609-question inventory.
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
 
