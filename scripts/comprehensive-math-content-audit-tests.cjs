@@ -61,6 +61,8 @@ const visualPatterns = [
   /مركز ثقل المثلث BCD/,
   /في مكعب طول حرفه 3.*مسقط M العمودي/,
   /في رباعي وجوه ABCD.*منتصف \[CD\]/
+  /من جدول تغيرات|جدول التغيرات|جدول تغيرات/,
+  /متصلاً على R ومتزايداً تماماً من النهاية/
 ];
 const hasVisualDependency = text =>
   visualPatterns.some(pattern => pattern.test(String(text || ""))) ||
