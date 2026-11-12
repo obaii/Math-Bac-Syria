@@ -2,8 +2,8 @@
   "use strict";
 
   const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<\/?(?:strong|em|span|div|p|br|ol|ul|li|sub|sup|small|code|a|section|table|tbody|thead|tr|td|th)\b[^>]*>)/gi;
-  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹\\()[\]{}.+\-−×÷*\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
-  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹]/;
+  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹\\()[\]{}.+\-−×÷*·\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
+  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*·/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹]/;
 
   function findMatchingOpen(value, endIndex, open, close) {
     let depth = 0;
@@ -78,7 +78,13 @@
     const functionName = value.slice(0, prefixEnd + 1).match(
       /(?:\\(?:sin|cos|tan|ln|log|exp|sqrt|arcsin|arccos|arctan)|(?:sin|cos|tan|ln|log|exp|sqrt|arcsin|arccos|arctan))$/
     );
-    if (functionName) start = prefixEnd + 1 - functionName[0].length;
+    if (functionName) {
+      start = prefixEnd + 1 - functionName[0].length;
+      if (start > 0 && ["·", "×", "*"].includes(value[start - 1])) {
+        const previousFactor = readBackwardMathAtom(value, start - 1);
+        if (previousFactor) start = previousFactor.start;
+      }
+    }
 
     return { start, end: originalEnd };
   }
@@ -183,6 +189,7 @@
     value = value.replace(/->|→|⟶/g, "\\to");
     value = value.replace(/←|<-/g, "\\to");
     value = value.replace(/×/g, "\\times");
+    value = value.replace(/·/g, "\\cdot");
     value = value.replace(/÷/g, "\\div");
     value = value.replace(/∞/g, "\\infty");
     value = value.replace(/π/g, "\\pi");
@@ -218,13 +225,24 @@
     return normalizeTexFractions(value);
   }
 
+  function unwrapCompositeInlineMath(value) {
+    return value.replace(/\\\(([\s\S]*?)\\\)/g, function (match, expression, offset, source) {
+      const before = source.slice(0, offset);
+      const after = source.slice(offset + match.length);
+      const previous = before.match(/\S\s*$/)?.[0].trim().slice(-1) || "";
+      const next = after.match(/^\s*\S/)?.[0].trim().charAt(0) || "";
+      const adjacentMathBlock = /\\\)\s*$/.test(before) || /^\s*\\\(/.test(after);
+      const beginsFractionDenominator = /\/\s*\($/.test(before);
+      const connectsMath = /[\/=+−\-×÷*·]/.test(previous) || /[\/=+−\-×÷*·]/.test(next);
+      return adjacentMathBlock || beginsFractionDenominator || connectsMath ? expression : match;
+    });
+  }
+
   function formatMathContent(value) {
     if (typeof value !== "string" || !value) return value;
-    return value.split(HTML_OR_TEX_BLOCK).map(function (part) {
+    const compositeValue = unwrapCompositeInlineMath(value);
+    return compositeValue.split(HTML_OR_TEX_BLOCK).map(function (part) {
       if (!part) return part;
-      if (part.startsWith("\\(") && part.endsWith("\\)")) {
-        return "\\(" + normalizeTexExpression(part.slice(2, -2)) + "\\)";
-      }
       if (part.startsWith("\\[") && part.endsWith("\\]")) {
         return "\\[" + normalizeTexExpression(part.slice(2, -2)) + "\\]";
       }
