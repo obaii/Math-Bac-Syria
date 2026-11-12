@@ -41,6 +41,8 @@ jobs:
           node --check questions_typed_additional.js
           node --check questions_automated_additional.js
           node --check scripts/comprehensive-math-content-audit-tests.cjs
+          node --check scripts/automated-bank-audit-tests.cjs
+          node --check scripts/automated-bank-browser-audit.cjs
           node --check merge-questions.js
           node --check solution-guides.js
           node --check solved-examples.js
@@ -128,6 +130,8 @@ jobs:
         run: node scripts/math-format-tests.cjs
       - name: Audit every question and solved-example math field, fraction, limit arrow, and visual dependency
         run: node scripts/comprehensive-math-content-audit-tests.cjs
+      - name: Audit the complete automated question bank across all 14 topics
+        run: node scripts/automated-bank-audit-tests.cjs
       - name: Run verified answer regression checks
         run: node scripts/answer-regression-tests.cjs
       - name: Check supplemental question diagrams
