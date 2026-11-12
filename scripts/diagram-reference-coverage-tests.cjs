@@ -12,8 +12,9 @@ const context = vm.createContext({ console });
 for (const file of [
   "questions.js",
   "questions_vectors_additional.js",
-  "merge-questions.js",
   "questions_typed_additional.js",
+  "questions_automated_additional.js",
+  "merge-questions.js",
   "question-diagrams.js"
 ]) {
   vm.runInContext(
@@ -23,7 +24,6 @@ for (const file of [
   );
 }
 
-vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const { questions, getQuestionDiagram } = vm.runInContext(
   "({ questions, getQuestionDiagram })",
   context
@@ -52,6 +52,8 @@ const visualReferencePatterns = [
   /مركز ثقل المثلث BCD/,
   /في مكعب طول حرفه 3.*مسقط M العمودي/,
   /في رباعي وجوه ABCD.*منتصف \\[CD\\]/
+  /من جدول تغيرات|جدول التغيرات|جدول تغيرات/,
+  /متصلاً على R ومتزايداً تماماً من النهاية/
 ];
 
 const requiresVisual = (question) =>
