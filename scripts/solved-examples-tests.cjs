@@ -40,7 +40,7 @@ if (!library || !Array.isArray(library.examples)) {
     const item = examples.find(example => example.id === id);
     const mathText = item ? [item.question, item.keyIdea, ...item.steps, item.answer, item.check].join(" ") : "";
     if (!item || !mathText.includes("\\sin") || !mathText.includes("\\(") ||
-        /(?:^|[^a-z])sin\s*\(/i.test(mathText)) {
+        /(?:^|[^\\a-z])sin\s*\(/i.test(mathText)) {
       failures.push("Trigonometric-limit example " + id + " must use explicitly delimited TeX sine notation.");
     }
   }
