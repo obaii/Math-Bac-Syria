@@ -113,7 +113,7 @@ const cases = [
   {
     name: "nested parenthesized fractions are normalized from inside out",
     input: "\\(((1/3)^n+2)/(n+1)\\)",
-    expected: "\\(\\frac{((\\frac{1}{3})^{n}+2)}{(n+1)}\\)"
+    expected: "\\(\\frac{((\\frac{1}{3})^n+2)}{(n+1)}\\)"
   }
 ];
 
