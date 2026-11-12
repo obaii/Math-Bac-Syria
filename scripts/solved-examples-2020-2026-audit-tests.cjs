@@ -42,7 +42,7 @@ for (const [yearText, expected] of Object.entries(expectedCounts)) {
   const batch = examples.filter(item => item.sourceYear === year);
   if (batch.length !== expected) failures.push("Year " + year + ": expected " + expected + " records, found " + batch.length + ".");
   for (const item of batch) {
-    if (!item.sourceSession || !item.sourceLabel || !item.sourceReference) failures.push(item.id + ": source session, label, and reference are required.");
+    if (!item.sourceLabel || !item.sourceReference || (item.sourceType !== "نموذج وزاري" && !item.sourceSession)) failures.push(item.id + ": required source label/reference or applicable exam session is missing.");
     if (!item.question || !item.keyIdea || !item.answer || !item.check || !Array.isArray(item.steps) || item.steps.length < 2) failures.push(item.id + ": incomplete question or worked solution.");
   }
 }
