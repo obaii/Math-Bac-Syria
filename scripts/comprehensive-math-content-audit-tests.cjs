@@ -83,8 +83,8 @@ if (!Array.isArray(topics) || topics.length !== 14) fail("The bank must expose t
 if (!Array.isArray(questions) || questions.length !== 601) {
   fail("Expected 601 unique merged questions, found " + (questions || []).length + ".");
 }
-if (!Array.isArray(examples) || examples.length !== 544) {
-  fail("Expected 544 solved examples, found " + (examples || []).length + ".");
+if (!Array.isArray(examples) || examples.length !== 588) {
+  fail("Expected 588 solved examples, found " + (examples || []).length + ".");
 }
 
 const mcq = (questions || []).filter(question => (question.type || "mcq") === "mcq");
