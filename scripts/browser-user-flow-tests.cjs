@@ -391,7 +391,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 588, "the library should render all 588 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 600, "the library should render all 600 solved examples");
     await page.evaluate(async () => {
       await window.MathJax.startup.promise;
       await window.MathJax.typesetPromise([document.querySelector("#solved-examples-list")]);
