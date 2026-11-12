@@ -121,7 +121,15 @@ const cases = [
   { contains: "متتالية هندسية تحقق u₀=3", expected: "4092" },
   { contains: "كرة سوداء واحدة على الأقل إذا كان الترتيب مهماً", expected: "114" },
   { contains: "حل المعادلة التفاضلية \\(2y'+3y=0\\) مع الشرط \\(y(0)=2\\)", expected: "\\(y=2e^{-3x/2}\\)" },
-  { contains: "ما قيمة \\(F(1)\\)؟", expected: "8" }
+  { contains: "ما قيمة \\(F(1)\\)؟", expected: "8" },
+  {"contains":"إذا كانت لاحقتا النقطتين A وB هما \\(z_A=1+i\\) و\\(z_B=1-i\\)","expected":"2"},
+  {"contains":"ما القيمة الرئيسية للزاوية \\(\\arg(1+i)\\)","expected":"\\(\\frac\\pi4\\)"},
+  {"contains":"إذا كانت لاحقة النقطة A هي \\(z_A=2+i\\)","expected":"\\(2-i\\)"},
+  {"contains":"ما لاحقة منتصف القطعة [AB]","expected":"\\(2+2i\\)"},
+  {"contains":"الدوران مركزه O وزاويته \\(\\frac\\pi2\\)","expected":"\\(i\\)"},
+  {"contains":"مجموعة النقط M التي تحقق \\(|z-2|=3\\)","expected":"دائرة مركزها (2,0) ونصف قطرها 3"},
+  {"contains":"ما إحداثيا النقطة A؟","expected":"(2,−3)"},
+  {"contains":"ما لاحقة الشعاع \\(\\overrightarrow{AB}\\)","expected":"\\(-3+i\\)"}
 ];
 
 let failures = 0;
@@ -132,16 +140,7 @@ for (const test of cases) {
     failures++;
     continue;
   }
-  const q = matches[0,
-{"contains":"إذا كانت لاحقتا النقطتين A وB هما \\(z_A=1+i\\) و\\(z_B=1-i\\)","expected":"2"},
-{"contains":"ما القيمة الرئيسية للزاوية \\(\\arg(1+i)\\)","expected":"\\(\\frac\\pi4\\)"},
-{"contains":"إذا كانت لاحقة النقطة A هي \\(z_A=2+i\\)","expected":"\\(2-i\\)"},
-{"contains":"ما لاحقة منتصف القطعة [AB]","expected":"\\(2+2i\\)"},
-{"contains":"الدوران مركزه O وزاويته \\(\\frac\\pi2\\)","expected":"\\(i\\)"},
-{"contains":"مجموعة النقط M التي تحقق \\(|z-2|=3\\)","expected":"دائرة مركزها (2,0) ونصف قطرها 3"},
-{"contains":"ما إحداثيا النقطة A؟","expected":"(2,−3)"},
-{"contains":"ما لاحقة الشعاع \\(\\overrightarrow{AB}\\)","expected":"\\(-3+i\\)"}
-];
+  const q = matches[0];
   const selected = Array.isArray(q.options) ? q.options[q.answer] : undefined;
   if (normalize(selected) !== normalize(test.expected)) {
     console.error(`FAIL: "${test.contains}" expected answer "${test.expected}", got "${selected}" (answer index ${q.answer})`);
