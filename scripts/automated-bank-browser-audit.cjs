@@ -14,8 +14,8 @@ const { chromium } = require("playwright");
   try {
     await page.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() =>
-      Array.isArray(window.topics) && window.topics.length === 14 &&
-      Array.isArray(window.questions) && document.querySelectorAll("#topic-grid [data-topic]").length === 14,
+      Array.isArray(topics) && topics.length === 14 &&
+      Array.isArray(questions) && document.querySelectorAll("#topic-grid [data-topic]").length === 14,
       null,
       { timeout: 20000 }
     );
