@@ -216,10 +216,10 @@ try {
 
   // Require a separate expected-answer regression entry for every archived item.
   const regressionSource = fs.readFileSync(path.join(root, "scripts/answer-regression-tests.cjs"), "utf8");
-  const regressionCases = [...regressionSource.matchAll(/\\{\\s*"contains"\\s*:\\s*"((?:\\\\.|[^"\\\\])*)"\\s*,\\s*"expected"\\s*:\\s*"((?:\\\\.|[^"\\\\])*)"\\s*\\}/g)]
+  const regressionCases = [...regressionSource.matchAll(/\{\s*"contains"\s*:\s*"((?:\\.|[^"\\])*)"\s*,\s*"expected"\s*:\s*"((?:\\.|[^"\\])*)"\s*\}/g)]
     .map(match => ({
-      contains: normalize(JSON.parse('" + match[1] + "')),
-      expected: normalize(JSON.parse('" + match[2] + "'))
+      contains: normalize(JSON.parse('"' + match[1] + '"')),
+      expected: normalize(JSON.parse('"' + match[2] + '"'))
     }));
   let archivedRegressionCoverage = 0;
   for (const [index, archived] of (automated || []).entries()) {
