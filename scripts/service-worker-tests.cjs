@@ -28,6 +28,9 @@ const coreSet = new Set(coreFiles);
 
 check(coreFiles.length > 0, "CORE_FILES must not be empty");
 check(coreSet.size === coreFiles.length, "CORE_FILES contains duplicate paths");
+check(coreSet.has("./solved-examples-loader.js"), "The lightweight solved-examples loader must be precached.");
+check(!coreSet.has("./solved-examples.js"), "The large solved-examples dataset must not delay service-worker installation.");
+check(html.includes("solved-examples-loader.js"), "The homepage must load the lightweight solved-examples loader.");
 
 for (const asset of coreFiles) {
   const cleanPath = asset.replace(/^\.\//, "");
