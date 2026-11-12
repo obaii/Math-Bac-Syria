@@ -115,6 +115,7 @@ const assert = require("node:assert/strict");
     // Solved examples: dynamic panel creation, search and all curriculum/source filters.
     await openTool("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
+    await page.waitForFunction(() => window.solvedExamplesLibrary?.count === 600, null, { timeout: 20000 });
     assert.ok(await page.locator("#solved-examples-list .solved-example-card").count() > 0);
     await page.locator("#solved-example-search").fill("متتالية حسابية");
     assert.ok(await page.locator("#solved-examples-list .solved-example-card").count() > 0);
