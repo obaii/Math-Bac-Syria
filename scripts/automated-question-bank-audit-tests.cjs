@@ -268,7 +268,7 @@ const complexApplicationChecks = [
   ["إذا كان g(x)=f(−x)", "محور التراتيب Oy"],
   ["ما مجموعة النقط التي تحقق 2ln(x)−ln(y)=0", "y=x²"],
   ["ما مجموعة النقط M(z) التي تحقق arg(z/i)", "القسم الموجب من محور التراتيب"],
-  ["بدوران مركزه A وزاويته", "d-a=i(c-a)"]
+  ["العلاقة بين لواحق النقاط", "d-a=i(c-a)"]
 ];
 for (const [prompt, expected] of complexApplicationChecks) {
   checkAnswer("تطبيقات الأعداد العقدية", prompt, expected);
