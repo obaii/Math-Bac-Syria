@@ -391,7 +391,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 544, "the library should render all 544 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 588, "the library should render all 588 solved examples");
     await page.evaluate(async () => {
       await window.MathJax.startup.promise;
       await window.MathJax.typesetPromise([document.querySelector("#solved-examples-list")]);
@@ -436,8 +436,8 @@ const assert = require("node:assert/strict");
         missingCount: missing.length
       };
     });
-    assert.equal(completeLibraryAudit.examples, 544, "the complete audit should read every solved example");
-    assert.equal(completeLibraryAudit.renderedCards, 544, "every solved example should have a rendered card");
+    assert.equal(completeLibraryAudit.examples, 588, "the complete audit should read every solved example");
+    assert.equal(completeLibraryAudit.renderedCards, 588, "every solved example should have a rendered card");
     assert.ok(completeLibraryAudit.checkedMathFields > 0, "the complete audit should inspect mathematical fields across the library");
     assert.equal(completeLibraryAudit.missingCount, 0,
       "every formula in every solved-example question, idea, step, answer, and check should be typeset: " +
