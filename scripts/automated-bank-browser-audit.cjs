@@ -3,6 +3,7 @@
 
 // Browser-level audit: every topic, all answer evaluators, and real rendered feedback.
 // Keep the browser assertions synchronized with the audited 609-question inventory.
+// This guard intentionally fails if the merged bank and its audited inventory diverge.
 const assert = require("node:assert/strict");
 const { chromium } = require("playwright");
 
