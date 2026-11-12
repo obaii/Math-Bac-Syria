@@ -132,7 +132,16 @@ for (const test of cases) {
     failures++;
     continue;
   }
-  const q = matches[0];
+  const q = matches[0,
+{"contains":"إذا كانت لاحقتا النقطتين A وB هما \\(z_A=1+i\\) و\\(z_B=1-i\\)","expected":"2"},
+{"contains":"ما القيمة الرئيسية للزاوية \\(\\arg(1+i)\\)","expected":"\\(\\frac\\pi4\\)"},
+{"contains":"إذا كانت لاحقة النقطة A هي \\(z_A=2+i\\)","expected":"\\(2-i\\)"},
+{"contains":"ما لاحقة منتصف القطعة [AB]","expected":"\\(2+2i\\)"},
+{"contains":"الدوران مركزه O وزاويته \\(\\frac\\pi2\\)","expected":"\\(i\\)"},
+{"contains":"مجموعة النقط M التي تحقق \\(|z-2|=3\\)","expected":"دائرة مركزها (2,0) ونصف قطرها 3"},
+{"contains":"ما إحداثيا النقطة A؟","expected":"(2,−3)"},
+{"contains":"ما لاحقة الشعاع \\(\\overrightarrow{AB}\\)","expected":"\\(-3+i\\)"}
+];
   const selected = Array.isArray(q.options) ? q.options[q.answer] : undefined;
   if (normalize(selected) !== normalize(test.expected)) {
     console.error(`FAIL: "${test.contains}" expected answer "${test.expected}", got "${selected}" (answer index ${q.answer})`);
