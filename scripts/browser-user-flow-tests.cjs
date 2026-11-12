@@ -514,49 +514,63 @@ const assert = require("node:assert/strict");
     await page.setViewportSize({ width: 1365, height: 900 });
     await page.locator("#solved-example-topic").selectOption("");
 
+    const assertFilteredExampleCount = async (expected, message) => {
+      const countLabel = await page.locator("#solved-examples-count").textContent();
+      assert.ok(countLabel.includes(`من ${expected} مثالاً`), message + " (count label: " + countLabel + ")");
+      assert.equal(
+        await page.locator("#solved-examples-list .solved-example-card").count(),
+        Math.min(24, expected),
+        message + " (initial rendered batch)"
+      );
+      assert.equal(
+        await page.locator(".solved-examples-load-more").count(),
+        expected > 24 ? 1 : 0,
+        message + " (load-more control)"
+      );
+    };
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
+    await assertFilteredExampleCount(118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 216, "the adapted cycle-source filter should show all 216 examples available in this audit batch");
+    await assertFilteredExampleCount(216, "the adapted cycle-source filter should show all 216 examples available in this audit batch");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من نموذج وزاري");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the adapted ministerial-model filter should show 20 examples");
+    await assertFilteredExampleCount(20, "the adapted ministerial-model filter should show 20 examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-year").selectOption("2017");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 34, "the 2017 source filter should include the 15 exam adaptations and 19 ministry examples");
+    await assertFilteredExampleCount(34, "the 2017 source filter should include the 15 exam adaptations and 19 ministry examples");
     await page.locator("#solved-example-year").selectOption("2018");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 50, "the 2018 source filter should show ten exam adaptations and forty inspired practice variants across both sessions");
+    await assertFilteredExampleCount(50, "the 2018 source filter should show ten exam adaptations and forty inspired practice variants across both sessions");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 40, "the 2018 source-type and year filters should show both 2018 training batches");
+    await assertFilteredExampleCount(40, "the 2018 source-type and year filters should show both 2018 training batches");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-year").selectOption("2019");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 41, "the 2019 source filter should show 21 archived examples and 20 new practice variants");
+    await assertFilteredExampleCount(41, "the 2019 source filter should show 21 archived examples and 20 new practice variants");
     await page.locator("#solved-example-year").selectOption("2020");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the 2020 source filter should show all 20 classified records, including the 13 new original practice adaptations");
+    await assertFilteredExampleCount(20, "the 2020 source filter should show all 20 classified records, including the 13 new original practice adaptations");
     await page.locator("#solved-example-year").selectOption("2021");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the 2021 source filter should show all 20 classified records, including the 11 new original practice adaptations");
+    await assertFilteredExampleCount(20, "the 2021 source filter should show all 20 classified records, including the 11 new original practice adaptations");
     await page.locator("#solved-example-year").selectOption("2022");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 75, "the 2022 source filter should show all 75 adaptations, including the new second-session batch");
+    await assertFilteredExampleCount(75, "the 2022 source filter should show all 75 adaptations, including the new second-session batch");
     await page.locator("#solved-example-year").selectOption("2023");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 42, "the 2023 source filter should show twenty ministry-inspired variants, two second-session adaptations, and twenty first-session adaptations");
+    await assertFilteredExampleCount(42, "the 2023 source filter should show twenty ministry-inspired variants, two second-session adaptations, and twenty first-session adaptations");
     await page.locator("#solved-example-year").selectOption("2025");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 30, "the 2025 source filter should show ten archived adaptations and twenty new practice variants");
+    await assertFilteredExampleCount(30, "the 2025 source filter should show ten archived adaptations and twenty new practice variants");
     await page.locator("#solved-example-year").selectOption("");
     await page.locator("#solved-example-source").selectOption("نموذج وزاري");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 19, "the ministerial-model filter should show nineteen verified 2017 examples");
+    await assertFilteredExampleCount(19, "the ministerial-model filter should show nineteen verified 2017 examples");
     await page.locator("#solved-example-source").selectOption("تدريبي مؤلف");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 227, "the authored-example filter should show all 227 current examples");
+    await assertFilteredExampleCount(227, "the authored-example filter should show all 227 current examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 59, "topic filtering should show all 59 probability examples across the audited years");
+    await assertFilteredExampleCount(59, "topic filtering should show all 59 probability examples across the audited years");
     await page.locator("#solved-example-topic").selectOption("مصطلحات المنطق الرياضي");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "the mathematical logic topic should show its six new examples");
+    await assertFilteredExampleCount(6, "the mathematical logic topic should show its six new examples");
     await page.locator("#solved-example-topic").selectOption("نهاية متتالية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 27, "the sequence-limit topic should show all 27 examples across the audited years");
+    await assertFilteredExampleCount(27, "the sequence-limit topic should show all 27 examples across the audited years");
     await page.locator("#solved-example-topic").selectOption("تطبيقات الأعداد العقدية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "complex geometry topic should show all fifteen examples");
+    await assertFilteredExampleCount(15, "complex geometry topic should show all fifteen examples");
     await page.locator("#solved-example-topic").selectOption("");
     await page.locator("#solved-example-search").fill("اِسْتِقْلال حادثتين");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "normalized multiword search should find all six relevant worked examples after the 2022 second-session addition");
+    await assertFilteredExampleCount(6, "normalized multiword search should find all six relevant worked examples after the 2022 second-session addition");
     await page.locator("#solved-example-search").fill("");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
