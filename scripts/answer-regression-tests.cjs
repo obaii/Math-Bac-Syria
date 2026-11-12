@@ -16,7 +16,6 @@ for (const file of ["questions.js", "questions_vectors_additional.js", "merge-qu
     { filename: file, timeout: 5000 }
   );
 }
-vm.runInContext("questions.push(...typedQuestionsAdditional)", context);
 const questions = vm.runInContext("questions", context);
 const normalize = (value) => String(value ?? "").normalize("NFKC").replace(/\s+/g, " ").trim();
 
