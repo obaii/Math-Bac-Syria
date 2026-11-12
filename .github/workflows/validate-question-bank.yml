@@ -61,6 +61,7 @@ jobs:
           node --check scripts/solved-examples-2019-audit-tests.cjs
           node --check scripts/solved-examples-2018-audit-tests.cjs
           node --check scripts/solved-examples-2017-audit-tests.cjs
+          node --check scripts/solved-examples-2022-audit-tests.cjs
           node --check scripts/question-diagram-tests.cjs
           node --check scripts/diagram-reference-coverage-tests.cjs
           node --check scripts/detailed-solution-guides-tests.cjs
@@ -96,6 +97,8 @@ jobs:
         run: node scripts/solved-examples-2018-audit-tests.cjs
       - name: Verify the 2017 exam and ministerial solved-example audit batch
         run: node scripts/solved-examples-2017-audit-tests.cjs
+      - name: Verify the 2022 exam-inspired solved-example audit batch
+        run: node scripts/solved-examples-2022-audit-tests.cjs
       - name: Validate per-topic last lesson selection and restoration
         run: node scripts/curriculum-progress-tests.cjs
       - name: Validate complete 63-lesson curriculum inventory
