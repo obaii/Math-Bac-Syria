@@ -26,9 +26,9 @@ const cases = [
 ,
   { name: "right circular cone sketch", match: q => q.q.includes("مخروط دائري قائم محوره محور z"), labels: ["مخروط", "المحور", "حافة القاعدة"] },
   { name: "sphere center and radius sketch", match: q => q.q.includes("ما معادلة الكرة مركزها مبدأ الإحداثيات"), labels: ["كرة", "نصف القطر", "O"] },
-  { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2") && q.q.includes("عند النقطة ذات الفاصلة 1"), labels: ["منحنى", "المماس", "نقطة التماس"] },
+  { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2") && q.q.includes("عند النقطة ذات الفاصلة 1"), labels: ["A(1,1)", "y=2x−1", "f(x)=x²"] },
   { name: "plane normal vector sketch", match: q => q.q.includes("المستوى المار بالنقطة A(1,0,2) والناظم له"), labels: ["مستوى", "شعاع ناظم", "n"] },
-  { name: "spatial lines sketch", match: q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"), labels: ["مستقيمين", "d", "d′"] }
+  { name: "spatial lines sketch", match: q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"), labels: ["A(1,1,1)", "B(0,0,z)", "C(α,β,γ)", "المستقيم ABC", "d"] }
 ];
 let failures = 0;
 for (const testCase of cases) {
@@ -65,6 +65,26 @@ if (distributionQuestions.length !== 2 || distributionQuestions.some(q => !getDi
 const tetra = questions.find(q => q.q.includes("لتكن I منتصف [CD]"));
 if (!tetra || tetra.options[tetra.answer] !== "1/2") {
   console.error("FAIL: corrected tetrahedron answer must be 1/2");
+  failures++;
+}
+const tetraDiagram = tetra && getDiagram(tetra);
+if (!tetraDiagram || !tetraDiagram.includes('cx="226.5" cy="176.875"')) {
+  console.error("FAIL: K must be drawn at the exact midpoint of BJ.");
+  failures++;
+}
+const tangentQuestion = questions.find(q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2") && q.q.includes("عند النقطة ذات الفاصلة 1"));
+const tangentDiagram = tangentQuestion && getDiagram(tangentQuestion);
+const tangentYAtX1 = 211 + (170 - 80) * (64 - 211) / (290 - 80);
+if (!tangentDiagram || !tangentDiagram.includes('cx="170" cy="148"') ||
+    !tangentDiagram.includes('M80 211L290 64') || Math.abs(tangentYAtX1 - 148) > 0.001) {
+  console.error("FAIL: the y=2x−1 tangent must pass through the marked point A(1,1).");
+  failures++;
+}
+const spatialQuestion = questions.find(q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"));
+const spatialDiagram = spatialQuestion && getDiagram(spatialQuestion);
+if (!spatialDiagram || spatialDiagram.includes("d′") || spatialDiagram.includes(">P<") ||
+    !["A(1,1,1)", "B(0,0,z)", "C(α,β,γ)", "المستقيم ABC", "d"].every(label => spatialDiagram.includes(label))) {
+  console.error("FAIL: the spatial sketch must show collinear A,B,C and line d meeting at C, not an unrelated d′/P diagram.");
   failures++;
 }
 if (!fs.existsSync(path.join(root, "assets", "question-11-graphs.png"))) {
