@@ -496,7 +496,7 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 160, "the adapted cycle-source filter should show all 160 examples, including the new 2023 first-session batch");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 204, "the adapted cycle-source filter should show all 204 examples available in this audit batch");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من نموذج وزاري");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the adapted ministerial-model filter should show 20 examples");
     await page.locator("#solved-example-source").selectOption("");
