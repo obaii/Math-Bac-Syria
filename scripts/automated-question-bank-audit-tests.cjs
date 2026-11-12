@@ -146,7 +146,8 @@ for (const [index, question] of (automated || []).entries()) {
   if (!["تدريب مستوحى من نموذج وزاري", "تدريب مستوحى من دورة امتحانية"].includes(question.sourceType)) {
     fail(label + " has an unsupported source classification.");
   }
-  if (!Number.isInteger(question.sourceYear) || !/^https:\/\//i.test(String(question.sourceReference || ""))) {
+  if (!Number.isInteger(question.sourceYear) || !normalize(question.sourceSession) ||
+      !/^https:\/\//i.test(String(question.sourceReference || ""))) {
     fail(label + " is missing a valid source year or HTTPS reference.");
   }
 }
@@ -163,15 +164,12 @@ const mathSegments = value => {
   return found;
 };
 const unbalancedBraces = formula => {
+  // Literal TeX braces (\{ and \}) are symbols, not grouping delimiters.
+  const value = String(formula ?? "").replace(/\\[{}]/g, "");
   let depth = 0;
-  const value = String(formula ?? "");
-  for (let index = 0; index < value.length; index++) {
-    if (value[index] !== "{" && value[index] !== "}") continue;
-    let slashes = 0;
-    for (let previous = index - 1; previous >= 0 && value[previous] === "\\"; previous--) slashes++;
-    if (slashes % 2) continue;
-    if (value[index] === "{") depth++;
-    else if (--depth < 0) return true;
+  for (const character of value) {
+    if (character === "{") depth++;
+    else if (character === "}" && --depth < 0) return true;
   }
   return depth !== 0;
 };
@@ -204,7 +202,9 @@ const visualPatterns = [
   /في مخطط شجري/, /قرص دائري مقسم إلى أربعة أقسام متساوية/,
   /مكعب.*منتصف.*HG.*FB/, /مركز ثقل المثلث BCD/,
   /في مكعب طول حرفه 3.*مسقط M العمودي/,
-  /في رباعي وجوه ABCD.*منتصف \[CD\]/
+  /في رباعي وجوه ABCD.*منتصف \[CD\]/,
+  /من جدول تغيرات|جدول التغيرات|جدول تغيرات/,
+  /متصلاً على R ومتزايداً تماماً من النهاية/
 ];
 const visualQuestions = (questions || []).filter(question =>
   visualPatterns.some(pattern => pattern.test(String(question.q || "")) ||
