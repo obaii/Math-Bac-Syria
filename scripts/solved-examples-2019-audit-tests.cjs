@@ -103,10 +103,14 @@ if (!close(sameColor, 0.4)) failures.push("2019 same-color probability failed.")
 const distribution = [1, 4, 3, 2].map(count => count / 10);
 const expectation = distribution.reduce((sum, p, x) => sum + x * p, 0);
 if (!close(expectation, 1.6) || !close(distribution.reduce((a, b) => a + b, 0), 1)) failures.push("2019 discrete random-variable law/expectation failed.");
-const p = z => z * z + (1 + 2i) * z + 3 + 3i;
-if (p(-1 + 1i) !== 0 || p(-3i) !== 0) failures.push("2019 complex polynomial roots failed.");
-const rotate = (a, b) => b + 1i * (a - b);
-if (rotate(-1 + 1i, -3i) !== -4 - 4i) failures.push("2019 complex-plane rotation failed.");
+const add = (a, b) => [a[0] + b[0], a[1] + b[1]];
+const mul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
+const poly = z => add(add(mul(z, z), mul([1, 2], z)), [3, 3]);
+if (poly([-1, 1]).some(value => value !== 0) || poly([0, -3]).some(value => value !== 0)) failures.push("2019 complex polynomial roots failed.");
+const delta = add([-1, 1], [0, 3]);
+const rotated = mul([0, 1], delta);
+const rotatedPoint = add([0, -3], rotated);
+if (rotatedPoint[0] !== -4 || rotatedPoint[1] !== -4) failures.push("2019 complex-plane rotation failed.");
 const dot = (a, b) => a.reduce((sum, value, i) => sum + value * b[i], 0);
 if (dot([-1, 1, 0], [2, 2, 1]) !== 0) failures.push("2019 spatial perpendicularity calculation failed.");
 const cross = (a, b) => [
