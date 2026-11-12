@@ -202,9 +202,8 @@ if (failures.length) {
   console.log("PASS: independent arithmetic, calculus, probability, complex-number, sequence, and spatial-geometry checks for 2020–2026.");
 }
 
-// Additional 2020, 2021, and 2026 source-batch checks from the comprehensive branch audit.
+// Additional source-batch checks for all 44 original practice additions.
 {
-#!/usr/bin/env node
 "use strict";
 const fs=require("node:fs"),path=require("node:path"),vm=require("node:vm");
 const root=path.resolve(__dirname,"..");
