@@ -58,6 +58,7 @@ jobs:
           node --check scripts/html-local-asset-integrity-tests.cjs
           node --check scripts/validate-question-bank.cjs
           node --check scripts/answer-regression-tests.cjs
+          node --check scripts/solved-examples-2019-audit-tests.cjs
           node --check scripts/question-diagram-tests.cjs
           node --check scripts/diagram-reference-coverage-tests.cjs
           node --check scripts/detailed-solution-guides-tests.cjs
@@ -87,6 +88,8 @@ jobs:
         run: node scripts/limits-sequences-regression-tests.cjs
       - name: Verify independently reviewed logarithm, exponential, and integration solutions
         run: node scripts/log-exp-integral-regression-tests.cjs
+      - name: Verify the 2019 first-session solved-example audit batch
+        run: node scripts/solved-examples-2019-audit-tests.cjs
       - name: Validate per-topic last lesson selection and restoration
         run: node scripts/curriculum-progress-tests.cjs
       - name: Validate complete 63-lesson curriculum inventory
