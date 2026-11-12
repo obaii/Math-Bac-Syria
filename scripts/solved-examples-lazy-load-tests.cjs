@@ -31,14 +31,17 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
   try {
     await page.goto(BASE_URL, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("#section-menu-toggle");
-    await page.waitForSelector("#solved-examples-library");
+    await page.locator("#solved-examples-library").waitFor({ state: "attached" });
     assert.equal(requestCount, 0, "the large solved-examples dataset must not load during the initial page visit");
     assert.equal(await page.evaluate(() => typeof window.solvedExamplesLibrary), "undefined",
       "the solved-examples data must remain uninitialized until the library is opened");
 
     await page.locator("#section-menu-toggle").click();
     await page.locator('#section-menu [data-panel-toggle="solved-examples-library"]').click();
-    await requestStarted;
+    await Promise.race([
+      requestStarted,
+      page.waitForTimeout(10000).then(() => { throw new Error("Opening the library did not request its data script."); })
+    ]);
     const panel = page.locator("#solved-examples-library");
     await page.waitForFunction(() => {
       const section = document.querySelector("#solved-examples-library");
