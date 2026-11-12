@@ -274,7 +274,7 @@ function getQuestionDiagram(question) {
       <figcaption>A وB وC على استقامة واحدة، وC نقطة تقاطع هذا المستقيم مع d؛ الرسم تخطيطي وليس على مقياس الإحداثيات.</figcaption>
       <svg viewBox="0 0 340 230" role="img" aria-label="مستقيم ABC ومستقيم d يتقاطعان عند C">
         <path d="M35 193.889L280 57.778" fill="none" stroke="#2563eb" stroke-width="2.8"/>
-        <path d="M205 30.4L300 165" fill="none" stroke="#0f766e" stroke-width="2.8"/>
+        <path d="M205 30.410526L300 165" fill="none" stroke="#0f766e" stroke-width="2.8"/>
         <circle cx="60" cy="180" r="4.5" fill="#2563eb"/>
         <circle cx="150" cy="130" r="4.5" fill="#2563eb"/>
         <circle cx="240" cy="80" r="4.5" fill="#b45309"/>
