@@ -436,8 +436,8 @@ const assert = require("node:assert/strict");
         missingCount: missing.length
       };
     });
-    assert.equal(completeLibraryAudit.examples, 588, "the complete audit should read every solved example");
-    assert.equal(completeLibraryAudit.renderedCards, 588, "every solved example should have a rendered card");
+    assert.equal(completeLibraryAudit.examples, 600, "the complete audit should read every solved example");
+    assert.equal(completeLibraryAudit.renderedCards, 600, "every solved example should have a rendered card");
     assert.ok(completeLibraryAudit.checkedMathFields > 0, "the complete audit should inspect mathematical fields across the library");
     assert.equal(completeLibraryAudit.missingCount, 0,
       "every formula in every solved-example question, idea, step, answer, and check should be typeset: " +
