@@ -77,7 +77,11 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
     assert.match(await page.locator("#solved-examples-count").textContent(), /1 من 1/,
       "search should filter the complete dataset while rendering only matching results");
 
+    // From an active panel, the first menu-toggle click returns home; the second opens the menu.
     await page.locator("#section-menu-toggle").click();
+    await page.waitForFunction(() => document.querySelector("#solved-examples-library")?.hidden === true);
+    await page.locator("#section-menu-toggle").click();
+    await page.locator("#section-menu").waitFor({ state: "visible" });
     await page.locator('#section-menu [data-panel-toggle="solved-examples-library"]').click();
     assert.equal(requestCount, 1, "reopening the library must reuse the already loaded dataset");
     assert.deepEqual(pageErrors, [], "lazy-loading the solved examples must not create uncaught browser errors");
