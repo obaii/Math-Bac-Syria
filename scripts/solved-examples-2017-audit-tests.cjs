@@ -88,13 +88,13 @@ vm.runInContext(
 );
 for (const [id, expectedText] of [
   ["ministerial17-graph-001", "f(1)=1"],
-  ["ministerial17-graph-002", "x=4"],
+  ["ministerial17-graph-002", "y=5"],
   ["ministerial17-graph-003", "x=4"]
 ]) {
   const item = examples.find(example => example.id === id);
   if (!item) continue;
   const markup = diagramContext.getQuestionDiagram({ q: item.question, topic: item.topic });
-  if (!markup || !markup.includes("<svg") || !markup.includes("<figcaption>") || !markup.includes(expectedText)) {
+  if (!markup || !markup.includes("<svg") || !markup.includes("<figcaption>") || !markup.includes(expectedText) || (id === "ministerial17-graph-002" && (!markup.includes("x=4") || markup.includes("رسم تخطيطي لمستقيمين")))) {
     failures.push(id + ": the supplemental SVG diagram is missing or does not reflect the stated graph condition (markup length " + String(markup || "").length + ", preview " + String(markup || "").slice(0, 320) + ").");
   }
 }
