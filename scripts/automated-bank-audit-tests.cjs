@@ -214,6 +214,32 @@ try {
     }
   }
 
+  // Require a separate expected-answer regression entry for every archived item.
+  const regressionSource = fs.readFileSync(path.join(root, "scripts/answer-regression-tests.cjs"), "utf8");
+  const regressionCases = [...regressionSource.matchAll(/\\{\\s*"contains"\\s*:\\s*"((?:\\\\.|[^"\\\\])*)"\\s*,\\s*"expected"\\s*:\\s*"((?:\\\\.|[^"\\\\])*)"\\s*\\}/g)]
+    .map(match => ({
+      contains: normalize(JSON.parse('" + match[1] + "')),
+      expected: normalize(JSON.parse('" + match[2] + "'))
+    }));
+  let archivedRegressionCoverage = 0;
+  for (const [index, archived] of (automated || []).entries()) {
+    const prompt = normalize(archived.q);
+    const matches = regressionCases.filter(test => prompt.includes(test.contains));
+    if (matches.length !== 1) {
+      fail("Archived question #" + (index + 1) + " must have exactly one independent regression case; found " + matches.length + ".");
+      continue;
+    }
+    const selected = normalize(archived.options?.[archived.answer]);
+    if (selected !== matches[0].expected) {
+      fail("Archived question #" + (index + 1) + " answer key disagrees with its separately stored regression expectation.");
+    } else {
+      archivedRegressionCoverage++;
+    }
+  }
+  if (archivedRegressionCoverage !== 140) {
+    fail("Expected independent regression coverage for all 140 archived questions; verified " + archivedRegressionCoverage + ".");
+  }
+
   // Independently re-derived answer checkpoints: at least one per curriculum research.
   const verifiedAnswers = [
     ["النهايات والاستمرار", "عندما \\(x\\ne1\\)، فما قيمة \\(\\lim_{x\\to1}f(x)\\)", "2"],
