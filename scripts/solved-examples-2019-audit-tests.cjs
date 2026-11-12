@@ -97,7 +97,7 @@ const choose = (n, k) => {
 };
 if (choose(8, 5) !== 56 || choose(5, 2) !== 10) failures.push("2019 combinations calculations failed.");
 const geometricSum = n => (1 - Math.pow(1 / 3, n + 1)) / (1 - 1 / 3);
-if (!close(geometricSum(0), 1) || !close(geometricSum(10), 1.4999915337, 1e-9)) failures.push("2019 geometric-sum calculation failed.");
+if (!close(geometricSum(0), 1) || !close(geometricSum(10), 1.4999915324560957, 1e-12)) failures.push("2019 geometric-sum calculation failed.");
 const sameColor = (choose(3, 2) + choose(2, 2)) / choose(5, 2);
 if (!close(sameColor, 0.4)) failures.push("2019 same-color probability failed.");
 const distribution = [1, 4, 3, 2].map(count => count / 10);
