@@ -65,6 +65,8 @@ jobs:
         run: node scripts/homepage-feedback-tests.cjs
       - name: Run browser smoke tests
         run: node scripts/browser-user-flow-tests.cjs
+      - name: Audit all 14 automated question topics in the browser
+        run: node scripts/automated-bank-browser-audit.cjs
       - name: Run accessibility and keyboard navigation tests
         run: node scripts/accessibility-navigation-tests.cjs
       - name: Run responsive mobile layout tests
