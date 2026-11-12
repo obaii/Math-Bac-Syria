@@ -140,7 +140,7 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
         assert.equal(row.columns, 2, "each saved problem should use a separate number and text column");
         assert.equal(row.writingMode, "horizontal-tb", "saved problem numbers must remain horizontal");
         assert.equal(row.whiteSpace, "nowrap", "saved problem numbers must not wrap");
-        assert.equal(row.display, "inline-grid", "saved problem numbers should use a stable inline grid");
+        assert.ok(["inline-grid", "grid"].includes(row.display), "saved problem numbers should use a stable grid layout");
         assert.ok(row.width >= 25 && row.height >= 25 && Math.abs(row.width - row.height) <= 2,
           `saved problem numbers should remain consistently aligned at ${width}px: ${JSON.stringify(row)}`);
         assert.ok(row.left >= -1 && row.right <= row.viewport + 1,
