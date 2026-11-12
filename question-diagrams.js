@@ -220,7 +220,7 @@ function getQuestionDiagram(question) {
 
   // Exact sketch for f(x)=x² at x=1: the point is (1,1) and the tangent is y=2x−1.
   if (prompt.includes("f(x)=x^2") && prompt.includes("عند النقطة ذات الفاصلة 1")) {
-    return \`<figure class="question-diagram" aria-label="منحنى f(x)=x² ومماسه الصحيح عند النقطة (1,1)">
+    return `<figure class="question-diagram" aria-label="منحنى f(x)=x² ومماسه الصحيح عند النقطة (1,1)">
       <figcaption>للدالة f(x)=x² عند x=1: نقطة التماس A(1,1)، ومعادلة المماس y=2x−1.</figcaption>
       <svg viewBox="0 0 340 230" role="img" aria-label="منحنى القطع المكافئ ومماسه y يساوي 2x ناقص 1">
         <path d="M80 180H315 M80 210V22" fill="none" stroke="#64748b" stroke-width="1.5"/>
@@ -232,7 +232,7 @@ function getQuestionDiagram(question) {
           <text x="265" y="45" fill="#2563eb">f(x)=x²</text><text x="319" y="196">x</text><text x="67" y="24">y</text>
         </g>
       </svg>
-    </figure>\`;
+    </figure>`;
   }
 
   // Conceptual tangent sketch for function questions asking for a tangent equation.
@@ -270,7 +270,7 @@ function getQuestionDiagram(question) {
   // The sourced exercise has A, B and C collinear, with C also on line d.
   if (prompt.includes("A(1,1,1)") && prompt.includes("B(0,0,z)") &&
       prompt.includes("C(α,β,γ)") && prompt.includes("المستقيم d")) {
-    return \`<figure class="question-diagram" aria-label="المستقيم ABC يلتقي المستقيم d عند النقطة C">
+    return `<figure class="question-diagram" aria-label="المستقيم ABC يلتقي المستقيم d عند النقطة C">
       <figcaption>A وB وC على استقامة واحدة، وC نقطة تقاطع هذا المستقيم مع d؛ الرسم تخطيطي وليس على مقياس الإحداثيات.</figcaption>
       <svg viewBox="0 0 340 230" role="img" aria-label="مستقيم ABC ومستقيم d يتقاطعان عند C">
         <path d="M35 193.889L280 57.778" fill="none" stroke="#2563eb" stroke-width="2.8"/>
@@ -284,7 +284,7 @@ function getQuestionDiagram(question) {
           <text x="86" y="93" fill="#2563eb">المستقيم ABC</text>
         </g>
       </svg>
-    </figure>\`;
+    </figure>`;
   }
 
   // Spatial line sketch for line/plane position questions with parametric forms.
