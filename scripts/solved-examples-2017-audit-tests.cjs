@@ -147,7 +147,7 @@ if (!close(x(0), 4) || !close(x(1), 5) || !(Math.abs(x(100) - 8) < 1e-10)) failu
 const telescoping = n => Array.from({length: n}, (_, i) => Math.log((i + 3) / (i + 1))).reduce((a, b) => a + b, 0);
 if (!close(telescoping(5), Math.log((6 * 7) / 2))) failures.push("2017 logarithmic telescoping sum failed.");
 const quotient = x => x - 6 + 7 / (x + 1);
-if (!close(quotient(0), 1) || !close(quotient(2), -1)) failures.push("2017 rational function decomposition failed.");
+if (!close(quotient(0), 1) || !close(quotient(2), -5 / 3)) failures.push("2017 rational function decomposition failed.");
 const integral = 7 * Math.log(3) - 10;
 if (!close(integral, (Math.pow(2, 2) / 2 - 6 * 2 + 7 * Math.log(3)) - 0)) failures.push("2017 rational definite integral failed.");
 const phi = (1 + Math.sqrt(5)) / 2;
