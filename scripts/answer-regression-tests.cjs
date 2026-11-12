@@ -9,7 +9,7 @@ const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
 const context = vm.createContext({ console });
-for (const file of ["questions.js", "questions_vectors_additional.js", "merge-questions.js", "questions_typed_additional.js"]) {
+for (const file of ["questions.js", "questions_vectors_additional.js", "questions_typed_additional.js", "questions_automated_additional.js", "merge-questions.js"]) {
   vm.runInContext(
     fs.readFileSync(path.join(root, file), "utf8"),
     context,
