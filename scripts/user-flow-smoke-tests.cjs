@@ -28,7 +28,7 @@ function readJsonDeclaration(source, declaration) {
     const character = source[index];
     if (inString) {
       if (escaped) escaped = false;
-      else if (character === "\\\\") escaped = true;
+      else if (character === "\\") escaped = true;
       else if (character === '"') inString = false;
       continue;
     }
