@@ -526,7 +526,7 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 227, "the authored-example filter should show all 227 current examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 50, "topic filtering should show all 50 probability examples, including the three new 2023 first-session adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 54, "topic filtering should show all 54 probability examples, including four additional 2026 probability adaptations");
     await page.locator("#solved-example-topic").selectOption("مصطلحات المنطق الرياضي");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "the mathematical logic topic should show its six new examples");
     await page.locator("#solved-example-topic").selectOption("نهاية متتالية");
