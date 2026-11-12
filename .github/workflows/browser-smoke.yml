@@ -55,6 +55,8 @@ jobs:
         run: node scripts/formula-library-tests.cjs
       - name: Run solved examples library regression tests
         run: node scripts/solved-examples-tests.cjs
+      - name: Verify solved examples load on demand and render in batches
+        run: node scripts/solved-examples-lazy-load-tests.cjs
       - name: Run study plan calendar regression tests
         run: node scripts/study-plan-date-tests.cjs
       - name: Run homepage design system regression tests

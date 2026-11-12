@@ -45,7 +45,9 @@ jobs:
           node --check scripts/automated-bank-browser-audit.cjs
           node --check merge-questions.js
           node --check solution-guides.js
+          node --check solved-examples-loader.js
           node --check solved-examples.js
+          node --check scripts/solved-examples-lazy-load-tests.cjs
           node --check scripts/solved-examples-tests.cjs
           node --check scripts/limits-sequences-regression-tests.cjs
           node --check scripts/log-exp-integral-regression-tests.cjs

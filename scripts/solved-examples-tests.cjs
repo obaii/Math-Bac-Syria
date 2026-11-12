@@ -36,6 +36,14 @@ if (!library || !Array.isArray(library.examples)) {
   if (!logarithmicDomainExample || !logarithmicDomainExample.steps[0].includes("\\lt")) {
     failures.push("The logarithmic domain inequality must use explicit TeX less-than operators.");
   }
+  for (const id of ["lim-005", "exam22-cycle1-005", "exam26-model-009"]) {
+    const item = examples.find(example => example.id === id);
+    const mathText = item ? [item.question, item.keyIdea, ...item.steps, item.answer, item.check].join(" ") : "";
+    if (!item || !mathText.includes("\\sin") || !mathText.includes("\\(") ||
+        /(?:^|[^a-z])sin\s*\(/i.test(mathText)) {
+      failures.push("Trigonometric-limit example " + id + " must use explicitly delimited TeX sine notation.");
+    }
+  }
   const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
   for (const id of diagramExamples) {
     const item = examples.find(example => example.id === id);
