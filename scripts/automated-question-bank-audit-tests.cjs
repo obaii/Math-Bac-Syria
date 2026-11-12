@@ -157,6 +157,27 @@ for (const [year, expected] of Object.entries(expectedYears)) {
   }
 }
 
+/*
+ * Review lock for the 140 archived automated MCQs. Each selected option was
+ * independently re-derived during this audit. Any prompt, option, key, or
+ * solution edit changes the fingerprint and requires a fresh mathematical review.
+ */
+const reviewedAnswerIndices = "11200120220311201223012301230123012301230123012301230123012301230123012301230123012301230123112112211122111100100122121201021212202101102120311301123011";
+const actualAnswerIndices = automated.map(question => String(question.answer)).join("");
+if (actualAnswerIndices !== reviewedAnswerIndices) {
+  fail("The 140-question independently reviewed answer-key snapshot changed; re-derive the affected answers.");
+}
+const reviewedArchivePayload = automated.map(question =>
+  [question.q, ...(question.options || []), String(question.answer), question.solution].join("\u241f")
+).join("\n");
+let reviewedArchiveHash = 2166136261;
+for (let index = 0; index < reviewedArchivePayload.length; index++) {
+  reviewedArchiveHash = Math.imul(reviewedArchiveHash ^ reviewedArchivePayload.charCodeAt(index), 16777619) >>> 0;
+}
+if (reviewedArchiveHash.toString(16).padStart(8, "0") !== "0cf540d8") {
+  fail("The reviewed 140-question prompt/option/solution snapshot changed; re-audit before updating its fingerprint.");
+}
+
 const mathSegments = value => {
   const found = [];
   const pattern = /\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g;
