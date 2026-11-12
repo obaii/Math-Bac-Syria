@@ -263,7 +263,7 @@
       const previous = before.match(/\S\s*$/)?.[0].trim().slice(-1) || "";
       const next = after.match(/^\s*\S/)?.[0].trim().charAt(0) || "";
       const adjacentMathBlock = /\\\)\s*$/.test(before) || /^\s*\\\(/.test(after);
-      const beginsFractionDenominator = /\/\s*\($/.test(before);
+      const beginsFractionDenominator = /\/\s*\([^)]*$/.test(before);
       const closesFractionNumerator = /^\s*\)(?:\s*\))?\s*\//.test(after);
       const connectsMath = /[\/=+−\-×÷*·]/.test(previous) || /[\/=+−\-×÷*·]/.test(next);
       return adjacentMathBlock || beginsFractionDenominator || closesFractionNumerator || connectsMath ? expression : match;
