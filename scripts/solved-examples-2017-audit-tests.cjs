@@ -95,7 +95,7 @@ for (const [id, expectedText] of [
   if (!item) continue;
   const markup = diagramContext.getQuestionDiagram({ q: item.question, topic: item.topic });
   if (!markup || !markup.includes("<svg") || !markup.includes("<figcaption>") || !markup.includes(expectedText)) {
-    failures.push(id + ": the supplemental SVG diagram is missing or does not reflect the stated graph condition (markup length " + String(markup || "").length + ").");
+    failures.push(id + ": the supplemental SVG diagram is missing or does not reflect the stated graph condition (markup length " + String(markup || "").length + ", preview " + String(markup || "").slice(0, 320) + ").");
   }
 }
 
