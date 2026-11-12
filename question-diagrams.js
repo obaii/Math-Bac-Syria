@@ -268,8 +268,8 @@ function getQuestionDiagram(question) {
   }
 
   // The sourced exercise has A, B and C collinear, with C also on line d.
-  if (prompt.includes("A(1,1,1)") && prompt.includes("B(0,0,z)") &&
-      prompt.includes("C(α,β,γ)") && prompt.includes("المستقيم d")) {
+  if (prompt.includes("x=t+3") && prompt.includes("1,1,1") &&
+      prompt.includes("0,0,z") && prompt.includes("\\alpha") && prompt.includes("\\gamma")) {
     return `<figure class="question-diagram" aria-label="المستقيم ABC يلتقي المستقيم d عند النقطة C">
       <figcaption>A وB وC على استقامة واحدة، وC نقطة تقاطع هذا المستقيم مع d؛ الرسم تخطيطي وليس على مقياس الإحداثيات.</figcaption>
       <svg viewBox="0 0 340 230" role="img" aria-label="مستقيم ABC ومستقيم d يتقاطعان عند C">
