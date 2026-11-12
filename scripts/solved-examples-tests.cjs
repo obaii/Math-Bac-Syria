@@ -421,13 +421,13 @@ if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')
 if (!source.includes("item.question") || !source.includes("question.textContent = formatSolvedExampleMath(item.question)")) failures.push("Solved-example questions must pass through the shared math formatter.");
 const mathRenderAssertions = [
   "idea.textContent = formatSolvedExampleMath",
-  "li.textContent=formatSolvedExampleMath(step)",
+  "li.textContent = formatSolvedExampleMath(step)",
   "answer.textContent = formatSolvedExampleMath",
   "check.textContent = formatSolvedExampleMath",
   "article.dataset.exampleId = item.id",
   "window.formatMathContent(raw)",
   "window.MathJax.typesetClear([list])",
-  "window.MathJax.typesetPromise([list])"
+  "window.MathJax.typesetPromise(connectedCards)"
 ];
 for (const assertion of mathRenderAssertions) {
   if (!source.includes(assertion)) failures.push("Solved-example math rendering is missing: " + assertion);
