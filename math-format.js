@@ -2,8 +2,8 @@
   "use strict";
 
   const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<\/?(?:strong|em|span|div|p|br|ol|ul|li|sub|sup|small|code|a|section|table|tbody|thead|tr|td|th)\b[^>]*>)/gi;
-  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹\\()[\]{}.+\-−×÷*·\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
-  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*·/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹\\]/;
+  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ′∩∪()[\]{}.+\-−×÷*·\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\\\s]+/gu;
+  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*·/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹∩∪\\]/;
 
   function findMatchingOpen(value, endIndex, open, close) {
     let depth = 0;
@@ -182,7 +182,7 @@
     // for the variable x in an exponent (for example, 3^×).
     value = value.replace(/\^\s*×/g, "^{x}");
     value = value.replace(/([A-Za-z])([ₐ-ₜ₀-₉]+)/gu, "$1_$2");
-    value = value.replace(/([A-Za-z0-9])([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/gu, "$1^{$2}");
+    value = value.replace(/([A-Za-z0-9])([⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ]+)/gu, "$1^{$2}");
     value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
     value = value.replace(/\^\s*([A-Za-z0-9]+)/g, "^{$1}");
     value = normalizeTexFractions(value);
@@ -190,6 +190,8 @@
     value = value.replace(/←|<-/g, "\\to");
     value = value.replace(/×/g, "\\times");
     value = value.replace(/·/g, "\\cdot");
+    value = value.replace(/∩/g, "\\cap");
+    value = value.replace(/∪/g, "\\cup");
     value = value.replace(/÷/g, "\\div");
     value = value.replace(/∞/g, "\\infty");
     value = value.replace(/π/g, "\\pi");
