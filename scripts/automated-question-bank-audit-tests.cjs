@@ -251,7 +251,6 @@ const topicCheckpoints = [
   ["الجداء السلمي في الفراغ", "الجداء السلمي للشعاعين \\(\\vec u=(1,2,−1)", "−1"],
   ["المستقيمات والمستويات في الفراغ", "المستوى المار بالنقطة A(1,0,2)", "2x−y+3z−8=0"],
   ["الأعداد العقدية", "إذا كان \\(z=3+2i\\)", "3"],
-  ["تطبيقات الأعداد العقدية", "قياس الزاوية الموجهة (OG,OH)", "π/3"],
   ["التحليل التوافقي", "كم طريقة لاختيار طالبين من مجموعة فيها 5 طلاب", "10"],
   ["الاحتمالات", "عند رمي حجر نرد متوازن مرة واحدة", "\\(\\frac16\\)"]
 ];
@@ -262,7 +261,6 @@ const complexApplicationChecks = [
   ["في المستوى العقدي، إذا كانت إحداثيتا النقطتين", "انسحاب شعاعه"],
   ["في المستوى العقدي، مجموعة النقط", "محور الأعداد الحقيقية"],
   ["في مسدس منتظم ABCDEF", "e^{2πi/3}"],
-  ["قياس الزاوية الموجهة (OG,OH)", "π/3"],
   ["إذا كانت α=arg(3+i) وβ=arg(2+i)", "π/4"],
   ["لاحقة A هي zA=1+2i", "1+3i"],
   ["لاحقات A وB وC هي a=2+i", "−2+7i"],
@@ -275,10 +273,17 @@ const complexApplicationChecks = [
 for (const [prompt, expected] of complexApplicationChecks) {
   checkAnswer("تطبيقات الأعداد العقدية", prompt, expected);
 }
-const correctedRadicalQuestion = questions.find(question =>
-  question.topic === "تطبيقات الأعداد العقدية" &&
-  normalize(question.q).includes(normalize("قياس الزاوية الموجهة (OG,OH)"))
+const radicalCandidates = questions.filter(question =>
+  String(question.solution || "").includes("arg(G)=−π/6") &&
+  String(question.solution || "").includes("arg(H)=π/6")
 );
+const correctedRadicalQuestion = radicalCandidates.length === 1 ? radicalCandidates[0] : null;
+if (radicalCandidates.length !== 1 ||
+    correctedRadicalQuestion.topic !== "تطبيقات الأعداد العقدية" ||
+    !normalize(correctedRadicalQuestion.q).includes("G=3−\\(i\\sqrt{3}\\)") ||
+    correctedRadicalQuestion.options[correctedRadicalQuestion.answer] !== "π/3") {
+  fail("The G/H argument question must state i√3, select π/3, and remain consistent with its ±π/6 solution.");
+}
 if (!correctedRadicalQuestion || !correctedRadicalQuestion.solution.includes("arg(G)=−π/6") ||
     !correctedRadicalQuestion.solution.includes("arg(H)=π/6")) {
   fail("The G/H argument question must state i√3 and remain consistent with its ±π/6 solution.");
