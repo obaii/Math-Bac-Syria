@@ -21,11 +21,28 @@ function readJsonDeclaration(source, declaration) {
   const start = source.indexOf(declaration);
   if (start < 0) throw new Error("Missing declaration: " + declaration);
   const valueStart = start + declaration.length;
-  const lineEnd = source.indexOf(String.fromCharCode(10), valueStart);
-  if (lineEnd < 0) throw new Error("Missing declaration line ending: " + declaration);
-  const terminator = source.lastIndexOf(";", lineEnd);
-  if (terminator < valueStart) throw new Error("Missing declaration terminator: " + declaration);
-  return JSON.parse(source.slice(valueStart, terminator).trim());
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let index = valueStart; index < source.length; index++) {
+    const character = source[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') {
+      inString = true;
+    } else if (character === "[" || character === "{") {
+      depth++;
+    } else if (character === "]" || character === "}") {
+      depth--;
+    } else if (character === ";" && depth === 0) {
+      return JSON.parse(source.slice(valueStart, index).trim());
+    }
+  }
+  throw new Error("Missing declaration terminator: " + declaration);
 }
 let topics;
 let questions;
