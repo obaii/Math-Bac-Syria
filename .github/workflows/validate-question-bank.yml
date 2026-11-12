@@ -100,7 +100,7 @@ jobs:
         run: node scripts/solved-examples-2017-audit-tests.cjs
       - name: Verify the 2022 exam-inspired solved-example audit batch
         run: node scripts/solved-examples-2022-audit-tests.cjs
-      - name: Verify comprehensive 2020–2026 solved-example audit
+      - name: Verify comprehensive solved-example audit for 2020–2026
         run: node scripts/solved-examples-2020-2026-audit-tests.cjs
       - name: Validate per-topic last lesson selection and restoration
         run: node scripts/curriculum-progress-tests.cjs
