@@ -288,7 +288,8 @@ function getQuestionDiagram(question) {
   }
 
   // Spatial line sketch for line/plane position questions with parametric forms.
-  if ((prompt.includes("المستقيم") || prompt.includes("المستقيمان")) &&
+  if (!prompt.includes("النموذج الوزاري الأول لعام 2017") &&
+      (prompt.includes("المستقيم") || prompt.includes("المستقيمان")) &&
       /(تمثيل وسيطي|تمثيلين|وضعهما|نقطة التقاطع|معطى بالتمثيل)/.test(prompt)) {
     return `<figure class="question-diagram" aria-label="رسم تخطيطي لمستقيمين في الفضاء">
       <figcaption>رسم مفاهيمي للعلاقات الممكنة بين مستقيمين في الفضاء؛ يُحدد الوضع الدقيق من المعادلات الواردة في السؤال.</figcaption>
