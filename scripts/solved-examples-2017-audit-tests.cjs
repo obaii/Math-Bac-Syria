@@ -80,6 +80,25 @@ if (Object.keys(expected).length !== 34) failures.push("The 2017 audit batch mus
 const actual2017 = examples.filter(item => item.sourceYear === 2017);
 if (actual2017.length !== 34) failures.push("Expected exactly 34 sourceYear=2017 records, found " + actual2017.length + ".");
 
+const diagramContext = vm.createContext({ window: {}, document: { getElementById: () => null }, console });
+vm.runInContext(
+  fs.readFileSync(path.join(root, "question-diagrams.js"), "utf8"),
+  diagramContext,
+  { filename: "question-diagrams.js", timeout: 5000 }
+);
+for (const [id, expectedText] of [
+  ["ministerial17-graph-001", "f(1)=1"],
+  ["ministerial17-graph-002", "y=5"],
+  ["ministerial17-graph-003", "y=5"]
+]) {
+  const item = examples.find(example => example.id === id);
+  if (!item) continue;
+  const markup = diagramContext.getQuestionDiagram({ q: item.question, topic: item.topic });
+  if (!markup || !markup.includes("<svg") || !markup.includes("<figcaption>") || !markup.includes(expectedText)) {
+    failures.push(id + ": the supplemental SVG diagram is missing or does not reflect the stated graph condition.");
+  }
+}
+
 const close = (a, b, eps = 1e-10) => Math.abs(a - b) <= eps;
 const factorial = n => n < 2 ? 1 : n * factorial(n - 1);
 const permutation = (n, k) => factorial(n) / factorial(n - k);
