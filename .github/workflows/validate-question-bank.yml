@@ -42,6 +42,7 @@ jobs:
           node --check questions_automated_additional.js
           node --check scripts/comprehensive-math-content-audit-tests.cjs
           node --check scripts/automated-question-bank-audit-tests.cjs
+          node --check scripts/automated-bank-browser-audit.cjs
           node --check merge-questions.js
           node --check solution-guides.js
           node --check solved-examples.js
