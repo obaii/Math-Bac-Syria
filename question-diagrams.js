@@ -183,8 +183,10 @@ function getQuestionDiagram(question) {
 
   // Generic spatial cone sketch: supports visualization without changing question data.
   if (prompt.includes("مخروط دائري قائم")) {
+    const coneAxisLabel = prompt.includes("محور z") ? "z" : "المحور";
+    const coneAxisCaption = prompt.includes("محور z") ? "رسم توضيحي لمخروط دائري قائم محوره محور z؛ الأبعاد والمعطيات تؤخذ من نص السؤال." : "رسم توضيحي لشكل المخروط ومحوره وقاعدته الدائرية؛ الأبعاد والمعطيات تؤخذ من نص السؤال.";
     return `<figure class="question-diagram" aria-label="رسم تخطيطي لمخروط دائري قائم">
-      <figcaption>رسم توضيحي لشكل المخروط ومحوره وقاعدته الدائرية؛ الأبعاد والمعطيات تؤخذ من نص السؤال.</figcaption>
+      <figcaption>${coneAxisCaption}</figcaption>
       <svg viewBox="0 0 340 250" role="img" aria-label="مخروط دائري قائم ومحوره">
         <ellipse cx="170" cy="194" rx="88" ry="25" fill="#dbeafe" fill-opacity=".7" stroke="#64748b" stroke-width="1.7"/>
         <path d="M170 35L82 194 M170 35L258 194" fill="none" stroke="#2563eb" stroke-width="2.2"/>
@@ -259,7 +261,7 @@ function getQuestionDiagram(question) {
         <path d="M164 47L170 35L176 47" fill="none" stroke="#0f766e" stroke-width="2.6"/>
         <circle cx="170" cy="138" r="3.5" fill="#b45309"/>
         <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
-          <text x="277" y="112">المستوى P</text><text x="181" y="48">n</text><text x="179" y="151">A</text>
+          <text x="277" y="112">المستوى P</text><text x="181" y="48">n</text><text x="179" y="151">A</text><text x="191" y="65">n ⟂ P</text>
         </g>
       </svg>
     </figure>`;
@@ -271,8 +273,8 @@ function getQuestionDiagram(question) {
     return \`<figure class="question-diagram" aria-label="المستقيم ABC يلتقي المستقيم d عند النقطة C">
       <figcaption>A وB وC على استقامة واحدة، وC نقطة تقاطع هذا المستقيم مع d؛ الرسم تخطيطي وليس على مقياس الإحداثيات.</figcaption>
       <svg viewBox="0 0 340 230" role="img" aria-label="مستقيم ABC ومستقيم d يتقاطعان عند C">
-        <path d="M35 194L280 58" fill="none" stroke="#2563eb" stroke-width="2.8"/>
-        <path d="M205 20L300 165" fill="none" stroke="#0f766e" stroke-width="2.8"/>
+        <path d="M35 193.889L280 57.778" fill="none" stroke="#2563eb" stroke-width="2.8"/>
+        <path d="M205 30.4L300 165" fill="none" stroke="#0f766e" stroke-width="2.8"/>
         <circle cx="60" cy="180" r="4.5" fill="#2563eb"/>
         <circle cx="150" cy="130" r="4.5" fill="#2563eb"/>
         <circle cx="240" cy="80" r="4.5" fill="#b45309"/>
