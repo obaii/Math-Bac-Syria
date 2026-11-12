@@ -243,6 +243,9 @@
     const compositeValue = unwrapCompositeInlineMath(value);
     return compositeValue.split(HTML_OR_TEX_BLOCK).map(function (part) {
       if (!part) return part;
+      if (part.startsWith("\\(") && part.endsWith("\\)")) {
+        return "\\(" + normalizeTexExpression(part.slice(2, -2)) + "\\)";
+      }
       if (part.startsWith("\\[") && part.endsWith("\\]")) {
         return "\\[" + normalizeTexExpression(part.slice(2, -2)) + "\\]";
       }
