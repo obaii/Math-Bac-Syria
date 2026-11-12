@@ -81,9 +81,13 @@ try {
         level: question.level
       });
       const previous = rawDefinitions.get(key);
-      if (previous && previous.payload !== payload) {
-        errors.push(`تعريف متعارض للسؤال "${normalize(question.q)}" بين ${previous.sourceFile} و${sourceFile}؛ أُوقف الدمج الآمن بدلاً من إسقاط إحدى النسختين بصمت.`);
-      } else if (!previous) {
+      if (previous) {
+        if (previous.payload !== payload) {
+          errors.push(`تعريف متعارض للسؤال "${normalize(question.q)}" بين ${previous.sourceFile} و${sourceFile}؛ أُوقف الدمج الآمن بدلاً من إسقاط إحدى النسختين بصمت.`);
+        } else {
+          errors.push(`سجل مكرر للسؤال "${normalize(question.q)}" في ${previous.sourceFile} و${sourceFile}؛ يجب أن يظهر كل سؤال مرة واحدة فقط في الملفات المصدرية.`);
+        }
+      } else {
         rawDefinitions.set(key, { payload, sourceFile, sourceIndex });
       }
     }
@@ -295,6 +299,14 @@ try {
   }
   if (typedTopics.size < 8) {
     errors.push(`الأسئلة ذات الإجابة المباشرة موزعة على ${typedTopics.size} أبحاث فقط؛ المطلوب ثمانية أبحاث على الأقل.`);
+  }
+  for (const topic of topics || []) {
+    const bucket = counts.get(topic);
+    for (const level of allowedLevels) {
+      if (!bucket || !bucket.levels[level]) {
+        errors.push(`البحث "${topic}" لا يحتوي أسئلة بمستوى "${level}"؛ يجب أن تتوفر المستويات الثلاثة في كل بحث.`);
+      }
+    }
   }
 
   const guidedQuestions = (questions || []).filter(q =>
