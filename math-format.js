@@ -59,9 +59,9 @@
         const prefixAtom = readBackwardMathAtom(value, prefix + 1);
         if (prefixAtom) start = prefixAtom.start;
       }
-    } else if (/[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(last)) {
+    } else if (/[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(last)) {
       start = end - 1;
-      while (start > 0 && /[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(value[start - 1])) start--;
+      while (start > 0 && /[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(value[start - 1])) start--;
       if (start > 0 && value[start - 1] === "\\") start--;
       if (start > 0 && value[start - 1] === "^") {
         const base = readBackwardMathAtom(value, start - 1);
@@ -131,8 +131,8 @@
       index = close + 1;
     } else if (value[index] === "\\") {
       index = consumeCommand(index);
-    } else if (/[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(value[index])) {
-      while (index < value.length && /[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(value[index])) index++;
+    } else if (/[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(value[index])) {
+      while (index < value.length && /[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(value[index])) index++;
     } else {
       return null;
     }
