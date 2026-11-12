@@ -45,11 +45,46 @@
     });
   }
 
+  const TEX_ATOM = /(?:\\[A-Za-z]+(?:\{[^{}]*\})?|[A-Za-z0-9]+|\([^()]*\)|\{[^{}]*\})(?:\^\{[^{}]*\}|\^[A-Za-z0-9]+)?/.source;
+  const TEX_FRACTION = new RegExp("(" + TEX_ATOM + ")\\s*/\\s*(" + TEX_ATOM + ")", "g");
+
+  function normalizeTexExpression(expression) {
+    let value = expression;
+
+    // In a limit, x is the variable approaching infinity. Normalize both
+    // reversed-order and left-pointing variants before MathJax sees them.
+    if (/\\lim/.test(value)) {
+      value = value.replace(/\\lim_\{\s*([+\-]?\\infty)\s*(?:\\to|\\leftarrow|→|←)\s*([A-Za-z])\s*\}/g,
+        function (_, infinity, variable) {
+          return "\\lim_{" + variable + "\\to" + infinity + "}";
+        });
+      value = value.replace(/\\lim_\{\s*([A-Za-z])\s*(?:\\leftarrow|←)\s*([+\-]?\\infty)\s*\}/g,
+        function (_, variable, infinity) {
+          return "\\lim_{" + variable + "\\to" + infinity + "}";
+        });
+    }
+
+    // Group compound exponents such as x^(n+1) and x^10. Single-character
+    // exponents (x^2, x^n) are already unambiguous in TeX and remain unchanged.
+    value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
+
+    // Turn unstacked divisions inside explicit TeX into proper fractions.
+    // The denominator atom includes its exponent, e.g. 2/(x+1)^2.
+    value = value.replace(TEX_FRACTION, "\\frac{$1}{$2}");
+    return value;
+  }
+
   function formatMathContent(value) {
     if (typeof value !== "string" || !value) return value;
     return value.split(HTML_OR_TEX_BLOCK).map(function (part) {
       if (!part) return part;
-      if (/^(?:\\\(|\\\[|<)/.test(part)) return part;
+      if (part.startsWith("\\(") && part.endsWith("\\)")) {
+        return "\\(" + normalizeTexExpression(part.slice(2, -2)) + "\\)";
+      }
+      if (part.startsWith("\\[") && part.endsWith("\\]")) {
+        return "\\[" + normalizeTexExpression(part.slice(2, -2)) + "\\]";
+      }
+      if (part.startsWith("<")) return part;
       return formatPlainTextSegment(part);
     }).join("");
   }
