@@ -130,6 +130,12 @@ const cases = [
     name: "a TeX radical inside a parenthesized numerator joins the fraction",
     input: "x=(1±\\(\\sqrt{5}\\))/2",
     expected: "\\(x=\\frac{1\\pm\\sqrt{5}}{2}\\)"
+  },
+
+  {
+    name: "a TeX radical inside a parenthesized denominator joins the fraction",
+    input: "f′(x)=1/(2\\(\\sqrt{x+1}\\))",
+    expected: "\\(f′(x)=\\frac{1}{(2\\sqrt{x+1})}\\)"
   }
 ];
 
