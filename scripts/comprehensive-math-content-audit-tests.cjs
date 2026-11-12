@@ -83,8 +83,8 @@ if (!Array.isArray(topics) || topics.length !== 14) fail("The bank must expose t
 if (!Array.isArray(questions) || questions.length !== 601) {
   fail("Expected 601 unique merged questions, found " + (questions || []).length + ".");
 }
-if (!Array.isArray(examples) || examples.length !== 556) {
-  fail("Expected 556 solved examples, found " + (examples || []).length + ".");
+if (!Array.isArray(examples) || examples.length !== 600) {
+  fail("Expected 600 solved examples, found " + (examples || []).length + ".");
 }
 
 const mcq = (questions || []).filter(question => (question.type || "mcq") === "mcq");
@@ -187,7 +187,7 @@ const requiredSolvedDiagramIds = [
   "der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002",
   "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001",
   "exam22-function-004", "exam21-function-001", "exam24-function-001",
-  "ministerial17-tangent-001", "ministerial17-graph-001",
+  "exam21-graph-001", "ministerial17-tangent-001", "ministerial17-graph-001",
   "ministerial17-graph-002", "ministerial17-graph-003"
 ];
 for (const id of requiredSolvedDiagramIds) {
@@ -218,6 +218,58 @@ const distributionQuestion = questions.find(question => question.q.includes("ا�
 const distributionTable = distributionQuestion && getQuestionDiagram(distributionQuestion);
 if (!distributionTable || !["2/20", "8/20", "6/20", "4/20"].every(value => distributionTable.includes(value))) {
   fail("The discrete distribution diagram must retain all four probability values.");
+}
+
+
+const exam21GraphExample = examples.find(example => example.id === "exam21-graph-001");
+const exam21Graph = exam21GraphExample && getQuestionDiagram({ q: exam21GraphExample.question, topic: exam21GraphExample.topic });
+if (!exam21Graph || !["x=0", "x=1", "y=1", "x=−2", "ليس صورة الورقة الأصلية"].every(value => exam21Graph.includes(value))) {
+  fail("The 2021 graph must visibly show the stated zero and all three asymptotes, and identify itself as a schematic.");
+}
+
+// Answer checkpoints for all source-tagged 2020, 2021, 2023, 2024, and 2025
+// records. The 2022 batch has its own independent, year-specific regression suite.
+const historicalAnswerChecks = {
+  "exam20-comb-001":["216","120"],"exam20-inequality-001":["g(t)","ln(x+1)"],"exam20-floor-001":["النهاية تساوي 0"],
+  "exam20-seq-001":["lim u_n=2"],"exam20-complex-001":[String.raw`\frac{1+i}{2}`,String.raw`\pi/4`],"exam20-derivative-001":["f'(0)=0"],
+  "exam20-log-001":["y=x"],
+  "exam21-graph-001":["x=0","x=1","y=1","x=-2"],"exam21-binomial-001":["495"],"exam21-integral-001":[String.raw`\frac72`],
+  "exam21-space-001":["مستوية"],"exam21-rational-001":["a=1","b=2"],"exam21-prob-001":["1/243","10/3","10/9"],
+  "exam21-seq-001":[String.raw`3\ln2`],"exam21-complex-001":["i","متساوي الساقين"],"exam21-function-001":["1-x^2","-1","1"],
+  "exam23-cycle1-001":[String.raw`\frac{14}{45}`],"exam23-cycle1-002":[String.raw`\frac79`],"exam23-cycle1-003":["E(X)=1",String.raw`\frac49`],
+  "exam23-cycle1-004":["x=1","y=x+1"],"exam23-cycle1-005":["x=0","x=2"],"exam23-cycle1-006":["y=2x-1"],
+  "exam23-cycle1-007":["a=2","b=0"],"exam23-cycle1-008":[String.raw`\frac1e`],"exam23-cycle1-009":[String.raw`\frac23`],
+  "exam23-cycle1-010":["0,1"],"exam23-cycle1-011":["1+2i"],"exam23-cycle1-012":["-8i"],
+  "exam23-cycle1-013":[String.raw`\sqrt3`,"1"],"exam23-cycle1-014":["-1"],"exam23-cycle1-015":["x+y+z-1=0"],
+  "exam23-cycle1-016":["2",String.raw`\sqrt3`],"exam23-cycle1-017":[String.raw`\frac32`,String.raw`\frac12`],"exam23-cycle1-018":["2"],
+  "exam23-cycle1-019":[String.raw`\frac{3069}{512}`],"exam23-cycle1-020":["ln3"],
+  "ministerial23-auto-001":["a+c=20"],"ministerial23-auto-002":["−4+7i"],"ministerial23-auto-004":["4/25"],
+  "ministerial23-auto-006":["cos5x"],"ministerial23-auto-007":["a=−3","b=2"],"ministerial23-auto-008":["S=0"],
+  "ministerial23-auto-009":["2cos(2π/7)"],"ministerial23-auto-010":["3069"],"ministerial23-auto-011":["11"],
+  "ministerial23-auto-014":["7n−4"],"ministerial23-auto-017":["72"],"ministerial23-auto-019":["−63"],
+  "ministerial23-auto-020":["22222"],"ministerial23-auto-021":["2f(1)"],"ministerial23-auto-023":["b=6","c=14"],
+  "ministerial23-auto-024":["y=−x"],"ministerial23-auto-027":["n!"],"ministerial23-auto-030":["2√3"],
+  "ministerial23-auto-031":["cos x"],"ministerial23-auto-033":["(3−t)/5"],
+  "exam24-cycle1-001":["(2,1,−2)"],"exam24-cycle1-002":["1+2t","2−2t"],"exam24-cycle1-003":["a=2","b=−3"],
+  "exam24-cycle1-004":["Ke^(3x)"],"exam24-cycle1-005":["2x−3"],"exam24-cycle1-006":["1/2"],
+  "exam24-cycle1-007":["−6/2"],"exam24-cycle1-008":["L=5"],"exam24-cycle1-009":["3e^(2πi/3)"],
+  "exam24-cycle1-010":["=0"],"exam24-cycle1-011":["2/3"],"exam24-cycle1-012":["4/5"],
+  "exam24-cycle1-013":["=0"],"exam24-cycle1-014":["=1"],"exam24-cycle1-015":["(7−t)/5"],
+  "exam24-cycle1-016":["7/5","−1/5"],"exam24-cycle1-017":["−1,3,5"],"exam24-cycle1-018":["x²−1+ln x"],
+  "exam24-cycle1-019":["0 عند x=1"],"exam24-cycle1-020":["y=x−1"],
+  "exam25-auto-001":["21"],"exam25-auto-002":["n=8"],"exam25-auto-003":["15120"],"exam25-auto-004":["141120"],
+  "exam25-auto-005":["p=1/2"],"exam25-auto-006":["2/3"],"exam25-auto-007":["4"],"exam25-auto-008":["3"],
+  "exam25-auto-009":["متناقصة"],"exam25-auto-010":["متناقصة"],"exam25-auto-011":["115"],"exam25-auto-012":["155"],
+  "exam25-auto-013":["L=2"],"exam25-auto-014":["(1+√13)/2"],"exam25-auto-015":["6e^(−iπ/3)"],
+  "exam25-auto-016":["2e^(iπ/3)"],"exam25-auto-017":["4e^(iπ/6)","7π/6"],
+  "exam25-auto-018":["2e^(iπ/6)","2e^(i3π/2)"],"exam25-auto-019":["j⁴=−1"],"exam25-auto-020":["S=0"]
+};
+for (const [id, fragments] of Object.entries(historicalAnswerChecks)) {
+  const example = examples.find(item => item.id === id);
+  if (!example) { fail("Missing historical solved example " + id); continue; }
+  for (const fragment of fragments) {
+    if (!String(example.answer || "").includes(fragment)) fail(id + " answer is missing expected checkpoint " + fragment);
+  }
 }
 
 if (failures.length) {

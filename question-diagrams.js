@@ -18,6 +18,29 @@ function getQuestionDiagram(question) {
       </div>
     </figure>`;
 
+
+  // Schematic graph for the 2021 exam-inspired prompt: the unique zero and
+  // the three stated asymptotes are shown without claiming this is the paper image.
+  if (prompt.includes("من قراءة الرسم البياني لتابع معرف") &&
+      prompt.includes("جذر التابع الوحيد هو −2") && prompt.includes("مقاربين شاقوليين")) {
+    return `<figure class="question-diagram" aria-label="رسم تخطيطي يوضح الجذر والمقاربات للتابع">
+      <figcaption>رسم تخطيطي متسق مع المعطيات: الجذر الوحيد عند x=−2، والمقاربان الشاقوليان x=0 وx=1، والمقارب الأفقي y=1؛ وليس صورة الورقة الأصلية.</figcaption>
+      <svg viewBox="0 0 420 250" role="img" aria-label="منحنى يلامس محور الفواصل عند x يساوي ناقص 2 ويقترب من المقاربات الثلاثة">
+        <path d="M35 170H395 M190 225V20" stroke="#64748b" stroke-width="1.4" fill="none"/>
+        <path d="M190 20V225 M240 20V225" stroke="#b45309" stroke-width="1.8" stroke-dasharray="6 5" fill="none"/>
+        <path d="M35 95H395" stroke="#0f766e" stroke-width="1.8" stroke-dasharray="6 5" fill="none"/>
+        <path d="M45 95 C80 95 100 130 125 170 C150 205 170 225 186 235" stroke="#2459c4" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        <path d="M244 24 C260 70 288 84 325 91 C350 94 372 95 392 95" stroke="#2459c4" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+        <circle cx="125" cy="170" r="4" fill="#b42318"/>
+        <g font-family="sans-serif" font-size="12" font-weight="600" fill="var(--text,#172b4d)">
+          <text x="116" y="188">−2</text><text x="183" y="239">0</text><text x="236" y="239">1</text>
+          <text x="398" y="174">x</text><text x="117" y="19">y</text><text x="372" y="87">y=1</text>
+          <text x="194" y="18">x=0</text><text x="246" y="18">x=1</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
   if (prompt.includes("f(x)=(\\ln x)^2-1")) {
     return `<figure class="question-diagram" aria-label="الرسوم المرشحة لمنحنى التابع">
       <figcaption>اختر الرسم المطابق للتابع. مجاله x&gt;0، وله قيمة صغرى عند (1,−1).</figcaption>
