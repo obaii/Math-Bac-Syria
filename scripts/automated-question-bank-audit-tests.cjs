@@ -251,7 +251,7 @@ const topicCheckpoints = [
   ["الجداء السلمي في الفراغ", "الجداء السلمي للشعاعين \\(\\vec u=(1,2,−1)", "−1"],
   ["المستقيمات والمستويات في الفراغ", "المستوى المار بالنقطة A(1,0,2)", "2x−y+3z−8=0"],
   ["الأعداد العقدية", "إذا كان \\(z=3+2i\\)", "3"],
-  ["تطبيقات الأعداد العقدية", "إذا كان G=3−\\(i\\sqrt{3}\\)", "π/3"],
+  ["تطبيقات الأعداد العقدية", "قياس الزاوية الموجهة (OG,OH)", "π/3"],
   ["التحليل التوافقي", "كم طريقة لاختيار طالبين من مجموعة فيها 5 طلاب", "10"],
   ["الاحتمالات", "عند رمي حجر نرد متوازن مرة واحدة", "\\(\\frac16\\)"]
 ];
@@ -262,7 +262,7 @@ const complexApplicationChecks = [
   ["في المستوى العقدي، إذا كانت إحداثيتا النقطتين", "انسحاب شعاعه"],
   ["في المستوى العقدي، مجموعة النقط", "محور الأعداد الحقيقية"],
   ["في مسدس منتظم ABCDEF", "e^{2πi/3}"],
-  ["إذا كان G=3−\\(i\\sqrt{3}\\)", "π/3"],
+  ["قياس الزاوية الموجهة (OG,OH)", "π/3"],
   ["إذا كانت α=arg(3+i) وβ=arg(2+i)", "π/4"],
   ["لاحقة A هي zA=1+2i", "1+3i"],
   ["لاحقات A وB وC هي a=2+i", "−2+7i"],
@@ -277,7 +277,7 @@ for (const [prompt, expected] of complexApplicationChecks) {
 }
 const correctedRadicalQuestion = questions.find(question =>
   question.topic === "تطبيقات الأعداد العقدية" &&
-  normalize(question.q).includes(normalize("إذا كان G=3−\\(i\\sqrt{3}\\)"))
+  normalize(question.q).includes(normalize("قياس الزاوية الموجهة (OG,OH)"))
 );
 if (!correctedRadicalQuestion || !correctedRadicalQuestion.solution.includes("arg(G)=−π/6") ||
     !correctedRadicalQuestion.solution.includes("arg(H)=π/6")) {
