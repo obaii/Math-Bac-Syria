@@ -32,6 +32,10 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
+  const logarithmicDomainExample = examples.find(item => item.id === "log-012");
+  if (!logarithmicDomainExample || !logarithmicDomainExample.steps[0].includes("\\lt")) {
+    failures.push("The logarithmic domain inequality must use explicit TeX less-than operators.");
+  }
   const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
   for (const id of diagramExamples) {
     const item = examples.find(example => example.id === id);
@@ -404,8 +408,23 @@ if (!source.includes('id = "solved-examples-library"') && !source.includes('sect
   failures.push("The dedicated solved examples panel was not found.");
 }
 if (!source.includes('setAttribute("aria-labelledby", "solved-examples-title")')) failures.push("The solved examples panel needs an accessible label.");
-if (!source.includes("item.question") || !source.includes("question.textContent = item.question")) failures.push("Dynamic example text must be rendered as text, not interpreted as HTML.");
-if (!source.includes("MathJax.typesetPromise")) failures.push("The library must typeset its mathematical expressions.");
+if (!source.includes("item.question") || !source.includes("question.textContent = formatSolvedExampleMath(item.question)")) failures.push("Solved-example questions must pass through the shared math formatter.");
+const mathRenderAssertions = [
+  "idea.textContent = formatSolvedExampleMath",
+  "li.textContent=formatSolvedExampleMath(step)",
+  "answer.textContent = formatSolvedExampleMath",
+  "check.textContent = formatSolvedExampleMath",
+  "article.dataset.exampleId = item.id",
+  "window.formatMathContent(raw)",
+  "window.MathJax.typesetClear([list])",
+  "window.MathJax.typesetPromise([list])"
+];
+for (const assertion of mathRenderAssertions) {
+  if (!source.includes(assertion)) failures.push("Solved-example math rendering is missing: " + assertion);
+}
+if (!index.includes("math-format.js") || index.indexOf("math-format.js") > index.indexOf("solved-examples.js")) {
+  failures.push("The shared math formatter must load before the solved examples library.");
+}
 if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must display available visuals beside their questions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
 if (!source.includes('source.textContent = "المصدر: "') || source.includes("فتح مرجع المصدر")) failures.push("Sourced examples must retain attribution while omitting the source-opening link.");

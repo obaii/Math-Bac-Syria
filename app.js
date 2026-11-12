@@ -1432,7 +1432,7 @@ function showQuestion(){
   const questionHost = $("question-text");
   const promptCopy = document.createElement("div");
   promptCopy.className = "question-prompt-copy";
-  promptCopy.innerHTML = formatQuestionMath(q.q);
+  promptCopy.innerHTML = escapeMathMarkup(q.q);
   questionHost.replaceChildren(promptCopy);
   questionHost.classList.remove("question-has-diagram");
   if (typeof getQuestionDiagram === "function") {
@@ -1722,16 +1722,12 @@ function startSessionMistakeQuiz(){
   window.scrollTo({top:0,behavior:preferredScrollBehavior()});
 }
 function escapeMathMarkup(value){
-  const formatted = formatQuestionMath(value);
-  return formatted.split(/(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g).map(part => {
-    if (/^(?:\\\(|\\\[)/.test(part)) return part;
-    return part
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }).join("");
+  return formatQuestionMath(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 function formatQuestionMath(value){
   const text = String(value ?? "");

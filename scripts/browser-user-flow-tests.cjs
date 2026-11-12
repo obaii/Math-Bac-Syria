@@ -392,6 +392,107 @@ const assert = require("node:assert/strict");
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 544, "the library should render all 544 solved examples");
+    await page.evaluate(async () => {
+      await window.MathJax.startup.promise;
+      await window.MathJax.typesetPromise([document.querySelector("#solved-examples-list")]);
+    });
+    const completeLibraryAudit = await page.evaluate(() => {
+      const examples = window.solvedExamplesLibrary.examples;
+      const cards = Array.from(document.querySelectorAll("#solved-examples-list .solved-example-card"));
+      const byId = new Map(cards.map(card => [card.dataset.exampleId, card]));
+      const missing = [];
+      let checkedMathFields = 0;
+      for (const item of examples) {
+        const card = byId.get(item.id);
+        if (!card) {
+          missing.push(item.id + ": card missing");
+          continue;
+        }
+        const stepNodes = card.querySelectorAll("ol li");
+        const fields = [
+          [".solved-example-question", item.question, card.querySelector(".solved-example-question")],
+          [".solved-example-idea", "الفكرة الأساسية: " + item.keyIdea, card.querySelector(".solved-example-idea")],
+          [".solved-example-answer", "النتيجة: " + item.answer, card.querySelector(".solved-example-answer")],
+          [".solved-example-check", "التحقق: " + item.check, card.querySelector(".solved-example-check")]
+        ];
+        item.steps.forEach((step, index) => fields.push(["step " + (index + 1), step, stepNodes[index]]));
+        for (const [label, raw, node] of fields) {
+          if (!node) {
+            missing.push(item.id + ": " + label + " missing");
+            continue;
+          }
+          const prepared = window.formatMathContent(String(raw || ""));
+          if (/\\\(|\\\[/g.test(prepared)) {
+            checkedMathFields += 1;
+            if (!node.querySelector("mjx-container")) missing.push(item.id + ": " + label + " not typeset");
+          }
+        }
+      }
+      return {
+        examples: examples.length,
+        renderedCards: cards.length,
+        checkedMathFields,
+        missing: missing.slice(0, 25),
+        missingCount: missing.length
+      };
+    });
+    assert.equal(completeLibraryAudit.examples, 544, "the complete audit should read every solved example");
+    assert.equal(completeLibraryAudit.renderedCards, 544, "every solved example should have a rendered card");
+    assert.ok(completeLibraryAudit.checkedMathFields > 0, "the complete audit should inspect mathematical fields across the library");
+    assert.equal(completeLibraryAudit.missingCount, 0,
+      "every formula in every solved-example question, idea, step, answer, and check should be typeset: " +
+      JSON.stringify(completeLibraryAudit.missing));
+
+    await page.waitForFunction(() => {
+      const card = document.querySelector("#solved-examples-list .solved-example-card");
+      return card &&
+        card.querySelector(".solved-example-question mjx-container") &&
+        card.querySelector("ol li mjx-container") &&
+        card.querySelector(".solved-example-answer mjx-container");
+    }, null, { timeout: 15000 });
+    // Verify actual saved examples: a fraction, an exponent, and a limit.
+    const libraryMathCases = [
+      { id: "prob-001", topic: "الاحتمالات", fields: [".solved-example-question", "ol", ".solved-example-answer", ".solved-example-check"] },
+      { id: "der-002", topic: "الاشتقاق", fields: [".solved-example-question", "ol", ".solved-example-answer"] },
+      { id: "lim-003", topic: "النهايات والاستمرار", fields: [".solved-example-question", "ol", ".solved-example-answer"] }
+    ];
+    for (const testCase of libraryMathCases) {
+      await page.locator("#solved-example-topic").selectOption(testCase.topic);
+      await page.waitForFunction(id => {
+        const card = document.querySelector('[data-example-id="' + id + '"]');
+        return card && card.querySelector(".solved-example-question mjx-container") &&
+          card.querySelector("ol mjx-container") && card.querySelector(".solved-example-answer mjx-container");
+      }, testCase.id, { timeout: 15000 });
+      const libraryFieldAudit = await page.locator('[data-example-id="' + testCase.id + '"]').evaluate((card, selectors) =>
+        selectors.map(selector => ({
+          selector,
+          rendered: !!card.querySelector(selector + " mjx-container"),
+          count: card.querySelectorAll(selector + " mjx-container").length
+        })), testCase.fields);
+      for (const field of libraryFieldAudit) {
+        assert.equal(field.rendered, true, testCase.id + " should typeset formulas in " + field.selector);
+      }
+    }
+    await page.locator("#solved-example-topic").selectOption("النهايات والاستمرار");
+    await page.setViewportSize({ width: 360, height: 800 });
+    const solvedLibraryMobileMath = await page.locator('[data-example-id="lim-003"] .solved-example-question mjx-container').first().evaluate(node => {
+      const rect = node.getBoundingClientRect();
+      return {
+        direction: getComputedStyle(node).direction,
+        left: rect.left,
+        right: rect.right,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      };
+    });
+    assert.equal(solvedLibraryMobileMath.direction, "ltr", "solved-library formulas should be isolated left-to-right in Arabic text");
+    assert.ok(solvedLibraryMobileMath.left >= -1 && solvedLibraryMobileMath.right <= solvedLibraryMobileMath.viewport + 1,
+      "solved-library limit notation should fit within a narrow phone viewport");
+    assert.ok(solvedLibraryMobileMath.pageWidth <= solvedLibraryMobileMath.viewport + 2,
+      "solved-library formulas should not create horizontal page overflow on phones (page=" + solvedLibraryMobileMath.pageWidth + ", viewport=" + solvedLibraryMobileMath.viewport + ")");
+    await page.setViewportSize({ width: 1365, height: 900 });
+    await page.locator("#solved-example-topic").selectOption("");
+
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
@@ -1992,8 +2093,8 @@ const assert = require("node:assert/strict");
     const mathResult = await page.evaluate(async () => {
       const node = document.querySelector("#question-text");
       if (typeof window.formatMathContent !== "function") return { formatter: false };
-      const formatted = window.formatMathContent("اختبار: z=(2+3i)/(1−2i)، و 3^×، و lim(x→+∞).");
-      node.innerHTML = formatted + " \\(\\frac{1}{2}+\\sqrt{3}\\)";
+      const formatted = window.escapeMathMarkup("اختبار: z=(2+3i)/(1−2i)، و 3^×، و lim(x→+∞)، وشرط المجال -1<x<3.");
+      node.innerHTML = formatted + window.escapeMathMarkup("\\(\\frac{1}{2}+\\sqrt{3}\\)");
       if (!window.MathJax || typeof window.MathJax.typesetPromise !== "function") {
         return { formatter: true, available: false, formatted };
       }
@@ -2005,7 +2106,7 @@ const assert = require("node:assert/strict");
       return {
         formatter: true,
         available: true,
-        rendered: rendered.length >= 4,
+        rendered: rendered.length >= 5,
         formatted,
         left: rect.left,
         right: rect.right,
@@ -2016,12 +2117,65 @@ const assert = require("node:assert/strict");
     });
     assert.equal(mathResult.formatter, true, "the shared math formatter should load before the quiz renderer");
     assert.equal(mathResult.available, true, "MathJax should load for equation rendering");
-    assert.equal(mathResult.rendered, true, "fractions, exponents, limit arrows, and radicals should all be typeset");
+    assert.equal(mathResult.rendered, true, "fractions, exponents, inequalities, limit arrows, and radicals should all be typeset");
     assert.ok(mathResult.formatted.includes("\\frac{(2+3i)}{(1−2i)}"), "plain slash fractions should become stacked fractions");
     assert.ok(mathResult.formatted.includes("3^{x}"), "a malformed exponent glyph should become x in the exponent");
     assert.ok(mathResult.formatted.includes("\\lim_{x\\to+\\infty}"), "the limit arrow should point from x towards positive infinity");
+    assert.ok(mathResult.formatted.includes("&lt;"), "less-than signs inside TeX must be escaped before HTML parsing");
     assert.ok(mathResult.width > 0 && mathResult.left >= -1 && mathResult.right <= mathResult.viewport + 1, "the rendered equation should fit within the mobile viewport");
     assert.ok(mathResult.pageWidth <= mathResult.viewport + 2, "a rendered equation should not create page-level horizontal overflow");
+
+    // Exercise real MCQ records from the merged 14-research question bank.
+    for (const mathKind of ["fraction", "exponent", "limit"]) {
+      const setup = await page.evaluate(kind => {
+        const pattern = kind === "fraction" ? /\\frac/ : kind === "exponent" ? /\^/ : /\\lim|lim|∞|infty/;
+        const question = questions.find(item => {
+          if (getQuestionType(item) !== "mcq" || !Array.isArray(item.options) ||
+              item.options.length < 2 || !Number.isInteger(item.answer)) return false;
+          const allMath = [item.q, ...item.options, item.solution || ""].join(" ");
+          return /\\\(/.test(item.q) && item.options.some(option => /\\\(/.test(option)) &&
+            /\\\(/.test(item.solution || "") && pattern.test(allMath);
+        });
+        if (!question) return { found: false };
+        startQuiz(question.topic);
+        quizQuestions = [question];
+        index = 0;
+        showQuestion();
+        return {
+          found: true,
+          wrongIndex: (question.answer + 1) % question.options.length,
+          question: question.q,
+          options: question.options,
+          solution: question.solution
+        };
+      }, mathKind);
+      assert.equal(setup.found, true, "the automated question bank should contain a real MCQ with " + mathKind + " notation in its prompt, options, and solution");
+      assert.match(setup.question, /\\\(/, "the selected MCQ prompt should contain mathematical notation");
+      assert.ok(setup.options.some(option => /\\\(/.test(option)), "the selected MCQ should include formatted mathematical options");
+      await page.waitForFunction(() =>
+        document.querySelector("#question-text mjx-container") &&
+        document.querySelector("#options mjx-container"), null, { timeout: 15000 });
+      const bankQuestionMath = await page.evaluate(() => ({
+        prompt: document.querySelectorAll("#question-text mjx-container").length,
+        options: document.querySelectorAll("#options mjx-container").length,
+        direction: getComputedStyle(document.querySelector("#options mjx-container")).direction,
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth
+      }));
+      assert.ok(bankQuestionMath.prompt > 0, "the actual MCQ prompt should be typeset by MathJax");
+      assert.ok(bankQuestionMath.options > 0, "the actual MCQ options should be typeset by MathJax");
+      assert.equal(bankQuestionMath.direction, "ltr", "mathematical options should be isolated left-to-right");
+      assert.ok(bankQuestionMath.pageWidth <= bankQuestionMath.viewport + 2, "actual MCQ notation should not create mobile page overflow");
+      await page.locator("#options [data-option]").nth(setup.wrongIndex).click();
+      await page.waitForFunction(() =>
+        document.querySelector("#feedback .solution mjx-container"), null, { timeout: 15000 });
+      const bankSolutionMath = await page.locator("#feedback").evaluate(node => ({
+        solution: node.querySelectorAll(".solution mjx-container").length,
+        feedback: node.querySelectorAll(":scope > div mjx-container").length
+      }));
+      assert.ok(bankSolutionMath.solution > 0, "the actual MCQ detailed solution should be typeset");
+    }
+
 
     // A slightly wider phone should also keep the page and controls within the viewport.
     await page.setViewportSize({ width: 390, height: 844 });

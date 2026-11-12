@@ -140,7 +140,7 @@
     {id:"der-012",sourceType:"تدريبي مؤلف",topic:"الاشتقاق",unit:"الاشتقاق",lesson:"مماس المنحني",level:"متوسط",question:"اكتب معادلة مماس منحني y=x² عند x=3.",keyIdea:"معادلة المماس y−f(a)=f′(a)(x−a).",steps:["f′(x)=2x، ومنه f′(3)=6.","f(3)=9، فتصبح y−9=6(x−3)."],answer:"y=6x−9.",check:"المماس يمر بالنقطة (3,9) وميله 6."},
     {id:"der-013",sourceType:"تدريبي مؤلف",topic:"الاشتقاق",unit:"الاشتقاق",lesson:"دراسة التغيرات",level:"متقدم",question:"ادرس تغيرات f(x)=x³−3x على المجال [−2,2].",keyIdea:"نستنتج التغيرات من إشارة المشتقة.",steps:["f′(x)=3x²−3=3(x−1)(x+1).","المشتقة موجبة خارج [−1,1] وسالبة داخله."],answer:"متزايد على [−2,−1] و[1,2] ومتناقص على [−1,1].",check:"تنعدم المشتقة عند −1 و1 وتتبدل إشارتها عندهما."},
     {id:"log-011",sourceType:"تدريبي مؤلف",topic:"التابع اللوغاريتمي",unit:"التابع اللوغاريتمي",lesson:"خواص اللوغاريتم النيبيري",level:"متوسط",question:"بسط ln(\\(\\sqrt{x}\\))+ln(x²) مع تحديد المجال.",keyIdea:"نستعمل ln(x^r)=r ln x بعد تحديد مجال التعريف.",steps:["يشترط x>0.","ln(\\(\\sqrt{x}\\))=1/2 ln x وln(x²)=2 ln x، فالمجموع 5/2 ln x."],answer:"المجال ]0,+∞[ والتبسيط (5/2)ln x.",check:"التعبير يساوي ln(x^(5/2)) على المجال المحدد."},
-    {id:"log-012",sourceType:"تدريبي مؤلف",topic:"التابع اللوغاريتمي",unit:"التابع اللوغاريتمي",lesson:"معادلات لوغاريتمية",level:"متقدم",question:"حل ln(x+1)=ln(3−x).",keyIdea:"نحدد المجال ثم نستعمل تقابلية اللوغاريتم.",steps:["شروط التعريف −1<x<3.","بالتقابلية x+1=3−x، ومنه x=1."],answer:"الحل x=1.",check:"عند x=1 يصبح طرفا المعادلة ln 2."},
+    {id:"log-012",sourceType:"تدريبي مؤلف",topic:"التابع اللوغاريتمي",unit:"التابع اللوغاريتمي",lesson:"معادلات لوغاريتمية",level:"متقدم",question:"حل ln(x+1)=ln(3−x).",keyIdea:"نحدد المجال ثم نستعمل تقابلية اللوغاريتم.",steps:["شروط التعريف \\(-1\\lt x\\lt 3\\).","بالتقابلية x+1=3−x، ومنه x=1."],answer:"الحل x=1.",check:"عند x=1 يصبح طرفا المعادلة ln 2."},
     {id:"exp-011",sourceType:"تدريبي مؤلف",topic:"التابع الأسي",unit:"التابع الأسي",lesson:"معادلات أسية",level:"متوسط",question:"حل e^(x+1)=e^(3x−5).",keyIdea:"التابع الأسي تقابلية، فتتساوى الأسس.",steps:["x+1=3x−5.","2x=6."],answer:"x=3.",check:"عند x=3 يصبح الأس في الطرفين 4."},
     {id:"exp-012",sourceType:"تدريبي مؤلف",topic:"التابع الأسي",unit:"التابع الأسي",lesson:"متراجحات أسية",level:"متقدم",question:"حل e^(2x−1)≤e^(x+2).",keyIdea:"التابع الأسي متزايدة تماماً فنقارن الأسين.",steps:["2x−1≤x+2.","بطرح x وإضافة 1 نحصل على x≤3."],answer:"مجموعة الحل ]−∞,3].",check:"عند x=3 يتساوى الطرفان، وللقيم الأصغر يكون الأيسر أصغر."},
     {id:"int-011",sourceType:"تدريبي مؤلف",topic:"التكامل والتابع الأصلي",unit:"التكامل والتابع الأصلي",lesson:"التكامل بالتجزئة",level:"متقدم",question:"احسب ∫ x e^x dx.",keyIdea:"بالتجزئة ∫u dv=uv−∫v du.",steps:["نختار u=x وdv=e^x dx، فيكون du=dx وv=e^x.","∫xe^x dx=xe^x−∫e^x dx."],answer:"e^x(x−1)+C.",check:"اشتقاق e^x(x−1) يعطي xe^x."},
@@ -599,7 +599,16 @@
     const option = document.createElement("option"); option.value = topic; option.textContent = topic; topicSelect.appendChild(option);
   });
 
+  function formatSolvedExampleMath(value) {
+    const raw = String(value ?? "");
+    return typeof window.formatMathContent === "function"
+      ? window.formatMathContent(raw)
+      : raw;
+  }
+
+  let renderRevision = 0;
   function render() {
+    const currentRender = ++renderRevision;
     const term = searchInput.value.trim();
     const filtered = examples.filter(item =>
       (!topicSelect.value || item.topic === topicSelect.value) &&
@@ -609,17 +618,19 @@
       (!term || window.MathSearchUtils.matches([item.question,item.lesson,item.keyIdea,item.topic,item.sourceLabel || "",item.sourceSession || "",item.sourceYear || ""].join(" "), term))
     );
     count.textContent = `عرض ${filtered.length} من ${examples.length} مثالاً`;
+    if (window.MathJax && typeof window.MathJax.typesetClear === "function") window.MathJax.typesetClear([list]);
     list.replaceChildren();
     if (!filtered.length) {
       const empty = document.createElement("p"); empty.className = "solved-examples-empty"; empty.textContent = "لا توجد أمثلة مطابقة. جرّب تغيير كلمات البحث أو المرشحات."; list.appendChild(empty); return;
     }
     filtered.forEach((item,index) => {
       const article = document.createElement("article"); article.className = "solved-example-card";
+      article.dataset.exampleId = item.id;
       const heading = document.createElement("div"); heading.className = "solved-example-meta";
-      const title = document.createElement("h4"); title.textContent = `مثال ${index+1}: ${item.lesson}`;
-      const tags = document.createElement("span"); tags.textContent = `${item.topic} · ${item.level}`;
+      const title = document.createElement("h4"); title.textContent = formatSolvedExampleMath(`مثال ${index+1}: ${item.lesson}`);
+      const tags = document.createElement("span"); tags.textContent = formatSolvedExampleMath(`${item.topic} · ${item.level}`);
       heading.append(title,tags);
-      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = item.question;
+      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = formatSolvedExampleMath(item.question);
       const diagramMarkup = typeof window.getQuestionDiagram === "function"
         ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
         : "";
@@ -630,15 +641,29 @@
         source.textContent = "المصدر: " + details.join(" · ");
         article.append(heading,source,question);
       } else article.append(heading,question);
-      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = "الفكرة الأساسية: " + item.keyIdea;
+      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = formatSolvedExampleMath("الفكرة الأساسية: " + item.keyIdea);
       const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "شرح الحل خطوة بخطوة";
-      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=step;steps.appendChild(li);});
+      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=formatSolvedExampleMath(step);steps.appendChild(li);});
       if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
-      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = "النتيجة: " + item.answer;
-      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = "التحقق: " + item.check;
+      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = formatSolvedExampleMath("النتيجة: " + item.answer);
+      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = formatSolvedExampleMath("التحقق: " + item.check);
       article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
     });
-    if (window.MathJax && typeof window.MathJax.typesetPromise === "function") window.MathJax.typesetPromise([list]).catch(()=>{});
+    if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+      const typesetExamples = () => {
+        if (currentRender !== renderRevision) return Promise.resolve();
+        return window.MathJax.typesetPromise([list]).catch(error => {
+          console.warn("تعذر تنسيق صيغة رياضية في مكتبة الأمثلة المحلولة", error);
+        });
+      };
+      if (window.MathJax.startup && window.MathJax.startup.promise) {
+        window.MathJax.startup.promise.then(typesetExamples).catch(error => {
+          console.warn("تعذر تهيئة تنسيق مكتبة الأمثلة المحلولة", error);
+        });
+      } else {
+        typesetExamples();
+      }
+    }
   }
   [searchInput,topicSelect,levelSelect,sourceSelect,yearSelect].forEach(control => control.addEventListener("input",render));
   [topicSelect,levelSelect,sourceSelect,yearSelect].forEach(control => control.addEventListener("change",render));

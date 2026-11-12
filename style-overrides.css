@@ -2239,3 +2239,35 @@ body.dark-mode #bookmark-list .bookmark-number {
 #quiz .option mjx-container {
   display: inline-block;
 }
+
+
+/* Keep every rendered equation in the solved-examples library readable on narrow screens. */
+#solved-examples-list .solved-example-card mjx-container {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  vertical-align: middle;
+}
+#solved-examples-list .solved-example-card mjx-container[display="true"] {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 2px;
+}
+
+
+/* Prevent grid intrinsic sizing from widening the page around long solved-example formulas. */
+#solved-examples-library,
+#solved-examples-list,
+#solved-examples-list .solved-example-card {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+#solved-examples-list .solved-example-card mjx-container {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}

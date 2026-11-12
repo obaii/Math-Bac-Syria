@@ -34,6 +34,11 @@ const cases = [
     expected: "\\(x<3\\)"
   },
   {
+    name: "explicit less-than TeX operators remain intact",
+    input: "شروط التعريف \\(-1\\lt x\\lt 3\\).",
+    expected: "\\(-1\\lt x\\lt 3\\)"
+  },
+  {
     name: "existing MathJax expressions are not double wrapped",
     input: "القيمة هي \\(x^2+1\\).",
     expected: "القيمة هي \\(x^2+1\\)."
