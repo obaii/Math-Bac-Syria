@@ -78,12 +78,19 @@
     const functionName = value.slice(0, prefixEnd + 1).match(
       /(?:\\(?:sin|cos|tan|ln|log|exp|sqrt|arcsin|arccos|arctan)|(?:sin|cos|tan|ln|log|exp|sqrt|arcsin|arccos|arctan))$/
     );
-    if (functionName) {
-      start = prefixEnd + 1 - functionName[0].length;
-      if (start > 0 && ["·", "×", "*"].includes(value[start - 1])) {
-        const previousFactor = readBackwardMathAtom(value, start - 1);
-        if (previousFactor) start = previousFactor.start;
-      }
+    if (functionName) start = prefixEnd + 1 - functionName[0].length;
+
+    // Include implicit multiplication chains in a fraction numerator, e.g.
+    // 3×4×(n+2) or 3\times4\times(n+2).
+    const leadingProductCommand = value.slice(start, end).match(/^\\(?:times|cdot)/);
+    if (leadingProductCommand) {
+      const previousFactor = readBackwardMathAtom(value, start);
+      if (previousFactor) start = previousFactor.start;
+    }
+    const precedingProduct = value.slice(0, start).match(/(?:×|·|\\times|\\cdot|\*)\s*$/);
+    if (precedingProduct) {
+      const previousFactor = readBackwardMathAtom(value, start - precedingProduct[0].length);
+      if (previousFactor) start = previousFactor.start;
     }
 
     return { start, end: originalEnd };
@@ -136,6 +143,20 @@
 
     // Keep adjacent command factors together, e.g. 2\sqrt{2} and 2\pi.
     if (value[index] === "\\") index = consumeCommand(index);
+
+    // Read a complete implicit multiplication chain as one denominator atom.
+    for (let pass = 0; pass < 16; pass++) {
+      let operatorStart = index;
+      while (operatorStart < value.length && /\s/.test(value[operatorStart])) operatorStart++;
+      let operatorLength = 0;
+      if (value.startsWith("\\times", operatorStart)) operatorLength = 6;
+      else if (value.startsWith("\\cdot", operatorStart)) operatorLength = 5;
+      else if (["×", "·", "*"].includes(value[operatorStart])) operatorLength = 1;
+      if (!operatorLength) break;
+      const nextFactor = readForwardMathAtom(value, operatorStart + operatorLength);
+      if (!nextFactor) break;
+      index = nextFactor.end;
+    }
     return { start: startIndex, end: index };
   }
 
