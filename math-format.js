@@ -2,7 +2,7 @@
   "use strict";
 
   const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<\/?(?:strong|em|span|div|p|br|ol|ul|li|sub|sup|small|code|a|section|table|tbody|thead|tr|td|th)\b[^>]*>)/gi;
-  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ′∩∪()[\]{}.+\-−×÷*·\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\\\s]+/gu;
+  const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′∩∪√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ…()[\]{}.+\-−×÷*·\/^=<>≤≥→←⟶∞πθ∫∑!|,:\\\s]+/gu;
   const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*·/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹∩∪\\]/;
 
   function findMatchingOpen(value, endIndex, open, close) {
@@ -37,7 +37,10 @@
       return previous ? { start: previous.start, end: originalEnd } : null;
     }
 
-    if (last === ")" || last === "}" || last === "]") {
+    if (last === "|") {
+      start = value.lastIndexOf("|", end - 2);
+      if (start < 0) return null;
+    } else if (last === ")" || last === "}" || last === "]") {
       const open = last === ")" ? "(" : last === "}" ? "{" : "[";
       start = findMatchingOpen(value, end - 1, open, last);
       if (start < 0) return null;
@@ -118,7 +121,11 @@
       return end;
     };
 
-    if (value[index] === "(" || value[index] === "{" || value[index] === "[") {
+    if (value[index] === "|") {
+      const close = value.indexOf("|", index + 1);
+      if (close < 0) return null;
+      index = close + 1;
+    } else if (value[index] === "(" || value[index] === "{" || value[index] === "[") {
       const close = consumeGroup(index);
       if (close < 0) return null;
       index = close + 1;
@@ -203,7 +210,7 @@
     // for the variable x in an exponent (for example, 3^×).
     value = value.replace(/\^\s*×/g, "^{x}");
     value = value.replace(/([A-Za-z])([ₐ-ₜ₀-₉]+)/gu, "$1_$2");
-    value = value.replace(/([A-Za-z0-9])([⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ]+)/gu, "$1^{$2}");
+    value = value.replace(/([A-Za-z0-9])([⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻]+)/gu, "$1^{$2}");
     value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
     value = value.replace(/\^\s*([A-Za-z0-9]+)/g, "^{$1}");
     value = normalizeTexFractions(value);
@@ -256,8 +263,9 @@
       const next = after.match(/^\s*\S/)?.[0].trim().charAt(0) || "";
       const adjacentMathBlock = /\\\)\s*$/.test(before) || /^\s*\\\(/.test(after);
       const beginsFractionDenominator = /\/\s*\($/.test(before);
+      const closesFractionNumerator = /^\s*\)(?:\s*\))?\s*\//.test(after);
       const connectsMath = /[\/=+−\-×÷*·]/.test(previous) || /[\/=+−\-×÷*·]/.test(next);
-      return adjacentMathBlock || beginsFractionDenominator || connectsMath ? expression : match;
+      return adjacentMathBlock || beginsFractionDenominator || closesFractionNumerator || connectsMath ? expression : match;
     });
   }
 
