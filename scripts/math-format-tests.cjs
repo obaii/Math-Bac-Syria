@@ -114,6 +114,22 @@ const cases = [
     name: "nested parenthesized fractions are normalized from inside out",
     input: "\\(((1/3)^n+2)/(n+1)\\)",
     expected: "\\frac{((\\frac{1}{3})^n+2)}{(n+1)}"
+  },
+
+  {
+    name: "derivative prime notation stays in a fraction expression",
+    input: "f'(x)=1/(2x)",
+    expected: "\\(f'(x)=\\frac{1}{2x}\\)"
+  },
+  {
+    name: "plus-minus radical numerators are grouped before division",
+    input: "L=(1±√13)/2",
+    expected: "\\(L=\\frac{1\\pm\\sqrt{13}}{2}\\)"
+  },
+  {
+    name: "a TeX radical inside a parenthesized numerator joins the fraction",
+    input: "x=(1±\\(\\sqrt{5}\\))/2",
+    expected: "\\(x=\\frac{1\\pm\\sqrt{5}}{2}\\)"
   }
 ];
 
