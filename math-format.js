@@ -202,9 +202,6 @@
     });
   }
 
-  const TEX_ATOM = /(?:\\[A-Za-z]+(?:\{[^{}]*\})?|[A-Za-z0-9]+|\([^()]*\)|\{[^{}]*\})(?:\^\{[^{}]*\}|\^[A-Za-z0-9]+)?/.source;
-  const TEX_FRACTION = new RegExp("(" + TEX_ATOM + ")\\s*/\\s*(" + TEX_ATOM + ")", "g");
-
   function normalizeTexExpression(expression) {
     let value = expression;
     if (/\\lim/.test(value)) {
