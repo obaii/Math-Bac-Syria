@@ -14,7 +14,7 @@ for(const x of selected){
  for(const k of ["sourceType","sourceSession","sourceLabel","sourceReference","question","keyIdea","answer","check"])if(!String(x[k]||"").trim())fail(x.id+" missing "+k);
  if(!Array.isArray(x.steps)||x.steps.length<2||x.steps.some(s=>!String(s).trim()))fail(x.id+" incomplete steps");
  if(!/^https:\/\//.test(x.sourceReference))fail(x.id+" invalid source URL");
- if(x.sourceType==="تدريب مستوحى من نموذج وزاري"&&!x.sourceLabel.includes("ليس نقلاً حرفياً"))fail(x.id+" source attribution ambiguous");
+ if(/^(exam20-extra-|exam21-extra-|exam26-model-)/.test(x.id)&&(!x.sourceLabel.includes("ليس نقلاً حرفياً")||x.sourceType!=="تدريب مستوحى من دورة امتحانية"))fail(x.id+" source attribution ambiguous");
 }
 const choose=(n,k)=>{let v=1;for(let i=1;i<=k;i++)v=v*(n-i+1)/i;return v;},close=(a,b,e=1e-10)=>Math.abs(a-b)<=e;
 if(choose(9,2)!==36||choose(9,3)!==84||choose(8,3)!==56)fail("independent combination checks failed");
