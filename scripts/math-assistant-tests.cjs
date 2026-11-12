@@ -14,8 +14,16 @@ const assert = require("node:assert/strict");
   })));
   try {
     await page.goto(process.env.BASE_URL || "http://127.0.0.1:4173/",{waitUntil:"domcontentloaded"});
-    await page.waitForFunction(()=>Array.isArray(window.MathFormulaLibraryData) && Array.isArray(window.solvedExamplesLibrary?.examples),null,{timeout:15000});
+    await page.waitForFunction(()=>Array.isArray(window.MathFormulaLibraryData),null,{timeout:15000});
+    // The solved-example dataset is intentionally lazy-loaded; load it before testing
+    // assistant recommendations that can draw on the local solved-example library.
     await page.locator("#section-menu-toggle").click();
+    await page.locator('#section-menu [data-panel-toggle="solved-examples-library"]').click();
+    await page.locator("#solved-examples-library").waitFor({state:"visible"});
+    await page.waitForFunction(()=>Array.isArray(window.solvedExamplesLibrary?.examples) && window.solvedExamplesLibrary.examples.length===600,null,{timeout:20000});
+    await page.locator("#section-menu-toggle").click();
+    await page.locator("#section-menu-toggle").click();
+    await page.locator("#section-menu").waitFor({state:"visible"});
     const shortcut=page.locator('[data-panel-toggle="math-assistant"]');
     await shortcut.click();
     const panel=page.locator("#math-assistant");
