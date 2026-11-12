@@ -408,9 +408,11 @@ if (!library || !Array.isArray(library.examples)) {
 }
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solved-examples\.js\?v=[A-Za-z0-9._-]+/.test(index)) failures.push("The solved examples script is not included with a cache-busted URL.");
+const loader = fs.readFileSync(path.join(root, "solved-examples-loader.js"), "utf8");
+if (!/solved-examples\.js\?v=[A-Za-z0-9._-]+/.test(loader)) failures.push("The on-demand solved examples script must use a cache-busted URL.");
+if (!/solved-examples\.loader\.js|solved-examples-loader\.js/.test(index)) failures.push("The lightweight solved examples loader must be included in the homepage.");
 if (!/solved-examples\.css\?v=[A-Za-z0-9._-]+/.test(index)) failures.push("The solved examples stylesheet is not included with a cache-busted URL.");
-if (index.indexOf("solved-examples.js") > index.indexOf("enhancements.js")) failures.push("The solved examples shortcut must be created before shared panel navigation is bound.");
+if (index.indexOf("solved-examples-loader.js") > index.indexOf("enhancements.js")) failures.push("The solved examples panel shell must be created before shared panel navigation is bound.");
 
 if (!source.includes('id = "solved-examples-library"') && !source.includes('section.id = "solved-examples-library"')) {
   failures.push("The dedicated solved examples panel was not found.");
@@ -430,8 +432,8 @@ const mathRenderAssertions = [
 for (const assertion of mathRenderAssertions) {
   if (!source.includes(assertion)) failures.push("Solved-example math rendering is missing: " + assertion);
 }
-if (!index.includes("math-format.js") || index.indexOf("math-format.js") > index.indexOf("solved-examples.js")) {
-  failures.push("The shared math formatter must load before the solved examples library.");
+if (!index.includes("math-format.js") || index.indexOf("math-format.js") > index.indexOf("solved-examples-loader.js")) {
+  failures.push("The shared math formatter must load before the solved examples loader.");
 }
 if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must display available visuals beside their questions.");
 if (!source.includes('id="solved-example-source"') || !source.includes('id="solved-example-year"')) failures.push("Source type and year filters must be available.");
