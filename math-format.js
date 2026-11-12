@@ -5,10 +5,167 @@
   const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹()[\]{}.+\-−×÷*\/^=<>≤≥→←⟶∞πθ√∫∑!|,:\s]+/gu;
   const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹]/;
 
+  function findMatchingOpen(value, endIndex, open, close) {
+    let depth = 0;
+    for (let index = endIndex; index >= 0; index--) {
+      if (value[index] === close) depth++;
+      else if (value[index] === open && --depth === 0) return index;
+    }
+    return -1;
+  }
+
+  function findMatchingClose(value, startIndex, open, close) {
+    let depth = 0;
+    for (let index = startIndex; index < value.length; index++) {
+      if (value[index] === open) depth++;
+      else if (value[index] === close && --depth === 0) return index;
+    }
+    return -1;
+  }
+
+  function readBackwardMathAtom(value, endExclusive) {
+    const originalEnd = endExclusive;
+    let end = endExclusive;
+    while (end > 0 && /\s/.test(value[end - 1])) end--;
+    if (!end) return null;
+
+    const last = value[end - 1];
+    let start;
+
+    if (last === "!") {
+      const previous = readBackwardMathAtom(value, end - 1);
+      return previous ? { start: previous.start, end: originalEnd } : null;
+    }
+
+    if (last === ")" || last === "}" || last === "]") {
+      const open = last === ")" ? "(" : last === "}" ? "{" : "[";
+      start = findMatchingOpen(value, end - 1, open, last);
+      if (start < 0) return null;
+
+      let prefix = start - 1;
+      while (prefix >= 0 && /\s/.test(value[prefix])) prefix--;
+      if (prefix >= 0 && value[prefix] === "^") {
+        const base = readBackwardMathAtom(value, prefix);
+        if (base) start = base.start;
+      } else if (prefix >= 0 && /[A-Za-z]/.test(value[prefix])) {
+        let nameStart = prefix;
+        while (nameStart >= 0 && /[A-Za-z0-9_]/.test(value[nameStart])) nameStart--;
+        if (nameStart >= 0 && value[nameStart] === "\\") nameStart--;
+        start = Math.min(start, nameStart + 1);
+      } else if (prefix >= 0 && [")", "}", "]"].includes(value[prefix])) {
+        const prefixAtom = readBackwardMathAtom(value, prefix + 1);
+        if (prefixAtom) start = prefixAtom.start;
+      }
+    } else if (/[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(last)) {
+      start = end - 1;
+      while (start > 0 && /[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(value[start - 1])) start--;
+      if (start > 0 && value[start - 1] === "\\") start--;
+      if (start > 0 && value[start - 1] === "^") {
+        const base = readBackwardMathAtom(value, start - 1);
+        if (base) start = base.start;
+      }
+      if (start > 0 && /[0-9]/.test(value[start - 1]) && value[start] === "\\") {
+        start--;
+        while (start > 0 && /[0-9]/.test(value[start - 1])) start--;
+      }
+    } else {
+      return null;
+    }
+
+    // Include a function name separated by whitespace, e.g. \sin x / x.
+    let prefixEnd = start - 1;
+    while (prefixEnd >= 0 && /\s/.test(value[prefixEnd])) prefixEnd--;
+    const functionName = value.slice(0, prefixEnd + 1).match(
+      /(?:\\(?:sin|cos|tan|ln|log|exp|sqrt|arcsin|arccos|arctan)|(?:sin|cos|tan|ln|log|exp|sqrt|arcsin|arccos|arctan))$/
+    );
+    if (functionName) start = prefixEnd + 1 - functionName[0].length;
+
+    return { start, end: originalEnd };
+  }
+
+  function readForwardMathAtom(value, startIndex) {
+    let index = startIndex;
+    while (index < value.length && /\s/.test(value[index])) index++;
+    if (index >= value.length) return null;
+
+    const consumeGroup = position => {
+      const open = value[position];
+      const close = open === "(" ? ")" : open === "{" ? "}" : open === "[" ? "]" : null;
+      return close ? findMatchingClose(value, position, open, close) : -1;
+    };
+
+    const consumeCommand = position => {
+      let end = position + 1;
+      while (end < value.length && /[A-Za-z]/.test(value[end])) end++;
+      while (value[end] === "{" || value[end] === "(" || value[end] === "[") {
+        const close = consumeGroup(end);
+        if (close < 0) break;
+        end = close + 1;
+      }
+      return end;
+    };
+
+    if (value[index] === "(" || value[index] === "{" || value[index] === "[") {
+      const close = consumeGroup(index);
+      if (close < 0) return null;
+      index = close + 1;
+    } else if (value[index] === "\\") {
+      index = consumeCommand(index);
+    } else if (/[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(value[index])) {
+      while (index < value.length && /[A-Za-z0-9πθ∞_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹′]/u.test(value[index])) index++;
+    } else {
+      return null;
+    }
+
+    if (value[index] === "!") index++;
+    if (value[index] === "^") {
+      index++;
+      if (value[index] === "{" || value[index] === "(") {
+        const close = consumeGroup(index);
+        if (close >= 0) index = close + 1;
+      } else {
+        while (index < value.length && /[A-Za-z0-9]/.test(value[index])) index++;
+      }
+    }
+
+    // Keep adjacent command factors together, e.g. 2\sqrt{2} and 2\pi.
+    if (value[index] === "\\") index = consumeCommand(index);
+    return { start: startIndex, end: index };
+  }
+
+  function normalizeTexFractions(expression) {
+    let value = expression;
+    for (let pass = 0; pass < 8; pass++) {
+      let changed = false;
+      for (let index = 0; index < value.length; index++) {
+        if (value[index] !== "/") continue;
+        const numerator = readBackwardMathAtom(value, index);
+        const denominator = readForwardMathAtom(value, index + 1);
+        if (!numerator || !denominator || numerator.end > index || denominator.start < index + 1) continue;
+
+        const top = value.slice(numerator.start, index).trim();
+        const bottom = value.slice(index + 1, denominator.end).trim();
+        if (!top || !bottom) continue;
+
+        const fraction = "\\frac{" + top + "}{" + bottom + "}";
+        value = value.slice(0, numerator.start) + fraction + value.slice(denominator.end);
+        index = numerator.start + fraction.length - 1;
+        changed = true;
+      }
+      if (!changed) break;
+    }
+    return value;
+  }
+
   function normalizePlainExpression(expression) {
     let value = expression.trim();
     if (!value) return expression;
 
+    value = value.replace(/\blim\s*\(\s*([+＋−-]?\s*(?:∞|infinity))\s*(?:→|->|⟶|←|<-)\s*([xn])\s*\)/gi,
+      function (_, destination, variable) {
+        const sign = destination.replace(/\s/g, "").replace("＋", "+").replace("−", "-").toLowerCase();
+        return "\\lim_{" + variable + "\\to" + sign.replace("infinity", "\\infty") + "}";
+      });
     value = value.replace(/\blim\s*\(\s*([xn])\s*(?:→|->|⟶|←|<-)\s*([+＋−-]?\s*(?:∞|infinity))\s*\)/gi,
       function (_, variable, destination) {
         const sign = destination.replace(/\s/g, "").replace("＋", "+").replace("−", "-").toLowerCase();
@@ -20,9 +177,9 @@
     value = value.replace(/\^\s*×/g, "^{x}");
     value = value.replace(/([A-Za-z])([ₐ-ₜ₀-₉]+)/gu, "$1_$2");
     value = value.replace(/([A-Za-z0-9])([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/gu, "$1^{$2}");
+    value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
     value = value.replace(/\^\s*([A-Za-z0-9]+)/g, "^{$1}");
-    value = value.replace(/(\([^()]*\)|[A-Za-z0-9]+)\s*\/\s*(\([^()]*\)|[A-Za-z0-9]+)/g,
-      "\\frac{$1}{$2}");
+    value = normalizeTexFractions(value);
     value = value.replace(/->|→|⟶/g, "\\to");
     value = value.replace(/←|<-/g, "\\to");
     value = value.replace(/×/g, "\\times");
@@ -50,9 +207,6 @@
 
   function normalizeTexExpression(expression) {
     let value = expression;
-
-    // In a limit, x is the variable approaching infinity. Normalize both
-    // reversed-order and left-pointing variants before MathJax sees them.
     if (/\\lim/.test(value)) {
       value = value.replace(/\\lim_\{\s*([+\-]?\\infty)\s*(?:\\to|\\leftarrow|→|←)\s*([A-Za-z])\s*\}/g,
         function (_, infinity, variable) {
@@ -63,15 +217,8 @@
           return "\\lim_{" + variable + "\\to" + infinity + "}";
         });
     }
-
-    // Group compound exponents such as x^(n+1) and x^10. Single-character
-    // exponents (x^2, x^n) are already unambiguous in TeX and remain unchanged.
     value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
-
-    // Turn unstacked divisions inside explicit TeX into proper fractions.
-    // The denominator atom includes its exponent, e.g. 2/(x+1)^2.
-    value = value.replace(TEX_FRACTION, "\\frac{$1}{$2}");
-    return value;
+    return normalizeTexFractions(value);
   }
 
   function formatMathContent(value) {
