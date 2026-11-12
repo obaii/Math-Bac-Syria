@@ -226,6 +226,7 @@
     value = value.replace(/π/g, "\\pi");
     value = value.replace(/θ/g, "\\theta");
     value = value.replace(/√\s*\(([^()]*)\)/g, "\\sqrt{$1}");
+    value = value.replace(/√\s*([A-Za-z0-9]+)/g, "\\sqrt{$1}");
     return value;
   }
 
