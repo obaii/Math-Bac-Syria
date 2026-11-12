@@ -665,76 +665,137 @@
       : raw;
   }
 
-  let renderRevision = 0;
   let visibleLimit = 24;
+  let filteredExamples = [];
+
+  function createExampleCard(item, index) {
+    const article = document.createElement("article");
+    article.className = "solved-example-card";
+    article.dataset.exampleId = item.id;
+    const heading = document.createElement("div");
+    heading.className = "solved-example-meta";
+    const title = document.createElement("h4");
+    title.textContent = formatSolvedExampleMath(`مثال ${index + 1}: ${item.lesson}`);
+    const tags = document.createElement("span");
+    tags.textContent = formatSolvedExampleMath(`${item.topic} · ${item.level}`);
+    heading.append(title, tags);
+    const question = document.createElement("p");
+    question.className = "solved-example-question";
+    question.textContent = formatSolvedExampleMath(item.question);
+    const diagramMarkup = typeof window.getQuestionDiagram === "function"
+      ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
+      : "";
+    if (diagramMarkup) article.classList.add("has-question-diagram");
+    if (item.sourceType && item.sourceType !== "تدريبي مؤلف") {
+      const source = document.createElement("p");
+      source.className = "solved-example-source";
+      const details = [item.sourceType, item.sourceYear, item.sourceSession, item.sourceLabel].filter(Boolean);
+      source.textContent = "المصدر: " + details.join(" · ");
+      article.append(heading, source, question);
+    } else {
+      article.append(heading, question);
+    }
+    const idea = document.createElement("p");
+    idea.className = "solved-example-idea";
+    idea.textContent = formatSolvedExampleMath("الفكرة الأساسية: " + item.keyIdea);
+    const stepsTitle = document.createElement("strong");
+    stepsTitle.textContent = "شرح الحل خطوة بخطوة";
+    const steps = document.createElement("ol");
+    item.steps.forEach(step => {
+      const li = document.createElement("li");
+      li.textContent = formatSolvedExampleMath(step);
+      steps.appendChild(li);
+    });
+    if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
+    const answer = document.createElement("p");
+    answer.className = "solved-example-answer";
+    answer.textContent = formatSolvedExampleMath("النتيجة: " + item.answer);
+    const check = document.createElement("p");
+    check.className = "solved-example-check";
+    check.textContent = formatSolvedExampleMath("التحقق: " + item.check);
+    article.append(idea, stepsTitle, steps, answer, check);
+    return article;
+  }
+
+  function typesetExampleCards(cards) {
+    if (!cards.length || !window.MathJax || typeof window.MathJax.typesetPromise !== "function") return;
+    const typesetConnectedCards = () => {
+      const connectedCards = cards.filter(card => card.isConnected);
+      if (!connectedCards.length) return Promise.resolve();
+      return window.MathJax.typesetPromise(connectedCards).catch(error => {
+        console.warn("تعذر تنسيق صيغة رياضية في مكتبة الأمثلة المحلولة", error);
+      });
+    };
+    if (window.MathJax.startup && window.MathJax.startup.promise) {
+      window.MathJax.startup.promise.then(typesetConnectedCards).catch(error => {
+        console.warn("تعذر تهيئة تنسيق مكتبة الأمثلة المحلولة", error);
+      });
+    } else {
+      typesetConnectedCards();
+    }
+  }
+
+  function appendExampleBatch(startIndex, endIndex) {
+    const fragment = document.createDocumentFragment();
+    const cards = [];
+    for (let index = startIndex; index < endIndex; index += 1) {
+      const card = createExampleCard(filteredExamples[index], index);
+      cards.push(card);
+      fragment.appendChild(card);
+    }
+    list.appendChild(fragment);
+    return cards;
+  }
+
+  function updateLoadMoreControl() {
+    count.textContent = `عرض ${visibleLimit} من ${filteredExamples.length} مثالاً`;
+    const oldButton = list.querySelector(".solved-examples-load-more");
+    if (oldButton) oldButton.remove();
+    if (visibleLimit < filteredExamples.length) {
+      const moreButton = document.createElement("button");
+      moreButton.type = "button";
+      moreButton.className = "solved-examples-load-more";
+      moreButton.textContent = `عرض ${Math.min(24, filteredExamples.length - visibleLimit)} مثالاً إضافياً`;
+      moreButton.addEventListener("click", renderMore);
+      list.appendChild(moreButton);
+    }
+  }
+
+  function renderMore() {
+    if (visibleLimit >= filteredExamples.length) return;
+    const startIndex = visibleLimit;
+    const endIndex = Math.min(filteredExamples.length, visibleLimit + 24);
+    const oldButton = list.querySelector(".solved-examples-load-more");
+    if (oldButton) oldButton.remove();
+    const cards = appendExampleBatch(startIndex, endIndex);
+    visibleLimit = endIndex;
+    updateLoadMoreControl();
+    typesetExampleCards(cards);
+  }
+
   function render() {
-    const currentRender = ++renderRevision;
     const term = searchInput.value.trim();
-    const filtered = examples.filter(item =>
+    filteredExamples = examples.filter(item =>
       (!topicSelect.value || item.topic === topicSelect.value) &&
       (!levelSelect.value || item.level === levelSelect.value) &&
       (!sourceSelect.value || (item.sourceType || "تدريبي مؤلف") === sourceSelect.value) &&
       (!yearSelect.value || String(item.sourceYear || "") === yearSelect.value) &&
       (!term || window.MathSearchUtils.matches([item.question,item.lesson,item.keyIdea,item.topic,item.sourceLabel || "",item.sourceSession || "",item.sourceYear || ""].join(" "), term))
     );
-    count.textContent = `عرض ${Math.min(visibleLimit, filtered.length)} من ${filtered.length} مثالاً`;
+    visibleLimit = Math.min(24, filteredExamples.length);
     if (window.MathJax && typeof window.MathJax.typesetClear === "function") window.MathJax.typesetClear([list]);
     list.replaceChildren();
-    if (!filtered.length) {
-      const empty = document.createElement("p"); empty.className = "solved-examples-empty"; empty.textContent = "لا توجد أمثلة مطابقة. جرّب تغيير كلمات البحث أو المرشحات."; list.appendChild(empty); return;
+    if (!filteredExamples.length) {
+      count.textContent = `عرض 0 من 0 مثالاً`;
+      const empty = document.createElement("p");
+      empty.className = "solved-examples-empty";
+      empty.textContent = "لا توجد أمثلة مطابقة. جرّب تغيير كلمات البحث أو المرشحات.";
+      list.appendChild(empty);
+      return;
     }
-    filtered.slice(0, visibleLimit).forEach((item,index) => {
-      const article = document.createElement("article"); article.className = "solved-example-card";
-      article.dataset.exampleId = item.id;
-      const heading = document.createElement("div"); heading.className = "solved-example-meta";
-      const title = document.createElement("h4"); title.textContent = formatSolvedExampleMath(`مثال ${index+1}: ${item.lesson}`);
-      const tags = document.createElement("span"); tags.textContent = formatSolvedExampleMath(`${item.topic} · ${item.level}`);
-      heading.append(title,tags);
-      const question = document.createElement("p"); question.className = "solved-example-question"; question.textContent = formatSolvedExampleMath(item.question);
-      const diagramMarkup = typeof window.getQuestionDiagram === "function"
-        ? window.getQuestionDiagram({ q: item.question, topic: item.topic })
-        : "";
-      if (diagramMarkup) article.classList.add("has-question-diagram");
-      if (item.sourceType && item.sourceType !== "تدريبي مؤلف") {
-        const source = document.createElement("p"); source.className = "solved-example-source";
-        const details = [item.sourceType, item.sourceYear, item.sourceSession, item.sourceLabel].filter(Boolean);
-        source.textContent = "المصدر: " + details.join(" · ");
-        article.append(heading,source,question);
-      } else article.append(heading,question);
-      const idea = document.createElement("p"); idea.className = "solved-example-idea"; idea.textContent = formatSolvedExampleMath("الفكرة الأساسية: " + item.keyIdea);
-      const stepsTitle = document.createElement("strong"); stepsTitle.textContent = "شرح الحل خطوة بخطوة";
-      const steps = document.createElement("ol"); item.steps.forEach(step => {const li=document.createElement("li");li.textContent=formatSolvedExampleMath(step);steps.appendChild(li);});
-      if (diagramMarkup) article.insertAdjacentHTML("beforeend", diagramMarkup);
-      const answer = document.createElement("p"); answer.className = "solved-example-answer"; answer.textContent = formatSolvedExampleMath("النتيجة: " + item.answer);
-      const check = document.createElement("p"); check.className = "solved-example-check"; check.textContent = formatSolvedExampleMath("التحقق: " + item.check);
-      article.append(idea,stepsTitle,steps,answer,check); list.appendChild(article);
-    });
-    if (filtered.length > visibleLimit) {
-      const moreButton = document.createElement("button");
-      moreButton.type = "button";
-      moreButton.className = "solved-examples-load-more";
-      moreButton.textContent = `عرض ${Math.min(24, filtered.length - visibleLimit)} مثالاً إضافياً`;
-      moreButton.addEventListener("click", () => {
-        visibleLimit = Math.min(filtered.length, visibleLimit + 24);
-        render();
-      });
-      list.appendChild(moreButton);
-    }
-    if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
-      const typesetExamples = () => {
-        if (currentRender !== renderRevision) return Promise.resolve();
-        return window.MathJax.typesetPromise([list]).catch(error => {
-          console.warn("تعذر تنسيق صيغة رياضية في مكتبة الأمثلة المحلولة", error);
-        });
-      };
-      if (window.MathJax.startup && window.MathJax.startup.promise) {
-        window.MathJax.startup.promise.then(typesetExamples).catch(error => {
-          console.warn("تعذر تهيئة تنسيق مكتبة الأمثلة المحلولة", error);
-        });
-      } else {
-        typesetExamples();
-      }
-    }
+    const cards = appendExampleBatch(0, visibleLimit);
+    updateLoadMoreControl();
+    typesetExampleCards(cards);
   }
   const renderFromStart = () => {
     visibleLimit = 24;

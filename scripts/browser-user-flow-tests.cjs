@@ -391,7 +391,18 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 600, "the library should render all 600 solved examples");
+    assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.count), 600,
+      "the complete 600-example dataset should be available when the library opens");
+    const renderedExampleCards = page.locator("#solved-examples-list .solved-example-card");
+    assert.equal(await renderedExampleCards.count(), 24,
+      "the library should render only the first 24 examples initially");
+    while (await renderedExampleCards.count() < 600) {
+      const moreButton = page.locator(".solved-examples-load-more");
+      assert.ok(await moreButton.count(), "the library should offer another batch until all 600 examples are rendered");
+      await moreButton.click();
+    }
+    assert.equal(await renderedExampleCards.count(), 600,
+      "the full library should be reachable through successive batches");
     await page.evaluate(async () => {
       await window.MathJax.startup.promise;
       await window.MathJax.typesetPromise([document.querySelector("#solved-examples-list")]);
@@ -458,6 +469,11 @@ const assert = require("node:assert/strict");
     ];
     for (const testCase of libraryMathCases) {
       await page.locator("#solved-example-topic").selectOption(testCase.topic);
+      while (!(await page.locator('[data-example-id="' + testCase.id + '"]').count())) {
+        const moreButton = page.locator(".solved-examples-load-more");
+        assert.ok(await moreButton.count(), testCase.id + " should be reachable through the topic's example batches");
+        await moreButton.click();
+      }
       await page.waitForFunction(id => {
         const card = document.querySelector('[data-example-id="' + id + '"]');
         return card && card.querySelector(".solved-example-question mjx-container") &&
@@ -474,6 +490,11 @@ const assert = require("node:assert/strict");
       }
     }
     await page.locator("#solved-example-topic").selectOption("النهايات والاستمرار");
+    while (!(await page.locator('[data-example-id="lim-003"]').count())) {
+      const moreButton = page.locator(".solved-examples-load-more");
+      assert.ok(await moreButton.count(), "lim-003 should be reachable through the limits topic batches");
+      await moreButton.click();
+    }
     await page.setViewportSize({ width: 360, height: 800 });
     const solvedLibraryMobileMath = await page.locator('[data-example-id="lim-003"] .solved-example-question mjx-container').first().evaluate(node => {
       const rect = node.getBoundingClientRect();
