@@ -391,6 +391,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
+    await page.waitForFunction(() => window.solvedExamplesLibrary?.count === 600, null, { timeout: 20000 });
     assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.count), 600,
       "the complete 600-example dataset should be available when the library opens");
     const renderedExampleCards = page.locator("#solved-examples-list .solved-example-card");
