@@ -329,6 +329,47 @@ function getQuestionDiagram(question) {
   }
 
 
+  // Variation tables for prompts in the audited automated question archive.
+  // Only values/signs stated in each prompt are shown.
+  if (prompt.includes("من جدول تغيرات تابع f نعلم أن f′(−1)=0") &&
+      prompt.includes("f(−1)=1")) {
+    return variationTable("القيم المأخوذة من جدول التغيرات عند x=−1.",
+      ["−1"], ["0"], ["1"]);
+  }
+  if (prompt.includes("قيمة عظمى محلية عند x=−2") && prompt.includes("قيمة الجدول هناك 4")) {
+    return variationTable("موضع القيمة العظمى المحلية وقيمتها كما وردا في السؤال.",
+      ["−2"], ["عظمى محلية"], ["4"]);
+  }
+  if (prompt.includes("قيمة صغرى محلية عند x=2") && prompt.includes("f(2)=−1")) {
+    return variationTable("موضع القيمة الصغرى المحلية وقيمتها كما وردا في السؤال.",
+      ["2"], ["صغرى محلية"], ["−1"]);
+  }
+  if (prompt.includes("f′ موجبة على (−∞,−2)") &&
+      prompt.includes("سالبة على (−2,2)") &&
+      prompt.includes("موجبة على (2,+∞)")) {
+    return variationTable("جدول الإشارة والتغيرات المستنتج مباشرة من إشارات المشتقة المعطاة.",
+      ["(−∞,−2)", "−2", "(−2,2)", "2", "(2,+∞)"],
+      ["+", "0", "−", "0", "+"],
+      ["تزايد ↗", "قيمة عظمى", "تناقص ↘", "قيمة صغرى", "تزايد ↗"]);
+  }
+  if (prompt.includes("f متصلاً على R ومتزايداً تماماً من النهاية 2 إلى 4") &&
+      prompt.includes("متناقصاً تماماً من 4 إلى −1")) {
+    return variationTable("جدول التغيرات المبيّن في معطيات السؤال؛ يوضح الانتقالات التي تحدد عدد الجذور.",
+      ["(−∞,−2)", "−2", "(−2,2)", "2", "(2,+∞)"],
+      ["+", "0", "−", "0", "+"],
+      ["2 ↗", "4", "4 ↘ −1", "−1", "−1 ↗ +∞"]);
+  }
+  if (prompt.includes("من جدول تغيرات f على R") &&
+      prompt.includes("f(x)→+∞") && prompt.includes("f(x)→3")) {
+    return variationTable("جدول النهايات كما وردت في السؤال.",
+      ["x→−∞", "x→+∞"], null, ["f(x)→+∞", "f(x)→3"]);
+  }
+  if (prompt.includes("تكون f متزايدة تماماً على المجال [−1,2]") &&
+      prompt.includes("f(−1)=−2") && prompt.includes("f(2)=4")) {
+    return variationTable("جدول تغيرات f على المجال [−1,2]؛ التابع متزايد تماماً.",
+      ["−1", "(−1,2)", "2"], ["", "+"], ["−2 (صغرى)", "↗", "4 (عظمى)"]);
+  }
+
   // Exact variation tables for worked examples and sourced questions whose
   // expressions and critical points are explicitly present in the question.
   if (prompt.includes("دورة 2019 الأولى") && prompt.includes("يؤول إلى +∞") && prompt.includes("إلى 3 عندما x يؤول إلى +∞")) {
