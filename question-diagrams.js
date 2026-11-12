@@ -61,10 +61,10 @@ function getQuestionDiagram(question) {
         <path d="M48 218L330 218L146 42Z M48 218L250 65L330 218 M146 42L250 65" fill="none" stroke="#64748b" stroke-width="1.7"/>
         <path d="M48 218L198 53.5 M330 218L123 135.75" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-dasharray="5 4"/>
         <path d="M330 218L123 135.75" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-dasharray="5 4"/>
-        <circle cx="198" cy="53.5" r="4" fill="#2563eb"/><circle cx="123" cy="135.75" r="4" fill="#2563eb"/><circle cx="227" cy="173" r="4" fill="#0f766e"/>
+        <circle cx="198" cy="53.5" r="4" fill="#2563eb"/><circle cx="123" cy="135.75" r="4" fill="#2563eb"/><circle cx="226.5" cy="176.875" r="4" fill="#0f766e"/>
         <g font-family="sans-serif" font-size="13" font-weight="600" fill="#172b4d">
           <text x="33" y="234">A</text><text x="336" y="234">B</text><text x="132" y="34">C</text><text x="255" y="60">D</text>
-          <text x="204" y="47" fill="#2563eb">I</text><text x="108" y="132" fill="#2563eb">J</text><text x="234" y="174" fill="#0f766e">K</text>
+          <text x="204" y="47" fill="#2563eb">I</text><text x="108" y="132" fill="#2563eb">J</text><text x="233" y="181" fill="#0f766e">K</text>
         </g>
       </svg>
     </figure>`;
@@ -183,8 +183,10 @@ function getQuestionDiagram(question) {
 
   // Generic spatial cone sketch: supports visualization without changing question data.
   if (prompt.includes("مخروط دائري قائم")) {
+    const coneAxisLabel = prompt.includes("محور z") ? "z" : "المحور";
+    const coneAxisCaption = prompt.includes("محور z") ? "رسم توضيحي لمخروط دائري قائم محوره محور z؛ الأبعاد والمعطيات تؤخذ من نص السؤال." : "رسم توضيحي لشكل المخروط ومحوره وقاعدته الدائرية؛ الأبعاد والمعطيات تؤخذ من نص السؤال.";
     return `<figure class="question-diagram" aria-label="رسم تخطيطي لمخروط دائري قائم">
-      <figcaption>رسم توضيحي لشكل المخروط ومحوره وقاعدته الدائرية؛ الأبعاد والمعطيات تؤخذ من نص السؤال.</figcaption>
+      <figcaption>${coneAxisCaption}</figcaption>
       <svg viewBox="0 0 340 250" role="img" aria-label="مخروط دائري قائم ومحوره">
         <ellipse cx="170" cy="194" rx="88" ry="25" fill="#dbeafe" fill-opacity=".7" stroke="#64748b" stroke-width="1.7"/>
         <path d="M170 35L82 194 M170 35L258 194" fill="none" stroke="#2563eb" stroke-width="2.2"/>
@@ -216,6 +218,23 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
+  // Exact sketch for f(x)=x² at x=1: the point is (1,1) and the tangent is y=2x−1.
+  if (prompt.includes("f(x)=x^2") && prompt.includes("عند النقطة ذات الفاصلة 1")) {
+    return `<figure class="question-diagram" aria-label="منحنى f(x)=x² ومماسه الصحيح عند النقطة (1,1)">
+      <figcaption>للدالة f(x)=x² عند x=1: نقطة التماس A(1,1)، ومعادلة المماس y=2x−1.</figcaption>
+      <svg viewBox="0 0 340 230" role="img" aria-label="منحنى القطع المكافئ ومماسه y يساوي 2x ناقص 1">
+        <path d="M80 180H315 M80 210V22" fill="none" stroke="#64748b" stroke-width="1.5"/>
+        <path d="M45 220C80 210 130 176 170 148C210 120 255 65 300 30" fill="none" stroke="#2563eb" stroke-width="2.8"/>
+        <path d="M80 211L290 64" fill="none" stroke="#b45309" stroke-width="2.3" stroke-dasharray="6 4"/>
+        <circle cx="170" cy="148" r="4.8" fill="#0f766e"/>
+        <g font-family="sans-serif" font-size="13" fill="var(--text, #172b4d)">
+          <text x="178" y="143">A(1,1)</text><text x="226" y="103" fill="#b45309">y=2x−1</text>
+          <text x="265" y="45" fill="#2563eb">f(x)=x²</text><text x="319" y="196">x</text><text x="67" y="24">y</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
   // Conceptual tangent sketch for function questions asking for a tangent equation.
   if (prompt.includes("معادلة المماس") && (prompt.includes("منحني") || prompt.includes("منحنى"))) {
     return `<figure class="question-diagram" aria-label="رسم تخطيطي لمنحنى ومماس عند نقطة">
@@ -242,7 +261,27 @@ function getQuestionDiagram(question) {
         <path d="M164 47L170 35L176 47" fill="none" stroke="#0f766e" stroke-width="2.6"/>
         <circle cx="170" cy="138" r="3.5" fill="#b45309"/>
         <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
-          <text x="277" y="112">المستوى P</text><text x="181" y="48">n</text><text x="179" y="151">A</text>
+          <text x="277" y="112">المستوى P</text><text x="181" y="48">n</text><text x="179" y="151">A</text><text x="191" y="65">n ⟂ P</text>
+        </g>
+      </svg>
+    </figure>`;
+  }
+
+  // The sourced exercise has A, B and C collinear, with C also on line d.
+  if (prompt.includes("x=t+3") && prompt.includes("1,1,1") &&
+      prompt.includes("0,0,z") && prompt.includes("\\alpha") && prompt.includes("\\gamma")) {
+    return `<figure class="question-diagram" aria-label="المستقيم ABC يلتقي المستقيم d عند النقطة C">
+      <figcaption>A وB وC على استقامة واحدة، وC نقطة تقاطع هذا المستقيم مع d؛ الرسم تخطيطي وليس على مقياس الإحداثيات.</figcaption>
+      <svg viewBox="0 0 340 230" role="img" aria-label="مستقيم ABC ومستقيم d يتقاطعان عند C">
+        <path d="M35 193.889L280 57.778" fill="none" stroke="#2563eb" stroke-width="2.8"/>
+        <path d="M205 30.416667L300 165" fill="none" stroke="#0f766e" stroke-width="2.8"/>
+        <circle cx="60" cy="180" r="4.5" fill="#2563eb"/>
+        <circle cx="150" cy="130" r="4.5" fill="#2563eb"/>
+        <circle cx="240" cy="80" r="4.5" fill="#b45309"/>
+        <g font-family="sans-serif" font-size="12" font-weight="600" fill="var(--text, #172b4d)">
+          <text x="17" y="177">B(0,0,z)</text><text x="135" y="119">A(1,1,1)</text>
+          <text x="246" y="72">C(α,β,γ)</text><text x="288" y="157" fill="#0f766e">d</text>
+          <text x="86" y="93" fill="#2563eb">المستقيم ABC</text>
         </g>
       </svg>
     </figure>`;

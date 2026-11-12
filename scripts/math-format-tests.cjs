@@ -47,6 +47,95 @@ const cases = [
     name: "HTML structure is preserved while formulas are formatted",
     input: "<strong>القيمة:</strong> 1/2",
     expected: "<strong>القيمة:</strong> \\(\\frac{1}{2}\\)"
+  },
+
+  {
+    name: "explicit TeX slash fractions become stacked fractions",
+    input: "احسب \\(1/2\\).",
+    expected: "\\(\\frac{1}{2}\\)"
+  },
+  {
+    name: "nested fractions inside radicals are normalized",
+    input: "الجذر \\(\\sqrt{1+4/n}\\).",
+    expected: "\\(\\sqrt{1+\\frac{4}{n}}\\)"
+  },
+  {
+    name: "a grouped denominator keeps its exponent inside the fraction",
+    input: "\\(2/(x+1)^2\\)",
+    expected: "\\(\\frac{2}{(x+1)^2}\\)"
+  },
+  {
+    name: "compound TeX exponents are grouped",
+    input: "\\(x^(n+1)\\)",
+    expected: "\\(x^{(n+1)}\\)"
+  },
+  {
+    name: "a reversed-order TeX limit is rewritten as x tending to infinity",
+    input: "\\(\\lim_{+\\infty\\to x}f(x)\\)",
+    expected: "\\(\\lim_{x\\to+\\infty}f(x)\\)"
+  },
+  {
+    name: "a left-pointing TeX limit arrow is rewritten in the correct direction",
+    input: "\\(\\lim_{x\\leftarrow+\\infty}f(x)\\)",
+    expected: "\\(\\lim_{x\\to+\\infty}f(x)\\)"
+  },
+  {
+    name: "display-math fractions are normalized without losing display delimiters",
+    input: "\\[3/6=1/2\\]",
+    expected: "\\[\\frac{3}{6}=\\frac{1}{2}\\]"
+  },
+
+  {
+    name: "Greek-angle fractions keep the full numerator",
+    input: "\\(2\\pi/3\\)",
+    expected: "\\(\\frac{2\\pi}{3}\\)"
+  },
+  {
+    name: "function quotients keep the function in the numerator",
+    input: "\\(\\sin(x)/(x+1)\\)",
+    expected: "\\(\\frac{\\sin(x)}{(x+1)}\\)"
+  },
+  {
+    name: "factorial quotient keeps a compound denominator exponent",
+    input: "\\(n!/(1-x)^(n+1)\\)",
+    expected: "\\(\\frac{n!}{(1-x)^{(n+1)}}\\)"
+  },
+  {
+    name: "operator-name expressions remain grouped in a fraction",
+    input: "\\(\\operatorname{Re}(z)/x\\)",
+    expected: "\\(\\frac{\\operatorname{Re}(z)}{x}\\)"
+  },
+  {
+    name: "plain-text Greek-angle fractions are stacked",
+    input: "احسب 2π/3.",
+    expected: "\\(\\frac{2\\pi}{3}.\\)"
+  },
+  {
+    name: "nested parenthesized fractions are normalized from inside out",
+    input: "\\(((1/3)^n+2)/(n+1)\\)",
+    expected: "\\frac{((\\frac{1}{3})^n+2)}{(n+1)}"
+  },
+
+  {
+    name: "derivative prime notation stays in a fraction expression",
+    input: "f'(x)=1/(2x)",
+    expected: "\\(f'(x)=\\frac{1}{(2x)}\\)"
+  },
+  {
+    name: "plus-minus radical numerators are grouped before division",
+    input: "L=(1±√13)/2",
+    expected: "\\(L=\\frac{(1\\pm\\sqrt{13})}{2}\\)"
+  },
+  {
+    name: "a TeX radical inside a parenthesized numerator joins the fraction",
+    input: "x=(1±\\(\\sqrt{5}\\))/2",
+    expected: "\\(x=\\frac{(1\\pm\\sqrt{5})}{2}\\)"
+  },
+
+  {
+    name: "a TeX radical inside a parenthesized denominator joins the fraction",
+    input: "f′(x)=1/(2\\(\\sqrt{x+1}\\))",
+    expected: "\\(f′(x)=\\frac{1}{(2\\sqrt{x+1})}\\)"
   }
 ];
 
