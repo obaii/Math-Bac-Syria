@@ -391,7 +391,7 @@ const assert = require("node:assert/strict");
     // Exercise the new solved examples panel, filters, and lesson coverage.
     await openPanel("solved-examples-library");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 556, "the library should render all 556 solved examples");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 600, "the library should render all 600 solved examples");
     await page.evaluate(async () => {
       await window.MathJax.startup.promise;
       await window.MathJax.typesetPromise([document.querySelector("#solved-examples-list")]);
@@ -436,8 +436,8 @@ const assert = require("node:assert/strict");
         missingCount: missing.length
       };
     });
-    assert.equal(completeLibraryAudit.examples, 556, "the complete audit should read every solved example");
-    assert.equal(completeLibraryAudit.renderedCards, 556, "every solved example should have a rendered card");
+    assert.equal(completeLibraryAudit.examples, 600, "the complete audit should read every solved example");
+    assert.equal(completeLibraryAudit.renderedCards, 600, "every solved example should have a rendered card");
     assert.ok(completeLibraryAudit.checkedMathFields > 0, "the complete audit should inspect mathematical fields across the library");
     assert.equal(completeLibraryAudit.missingCount, 0,
       "every formula in every solved-example question, idea, step, answer, and check should be typeset: " +
@@ -496,7 +496,7 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-source").selectOption("دورة امتحانية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 118, "the exam-source filter should show the 118 sourced adaptations");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من دورة امتحانية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 172, "the adapted cycle-source filter should show all 172 examples available in this audit batch");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 216, "the adapted cycle-source filter should show all 216 examples available in this audit batch");
     await page.locator("#solved-example-source").selectOption("تدريب مستوحى من نموذج وزاري");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the adapted ministerial-model filter should show 20 examples");
     await page.locator("#solved-example-source").selectOption("");
@@ -510,9 +510,9 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-example-year").selectOption("2019");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 41, "the 2019 source filter should show 21 archived examples and 20 new practice variants");
     await page.locator("#solved-example-year").selectOption("2020");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 7, "the 2020 source filter should show seven adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the 2020 source filter should show all 20 classified records, including the 13 new original practice adaptations");
     await page.locator("#solved-example-year").selectOption("2021");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 9, "the 2021 source filter should show nine adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 20, "the 2021 source filter should show all 20 classified records, including the 11 new original practice adaptations");
     await page.locator("#solved-example-year").selectOption("2022");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 75, "the 2022 source filter should show all 75 adaptations, including the new second-session batch");
     await page.locator("#solved-example-year").selectOption("2023");
@@ -526,11 +526,11 @@ const assert = require("node:assert/strict");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 227, "the authored-example filter should show all 227 current examples");
     await page.locator("#solved-example-source").selectOption("");
     await page.locator("#solved-example-topic").selectOption("الاحتمالات");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 54, "topic filtering should show all 54 probability examples, including four additional 2026 probability adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 59, "topic filtering should show all 59 probability examples across the audited years");
     await page.locator("#solved-example-topic").selectOption("مصطلحات المنطق الرياضي");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 6, "the mathematical logic topic should show its six new examples");
     await page.locator("#solved-example-topic").selectOption("نهاية متتالية");
-    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 25, "the sequence-limit topic should show all 25 examples, including the two new 2022 adaptations");
+    assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 27, "the sequence-limit topic should show all 27 examples across the audited years");
     await page.locator("#solved-example-topic").selectOption("تطبيقات الأعداد العقدية");
     assert.equal(await page.locator("#solved-examples-list .solved-example-card").count(), 15, "complex geometry topic should show all fifteen examples");
     await page.locator("#solved-example-topic").selectOption("");
