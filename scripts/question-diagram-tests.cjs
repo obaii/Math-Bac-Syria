@@ -98,8 +98,8 @@ if (!fs.existsSync(path.join(root, "assets", "question-11-graphs.png"))) {
 // Variation-table rows must share the same visual grid: x and f(x) values
 // occupy critical-point columns while derivative signs occupy intervals.
 const variationMarkup = getDiagram({ q: "ادرس تغيرات f(x)=x²−4x+1", topic: "الاشتقاق" });
-const variationRows = [...variationMarkup.matchAll(/<tr>([\\s\\S]*?)<\\/tr>/g)].map(match => match[1]);
-const variationCellCounts = variationRows.map(row => (row.match(/<t[dh]\\b/g) || []).length);
+const variationRows = [...variationMarkup.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(match => match[1]);
+const variationCellCounts = variationRows.map(row => (row.match(/<t[dh]\b/g) || []).length);
 if (variationRows.length !== 3 || new Set(variationCellCounts).size !== 1 ||
     !variationMarkup.includes("variation-table-spacer")) {
   console.error("FAIL: variation-table rows must align point values and interval signs on one consistent grid.");
