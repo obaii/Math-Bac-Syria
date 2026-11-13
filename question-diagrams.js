@@ -4,19 +4,42 @@
 function getQuestionDiagram(question) {
   const prompt = question && typeof question.q === "string" ? question.q : "";
 
-  const variationTable = (caption, xRow, derivativeRow, valueRow, aria = caption) => `
+  const variationTable = (caption, xRow, derivativeRow, valueRow, aria = caption) => {
+    const pointCells = cells => cells.flatMap((cell, index) =>
+      index === cells.length - 1 ? [cell] : [cell, ""]
+    );
+    const derivativeCells = cells => {
+      if (!cells) return [];
+      const aligned = Array(xRow.length * 2 - 1).fill("");
+      if (cells.length === xRow.length - 1) {
+        cells.forEach((cell, index) => { aligned[index * 2 + 1] = cell; });
+      } else if (cells.length === xRow.length) {
+        cells.forEach((cell, index) => { aligned[index * 2] = cell; });
+      } else {
+        cells.forEach((cell, index) => {
+          const slot = Math.round(index * (aligned.length - 1) / Math.max(1, cells.length - 1));
+          aligned[slot] = cell;
+        });
+      }
+      return aligned;
+    };
+    const renderCells = cells => cells.map(cell =>
+      cell === "" ? '<td class="variation-table-spacer" aria-hidden="true"></td>' : `<td>${cell}</td>`
+    ).join("");
+    return `
     <figure class="question-diagram variation-table-figure" aria-label="${aria}">
       <figcaption>${caption}</figcaption>
       <div class="joint-table-scroll">
-        <table class="joint-probability-table variation-table">
+        <table class="joint-probability-table variation-table" aria-label="جدول تغيرات التابع">
           <tbody>
-            <tr><th scope="row">x</th>${xRow.map(cell => `<td>${cell}</td>`).join("")}</tr>
-            ${derivativeRow ? `<tr><th scope="row">f′(x)</th>${derivativeRow.map(cell => `<td>${cell}</td>`).join("")}</tr>` : ""}
-            <tr><th scope="row">f(x)</th>${valueRow.map(cell => `<td>${cell}</td>`).join("")}</tr>
+            <tr><th scope="row">x</th>${renderCells(pointCells(xRow))}</tr>
+            ${derivativeRow ? `<tr><th scope="row">f′(x)</th>${renderCells(derivativeCells(derivativeRow))}</tr>` : ""}
+            <tr><th scope="row">f(x)</th>${renderCells(pointCells(valueRow))}</tr>
           </tbody>
         </table>
       </div>
     </figure>`;
+  };
 
 
   // Schematic graph for the 2021 exam-inspired prompt: the unique zero and
