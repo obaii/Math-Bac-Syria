@@ -2309,3 +2309,6 @@ mjx-container::-webkit-scrollbar,
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+
+.footer-privacy { margin: 6px 0 10px; color: var(--muted, #64748b); font-size: 13px; }
