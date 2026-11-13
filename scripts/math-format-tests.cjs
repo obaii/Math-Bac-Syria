@@ -136,7 +136,29 @@ const cases = [
     name: "a TeX radical inside a parenthesized denominator joins the fraction",
     input: "f′(x)=1/(2\\(\\sqrt{x+1}\\))",
     expected: "\\(f′(x)=\\frac{1}{(2\\sqrt{x+1})}\\)"
-  }
+  },
+
+  // Regressions for TeX commands that run directly into the next variable.
+  {
+    name: "adjacent multiplication command and variable are separated",
+    input: String.raw`\(a\cdotb\)`,
+    expected: String.raw`\(a\cdot b\)`
+  },
+  {
+    name: "adjacent set intersection command and variable are separated",
+    input: String.raw`\(A\capB\)`,
+    expected: String.raw`\(A\cap B\)`
+  },
+  {
+    name: "adjacent union command and variable are separated",
+    input: String.raw`\(A\cupB\)`,
+    expected: String.raw`\(A\cup B\)`
+  },
+  {
+    name: "mixed dot, intersection, and union commands retain token boundaries",
+    input: String.raw`\(u\cdotv\capA\cupB\)`,
+    expected: String.raw`\(u\cdot v\cap A\cup B\)`
+  },
 ];
 
 const failures = [];

@@ -227,6 +227,7 @@
     value = value.replace(/θ/g, "\\theta");
     value = value.replace(/√\s*\(([^()]*)\)/g, "\\sqrt{$1}");
     value = value.replace(/√\s*([A-Za-z0-9]+)/g, "\\sqrt{$1}");
+    value = separateTexCommandBoundaries(value);
     return value;
   }
 
@@ -241,8 +242,15 @@
     });
   }
 
+  function separateTexCommandBoundaries(expression) {
+    // TeX command names consume every following Latin letter. Separate a
+    // following variable so \cdotv and \capA are parsed correctly.
+    return expression.replace(/\\(cdot|times|cap|cup|pm|div|to|infty|pi|theta|sqrt|sin|cos|tan|ln|log|lim)(?=[A-Za-z])/g,
+      (_, command) => "\\" + command + " ");
+  }
+
   function normalizeTexExpression(expression) {
-    let value = expression;
+    let value = separateTexCommandBoundaries(expression);
     if (/\\lim/.test(value)) {
       value = value.replace(/\\lim_\{\s*([+\-]?\\infty)\s*(?:\\to|\\leftarrow|→|←)\s*([A-Za-z])\s*\}/g,
         function (_, infinity, variable) {

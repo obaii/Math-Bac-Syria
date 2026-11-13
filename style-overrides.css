@@ -390,10 +390,19 @@ mjx-container { max-width: 100%; }
 }
 
 
-.joint-table-scroll { width: 100%; overflow-x: auto; }
+.joint-table-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.joint-table-scroll::-webkit-scrollbar { display: none; }
 .joint-probability-table {
   width: 100%;
-  min-width: 300px;
+  min-width: 0;
+  table-layout: fixed;
   border-collapse: collapse;
   text-align: center;
   font-variant-numeric: tabular-nums;
@@ -406,7 +415,10 @@ mjx-container { max-width: 100%; }
 }
 .joint-probability-table th,
 .joint-probability-table td {
-  padding: 8px 10px;
+  min-width: 0;
+  padding: 8px 6px;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border: 1px solid var(--border, #d7deea);
 }
 .joint-probability-table thead th,
@@ -2272,3 +2284,31 @@ body.dark-mode #bookmark-list .bookmark-number {
   min-width: 0;
   max-width: 100%;
 }
+
+
+/* Variation tables align x/f(x) at critical points and f′ signs between them. */
+.variation-table th:first-child { width: 64px; }
+.variation-table .variation-table-spacer { padding: 0; border-inline: 0; background: transparent; }
+.variation-table td { font-size: clamp(11px, 1.8vw, 14px); line-height: 1.45; }
+
+/* Keep touch scrolling for genuinely wide math without visible grey scrollbars. */
+mjx-container,
+.joint-table-scroll,
+#quiz mjx-container,
+#solved-examples-list .solved-example-card mjx-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+mjx-container::-webkit-scrollbar,
+#quiz mjx-container::-webkit-scrollbar,
+#solved-examples-list .solved-example-card mjx-container::-webkit-scrollbar {
+  display: none;
+}
+#quiz mjx-container,
+#solved-examples-list .solved-example-card mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+
+.footer-privacy { margin: 6px 0 10px; color: var(--muted, #64748b); font-size: 13px; }
