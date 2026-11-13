@@ -14,6 +14,7 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
   });
   const page = await context.newPage();
   const pageErrors = [];
+  const mathJaxErrors = [];
   let requestCount = 0;
   let releaseRequest;
   let markRequested;
@@ -21,6 +22,11 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
   const requestStarted = new Promise(resolve => { markRequested = resolve; });
 
   page.on("pageerror", error => pageErrors.push(error.message));
+  page.on("console", message => {
+    if (message.type() === "error" && /MathJax|Extra close brace|Missing open brace|Unknown control sequence/i.test(message.text())) {
+      mathJaxErrors.push(message.text());
+    }
+  });
   await page.route("**/solved-examples.js*", async route => {
     requestCount += 1;
     markRequested();
@@ -62,6 +68,24 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
     );
     assert.match(await page.locator("#solved-examples-count").textContent(), /24 من 600/,
       "the first render should show the first 24 of all 600 examples");
+    await page.waitForFunction(() =>
+      document.querySelectorAll("#solved-examples-list .solved-example-card mjx-container").length > 0,
+      null,
+      { timeout: 20000 }
+    );
+    const renderedMathAudit = await page.evaluate(() => {
+      const cards = [...document.querySelectorAll("#solved-examples-list .solved-example-card")];
+      const formulas = cards.flatMap(card => [...card.querySelectorAll("mjx-container")]);
+      return {
+        formulaCount: formulas.length,
+        rawCommands: cards.filter(card => /\\\\(?:cdot|times|cap|cup|frac|sqrt|lim)[A-Za-z]?/.test(card.textContent)).map(card => card.dataset.exampleId),
+        hiddenScrollbars: formulas.every(element => getComputedStyle(element).scrollbarWidth === "none" && getComputedStyle(element).overflowY === "hidden")
+      };
+    });
+    assert.ok(renderedMathAudit.formulaCount > 0, "the solved-example cards should typeset their mathematical expressions");
+    assert.deepEqual(renderedMathAudit.rawCommands, [], "TeX commands must not leak into visible solved-example text");
+    assert.equal(renderedMathAudit.hiddenScrollbars, true, "rendered formulas should not show distracting grey scrollbars");
+    assert.deepEqual(mathJaxErrors, [], "the first solved-example batch must not emit malformed TeX or brace errors");
 
     await page.locator(".solved-examples-load-more").click();
     await page.waitForFunction(() =>
@@ -85,6 +109,7 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
     await page.locator('#section-menu [data-panel-toggle="solved-examples-library"]').click();
     assert.equal(requestCount, 1, "reopening the library must reuse the already loaded dataset");
     assert.deepEqual(pageErrors, [], "lazy-loading the solved examples must not create uncaught browser errors");
+    assert.deepEqual(mathJaxErrors, [], "the solved-example library must not emit MathJax parse errors");
     console.log("PASS: solved examples load only on first open, show a loading state immediately, render in 24-item batches, and search all 600 examples.");
   } finally {
     releaseRequest();
