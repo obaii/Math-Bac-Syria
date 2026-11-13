@@ -94,6 +94,19 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
     assert.match(await page.locator("#solved-examples-count").textContent(), /48 من 600/,
       "the next batch should append 24 more examples");
 
+    // Example 28 (lim-005) contains multiplication immediately before a
+    // trigonometric fraction; keep this previously reported case covered.
+    const example28 = page.locator('#solved-examples-list [data-example-id="lim-005"]');
+    await example28.waitFor({ state: "visible" });
+    await page.waitForFunction(() => {
+      const card = document.querySelector('#solved-examples-list [data-example-id="lim-005"]');
+      return card && card.querySelectorAll("mjx-container").length > 0;
+    }, null, { timeout: 20000 });
+    const example28Text = await example28.textContent();
+    assert.doesNotMatch(example28Text, /timessin|\\\\(?:times|sin|frac)[A-Za-z]?/i,
+      "example 28 must display its multiplication and sine fraction as rendered math, not concatenated TeX text");
+    assert.deepEqual(mathJaxErrors, [], "example 28 must not emit MathJax parse errors");
+
     await page.locator("#solved-example-search").fill("sin(5x)");
     await page.waitForFunction(() =>
       document.querySelectorAll("#solved-examples-list .solved-example-card").length === 1
