@@ -162,7 +162,7 @@ for (const field of mathFields) {
     if (hasUnstackedDivision(formula)) {
       fail(field.id + " / " + field.field + " still contains an unstacked slash fraction: " + formula.slice(0, 100));
     }
-    if (/\\\\(?:cdot|times|cap|cup|pm|div|to|infty|pi|theta)[A-Za-z]/.test(formula)) {
+    if (/\\(?:cdot|times|cap|cup|pm|div|to|infty|pi|theta)[A-Za-z]/.test(formula)) {
       fail(field.id + " / " + field.field + " has a TeX command joined to the following variable: " + formula.slice(0, 100));
     }
     if (hasReversedLimit(formula)) {
