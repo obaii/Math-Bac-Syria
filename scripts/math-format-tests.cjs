@@ -138,6 +138,7 @@ const cases = [
     expected: "\\(f′(x)=\\frac{1}{(2\\sqrt{x+1})}\\)"
   },
 
+  // Regressions for TeX commands that run directly into the next variable.
   {
     name: "adjacent multiplication command and variable are separated",
     input: String.raw`\(a\cdotb\)`,
