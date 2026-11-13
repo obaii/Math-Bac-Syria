@@ -136,7 +136,7 @@ const cases = [
     name: "a TeX radical inside a parenthesized denominator joins the fraction",
     input: "f′(x)=1/(2\\(\\sqrt{x+1}\\))",
     expected: "\\(f′(x)=\\frac{1}{(2\\sqrt{x+1})}\\)"
-  }
+  },
 
   {
     name: "adjacent multiplication command and variable are separated",
