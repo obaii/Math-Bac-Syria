@@ -244,9 +244,9 @@
 
   function separateTexCommandBoundaries(expression) {
     // TeX command names consume every following Latin letter. Separate a
-    // following variable so \\cdotv and \\capA are parsed correctly.
-    return expression.replace(/\\\\(cdot|times|cap|cup|pm|div|to|infty|pi|theta|sqrt|sin|cos|tan|ln|log|lim)(?=[A-Za-z])/g,
-      (_, command) => "\\\\" + command + " ");
+    // following variable so \cdotv and \capA are parsed correctly.
+    return expression.replace(/\\(cdot|times|cap|cup|pm|div|to|infty|pi|theta|sqrt|sin|cos|tan|ln|log|lim)(?=[A-Za-z])/g,
+      (_, command) => "\\" + command + " ");
   }
 
   function normalizeTexExpression(expression) {
