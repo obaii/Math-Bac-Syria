@@ -264,6 +264,15 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // Regression: example 58 (der-007) must state the excluded domain value in plain Arabic.
+  // A TeX fragment such as R\\{1} leaves an unmatched closing brace when auto-formatted.
+  const solvedExample58 = examples.find(item => item.id === "der-007");
+  const solvedExample58FirstStep = solvedExample58?.steps?.[0] || "";
+  if (!solvedExample58 || !solvedExample58FirstStep.includes("جميع الأعداد الحقيقية ما عدا 1") ||
+      /R\\\\\\{1\\}/.test(solvedExample58FirstStep)) {
+    failures.push("Solved example 58 must render its domain without an unmatched TeX brace.");
+  }
+
   const probabilityExample = examples.find(item => item.id === "exam19-prob-001");
   if (!probabilityExample || !probabilityExample.steps.join(" ").includes("4/10=2/5")) {
     failures.push("The 2019 same-colour draw example must explicitly calculate favourable cases divided by total cases.");
