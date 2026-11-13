@@ -109,7 +109,7 @@ const checks = [
   ["review assistant builds recommendations from local topic accuracy and saved mistakes", /buildReviewAssistantSnapshot/.test(enhancements) && /mistakeCounts\[item\.topic\]/.test(enhancements) && /priorities/.test(enhancements)],
   ["review assistant creates a local plan after explicit activation without network requests", /const runReviewAssistant = \(\) => \{[\s\S]*?buildLocalReviewAssistantPlan\(snapshot\)[\s\S]*?لا تُرسل بياناتك إلى أي خادم/.test(enhancements) && !/const runReviewAssistant = \(\) => \{[\s\S]*?fetch\(/.test(enhancements)],
   ["review assistant clearly discloses that progress stays on the device", /تُنشأ خطة المراجعة محلياً على جهازك، ولا تُرسل بياناتك إلى أي خادم/.test(enhancements)],
-  ["review assistant privacy notice uses the requested concise wording", /<p class="footer-privacy">يُحفظ تقدمك على هذا الجهاز\.<\/p>/.test(html) && !/ملخص أداء تعليمي مجمّع/.test(html)],
+  ["review assistant privacy notice uses the requested concise wording", /<span class="privacy-note">[\s\S]*?تقدمك محفوظ على جهازك/.test(html) && !/ملخص أداء تعليمي مجمّع/.test(html)],
   ["browser flow verifies the spaced-review summary metrics", /review-plan-summary/.test(browser) && /متقن مبدئياً/.test(browser)],
 
   ["intensive training offers all-bank, weak-topic, and saved-mistake sources", /intensive-training-focus/.test(enhancements) && ["all", "weak", "mistakes"].every(value => enhancements.includes("value='" + value + "'"))],
