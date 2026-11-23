@@ -93,7 +93,7 @@ function getQuestionDiagram(question) {
         <g font-family="sans-serif" font-size="13" fill="#172b4d" font-weight="600">
           <text x="55" y="220">A</text><text x="220" y="270">B</text><text x="345" y="199">C</text><text x="188" y="160">D</text>
           <text x="55" y="88">E</text><text x="218" y="132">F</text><text x="345" y="75">G</text><text x="188" y="29">H</text>
-          <text x="253" y="153" fill="#b42318">M(2,2,1)</text><text x="84" y="122" fill="#b42318">M′(0,2,1)</text>
+          <text x="263" y="177" fill="#b42318">M(2,2,1)</text><text x="84" y="122" fill="#b42318">M′(0,2,1)</text>
         </g>
       </svg>
     </figure>`;
@@ -215,8 +215,8 @@ function getQuestionDiagram(question) {
           <path d="M40 110L135 55 M40 110L135 165 M135 55L245 28 M135 55L245 78 M135 165L245 140 M135 165L245 190"/>
         </g>
         <g font-family="sans-serif" font-size="12" fill="var(--text, #172b4d)">
-          <text x="13" y="105">البداية</text><text x="83" y="70">1/3</text><text x="78" y="157">2/3</text>
-          <text x="143" y="43">A</text><text x="143" y="185">A′</text>
+          <text x="22" y="105" font-size="10">البداية</text><text x="83" y="70">1/3</text><text x="78" y="157">2/3</text>
+          <text x="143" y="43">A</text><text x="148" y="187">A′</text>
           <text x="177" y="31">x</text><text x="171" y="77">1−x</text><text x="170" y="139">1/4</text><text x="170" y="195">3/4</text>
           <text x="255" y="32">B</text><text x="255" y="82">B′</text><text x="255" y="144">B</text><text x="255" y="194">B′</text>
           <text x="315" y="111" font-size="11">P(B)=1/4</text>
@@ -335,8 +335,7 @@ function getQuestionDiagram(question) {
 
   // Spatial line sketch for line/plane position questions with parametric forms.
   if (!prompt.includes("النموذج الوزاري الأول لعام 2017") &&
-      (prompt.includes("المستقيم") || prompt.includes("المستقيمان")) &&
-      /(تمثيل وسيطي|تمثيلين|وضعهما|نقطة التقاطع|معطى بالتمثيل)/.test(prompt)) {
+      prompt.includes("معطى بالتمثيل") && prompt.includes("x=t+3")) {
     return `<figure class="question-diagram" aria-label="رسم تخطيطي لمستقيمين في الفضاء">
       <figcaption>رسم مفاهيمي للعلاقات الممكنة بين مستقيمين في الفضاء؛ يُحدد الوضع الدقيق من المعادلات الواردة في السؤال.</figcaption>
       <svg viewBox="0 0 340 230" role="img" aria-label="مستقيمان في فضاء ثلاثي الأبعاد">
@@ -381,11 +380,15 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع f(x)=x²−4x+1؛ تنعدم المشتقة عند x=2.",
       ["−∞", "2", "+∞"], ["−", "+"], ["+∞ ↘", "−3", "↗ +∞"]);
   }
-  if (prompt.includes("f(x)=x³−3x")) {
+  if (prompt.includes("f(x)=x³−3x") && !prompt.includes("f(x)=x³−3x+")) {
     return variationTable("جدول تغيرات التابع على المجال [−2,2] بعد حساب المشتقة.",
       ["−2", "−1", "1", "2"], ["+", "0 / −", "0 / +", "+"], ["−2 ↗", "2 ↘", "−2 ↗", "2"]);
   }
-  if (prompt.includes("f(x)=e^(−2x)")) {
+  if (prompt.includes("f(x)=e^(−2x)+2x−2")) {
+    return variationTable("جدول تغيرات التابع f(x)=e^(−2x)+2x−2: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
+      ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
+  }
+  if (prompt.includes("f(x)=e^(−2x)") && !prompt.includes("+2x−2")) {
     return variationTable("جدول تغيرات التابع الأسي؛ مشتقته سالبة على R.",
       ["−∞", "+∞"], ["−"], ["+∞ ↘", "0"]);
   }

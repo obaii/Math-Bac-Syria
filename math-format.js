@@ -3,7 +3,7 @@
 
   const HTML_OR_TEX_BLOCK = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|<\/?(?:strong|em|span|div|p|br|ol|ul|li|sub|sup|small|code|a|section|table|tbody|thead|tr|td|th)\b[^>]*>)/gi;
   const PLAIN_MATH_RUN = /[A-Za-z0-9_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′'∩∪√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ…±()[\]{}.+\-−×÷*·\/^=<>≤≥→←⟶∞πθ∫∑!|,:\\\s]+/gu;
-  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*·/^√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹∩∪±\\]/;
+  const MATH_OPERATOR = /[=<>≤≥→←⟶×÷*·/^_√∫∑⁰¹²³⁴⁵⁶⁷⁸⁹∩∪±\\]/;
 
   function findMatchingOpen(value, endIndex, open, close) {
     let depth = 0;
@@ -62,6 +62,10 @@
     } else if (/[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(last)) {
       start = end - 1;
       while (start > 0 && /[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(value[start - 1])) start--;
+      if (start > 0 && value[start - 1] === "." && /[0-9]/.test(value[start - 2] || "")) {
+        start--;
+        while (start > 0 && /[0-9]/.test(value[start - 1])) start--;
+      }
       if (start > 0 && value[start - 1] === "\\") start--;
       if (start > 0 && value[start - 1] === "^") {
         const base = readBackwardMathAtom(value, start - 1);
@@ -133,6 +137,10 @@
       index = consumeCommand(index);
     } else if (/[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(value[index])) {
       while (index < value.length && /[A-Za-z0-9πθ∞√αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ_ₐ-ₜ₀-₉⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻′]/u.test(value[index])) index++;
+      if (/[0-9]/.test(value[index - 1] || "") && value[index] === "." && /[0-9]/.test(value[index + 1] || "")) {
+        index++;
+        while (index < value.length && /[0-9]/.test(value[index])) index++;
+      }
     } else {
       return null;
     }
@@ -211,7 +219,8 @@
     value = value.replace(/\^\s*×/g, "^{x}");
     value = value.replace(/([A-Za-z])([ₐ-ₜ₀-₉]+)/gu, "$1_$2");
     value = value.replace(/([A-Za-z0-9])([⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱˣ⁺⁻]+)/gu, "$1^{$2}");
-    value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
+    value = value.replace(/\^\s*\(([^(){}]*)\)/g, "^{$1}");
+    value = value.replace(/\^\s*([A-Za-z]{2,}|\d{2,})/g, "^{$1}");
     value = value.replace(/\^\s*([A-Za-z0-9]+)/g, "^{$1}");
     value = normalizeTexFractions(value);
     value = value.replace(/->|→|⟶/g, "\\to");
@@ -245,12 +254,13 @@
   function separateTexCommandBoundaries(expression) {
     // TeX command names consume every following Latin letter. Separate a
     // following variable so \cdotv and \capA are parsed correctly.
-    return expression.replace(/\\(cdot|times|cap|cup|pm|div|to|infty|pi|theta|sqrt|sin|cos|tan|ln|log|lim)(?=[A-Za-z])/g,
+    return expression.replace(/\\(cdot|times|cap|cup|pm|div|to|infty|pi|theta|sqrt|sin|cos|tan|ln|log|lim|vec|overrightarrow)(?=[A-Za-z])/g,
       (_, command) => "\\" + command + " ");
   }
 
   function normalizeTexExpression(expression) {
     let value = separateTexCommandBoundaries(expression);
+    value = value.replace(/\\(binom|frac)\s*([A-Za-z0-9])\s*([A-Za-z0-9])/g, (_, command, numerator, denominator) => "\\" + command + "{" + numerator + "}{" + denominator + "}");
     if (/\\lim/.test(value)) {
       value = value.replace(/\\lim_\{\s*([+\-]?\\infty)\s*(?:\\to|\\leftarrow|→|←)\s*([A-Za-z])\s*\}/g,
         function (_, infinity, variable) {
@@ -261,7 +271,8 @@
           return "\\lim_{" + variable + "\\to" + infinity + "}";
         });
     }
-    value = value.replace(/\^\s*(\([^{}]*\)|[A-Za-z]{2,}|\d{2,})/g, "^{$1}");
+    value = value.replace(/\^\s*\(([^(){}]*)\)/g, "^{$1}");
+    value = value.replace(/\^\s*([A-Za-z]{2,}|\d{2,})/g, "^{$1}");
     return normalizeTexFractions(value);
   }
 
