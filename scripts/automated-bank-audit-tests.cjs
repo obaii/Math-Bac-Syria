@@ -81,6 +81,13 @@ try {
   if (!Array.isArray(questions) || questions.length !== 609) {
     fail("Expected 609 merged questions, found " + (questions || []).length + ".");
   }
+
+  const mcqAnswerPositions = [0, 1, 2, 3].map(position =>
+    questions.filter(question => (question.type || "mcq") === "mcq" && question.answer === position).length
+  );
+  if (Math.max(...mcqAnswerPositions) - Math.min(...mcqAnswerPositions) > 1) {
+    fail("Correct MCQ answer positions must be balanced across A/B/C/D; found " + mcqAnswerPositions.join("/"));
+  }
   if (!Array.isArray(typed) || typed.length !== 15) {
     fail("Expected 15 typed-answer source records, found " + (typed || []).length + ".");
   }
