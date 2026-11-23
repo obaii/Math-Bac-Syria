@@ -221,6 +221,11 @@ try {
     }
   }
 
+  const simpleDerivative = questions.find(question => question.q === "مشتقة \\(f(x)=e^{3x}\\) هي:");
+  if (!simpleDerivative || simpleDerivative.level !== "أساسي") {
+    fail("The direct chain-rule derivative e^(3x) must not be classified as advanced.");
+  }
+
   // Require a separate expected-answer regression entry for every archived item.
   const regressionSource = fs.readFileSync(path.join(root, "scripts/answer-regression-tests.cjs"), "utf8");
   const regressionCases = [...regressionSource.matchAll(/\{\s*"contains"\s*:\s*"((?:\\.|[^"\\])*)"\s*,\s*"expected"\s*:\s*"((?:\\.|[^"\\])*)"\s*\}/g)]
