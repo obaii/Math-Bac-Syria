@@ -81,6 +81,13 @@ try {
   if (!Array.isArray(questions) || questions.length !== 609) {
     fail("Expected 609 merged questions, found " + (questions || []).length + ".");
   }
+
+  const mcqAnswerPositions = [0, 1, 2, 3].map(position =>
+    questions.filter(question => (question.type || "mcq") === "mcq" && question.answer === position).length
+  );
+  if (Math.max(...mcqAnswerPositions) - Math.min(...mcqAnswerPositions) > 1) {
+    fail("Correct MCQ answer positions must be balanced across A/B/C/D; found " + mcqAnswerPositions.join("/"));
+  }
   if (!Array.isArray(typed) || typed.length !== 15) {
     fail("Expected 15 typed-answer source records, found " + (typed || []).length + ".");
   }
@@ -212,6 +219,23 @@ try {
         !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3) {
       fail(label + " is not a valid four-option automated MCQ.");
     }
+  }
+
+  const binomialFormulaCases = [
+    { match: question => question.q.includes("صندوق فيه 4 كرات خضراء") && question.q.includes("X=0"), expected: ["\\binom{4}{3}", "\\binom{9}{3}"] },
+    { match: question => question.q.includes("صندوق 4 كرات خضراء") && question.q.includes("X=1"), expected: ["\\binom{5}{1}", "\\binom{4}{2}", "\\binom{9}{3}"] },
+    { match: question => question.q.includes("صندوق 4 كرات خضراء") && question.q.includes("X=2"), expected: ["\\binom{5}{2}", "\\binom{4}{1}", "\\binom{9}{3}"] },
+    { match: question => question.q.includes("صندوق 4 كرات خضراء") && question.q.includes("X=3"), expected: ["\\binom{5}{3}", "\\binom{9}{3}"] }
+  ];
+  for (const testCase of binomialFormulaCases) {
+    const matches = questions.filter(testCase.match);
+    if (matches.length !== 1 || !testCase.expected.every(fragment => matches[0].solution.includes(fragment))) {
+      fail("A reviewed binomial probability question is missing explicit braced arguments.");
+    }
+  }
+  const simpleDerivative = questions.find(question => question.q === "مشتقة \\(f(x)=e^{3x}\\) هي:");
+  if (!simpleDerivative || simpleDerivative.level !== "أساسي") {
+    fail("The direct chain-rule derivative e^(3x) must not be classified as advanced.");
   }
 
   // Require a separate expected-answer regression entry for every archived item.

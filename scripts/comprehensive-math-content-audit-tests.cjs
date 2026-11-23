@@ -275,6 +275,74 @@ for (const [id, fragments] of Object.entries(historicalAnswerChecks)) {
   }
 }
 
+
+const manualReviewQuestions = new Map((questions || []).map(question => [question.id, question]));
+const manualReviewExamples = new Map((examples || []).map(example => [example.id, example]));
+const requiredStandaloneQuestions = [
+  "q-pdeig9", "q-g44ydw", "q-spmlam", "q-49no3u", "q-tnj5zi",
+  "q-1vwefbm", "q-16ebsj0", "q-5v4o16", "q-18xqvyj", "q-6wmskd"
+];
+for (const id of requiredStandaloneQuestions) {
+  const question = manualReviewQuestions.get(id);
+  if (!question) fail("Missing manually reviewed stable question ID " + id);
+  else if (/(?:السابق|السابقة|نفسه|نفس الصندوق|من جدول تغيرات|من جدول التغيرات)/.test(question.q)) {
+    fail(id + " still depends on a previous question or an absent variation table.");
+  }
+}
+const repairedVector = manualReviewQuestions.get("q-r9cnh5");
+if (!repairedVector || !repairedVector.q.includes("\\vec u") || repairedVector.q.includes("u000b")) {
+  fail("q-r9cnh5 must use a valid vector command in the prompt.");
+}
+const repairedRadical = manualReviewQuestions.get("q-hbu2nq");
+if (!repairedRadical || !repairedRadical.q.includes("\\sqrt{3}\\,i")) {
+  fail("q-hbu2nq must distinguish sqrt(3) multiplied by i from sqrt(3i).");
+}
+const uniqueTangentAnswer = manualReviewQuestions.get("q-1bwh99f");
+if (!uniqueTangentAnswer || uniqueTangentAnswer.options?.[uniqueTangentAnswer.answer] !== "2" ||
+    new Set(uniqueTangentAnswer.options).size !== 4) {
+  fail("q-1bwh99f must ask for the right-hand half-tangent slope with one unambiguous answer.");
+}
+for (const [id, expected] of [
+  ["dot-003", "sqrt{2}/2"],
+  ["int-006", "التابع تحت إشارة التكامل"],
+  ["exam22-prob-002", "كرتين زرقاوين وكرة حمراء"],
+  ["exam22-cycle2-005", "3 بطاقات حمراء وبطاقتين زرقاوين"],
+  ["exam24-cycle1-012", "كرتين حمراوين وثلاث زرقاء"],
+  ["exam24-cycle1-007", "s_{n+1}"],
+  ["exam24-sequence-001", "f(x)="]
+]) {
+  const example = manualReviewExamples.get(id);
+  if (!example || !JSON.stringify(example).includes(expected)) fail(id + " is missing its manual-review correction.");
+}
+const standaloneExamples = [
+  "exam18-cycle2-001", "exam18-cycle2-002", "exam18-cycle2-003",
+  "exam19-cycle1-001", "exam19-cycle1-002", "exam19-3d-004",
+  "exam23-exp-002", "exam17-3d-002"
+];
+for (const id of standaloneExamples) {
+  const example = manualReviewExamples.get(id);
+  if (!example) fail("Missing standalone solved example " + id);
+  else if (/(?:السابق|السابقة|في المكعب نفسه|في المكعب السابق|من جدول التغيرات|من جدول تغيرات)/.test(example.question)) {
+    fail(id + " still relies on context outside its own prompt.");
+  }
+}
+for (const id of [
+  "exam22-function-001", "exam22-function-002", "exam22-function-003",
+  "exam22-function-004", "exam22-function-005", "exam22-function-006",
+  "exam22-function-007", "exam22-function-008", "exam22-function-009",
+  "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019"
+]) {
+  const example = manualReviewExamples.get(id);
+  const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
+  if (!diagram || !diagram.includes("القيمة الصغرى −1 عند x=0")) {
+    fail(id + " must display the variation table for the complete function e^(−2x)+2x−2.");
+  }
+}
+const shiftedCubicExample = manualReviewExamples.get("exam20-extra-004");
+if (shiftedCubicExample && getQuestionDiagram({ q: shiftedCubicExample.question, topic: shiftedCubicExample.topic })) {
+  fail("The x³−3x variation table must not be attached to the different function x³−3x+1.");
+}
+
 if (failures.length) {
   console.error("Comprehensive math content audit failed (" + failures.length + " findings):");
   failures.slice(0, 80).forEach(message => console.error(" - " + message));

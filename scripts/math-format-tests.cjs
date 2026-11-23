@@ -65,9 +65,9 @@ const cases = [
     expected: "\\(\\frac{2}{(x+1)^2}\\)"
   },
   {
-    name: "compound TeX exponents are grouped",
+    name: "compound TeX exponents are grouped without redundant parentheses",
     input: "\\(x^(n+1)\\)",
-    expected: "\\(x^{(n+1)}\\)"
+    expected: "\\(x^{n+1}\\)"
   },
   {
     name: "a reversed-order TeX limit is rewritten as x tending to infinity",
@@ -98,7 +98,7 @@ const cases = [
   {
     name: "factorial quotient keeps a compound denominator exponent",
     input: "\\(n!/(1-x)^(n+1)\\)",
-    expected: "\\(\\frac{n!}{(1-x)^{(n+1)}}\\)"
+    expected: "\\(\\frac{n!}{(1-x)^{n+1}}\\)"
   },
   {
     name: "operator-name expressions remain grouped in a fraction",
@@ -136,6 +136,28 @@ const cases = [
     name: "a TeX radical inside a parenthesized denominator joins the fraction",
     input: "f′(x)=1/(2\\(\\sqrt{x+1}\\))",
     expected: "\\(f′(x)=\\frac{1}{(2\\sqrt{x+1})}\\)"
+  },
+
+  {
+    name: "decimal numerator and denominator remain intact",
+    input: "احسب 0.18/0.3.",
+    expected: "\\(\\frac{0.18}{0.3}.\\)"
+  },
+  {
+    name: "unbraced binomial arguments are repaired",
+    input: "\\( \\binom43 \\)",
+    expected: "\\( \\binom{4}{3} \\)"
+  },
+  {
+    name: "vector command is separated from its variable",
+    input: "\\( \\vecu \\)",
+    expected: "\\( \\vec u \\)"
+  },
+
+  {
+    name: "the 2019 geometric-sum denominator keeps the complete parenthesized exponent and fraction",
+    input: "S_n=(1−(1/3)^(n+1))/(1−1/3).",
+    expected: "\\(S_n=\\frac{(1−(\\frac{1}{3})^{n+1})}{(1−\\frac{1}{3})}.\\)"
   },
 
   // Regressions for TeX commands that run directly into the next variable.

@@ -93,7 +93,7 @@ function getQuestionDiagram(question) {
         <g font-family="sans-serif" font-size="13" fill="#172b4d" font-weight="600">
           <text x="55" y="220">A</text><text x="220" y="270">B</text><text x="345" y="199">C</text><text x="188" y="160">D</text>
           <text x="55" y="88">E</text><text x="218" y="132">F</text><text x="345" y="75">G</text><text x="188" y="29">H</text>
-          <text x="253" y="153" fill="#b42318">M(2,2,1)</text><text x="84" y="122" fill="#b42318">M′(0,2,1)</text>
+          <text x="263" y="177" fill="#b42318">M(2,2,1)</text><text x="84" y="122" fill="#b42318">M′(0,2,1)</text>
         </g>
       </svg>
     </figure>`;
@@ -215,8 +215,8 @@ function getQuestionDiagram(question) {
           <path d="M40 110L135 55 M40 110L135 165 M135 55L245 28 M135 55L245 78 M135 165L245 140 M135 165L245 190"/>
         </g>
         <g font-family="sans-serif" font-size="12" fill="var(--text, #172b4d)">
-          <text x="13" y="105">البداية</text><text x="83" y="70">1/3</text><text x="78" y="157">2/3</text>
-          <text x="143" y="43">A</text><text x="143" y="185">A′</text>
+          <text x="22" y="105" font-size="10">البداية</text><text x="83" y="70">1/3</text><text x="78" y="157">2/3</text>
+          <text x="143" y="43">A</text><text x="148" y="187">A′</text>
           <text x="177" y="31">x</text><text x="171" y="77">1−x</text><text x="170" y="139">1/4</text><text x="170" y="195">3/4</text>
           <text x="255" y="32">B</text><text x="255" y="82">B′</text><text x="255" y="144">B</text><text x="255" y="194">B′</text>
           <text x="315" y="111" font-size="11">P(B)=1/4</text>
@@ -226,43 +226,6 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
-
-  // Generic spatial cone sketch: supports visualization without changing question data.
-  if (prompt.includes("مخروط دائري قائم")) {
-    const coneAxisLabel = prompt.includes("محور z") ? "z" : "المحور";
-    const coneAxisCaption = prompt.includes("محور z") ? "رسم توضيحي لمخروط دائري قائم محوره محور z؛ الأبعاد والمعطيات تؤخذ من نص السؤال." : "رسم توضيحي لشكل المخروط ومحوره وقاعدته الدائرية؛ الأبعاد والمعطيات تؤخذ من نص السؤال.";
-    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمخروط دائري قائم">
-      <figcaption>${coneAxisCaption}</figcaption>
-      <svg viewBox="0 0 340 250" role="img" aria-label="مخروط دائري قائم ومحوره">
-        <ellipse cx="170" cy="194" rx="88" ry="25" fill="#dbeafe" fill-opacity=".7" stroke="#64748b" stroke-width="1.7"/>
-        <path d="M170 35L82 194 M170 35L258 194" fill="none" stroke="#2563eb" stroke-width="2.2"/>
-        <path d="M170 35V194" stroke="#0f766e" stroke-width="1.8" stroke-dasharray="5 4"/>
-        <path d="M170 194H258" stroke="#b45309" stroke-width="2"/>
-        <circle cx="170" cy="194" r="3.5" fill="#b45309"/>
-        <g font-family="sans-serif" font-size="13" fill="var(--text, #172b4d)">
-          <text x="180" y="31">الرأس</text><text x="179" y="116">المحور</text>
-          <text x="204" y="185">r</text><text x="164" y="214">O</text><text x="260" y="205">حافة القاعدة</text>
-        </g>
-      </svg>
-    </figure>`;
-  }
-
-  // Schematic sphere for questions whose main object is a sphere.
-  if (prompt.includes("الكرة") && /(معادلة الكرة|كرة نصف قطرها|سطح الكرة|الكرة مركزها)/.test(prompt)) {
-    return `<figure class="question-diagram" aria-label="رسم تخطيطي لكرة يوضح المركز ونصف القطر">
-      <figcaption>رسم تخطيطي يوضح المركز ونصف القطر؛ لا يمثل مقياساً عددياً للإحداثيات.</figcaption>
-      <svg viewBox="0 0 340 240" role="img" aria-label="كرة مركزها O ونصف قطرها r">
-        <circle cx="160" cy="118" r="78" fill="#dbeafe" fill-opacity=".42" stroke="#64748b" stroke-width="1.8"/>
-        <ellipse cx="160" cy="118" rx="78" ry="25" fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="5 4"/>
-        <ellipse cx="160" cy="118" rx="30" ry="78" fill="none" stroke="#64748b" stroke-width="1.3" stroke-dasharray="5 4"/>
-        <path d="M160 118L224 73" stroke="#2563eb" stroke-width="2.4"/>
-        <circle cx="160" cy="118" r="4" fill="#0f766e"/>
-        <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
-          <text x="145" y="137">O</text><text x="192" y="86">r</text><text x="239" y="70">نصف القطر</text>
-        </g>
-      </svg>
-    </figure>`;
-  }
 
   // Exact sketch for f(x)=x² at x=1: the point is (1,1) and the tangent is y=2x−1.
   if (prompt.includes("f(x)=x^2") && prompt.includes("عند النقطة ذات الفاصلة 1")) {
@@ -276,38 +239,6 @@ function getQuestionDiagram(question) {
         <g font-family="sans-serif" font-size="13" fill="var(--text, #172b4d)">
           <text x="178" y="143">A(1,1)</text><text x="226" y="103" fill="#b45309">y=2x−1</text>
           <text x="265" y="45" fill="#2563eb">f(x)=x²</text><text x="319" y="196">x</text><text x="67" y="24">y</text>
-        </g>
-      </svg>
-    </figure>`;
-  }
-
-  // Conceptual tangent sketch for function questions asking for a tangent equation.
-  if (prompt.includes("معادلة المماس") && (prompt.includes("منحني") || prompt.includes("منحنى"))) {
-    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمنحنى ومماس عند نقطة">
-      <figcaption>رسم مفاهيمي يوضح نقطة التماس والمماس؛ استخدم معطيات السؤال لتحديد المعادلة الفعلية.</figcaption>
-      <svg viewBox="0 0 340 230" role="img" aria-label="منحنى ومماس عند نقطة تماس">
-        <path d="M28 184H315 M62 205V22" fill="none" stroke="#64748b" stroke-width="1.5"/>
-        <path d="M72 181 C108 178 128 143 157 111 S219 66 291 42" fill="none" stroke="#2563eb" stroke-width="2.8"/>
-        <path d="M91 174L276 48" fill="none" stroke="#b45309" stroke-width="2.3" stroke-dasharray="6 4"/>
-        <circle cx="157" cy="111" r="4.5" fill="#0f766e"/>
-        <g font-family="sans-serif" font-size="13" fill="var(--text, #172b4d)">
-          <text x="165" y="104">نقطة التماس</text><text x="224" y="83">المماس</text><text x="296" y="201">x</text><text x="48" y="25">y</text>
-        </g>
-      </svg>
-    </figure>`;
-  }
-
-  // Plane with a normal vector, a schematic aid for analytic geometry questions.
-  if (prompt.includes("المستوى") && /(شعاع ناظم|الناظم له|ناظم المستوى)/.test(prompt)) {
-    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمستوى وشعاع ناظم">
-      <figcaption>رسم مفاهيمي لمستوى وشعاع ناظم عمودي عليه؛ الإحداثيات الدقيقة تبقى وفق نص السؤال.</figcaption>
-      <svg viewBox="0 0 340 230" role="img" aria-label="مستوى P وشعاع ناظم n">
-        <polygon points="38,157 190,196 302,117 150,78" fill="#dbeafe" fill-opacity=".8" stroke="#64748b" stroke-width="1.7"/>
-        <path d="M170 138L170 35" stroke="#0f766e" stroke-width="2.6"/>
-        <path d="M164 47L170 35L176 47" fill="none" stroke="#0f766e" stroke-width="2.6"/>
-        <circle cx="170" cy="138" r="3.5" fill="#b45309"/>
-        <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
-          <text x="277" y="112">المستوى P</text><text x="181" y="48">n</text><text x="179" y="151">A</text><text x="191" y="65">n ⟂ P</text>
         </g>
       </svg>
     </figure>`;
@@ -332,25 +263,6 @@ function getQuestionDiagram(question) {
       </svg>
     </figure>`;
   }
-
-  // Spatial line sketch for line/plane position questions with parametric forms.
-  if (!prompt.includes("النموذج الوزاري الأول لعام 2017") &&
-      (prompt.includes("المستقيم") || prompt.includes("المستقيمان")) &&
-      /(تمثيل وسيطي|تمثيلين|وضعهما|نقطة التقاطع|معطى بالتمثيل)/.test(prompt)) {
-    return `<figure class="question-diagram" aria-label="رسم تخطيطي لمستقيمين في الفضاء">
-      <figcaption>رسم مفاهيمي للعلاقات الممكنة بين مستقيمين في الفضاء؛ يُحدد الوضع الدقيق من المعادلات الواردة في السؤال.</figcaption>
-      <svg viewBox="0 0 340 230" role="img" aria-label="مستقيمان في فضاء ثلاثي الأبعاد">
-        <path d="M42 185L145 211L302 151 M42 185L95 46L302 151 M95 46L145 211" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
-        <path d="M58 169L278 80" stroke="#2563eb" stroke-width="2.6"/>
-        <path d="M93 62L251 180" stroke="#0f766e" stroke-width="2.6"/>
-        <circle cx="185" cy="117" r="4" fill="#b45309"/>
-        <g font-family="sans-serif" font-size="14" fill="var(--text, #172b4d)">
-          <text x="264" y="73">d</text><text x="255" y="196">d′</text><text x="194" y="111">P</text>
-        </g>
-      </svg>
-    </figure>`;
-  }
-
 
   // Exact variation tables for worked examples and sourced questions whose
   // expressions and critical points are explicitly present in the question.
@@ -381,11 +293,15 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع f(x)=x²−4x+1؛ تنعدم المشتقة عند x=2.",
       ["−∞", "2", "+∞"], ["−", "+"], ["+∞ ↘", "−3", "↗ +∞"]);
   }
-  if (prompt.includes("f(x)=x³−3x")) {
+  if (prompt.includes("f(x)=x³−3x") && !prompt.includes("f(x)=x³−3x+")) {
     return variationTable("جدول تغيرات التابع على المجال [−2,2] بعد حساب المشتقة.",
       ["−2", "−1", "1", "2"], ["+", "0 / −", "0 / +", "+"], ["−2 ↗", "2 ↘", "−2 ↗", "2"]);
   }
-  if (prompt.includes("f(x)=e^(−2x)")) {
+  if (prompt.includes("f(x)=e^(−2x)+2x−2")) {
+    return variationTable("جدول تغيرات التابع f(x)=e^(−2x)+2x−2: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
+      ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
+  }
+  if (prompt.includes("f(x)=e^(−2x)") && !prompt.includes("+2x−2")) {
     return variationTable("جدول تغيرات التابع الأسي؛ مشتقته سالبة على R.",
       ["−∞", "+∞"], ["−"], ["+∞ ↘", "0"]);
   }

@@ -45,6 +45,16 @@ for (const row of [...inventory.entries, ...crosswalk.entries]) {
   expect(sourceTotal === row.exampleCount, "sourceTypes must reconcile for label: " + row.lessonLabel);
 }
 
+const previouslyDuplicatedExampleIds = ["der-005", "der-008", "der-014", "log-004", "log-007", "dot-002", "dot-005", "dot-010"];
+const reviewedPrompts = previouslyDuplicatedExampleIds.map(id => {
+  const start = source.indexOf('id:"' + id + '"');
+  const match = start < 0 ? null : source.slice(start).match(/question:"((?:\\.|[^"\\])*)"/);
+  return match ? JSON.parse('"' + match[1] + '"') : null;
+});
+expect(reviewedPrompts.every(Boolean), "Previously duplicated solved examples must remain present.");
+expect(new Set(reviewedPrompts).size === reviewedPrompts.length,
+  "Previously duplicated solved-example IDs must now have distinct question prompts.");
+
 if (failures.length) {
   console.error("Solved-example reference integrity failed:");
   for (const failure of failures) console.error("- " + failure);
