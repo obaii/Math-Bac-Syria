@@ -141,7 +141,7 @@ const cases = [
   {
     name: "decimal numerator and denominator remain intact",
     input: "احسب 0.18/0.3.",
-    expected: "\\( \\frac{0.18}{0.3}.\\)"
+    expected: "\\(\\frac{0.18}{0.3}.\\)"
   },
   {
     name: "unbraced binomial arguments are repaired",
@@ -157,7 +157,7 @@ const cases = [
   {
     name: "the 2019 geometric-sum denominator keeps the complete parenthesized exponent and fraction",
     input: "S_n=(1−(1/3)^(n+1))/(1−1/3).",
-    expected: "\\(\\frac{(1−(\\frac{1}{3})^{n+1})}{(1−\\frac{1}{3})}\\)"
+    expected: "\\(S_n=\\frac{(1−(\\frac{1}{3})^{n+1})}{(1−\\frac{1}{3})}.\\)"
   },
 
   // Regressions for TeX commands that run directly into the next variable.
