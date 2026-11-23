@@ -279,7 +279,16 @@ for (const test of cases) {
     failures++;
     continue;
   }
-  const q = matches[0];
+  const q = matches[0,
+  {"contains":"إذا تغيرت إشارة f′ من موجبة إلى سالبة عند x=−2، وكانت f(−2)=4","expected":"4"},
+  {"contains":"إذا تغيرت إشارة f′ من سالبة إلى موجبة عند x=2، وكانت f(2)=−1","expected":"−1"},
+  {"contains":"إذا كانت f′ موجبة على (−∞,−2)، وسالبة على (−2,2)، وموجبة على (2,+∞)","expected":"متزايدة على (−∞,−2) و(2,+∞)، ومتناقصة على (−2,2)"},
+  {"contains":"إذا كانت نهايتا تابع f هما f(x)→+∞ عندما x→−∞ وf(x)→3 عندما x→+∞","expected":"lim(−∞)=+∞، lim(+∞)=3، والمقارب y=3"},
+  {"contains":"إذا كان التابع f متزايداً على المجال [−1,2] وكان f(−1)=−2 وf(2)=4","expected":"الصغرى −2 والعظمى 4، والصورة [−2,4]"},
+  {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. إذا كانت البطاقة الأولى حمراء","expected":"\\(\\frac12\\)"},
+  {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. ليكن X عدد البطاقات الحمراء المسحوبة","expected":"لا، لأن احتمال التقاطع لا يساوي حاصل ضرب الاحتمالين"},
+  {"contains":"في صندوق يحتوي على 3 كرات حمراء و2 زرقاء و5 بيضاء، نسحب كرتين دفعة واحدة. ما احتمال ظهور كرة بيضاء واحدة على الأقل","expected":"\\(\\frac79\\)"}
+];
   const selected = Array.isArray(q.options) ? q.options[q.answer] : undefined;
   if (normalize(selected) !== normalize(test.expected)) {
     console.error(`FAIL: "${test.contains}" expected answer "${test.expected}", got "${selected}" (answer index ${q.answer})`);
