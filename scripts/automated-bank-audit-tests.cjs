@@ -221,6 +221,17 @@ try {
     }
   }
 
+  const binomialFormulaCases = [
+    { prefix: "صندوق فيه 4 كرات خضراء و5 حمراء. نسحب 3 كرات دفعة واحدة. إذا كان", expected: ["\\\\binom{4}{3}", "\\\\binom{9}{3}"] },
+    { prefix: "في صندوق 4 كرات خضراء و5 حمراء، نسحب 3 كرات دفعة واحدة. إذا كان", expected: ["\\\\binom{5}{1}", "\\\\binom{4}{2}", "\\\\binom{5}{2}", "\\\\binom{4}{1}", "\\\\binom{5}{3}", "\\\\binom{9}{3}"] }
+  ];
+  const binomialQuestions = binomialFormulaCases.map(testCase =>
+    questions.find(question => question.q.startsWith(testCase.prefix) &&
+      testCase.expected.some(fragment => question.solution.includes(fragment)))
+  );
+  if (binomialQuestions.some(question => !question)) {
+    fail("The four reviewed binomial probability questions must retain explicit braced binomial arguments.");
+  }
   const simpleDerivative = questions.find(question => question.q === "مشتقة \\(f(x)=e^{3x}\\) هي:");
   if (!simpleDerivative || simpleDerivative.level !== "أساسي") {
     fail("The direct chain-rule derivative e^(3x) must not be classified as advanced.");
