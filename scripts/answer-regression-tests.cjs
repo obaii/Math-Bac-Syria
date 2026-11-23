@@ -269,6 +269,9 @@ const cases = [
   {"contains":"للمتتالية \\(u_0=0, u_{n+1}=\\frac{u_n+2}{2}\\)، ما نهايتها؟","expected":"\\(2\\)"},
   {"contains":"متتالية هندسية حدها الأول 3 وأساسها 1/2. مجموع حدودها العشرة الأولى يساوي:","expected":"\\(6(1-2^{-10})\\)"},
   {"contains":"قيمة \\(\\int_0^1\\frac{2x+1}{x^2+x+1}\\,dx\\) هي:","expected":"\\(\\ln3\\)"},
+];
+
+const archiveCases = [
   {"contains":"إذا تغيرت إشارة f′ من موجبة إلى سالبة عند x=−2، وكانت f(−2)=4","expected":"4"},
   {"contains":"إذا تغيرت إشارة f′ من سالبة إلى موجبة عند x=2، وكانت f(2)=−1","expected":"−1"},
   {"contains":"إذا كانت f′ موجبة على (−∞,−2)، وسالبة على (−2,2)، وموجبة على (2,+∞)","expected":"متزايدة على (−∞,−2) و(2,+∞)، ومتناقصة على (−2,2)"},
@@ -288,10 +291,6 @@ for (const test of cases) {
     continue;
   }
   const q = matches[0];
-  if (!Array.isArray(q.options)) {
-    console.log(`SKIP: "${test.contains}" is not an MCQ in the live bank; archived MCQ coverage is checked separately.`);
-    continue;
-  }
   const selected = q.options[q.answer];
   if (normalize(selected) !== normalize(test.expected)) {
     console.error(`FAIL: "${test.contains}" expected answer "${test.expected}", got "${selected}" (answer index ${q.answer})`);
