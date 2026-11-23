@@ -222,15 +222,16 @@ try {
   }
 
   const binomialFormulaCases = [
-    { prefix: "صندوق فيه 4 كرات خضراء و5 حمراء. نسحب 3 كرات دفعة واحدة. إذا كان", expected: ["\\\\binom{4}{3}", "\\\\binom{9}{3}"] },
-    { prefix: "في صندوق 4 كرات خضراء و5 حمراء، نسحب 3 كرات دفعة واحدة. إذا كان", expected: ["\\\\binom{5}{1}", "\\\\binom{4}{2}", "\\\\binom{5}{2}", "\\\\binom{4}{1}", "\\\\binom{5}{3}", "\\\\binom{9}{3}"] }
+    { match: question => question.q.includes("صندوق فيه 4 كرات خضراء") && question.q.includes("X=0"), expected: ["\\binom{4}{3}", "\\binom{9}{3}"] },
+    { match: question => question.q.includes("صندوق 4 كرات خضراء") && question.q.includes("X=1"), expected: ["\\binom{5}{1}", "\\binom{4}{2}", "\\binom{9}{3}"] },
+    { match: question => question.q.includes("صندوق 4 كرات خضراء") && question.q.includes("X=2"), expected: ["\\binom{5}{2}", "\\binom{4}{1}", "\\binom{9}{3}"] },
+    { match: question => question.q.includes("صندوق 4 كرات خضراء") && question.q.includes("X=3"), expected: ["\\binom{5}{3}", "\\binom{9}{3}"] }
   ];
-  const binomialQuestions = binomialFormulaCases.map(testCase =>
-    questions.find(question => question.q.startsWith(testCase.prefix) &&
-      testCase.expected.some(fragment => question.solution.includes(fragment)))
-  );
-  if (binomialQuestions.some(question => !question)) {
-    fail("The four reviewed binomial probability questions must retain explicit braced binomial arguments.");
+  for (const testCase of binomialFormulaCases) {
+    const matches = questions.filter(testCase.match);
+    if (matches.length !== 1 || !testCase.expected.every(fragment => matches[0].solution.includes(fragment))) {
+      fail("A reviewed binomial probability question is missing explicit braced arguments.");
+    }
   }
   const simpleDerivative = questions.find(question => question.q === "مشتقة \\(f(x)=e^{3x}\\) هي:");
   if (!simpleDerivative || simpleDerivative.level !== "أساسي") {
