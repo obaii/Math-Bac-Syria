@@ -24,11 +24,7 @@ const cases = [
   { name: "four-sector probability spinner", match: q => q.q.includes("قرص دائري مقسم إلى أربعة أقسام متساوية"), labels: ["أربعة أقسام متساوية", "1/4"] },
   { name: "conditional probability tree", match: q => q.q.includes("في مخطط شجري") && q.q.includes("P(B|A)=x") && q.q.includes("P(B|A′)=1/4"), labels: ["مخطط شجري", "A′", "1/4", "P(B)=1/4"] }
 ,
-  { name: "right circular cone sketch", match: q => q.q.includes("مخروط دائري قائم محوره محور z"), labels: ["مخروط", "z", "حافة القاعدة"] },
-  { name: "sphere center and radius sketch", match: q => q.q.includes("ما معادلة الكرة مركزها مبدأ الإحداثيات"), labels: ["كرة", "نصف القطر", "O"] },
   { name: "tangent concept sketch", match: q => q.q.includes("معادلة المماس") && q.q.includes("f(x)=x^2") && q.q.includes("عند النقطة ذات الفاصلة 1"), labels: ["A(1,1)", "y=2x−1", "f(x)=x²"] },
-  { name: "plane normal vector sketch", match: q => q.q.includes("المستوى المار بالنقطة A(1,0,2) والناظم له"), labels: ["مستوى", "شعاع ناظم", "n"] },
-  { name: "spatial lines sketch", match: q => q.q.includes("معطى بالتمثيل") && q.q.includes("x=t+3"), labels: ["A(1,1,1)", "B(0,0,z)", "C(α,β,γ)", "المستقيم ABC", "d"] }
 ];
 let failures = 0;
 for (const testCase of cases) {
@@ -46,6 +42,24 @@ for (const testCase of cases) {
     console.log("PASS: " + testCase.name);
   }
 }
+const genericOnlyDiagramCases = [
+  { name: "cone without numeric geometry", match: q => q.q.includes("مخروط دائري قائم محوره محور z") },
+  { name: "sphere without numeric geometry", match: q => q.q.includes("ما معادلة الكرة مركزها مبدأ الإحداثيات") },
+  { name: "plane-normal prompt without a coordinate-specific sketch", match: q => q.q.includes("المستوى المار بالنقطة A(1,0,2) والناظم له") }
+];
+for (const testCase of genericOnlyDiagramCases) {
+  const found = questions.filter(testCase.match);
+  if (found.length !== 1) {
+    console.error("FAIL: " + testCase.name + " matched " + found.length + " questions");
+    failures++;
+  } else if (getDiagram(found[0])) {
+    console.error("FAIL: " + testCase.name + " still receives a generic diagram without question-specific values");
+    failures++;
+  } else {
+    console.log("PASS: no ungrounded generic diagram for " + testCase.name);
+  }
+}
+
 const tableQuestions = questions.filter(q =>
   q.q.includes("التوزيع المشترك") && /(جدول|بالجدول|بالاعتماد|وفق)/.test(q.q)
 );
