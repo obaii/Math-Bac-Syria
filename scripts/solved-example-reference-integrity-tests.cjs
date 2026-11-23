@@ -45,7 +45,7 @@ for (const row of [...inventory.entries, ...crosswalk.entries]) {
   expect(sourceTotal === row.exampleCount, "sourceTypes must reconcile for label: " + row.lessonLabel);
 }
 
-const previouslyDuplicatedExampleIds = ["der-005", "der-008", "log-004", "log-007", "dot-002", "dot-005", "dot-010"];
+const previouslyDuplicatedExampleIds = ["der-005", "der-008", "der-014", "log-004", "log-007", "dot-002", "dot-005", "dot-010"];
 const reviewedPrompts = previouslyDuplicatedExampleIds.map(id => {
   const start = source.indexOf('id:"' + id + '"');
   const match = start < 0 ? null : source.slice(start).match(/question:"((?:\\.|[^"\\])*)"/);
