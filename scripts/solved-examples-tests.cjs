@@ -54,9 +54,9 @@ if (!library || !Array.isArray(library.examples)) {
   }
 
   const yearReferenceCases = [
-    ["exam18-complex-003", 2018, /دورة\\s*2018|2018\\s*الأولى/],
-    ["exam19-prob-002", 2019, /دورة\\s*2019|2019\\s*الأولى/],
-    ["exam23-exp-001", 2023, /الدورة\\s*الثانية\\s*لعام\\s*2023|سؤال\\s*الدورة/]
+    ["exam18-complex-003", 2018, /2018|دورة/],
+    ["exam19-prob-002", 2019, /2019|دورة/],
+    ["exam23-exp-001", 2023, /2023|الدورة|سؤال الدورة/]
   ];
   for (const [id, sourceYear, forbidden] of yearReferenceCases) {
     const item = examples.find(example => example.id === id);
