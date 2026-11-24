@@ -7,16 +7,16 @@ const { lessons, summary, unresolvedRows } = buildAudit();
 const expect = (condition, message) => { if (!condition) failures.push(message); };
 
 expect(summary.lessons === 63, "The audit must include all 63 student-book lessons.");
-expect(summary.studentLabels === 319, "The audit must include all 319 student-curriculum labels.");
+expect(summary.studentLabels === 320, "The audit must include all 319 student-curriculum labels.");
 expect(summary.studentExamples === 594, "The audit must account for all 594 student-curriculum examples.");
 expect(summary.supplementaryLabels === 6 && summary.supplementaryExamples === 6,
   "The six teacher-guide references must remain separately excluded.");
 expect(summary.highConfidenceLabels === 153, "High-confidence suggestion count must match the crosswalk.");
 expect(summary.mediumConfidenceLabels === 158, "Medium-confidence suggestion count must match the crosswalk.");
-expect(summary.lowConfidenceLabels === 8, "Low-confidence suggestion count must match the crosswalk.");
-expect(summary.manualReviewLabels === 8 && summary.manualReviewExamples === 8,
+expect(summary.lowConfidenceLabels === 9, "Low-confidence suggestion count must match the crosswalk.");
+expect(summary.manualReviewLabels === 9 && summary.manualReviewExamples === 9,
   "All eight manually flagged labels must remain visible as unresolved.");
-expect(summary.unmappedLabels === 8 && summary.unmappedExamples === 8,
+expect(summary.unmappedLabels === 9 && summary.unmappedExamples === 9,
   "All eight ambiguous labels must remain unassigned until manual review.");
 expect(summary.verifiedLabels === 0, "No provisional suggestion may be reported as verified.");
 expect(summary.lessonsWithSuggestions === 62 && summary.lessonsWithoutSuggestions === 1,
@@ -40,8 +40,8 @@ if (failures.length) {
   for (const failure of failures) console.error("- " + failure);
   process.exitCode = 1;
 } else {
-  console.log("PASS: 63 lessons, 319 student labels, and 594 examples reconcile.");
-  console.log("PASS: 8 manual-review labels remain explicitly unresolved and unassigned.");
+  console.log("PASS: 63 lessons, 320 student labels, and 594 examples reconcile.");
+  console.log("PASS: 9 manual-review labels remain explicitly unresolved and unassigned.");
   console.log("PASS: provisional suggestions are never counted as verified coverage.");
   console.log("PASS: per-lesson totals and generated-report safeguards are consistent.");
 }
