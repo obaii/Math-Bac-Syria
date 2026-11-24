@@ -437,10 +437,10 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
-  const standaloneRangeAuditExample = examples.find(item => item.id === "exam19-func-004");
-  if (!standaloneRangeAuditExample || !standaloneRangeAuditExample.question.includes("متصلاً ومتزايداً") ||
-      standaloneRangeAuditExample.question.includes("وفق جدول تغيرات") ||
-      !standaloneRangeAuditExample.steps.join(" ").includes("بما أن f متصل")) {
+  const standaloneRangeTableReferenceAudit = examples.find(item => item.id === "exam19-func-004");
+  if (!standaloneRangeTableReferenceAudit || !standaloneRangeTableReferenceAudit.question.includes("متصلاً ومتزايداً") ||
+      standaloneRangeTableReferenceAudit.question.includes("وفق جدول تغيرات") ||
+      !standaloneRangeTableReferenceAudit.steps.join(" ").includes("بما أن f متصل")) {
     failures.push("The 2019 interval-image example must state continuity and monotonicity instead of referring to an absent variation table.");
   }
   const standaloneRootsAuditExample = examples.find(item => item.id === "exam22-roots-001");
