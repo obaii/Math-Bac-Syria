@@ -511,6 +511,96 @@ if (!library || !Array.isArray(library.examples)) {
     failures.push("The 2022 root-count example must state the complete intersection information instead of referring to an absent table.");
   }
 
+  // Regression checks for issues explicitly listed in the 2026-11-24 audit report.
+  const complexMagnitude = examples.find(item => item.id === "cx-008");
+  const complexProduct = examples.find(item => item.id === "cx-016");
+  if (!complexMagnitude || !complexProduct ||
+      complexMagnitude.question.replace(/\s+/g, " ").trim() === complexProduct.question.replace(/\s+/g, " ").trim() ||
+      !complexProduct.question.includes("z_1=1+2i") ||
+      !complexProduct.steps.join(" ").includes("5+5i") ||
+      !complexProduct.answer.includes("5+5i")) {
+    failures.push("Audit regression: cx-016 must be a distinct, fully solved complex-number exercise, not a duplicate of cx-008.");
+  }
+  const logicTerminology = examples.find(item => item.id === "logic-001");
+  if (!logicTerminology ||
+      !logicTerminology.question.includes("الاقتضاء العكسي") ||
+      !logicTerminology.steps.join(" ").includes("الاقتضاء العكسي") ||
+      !logicTerminology.answer.includes("الاقتضاء العكسي") ||
+      logicTerminology.steps.join(" ").includes("الاقتضاء المعاكس")) {
+    failures.push("Audit regression: logic-001 must use the unambiguous term الاقتضاء العكسي consistently.");
+  }
+
+  // Regression checks: the final calculation must appear in the worked steps.
+  const binomialZero = examples.find(item => item.id === "exam26-model-004");
+  if (!binomialZero || !binomialZero.question.includes("خمس تجارب مستقلة") ||
+      !binomialZero.steps.join(" ").includes("2⁵/3⁵=32/243") ||
+      !binomialZero.answer.includes("32/243")) {
+    failures.push("Audit regression: exam26-model-004 must calculate the probability of zero successes in five independent trials.");
+  }
+  const arithmeticTenth = examples.find(item => item.id === "exam21-extra-001");
+  if (!arithmeticTenth || !arithmeticTenth.question.includes("متتالية حسابية") ||
+      !arithmeticTenth.steps.join(" ").includes("u₁₀=2+10×3") ||
+      !arithmeticTenth.steps.join(" ").includes("u₁₀=32") ||
+      !arithmeticTenth.answer.includes("32")) {
+    failures.push("Audit regression: exam21-extra-001 must calculate the tenth term of the stated arithmetic sequence.");
+  }
+
+
+  // Audit-report batch: every flagged solution must finish its calculation in the final step.
+  const auditedFinalSteps = {
+    "prob-016": "0.2",
+    "comb-012": "720",
+    "exam20-extra-001": "21",
+    "exam20-extra-008": "36",
+    "exam26-model-004": "32/243",
+    "exam26-model-008": "37",
+    "exam26-model-019": "56",
+    "exam26-model-020": "I=1",
+    "comb-001": "35",
+    "comb-013": "60",
+    "cx-008": "13",
+    "cx-016": "5+5i",
+    "vec-009": "7",
+    "dot-009": "5/2",
+    "prob-018": "0.55",
+    "ministerial17-binomial-002": "8/3",
+    "ministerial17-binomial-003": "8/9",
+    "ministerial17-combinatorics-001": "576",
+    "exam20-extra-002": "162",
+    "exam20-extra-007": "3/5",
+    "exam21-extra-001": "u₁₀=32",
+    "exam21-extra-003": "84",
+    "exam21-extra-006": "2",
+    "exam21-integral-001": "frac72",
+    "exam22-cycle2-013": "(x,y)=(2,3)"
+  };
+  for (const [id, expected] of Object.entries(auditedFinalSteps)) {
+    const item = examples.find(example => example.id === id);
+    const lastStep = item?.steps?.at(-1) || "";
+    if (!item || !lastStep.includes(expected)) {
+      failures.push("Audit regression: " + id + " must state its final calculation in the last worked step.");
+    }
+  }
+
+  // The nine flagged graph/table examples must now contain the required data in their own question.
+  const visualDependencyRequirements = {
+    "ministerial17-graph-001": ["f(1)=1", "f(x)≤1"],
+    "ministerial17-graph-002": ["y=5", "x=4"],
+    "ministerial17-graph-003": ["f(4)=5", "x≥4"],
+    "ministerial17-tangent-001": ["f(1)=1", "f′(1)=0"],
+    "exam19-func-001": ["x→−∞", "x→+∞", "3"],
+    "exam19-func-002": ["x→+∞", "3"],
+    "exam19-func-003": ["متناقصاً", "متزايد", "−2"],
+    "exam22-limits-001": ["x→−∞", "x→1", "x→+∞"],
+    "exam21-graph-001": ["y=1", "x=0", "x=1", "−2"]
+  };
+  for (const [id, required] of Object.entries(visualDependencyRequirements)) {
+    const item = examples.find(example => example.id === id);
+    if (!item || required.some(fragment => !item.question.includes(fragment))) {
+      failures.push("Audit regression: " + id + " must include all graph/table-derived values in its own question.");
+    }
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 

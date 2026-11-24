@@ -94,7 +94,7 @@ const cases = [
   { contains: "ما قيمة \\(P(X=3)\\)؟", expected: "\\(\\frac15\\)" },
   { contains: "صف \\(X=0\\) يحوي الاحتمالات", expected: "0.40" },
   { contains: "مجاميع أعمدة \\(Y=0,1,2\\)", expected: "0.50" },
-  { contains: "وفق جدول التوزيع المشترك الوارد في المسألة", expected: "0.04" },
+  { contains: "يعرض الجدول الآتي التوزيع المشترك للمتغيرين العشوائيين X وY", expected: "0.04" },
   { contains: "في جدول التوزيع المشترك الذي فيه", expected: "1" },
   { contains: "كل خانة تساوي حاصل ضرب", expected: "مستقلان" },
   { contains: "P(X=0,Y=0)=0.12", expected: "\\(0.30\\)" },
