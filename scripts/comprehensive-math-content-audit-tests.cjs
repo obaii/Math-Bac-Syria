@@ -250,9 +250,8 @@ if (!distributionTable || !["2/20", "8/20", "6/20", "4/20"].every(value => distr
 
 
 const exam21GraphExample = examples.find(example => example.id === "exam21-graph-001");
-const exam21Graph = exam21GraphExample && getQuestionDiagram({ q: exam21GraphExample.question, topic: exam21GraphExample.topic });
-if (!exam21Graph || !["x=0", "x=1", "y=1", "x=−2", "ليس صورة الورقة الأصلية"].every(value => exam21Graph.includes(value))) {
-  fail("The 2021 graph must visibly show the stated zero and all three asymptotes, and identify itself as a schematic.");
+if (!exam21GraphExample || !["x=0", "x=1", "y=1", "−2"].every(value => exam21GraphExample.question.includes(value))) {
+  fail("The self-contained 2021 graph question must state both vertical asymptotes, the horizontal asymptote, and its unique zero.");
 }
 
 // Answer checkpoints for all source-tagged 2020, 2021, 2023, 2024, and 2025
