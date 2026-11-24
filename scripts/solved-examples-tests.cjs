@@ -6,7 +6,6 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
-const source = fs.readFileSync(path.join(root, "solved-examples.js"), "utf8");
 const context = vm.createContext({
   window: {},
   document: { getElementById: () => null },
@@ -14,9 +13,19 @@ const context = vm.createContext({
   Object,
   Set
 });
-vm.runInContext(source, context, { filename: "solved-examples.js", timeout: 5000 });
-const diagramSource = fs.readFileSync(path.join(root, "question-diagrams.js"), "utf8");
-vm.runInContext(diagramSource, context, { filename: "question-diagrams.js", timeout: 5000 });
+for (const file of [
+  "questions.js",
+  "questions_vectors_additional.js",
+  "questions_typed_additional.js",
+  "questions_automated_additional.js",
+  "merge-questions.js",
+  "solution-guides.js",
+  "question-diagrams.js",
+  "solved-examples.js"
+]) {
+  const source = fs.readFileSync(path.join(root, file), "utf8");
+  vm.runInContext(source, context, { filename: file, timeout: 5000 });
+}
 
 const library = context.window.solvedExamplesLibrary;
 const failures = [];
@@ -32,6 +41,40 @@ if (!library || !Array.isArray(library.examples)) {
   failures.push("The solved examples library did not expose its validated data.");
 } else {
   const examples = library.examples;
+  if (library.count !== 600 || examples.length !== 600) {
+    failures.push("The full solved-example archive must retain all 600 source records.");
+  }
+  if (library.bankDuplicateCount !== 86 || library.uniqueCount !== 514 ||
+      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 514) {
+    failures.push("Expected 86 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 514 distinct examples.");
+  }
+  const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
+  if (uniqueExampleIds.size !== 514) {
+    failures.push("The default solved-library view must contain 514 distinct example records.");
+  }
+
+  const yearReferenceCases = [
+    ["exam18-complex-003", 2018, /دورة\\s*2018|2018\\s*الأولى/],
+    ["exam19-prob-002", 2019, /دورة\\s*2019|2019\\s*الأولى/],
+    ["exam23-exp-001", 2023, /الدورة\\s*الثانية\\s*لعام\\s*2023|سؤال\\s*الدورة/]
+  ];
+  for (const [id, sourceYear, forbidden] of yearReferenceCases) {
+    const item = examples.find(example => example.id === id);
+    if (!item || item.sourceYear !== sourceYear || forbidden.test(item.question)) {
+      failures.push("Source year/session must remain in metadata, not distractingly inside the self-contained prompt: " + id + ".");
+    }
+  }
+
+  const sequenceDuplicate = examples.find(item => item.id === "seq-002");
+  const sequenceTerm = examples.find(item => item.id === "seq-010");
+  const sequenceCount = examples.find(item => item.id === "seq-013");
+  if (!sequenceDuplicate || !sequenceTerm || !sequenceCount ||
+      sequenceDuplicate.question === sequenceTerm.question ||
+      !sequenceTerm.question.includes("الحد السابع") || !String(sequenceTerm.answer).includes("192") ||
+      !sequenceCount.question.includes("أوجد n") || !String(sequenceCount.answer).includes("5")) {
+    failures.push("The three geometric-sequence examples must assess distinct tasks and retain independently checked answers.");
+  }
+
   const logarithmicDomainExample = examples.find(item => item.id === "log-012");
   if (!logarithmicDomainExample || !logarithmicDomainExample.steps[0].includes("\\lt")) {
     failures.push("The logarithmic domain inequality must use explicit TeX less-than operators.");
