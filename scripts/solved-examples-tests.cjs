@@ -159,8 +159,8 @@ if (!library || !Array.isArray(library.examples)) {
   const rationalExample = examples.find(item => item.id === "exam21-rational-001");
   if (!rationalExample || !rationalExample.steps.join(" ").includes("2a-b=0") || rationalExample.steps.join(" ").includes("3a-b-1=0")) failures.push("The 2021 rational-function extremum example must use the correct derivative condition 2a-b=0.");
 
-  const rangeExample = examples.find(item => item.id === "exam19-func-004");
-  if (!rangeExample || !rangeExample.question.includes("متزايد على المجال") || rangeExample.question.includes("يتناقص")) {
+  const standaloneRangeAuditExample = examples.find(item => item.id === "exam19-func-004");
+  if (!standaloneRangeAuditExample || !standaloneRangeAuditExample.question.includes("متزايد على المجال") || standaloneRangeAuditExample.question.includes("يتناقص")) {
     failures.push("The 2019 range-from-variation-table example must state a monotonicity condition consistent with its image interval.");
   }
   const recurrenceExample = examples.find(item => item.id === "exam20-seq-001");
@@ -437,16 +437,16 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
-  const rangeExample = examples.find(item => item.id === "exam19-func-004");
-  if (!rangeExample || !rangeExample.question.includes("متصلاً ومتزايداً") ||
-      rangeExample.question.includes("وفق جدول تغيرات") ||
-      !rangeExample.steps.join(" ").includes("بما أن f متصل")) {
+  const standaloneRangeAuditExample = examples.find(item => item.id === "exam19-func-004");
+  if (!standaloneRangeAuditExample || !standaloneRangeAuditExample.question.includes("متصلاً ومتزايداً") ||
+      standaloneRangeAuditExample.question.includes("وفق جدول تغيرات") ||
+      !standaloneRangeAuditExample.steps.join(" ").includes("بما أن f متصل")) {
     failures.push("The 2019 interval-image example must state continuity and monotonicity instead of referring to an absent variation table.");
   }
-  const rootsExample = examples.find(item => item.id === "exam22-roots-001");
-  if (!rootsExample || rootsExample.question.includes("جدول تغيرات") ||
-      !rootsExample.question.includes("نقطتين مختلفتين فقط") ||
-      !rootsExample.steps.join(" ").includes("ولا توجد نقاط تقاطع أخرى")) {
+  const standaloneRootsAuditExample = examples.find(item => item.id === "exam22-roots-001");
+  if (!standaloneRootsAuditExample || standaloneRootsAuditExample.question.includes("جدول تغيرات") ||
+      !standaloneRootsAuditExample.question.includes("نقطتين مختلفتين فقط") ||
+      !standaloneRootsAuditExample.steps.join(" ").includes("ولا توجد نقاط تقاطع أخرى")) {
     failures.push("The 2022 root-count example must state the complete intersection information instead of referring to an absent table.");
   }
 
