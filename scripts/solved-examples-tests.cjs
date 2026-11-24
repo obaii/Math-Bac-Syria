@@ -49,6 +49,30 @@ if (!library || !Array.isArray(library.examples)) {
     const item = examples.find(example => example.id === id);
     if (!item || !context.getQuestionDiagram({ q: item.question, topic: item.topic })) failures.push("Missing accompanying graph or variation table for solved example " + id + ".");
   }
+
+  // Regression coverage for the 2022 exponential-function batch. The table
+  // must describe the complete function e^(-2x)+2x-2, not the exponential
+  // term e^(-2x) in isolation.
+  const exponentialVariationIds = [
+    "exam22-function-001", "exam22-function-002", "exam22-function-003",
+    "exam22-function-004", "exam22-function-005", "exam22-function-006",
+    "exam22-function-007", "exam22-function-008", "exam22-function-009",
+    "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018",
+    "exam22-cycle1-019"
+  ];
+  for (const id of exponentialVariationIds) {
+    const item = examples.find(example => example.id === id);
+    const diagram = item && context.getQuestionDiagram({ q: item.question, topic: item.topic });
+    if (!diagram || !diagram.includes('class="joint-probability-table variation-table"') ||
+        !diagram.includes("−∞") || !diagram.includes("+∞") ||
+        !diagram.includes("−1") || !diagram.includes("↗ +∞")) {
+      failures.push("The complete e^(-2x)+2x-2 exercise must receive its matching variation table: " + id + ".");
+    }
+  }
+  const shiftedPolynomial = examples.find(example => example.id === "exam20-extra-004");
+  if (!shiftedPolynomial || context.getQuestionDiagram({ q: shiftedPolynomial.question, topic: shiftedPolynomial.topic })) {
+    failures.push("The x^3-3x+1 derivative exercise must not receive the variation table for x^3-3x.");
+  }
   const examExamples = examples.filter(item => item.sourceType === "دورة امتحانية");
   if (examExamples.length !== 118) failures.push(`Expected 118 source-attributed exam adaptations, found ${examExamples.length}.`);
   if (examExamples.filter(item => item.sourceYear === 2017).length !== 15) failures.push("The 2017 first-session source batch should contain 15 adaptations.");
