@@ -97,7 +97,27 @@ try {
     "q-hbu2nq": "متوسط",
     "q-zmro3t": "متوسط",
     "q-x3zcls": "متوسط",
-    "q-34zo63": "متوسط"
+    "q-34zo63": "متوسط",
+    "q-j2o5b9": "متقدم",
+    "q-84rgcq": "متقدم",
+    "q-apxjgd": "متقدم",
+    "q-17etknx": "متقدم",
+    "q-118pcjl": "متقدم",
+    "q-1ehwvui": "متقدم",
+    "q-167yegk": "متقدم",
+    "q-8dh2or": "متقدم",
+    "q-zbbxd0": "متقدم",
+    "q-115z4zf": "متقدم",
+    "q-miyt15": "متقدم",
+    "q-zcqhy6": "متقدم",
+    "q-hkbf66": "متقدم",
+    "q-pjspsv": "متقدم",
+    "q-1ciihoa": "متقدم",
+    "q-1iu0uen": "متقدم",
+    "q-1wve3pd": "متقدم",
+    "q-1hu5d9v": "متقدم",
+    "q-kcug19": "متقدم",
+    "q-1vu43ot": "متقدم"
   };
   for (const [id, expectedLevel] of Object.entries(reviewedDifficulty)) {
     const question = questions.find(item => item.id === id);
