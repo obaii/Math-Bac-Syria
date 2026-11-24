@@ -6,6 +6,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
+const source = fs.readFileSync(path.join(root, "solved-examples.js"), "utf8");
 const context = vm.createContext({
   window: {},
   document: { getElementById: () => null },
