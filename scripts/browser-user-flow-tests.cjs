@@ -396,7 +396,7 @@ const assert = require("node:assert/strict");
       "the complete 600-example dataset should remain available when the library opens");
     assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.uniqueCount), 517,
       "the default library view should exclude 83 exact duplicates already explained in the bank");
-    assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.bankDuplicateCount), 86,
+    assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.bankDuplicateCount), 83,
       "the duplicate count should match the curated guided questions");
     const renderedExampleCards = page.locator("#solved-examples-list .solved-example-card");
     assert.equal(await renderedExampleCards.count(), 24,
