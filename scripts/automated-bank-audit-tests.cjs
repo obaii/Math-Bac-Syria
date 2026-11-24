@@ -276,8 +276,16 @@ try {
   );
   if (!explicitJointTableQuestion) {
     fail("Missing regression case for a joint-distribution table embedded in the question.");
-  } else if (getQuestionDiagram(explicitJointTableQuestion) !== "") {
-    fail("An explicit joint-distribution table must not receive an unrelated supplemental table.");
+  } else {
+    const diagram = getQuestionDiagram(explicitJointTableQuestion);
+    for (const value of ["0.20", "0.30", "0.16", "0.10", "0.04"]) {
+      if (!diagram.includes(">" + value + "<")) {
+        fail("The supplemental joint table must preserve the explicit value " + value + ".");
+      }
+    }
+    if (diagram.includes(">0.12<")) {
+      fail("The explicit joint table must not be replaced with unrelated generic probabilities.");
+    }
   }
 
   const derivedJointTableQuestion = allQuestions.find(question =>
