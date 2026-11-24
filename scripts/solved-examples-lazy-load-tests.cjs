@@ -66,8 +66,16 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
       null,
       { timeout: 20000 }
     );
-    assert.match(await page.locator("#solved-examples-count").textContent(), /24 من 600/,
-      "the first render should show the first 24 of all 600 examples");
+    assert.match(await page.locator("#solved-examples-count").textContent(), /24 من 514/,
+      "the first render should show the first 24 distinct examples, excluding exact duplicates from the bank");
+    const duplicateToggle = page.locator("#solved-example-show-bank-duplicates");
+    assert.equal(await duplicateToggle.isChecked(), false, "bank duplicates should be hidden by default");
+    await duplicateToggle.check();
+    await page.waitForFunction(() => /24 من 600/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
+    await duplicateToggle.uncheck();
+    await page.waitForFunction(() => /24 من 514/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
+    await duplicateToggle.check();
+    await page.waitForFunction(() => /24 من 600/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
     await page.waitForFunction(() =>
       document.querySelectorAll("#solved-examples-list .solved-example-card mjx-container").length > 0,
       null,
@@ -92,7 +100,7 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
       document.querySelectorAll("#solved-examples-list .solved-example-card").length === 48
     );
     assert.match(await page.locator("#solved-examples-count").textContent(), /48 من 600/,
-      "the next batch should append 24 more examples");
+      "the next batch should append 24 more examples after duplicates are explicitly shown");
 
     // Example 28 (lim-005) contains multiplication immediately before a
     // trigonometric fraction; keep this previously reported case covered.
@@ -123,7 +131,7 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
     assert.equal(requestCount, 1, "reopening the library must reuse the already loaded dataset");
     assert.deepEqual(pageErrors, [], "lazy-loading the solved examples must not create uncaught browser errors");
     assert.deepEqual(mathJaxErrors, [], "the solved-example library must not emit MathJax parse errors");
-    console.log("PASS: solved examples load only on first open, show a loading state immediately, render in 24-item batches, and search all 600 examples.");
+    console.log("PASS: solved examples load on demand, hide 86 bank duplicates by default, reveal all 600 on request, render in 24-item batches, and search the full archive.");
   } finally {
     releaseRequest();
     await context.close();
