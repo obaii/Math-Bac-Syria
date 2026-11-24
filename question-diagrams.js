@@ -129,9 +129,15 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
-  if (prompt.includes("التوزيع المشترك") && /(جدول|بالجدول|بالاعتماد|وفق)/.test(prompt)) {
-    return `<figure class="question-diagram joint-table-figure" aria-label="جدول التوزيع المشترك للمتغيرين العشوائيين">
-      <figcaption>الجدول المشترك الكامل المستخدم في هذه المجموعة من الأسئلة.</figcaption>
+  // Render this derived joint table only for the prompt that explicitly gives
+  // both marginals and states that each cell is their product (independence).
+  // Other joint-distribution questions either carry their own data or provide
+  // only partial probabilities; attaching this fixed table would be misleading.
+  if (prompt.includes("احتمالات الصفوف للمتغير X هي 0.4 و0.2 و0.4") &&
+      prompt.includes("احتمالات الأعمدة للمتغير Y هي 0.3 و0.5 و0.2") &&
+      prompt.includes("كل خانة تساوي حاصل ضرب احتمال صفها في احتمال عمودها")) {
+    return `<figure class="question-diagram joint-table-figure" aria-label="جدول التوزيع المشترك المستنتج من الاستقلال">
+      <figcaption>الجدول محسوب من الاحتمالات الهامشية المعطاة، لأن السؤال ينص على استقلال X وY.</figcaption>
       <div class="joint-table-scroll">
         <table class="joint-probability-table">
           <caption>الاحتمال المشترك P(X=x, Y=y)</caption>
@@ -145,7 +151,6 @@ function getQuestionDiagram(question) {
         </table>
       </div>
     </figure>`;
-
   }
 
 
