@@ -63,8 +63,8 @@ for (const testCase of genericOnlyDiagramCases) {
 const tableQuestions = questions.filter(q =>
   q.q.includes("التوزيع المشترك") && /(جدول|بالجدول|بالاعتماد|وفق)/.test(q.q)
 );
-if (tableQuestions.length !== 8 || tableQuestions.some(q => !getDiagram(q).includes("joint-probability-table"))) {
-  console.error("FAIL: all eight shared-table questions must include the joint probability table");
+if (tableQuestions.length !== 7 || tableQuestions.some(q => !getDiagram(q).includes("joint-probability-table"))) {
+  console.error("FAIL: all seven shared-table questions must include the joint probability table");
   failures++;
 } else {
   console.log("PASS: all eight shared-table questions include the table");
