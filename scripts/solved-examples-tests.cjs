@@ -530,6 +530,19 @@ if (!library || !Array.isArray(library.examples)) {
     failures.push("Audit regression: logic-001 must use the unambiguous term الاقتضاء العكسي consistently.");
   }
 
+  // Regression checks: the final calculation must appear in the worked steps.
+  const binomialZero = examples.find(item => item.id === "exam26-model-004");
+  if (!binomialZero || !binomialZero.steps.join(" ").includes("12/21=4/7") ||
+      !binomialZero.answer.includes("4/7")) {
+    failures.push("Audit regression: exam26-model-004 must show the final probability calculation 12/21=4/7 in its steps.");
+  }
+  const recurrenceLimit = examples.find(item => item.id === "exam21-extra-001");
+  if (!recurrenceLimit || !recurrenceLimit.steps.join(" ").includes("2L=L+3") ||
+      !recurrenceLimit.steps.join(" ").includes("L=3") ||
+      !recurrenceLimit.answer.includes("3")) {
+    failures.push("Audit regression: exam21-extra-001 must solve the fixed-point equation and state the limit in the steps.");
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
