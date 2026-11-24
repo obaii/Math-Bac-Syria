@@ -133,6 +133,8 @@ jobs:
         run: node scripts/math-format-tests.cjs
       - name: Audit every question and solved-example math field, fraction, limit arrow, and visual dependency
         run: node scripts/comprehensive-math-content-audit-tests.cjs
+      - name: Audit delimiters, TeX braces, and notation in every question and solved example
+        run: node scripts/all-record-math-integrity-tests.cjs
       - name: Audit the complete automated question bank across all 14 topics
         run: node scripts/automated-bank-audit-tests.cjs
       - name: Run verified answer regression checks
