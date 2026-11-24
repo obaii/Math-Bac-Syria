@@ -437,6 +437,19 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  const rangeExample = examples.find(item => item.id === "exam19-func-004");
+  if (!rangeExample || !rangeExample.question.includes("متصلاً ومتزايداً") ||
+      rangeExample.question.includes("وفق جدول تغيرات") ||
+      !rangeExample.steps.join(" ").includes("بما أن f متصل")) {
+    failures.push("The 2019 interval-image example must state continuity and monotonicity instead of referring to an absent variation table.");
+  }
+  const rootsExample = examples.find(item => item.id === "exam22-roots-001");
+  if (!rootsExample || rootsExample.question.includes("جدول تغيرات") ||
+      !rootsExample.question.includes("نقطتين مختلفتين فقط") ||
+      !rootsExample.steps.join(" ").includes("ولا توجد نقاط تقاطع أخرى")) {
+    failures.push("The 2022 root-count example must state the complete intersection information instead of referring to an absent table.");
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
