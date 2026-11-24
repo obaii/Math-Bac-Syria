@@ -44,10 +44,27 @@ if (!library || !Array.isArray(library.examples)) {
       failures.push("Trigonometric-limit example " + id + " must use explicitly delimited TeX sine notation.");
     }
   }
-  const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam22-limits-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
+  const diagramExamples = ["der-004", "der-013", "exp-006", "exam22-function-004", "exam21-function-001", "exam24-function-001"];
   for (const id of diagramExamples) {
     const item = examples.find(example => example.id === id);
     if (!item || !context.getQuestionDiagram({ q: item.question, topic: item.topic })) failures.push("Missing accompanying graph or variation table for solved example " + id + ".");
+  }
+
+  // These nine report-flagged items are deliberately self-contained rather than diagram-dependent.
+  // All data needed to solve them must be stated in the prompt itself.
+  const standaloneDiagramExamples = [
+    "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003",
+    "ministerial17-tangent-001", "exam19-func-001", "exam19-func-002",
+    "exam19-func-003", "exam22-limits-001", "exam21-graph-001"
+  ];
+  for (const id of standaloneDiagramExamples) {
+    const item = examples.find(example => example.id === id);
+    if (!item || !item.question || /وفق الرسم|كما في جدول تغيرات|يبين جدول تغيرات|في النموذج الوزاري.*الرسم/.test(item.question)) {
+      failures.push("Report-flagged graph/table example must be self-contained: " + id + ".");
+    }
+    if (id === "exam21-graph-001" && (!item.question.includes("y=1") || !item.question.includes("x=0") || !item.question.includes("x=1"))) {
+      failures.push("exam21-graph-001 must state its horizontal and vertical asymptotes in the prompt.");
+    }
   }
 
   // Regression coverage for the 2022 exponential-function batch. The table

@@ -198,17 +198,31 @@ for (const question of visualQuestions) {
 }
 
 const requiredSolvedDiagramIds = [
-  "der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002",
-  "exam19-func-003", "exam22-limits-001",
-  "exam22-function-004", "exam21-function-001", "exam24-function-001",
-  "exam21-graph-001", "ministerial17-tangent-001", "ministerial17-graph-001",
-  "ministerial17-graph-002", "ministerial17-graph-003"
+  "der-004", "der-013", "exp-006", "exam22-function-004",
+  "exam21-function-001", "exam24-function-001"
 ];
 for (const id of requiredSolvedDiagramIds) {
   const example = examples.find(item => item.id === id);
   const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
   if (!example || typeof diagram !== "string" || !/<(?:svg|table)\b/.test(diagram)) {
     fail("Solved example " + id + " is missing its required graph or variation table.");
+  }
+}
+
+// The report-flagged library items below are intentionally self-contained.
+// They state the relevant graph/table facts in the prompt, so they do not require a missing visual.
+const standaloneSolvedExampleIds = [
+  "exam19-func-001", "exam19-func-002", "exam19-func-003",
+  "exam22-limits-001", "exam21-graph-001", "ministerial17-tangent-001",
+  "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"
+];
+for (const id of standaloneSolvedExampleIds) {
+  const example = examples.find(item => item.id === id);
+  if (!example || !example.question || /وفق الرسم|كما في جدول تغيرات|يبين جدول تغيرات/.test(example.question)) {
+    fail("Report-flagged solved example must be self-contained: " + id + ".");
+  }
+  if (id === "exam21-graph-001" && (!example.question.includes("y=1") || !example.question.includes("x=0") || !example.question.includes("x=1"))) {
+    fail("exam21-graph-001 must state all three asymptotes in the question prompt.");
   }
 }
 
@@ -236,9 +250,8 @@ if (!distributionTable || !["2/20", "8/20", "6/20", "4/20"].every(value => distr
 
 
 const exam21GraphExample = examples.find(example => example.id === "exam21-graph-001");
-const exam21Graph = exam21GraphExample && getQuestionDiagram({ q: exam21GraphExample.question, topic: exam21GraphExample.topic });
-if (!exam21Graph || !["x=0", "x=1", "y=1", "x=−2", "ليس صورة الورقة الأصلية"].every(value => exam21Graph.includes(value))) {
-  fail("The 2021 graph must visibly show the stated zero and all three asymptotes, and identify itself as a schematic.");
+if (!exam21GraphExample || !["x=0", "x=1", "y=1", "−2"].every(value => exam21GraphExample.question.includes(value))) {
+  fail("The self-contained 2021 graph question must state both vertical asymptotes, the horizontal asymptote, and its unique zero.");
 }
 
 // Answer checkpoints for all source-tagged 2020, 2021, 2023, 2024, and 2025

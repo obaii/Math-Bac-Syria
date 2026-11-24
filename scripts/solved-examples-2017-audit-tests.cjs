@@ -80,22 +80,16 @@ if (Object.keys(expected).length !== 34) failures.push("The 2017 audit batch mus
 const actual2017 = examples.filter(item => item.sourceYear === 2017);
 if (actual2017.length !== 34) failures.push("Expected exactly 34 sourceYear=2017 records, found " + actual2017.length + ".");
 
-const diagramContext = vm.createContext({ window: {}, document: { getElementById: () => null }, console });
-vm.runInContext(
-  fs.readFileSync(path.join(root, "question-diagrams.js"), "utf8"),
-  diagramContext,
-  { filename: "question-diagrams.js", timeout: 5000 }
-);
-for (const [id, expectedText] of [
-  ["ministerial17-graph-001", "f(1)=1"],
-  ["ministerial17-graph-002", "y=5"],
-  ["ministerial17-graph-003", "x=4"]
+// The three report-flagged graph items were rewritten as self-contained questions.
+// Their complete graph facts are stated in the prompts, so a supplemental SVG is not required.
+for (const [id, required] of [
+  ["ministerial17-graph-001", ["f(1)=1", "(0,2)", "f(x)≤1"]],
+  ["ministerial17-graph-002", ["y=5", "x=4", "نقطة واحدة"]],
+  ["ministerial17-graph-003", ["f(4)=5", "x≥4", "f(x)≥5"]]
 ]) {
   const item = examples.find(example => example.id === id);
-  if (!item) continue;
-  const markup = diagramContext.getQuestionDiagram({ q: item.question, topic: item.topic });
-  if (!markup || !markup.includes("<svg") || !markup.includes("<figcaption>") || !markup.includes(expectedText) || (id === "ministerial17-graph-002" && (!markup.includes("x=4") || markup.includes("رسم تخطيطي لمستقيمين")))) {
-    failures.push(id + ": the supplemental SVG diagram is missing or does not reflect the stated graph condition (markup length " + String(markup || "").length + ", preview " + String(markup || "").slice(0, 320) + ").");
+  if (!item || required.some(fragment => !item.question.includes(fragment))) {
+    failures.push(id + ": the self-contained prompt is missing one or more graph-derived facts.");
   }
 }
 
