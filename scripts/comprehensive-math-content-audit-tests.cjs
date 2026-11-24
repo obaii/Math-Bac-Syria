@@ -343,6 +343,52 @@ if (shiftedCubicExample && getQuestionDiagram({ q: shiftedCubicExample.question,
   fail("The x³−3x variation table must not be attached to the different function x³−3x+1.");
 }
 
+
+const reportQuestionById = new Map((questions || []).map(question => [question.id, question]));
+const reportExampleById = new Map((examples || []).map(example => [example.id, example]));
+const rationalizationExample = reportQuestionById.get("q-1fc9tmo");
+if (!rationalizationExample ||
+    !rationalizationExample.solution.includes("نُعقل المقام") ||
+    /\\brationalize\\b/i.test(rationalizationExample.solution)) {
+  fail("q-1fc9tmo must explain rationalizing the denominator in Arabic, without the English placeholder.");
+}
+const arabicSolutionFields = [
+  ...(questions || []).map(question => [question.id, question.solution]),
+  ...(examples || []).flatMap(example => [
+    [example.id, example.keyIdea], [example.id, example.answer], [example.id, example.check],
+    ...(example.steps || []).map(step => [example.id, step])
+  ])
+];
+for (const [id, value] of arabicSolutionFields) {
+  if (/\\bintegrand\\b/i.test(String(value || ""))) {
+    fail(id + " still contains the unexplained English term integrand in an Arabic solution.");
+  }
+}
+const cosineQuestion = reportExampleById.get("dot-003");
+if (!cosineQuestion ||
+    !cosineQuestion.question.includes("جيب تمام الزاوية") ||
+    !cosineQuestion.answer.includes("cos θ") ||
+    !cosineQuestion.answer.includes("sqrt{2}/2") ||
+    cosineQuestion.answer.includes("π/4")) {
+  fail("dot-003 must answer the requested cosine value, not the angle itself.");
+}
+const reportVariationIds = [
+  ...Array.from({ length: 10 }, (_, index) => "exam22-function-" + String(index + 1).padStart(3, "0")),
+  "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019"
+];
+for (const id of reportVariationIds) {
+  const example = reportExampleById.get(id);
+  const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
+  if (!diagram || !diagram.includes("القيمة الصغرى −1 عند x=0")) {
+    fail(id + " must keep the complete-function variation table from the audit report.");
+  }
+}
+const shiftedCubicReportExample = reportExampleById.get("exam20-extra-004");
+if (shiftedCubicReportExample &&
+    getQuestionDiagram({ q: shiftedCubicReportExample.question, topic: shiftedCubicReportExample.topic })) {
+  fail("exam20-extra-004 must not inherit a variation table for x³−3x when its function is x³−3x+1.");
+}
+
 if (failures.length) {
   console.error("Comprehensive math content audit failed (" + failures.length + " findings):");
   failures.slice(0, 80).forEach(message => console.error(" - " + message));
