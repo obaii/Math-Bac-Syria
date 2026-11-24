@@ -310,6 +310,38 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // These prompts must remain independently solvable when questions are shuffled.
+  const standaloneConditionalExamples = [
+    {
+      id: "exam22-prob-002",
+      required: "P(R₂)=(1/3)(3/5)+(2/3)(1/5)",
+      forbidden: ["السؤال السابق", "المسألة السابقة"]
+    },
+    {
+      id: "exam24-cycle1-012",
+      required: "P(R)=P(A)P(R|A)+P(B)P(R|B)",
+      forbidden: ["السؤال السابق", "المسألة السابقة"]
+    },
+    {
+      id: "exam22-vector-002",
+      required: "AB·AC=(−2)(−2)+1×0+0×1=4",
+      forbidden: ["السؤال السابق", "المسألة السابقة"]
+    },
+    {
+      id: "exam18-cycle2-019",
+      required: "r=|1+0+4(−1)−4|/√(1²+1²+4²)",
+      forbidden: ["السؤال السابق", "المسألة السابقة"]
+    }
+  ];
+  for (const testCase of standaloneConditionalExamples) {
+    const example = examples.find(item => item.id === testCase.id);
+    const solution = example?.steps.join(" ") || "";
+    if (!example || !solution.includes(testCase.required) ||
+        testCase.forbidden.some(phrase => solution.includes(phrase))) {
+      failures.push("Conditional-probability solution must be self-contained for " + testCase.id + ".");
+    }
+  }
+
   // Second manually re-derived probability batch: conditional probability, total probability,
   // variance, union, discrete distributions, and binomial variance.
   const foundationalProbabilityCases = [
