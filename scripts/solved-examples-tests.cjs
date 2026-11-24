@@ -45,13 +45,13 @@ if (!library || !Array.isArray(library.examples)) {
   if (library.count !== 600 || examples.length !== 600) {
     failures.push("The full solved-example archive must retain all 600 source records.");
   }
-  if (library.bankDuplicateCount !== 86 || library.uniqueCount !== 514 ||
-      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 514) {
-    failures.push("Expected 86 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 514 distinct examples.");
+  if (library.bankDuplicateCount !== 83 || library.uniqueCount !== 517 ||
+      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 517) {
+    failures.push("Expected 83 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 517 distinct examples.");
   }
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
-  if (uniqueExampleIds.size !== 514) {
-    failures.push("The default solved-library view must contain 514 distinct example records.");
+  if (uniqueExampleIds.size !== 517) {
+    failures.push("The default solved-library view must contain 517 distinct example records.");
   }
 
   const yearReferenceCases = [
