@@ -571,8 +571,8 @@ if (!library || !Array.isArray(library.examples)) {
     "exam21-extra-001": "u₁₀=32",
     "exam21-extra-003": "84",
     "exam21-extra-006": "2",
-    "exam21-integral-001": "\\\\frac72",
-    "exam22-cycle2-013": "(t-2)(t-3)=0"
+    "exam21-integral-001": "frac72",
+    "exam22-cycle2-013": "(x,y)=(2,3)"
   };
   for (const [id, expected] of Object.entries(auditedFinalSteps)) {
     const item = examples.find(example => example.id === id);
