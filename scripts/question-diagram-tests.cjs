@@ -16,7 +16,7 @@ const cases = [
   { name: "cube projection", match: q => q.q.includes("في مكعب طول حرفه 3") && q.q.includes("مسقط M العمودي"), labels: ["M(2,2,1)", "M′(0,2,1)", "ADHE"] },
   { name: "tetrahedron midpoints", match: q => q.q.includes("لتكن I منتصف [CD]"), labels: ["I منتصف [CD]", "J منتصف [AI]", "K منتصف [BJ]"] },
   { name: "joint probability table", match: q => q.q.includes("الوارد في المسألة") && q.q.includes("P(X=1,Y=2)"), labels: ["0.12", "0.06", "0.04", "0.30", "0.50", "P(X)"] },
-  { name: "discrete distribution table", match: q => q.q.includes("التوزيع السابق") && q.q.includes("P(X=3)"), labels: ["2/20", "8/20", "6/20", "4/20"] }
+  { name: "discrete distribution table", match: q => q.q.includes("يعطى توزيع المتغير العشوائي X") && q.q.includes("P(X=3)"), labels: ["2/20", "8/20", "6/20", "4/20"] }
 ,
 
   { name: "cube midpoint vectors", match: q => q.q.includes("مكعب") && q.q.includes("منتصف") && q.q.includes("HG") && q.q.includes("FB"), labels: ["مكعب", "I", "K", "IE"] },
@@ -69,7 +69,7 @@ if (tableQuestions.length !== 8 || tableQuestions.some(q => !getDiagram(q).inclu
 } else {
   console.log("PASS: all eight shared-table questions include the table");
 }
-const distributionQuestions = questions.filter(q => q.q.includes("التوزيع السابق") && (q.q.includes("احتمال") || q.q.includes("P(X")));
+const distributionQuestions = questions.filter(q => q.q.includes("يعطى توزيع المتغير العشوائي X") && (q.q.includes("احتمال") || q.q.includes("P(X")));
 if (distributionQuestions.length !== 2 || distributionQuestions.some(q => !getDiagram(q).includes("distribution-table-figure"))) {
   console.error("FAIL: both questions using the previous distribution must display its table");
   failures++;
