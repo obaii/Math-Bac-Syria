@@ -804,4 +804,4 @@
   searchInput.addEventListener("input", renderFromStart);
   [topicSelect,levelSelect,sourceSelect,yearSelect].forEach(control => control.addEventListener("change", renderFromStart));
   render();
-})();)();
+})();
