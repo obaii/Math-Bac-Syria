@@ -532,15 +532,17 @@ if (!library || !Array.isArray(library.examples)) {
 
   // Regression checks: the final calculation must appear in the worked steps.
   const binomialZero = examples.find(item => item.id === "exam26-model-004");
-  if (!binomialZero || !binomialZero.steps.join(" ").includes("12/21=4/7") ||
-      !binomialZero.answer.includes("4/7")) {
-    failures.push("Audit regression: exam26-model-004 must show the final probability calculation 12/21=4/7 in its steps.");
+  if (!binomialZero || !binomialZero.question.includes("خمس تجارب مستقلة") ||
+      !binomialZero.steps.join(" ").includes("(2/3)⁵=32/243") ||
+      !binomialZero.answer.includes("32/243")) {
+    failures.push("Audit regression: exam26-model-004 must calculate the probability of zero successes in five independent trials.");
   }
-  const recurrenceLimit = examples.find(item => item.id === "exam21-extra-001");
-  if (!recurrenceLimit || !recurrenceLimit.steps.join(" ").includes("2L=L+3") ||
-      !recurrenceLimit.steps.join(" ").includes("L=3") ||
-      !recurrenceLimit.answer.includes("3")) {
-    failures.push("Audit regression: exam21-extra-001 must solve the fixed-point equation and state the limit in the steps.");
+  const arithmeticTenth = examples.find(item => item.id === "exam21-extra-001");
+  if (!arithmeticTenth || !arithmeticTenth.question.includes("متتالية حسابية") ||
+      !arithmeticTenth.steps.join(" ").includes("u₁₀=2+10×3") ||
+      !arithmeticTenth.steps.join(" ").includes("u₁₀=32") ||
+      !arithmeticTenth.answer.includes("32")) {
+    failures.push("Audit regression: exam21-extra-001 must calculate the tenth term of the stated arithmetic sequence.");
   }
 
   const ids = examples.map(item => item.id);
