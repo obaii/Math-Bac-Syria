@@ -28,6 +28,25 @@ try {
   );
   const { topics, questions, additional, typedAdditional, automatedAdditional } = data;
   const errors = [];
+  // Regression checks for the self-contained-question findings in the 2026-11-24 audit.
+  const independentCoin = questions.find(question => question.q.includes("قطعة نقد احتمال ظهور الصورة فيها"));
+  if (!independentCoin || independentCoin.q.includes("في الشروط نفسها")) {
+    errors.push("The three-toss coin question must state all its assumptions without referring to another question.");
+  }
+  const marginalDistribution = questions.find(question => question.q.includes("مجاميع أعمدة") && question.q.includes("P(Y=1)"));
+  if (!marginalDistribution || marginalDistribution.q.includes("نفسه")) {
+    errors.push("The marginal-probability question must include its own distribution information.");
+  }
+  const jointDistribution = questions.find(question => question.q.includes("P(X=1,Y=2)"));
+  if (!jointDistribution || !jointDistribution.q.includes("\\begin{array}") ||
+      !jointDistribution.q.includes("0.04") || jointDistribution.options?.[jointDistribution.answer] !== "0.04") {
+    errors.push("The joint-probability question must display its own complete table and preserve the correct 0.04 option.");
+  }
+  const arithmeticSequence = questions.find(question => question.q.includes("u_0=1") && question.q.includes("u_2=7"));
+  if (!arithmeticSequence || arithmeticSequence.q.includes("وفق المعطيات")) {
+    errors.push("The arithmetic-sequence question must be self-contained.");
+  }
+
   const inspired2023FirstAutomated = automatedAdditional.filter(question => question.sourceYear === 2023 && question.sourceSession === "الدورة الأولى 2023" && question.sourceType === "تدريب مستوحى من دورة امتحانية");
   if (inspired2023FirstAutomated.length !== 20 || inspired2023FirstAutomated.some(question => question.type !== "mcq" || !Array.isArray(question.options) || question.options.length !== 4 || !Number.isInteger(question.answer) || question.answer < 0 || question.answer > 3 || !question.sourceLabel.includes("صياغة اختيار من متعدد أصلية") || question.sourceReference !== "https://www.3lom4all.com/results-syria/%D8%AD%D9%84-%D8%A7%D8%B3%D8%A6%D9%84%D8%A9-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2023-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7-%D8%AF%D9%88%D8%B1%D8%A9-%D8%A7%D9%88%D9%84/" || question.sourceReferenceSecondary !== "https://www.3lom4all.com/results-syria/%D8%B3%D9%84%D9%85-%D8%AA%D8%B5%D8%AD%D9%8A%D8%AD-%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A7%D8%AA-2023-%D8%AF%D9%88%D8%B1%D8%A9-%D8%A7%D9%88%D9%84%D9%89-%D8%A8%D9%83%D8%A7%D9%84%D9%88%D8%B1%D9%8A%D8%A7/" || question.sourceReferenceTertiary !== "https://www.baccalaureate.education/2023/06/2023_59.html")) {
     errors.push("Expected 20 validated original automated MCQs inspired by the 2023 first-session exam.");
