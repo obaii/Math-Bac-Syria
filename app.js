@@ -1636,7 +1636,14 @@ function submitQuestionAnswer(response){
     similarPracticeAction.hidden = false;
   }
   $("next").disabled=false;
-  $("next").focus({ preventScroll: true });
+  // Defer focus until the answer controls have finished becoming disabled;
+  // browsers may otherwise discard focus while the active option is disabled.
+  requestAnimationFrame(() => {
+    const nextControl = $("next");
+    if (nextControl && !nextControl.disabled && !$("quiz").classList.contains("hidden")) {
+      nextControl.focus({ preventScroll: true });
+    }
+  });
   $("progress-bar").style.width=((index+1)/quizQuestions.length*100) + "%";
   typeset();
   saveTrainingSession();
