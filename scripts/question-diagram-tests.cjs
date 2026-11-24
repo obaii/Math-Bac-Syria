@@ -121,5 +121,16 @@ if (variationRows.length !== 3 || new Set(variationCellCounts).size !== 1 ||
 } else {
   console.log("PASS: variation-table point/value/sign cells share a consistent grid");
 }
-console.log("\nQuestion diagram checks: " + (cases.length + 5 - failures) + "/" + (cases.length + 5) + " passed.");
+// The cubic f(x)=x^3−3x has derivative 3(x−1)(x+1):
+// positive at x=−2 and x=2, and zero at the two stationary points.
+const cubicVariation = getDiagram({ q: "ادرس تغيرات f(x)=x³−3x على المجال [−2,2]", topic: "الاشتقاق" });
+if (!cubicVariation || !cubicVariation.includes("<td>+</td>") ||
+    !cubicVariation.includes("<td>0</td>") ||
+    cubicVariation.includes("0 / −") || cubicVariation.includes("0 / +")) {
+  console.error("FAIL: cubic variation table must show derivative values +, 0, 0, + at −2, −1, 1, 2.");
+  failures++;
+} else {
+  console.log("PASS: cubic variation derivative row is mathematically consistent at critical points");
+}
+console.log("\nQuestion diagram checks: " + (cases.length + 6 - failures) + "/" + (cases.length + 6) + " passed.");
 if (failures) process.exitCode = 1;
