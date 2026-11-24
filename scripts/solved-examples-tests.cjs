@@ -44,7 +44,7 @@ if (!library || !Array.isArray(library.examples)) {
       failures.push("Trigonometric-limit example " + id + " must use explicitly delimited TeX sine notation.");
     }
   }
-  const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
+  const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam22-limits-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
   for (const id of diagramExamples) {
     const item = examples.find(example => example.id === id);
     if (!item || !context.getQuestionDiagram({ q: item.question, topic: item.topic })) failures.push("Missing accompanying graph or variation table for solved example " + id + ".");
@@ -159,8 +159,8 @@ if (!library || !Array.isArray(library.examples)) {
   const rationalExample = examples.find(item => item.id === "exam21-rational-001");
   if (!rationalExample || !rationalExample.steps.join(" ").includes("2a-b=0") || rationalExample.steps.join(" ").includes("3a-b-1=0")) failures.push("The 2021 rational-function extremum example must use the correct derivative condition 2a-b=0.");
 
-  const rangeExample = examples.find(item => item.id === "exam19-func-004");
-  if (!rangeExample || !rangeExample.question.includes("متزايد على المجال") || rangeExample.question.includes("يتناقص")) {
+  const standaloneRangeAuditExample = examples.find(item => item.id === "exam19-func-004");
+  if (!standaloneRangeAuditExample || !standaloneRangeAuditExample.question.includes("متصلاً ومتزايداً على المجال") || !standaloneRangeAuditExample.steps.join(" ").includes("بما أن f متصل")) {
     failures.push("The 2019 range-from-variation-table example must state a monotonicity condition consistent with its image interval.");
   }
   const recurrenceExample = examples.find(item => item.id === "exam20-seq-001");
@@ -435,6 +435,19 @@ if (!library || !Array.isArray(library.examples)) {
     if (!item || item.topic !== topic || item.lesson !== lesson || item.sourceType !== "تدريبي مؤلف") {
       failures.push("Missing lesson-targeted solved example: " + id + ".");
     }
+  }
+
+  const standaloneRangeTableReferenceAudit = examples.find(item => item.id === "exam19-func-004");
+  if (!standaloneRangeTableReferenceAudit || !standaloneRangeTableReferenceAudit.question.includes("متصلاً ومتزايداً") ||
+      standaloneRangeTableReferenceAudit.question.includes("وفق جدول تغيرات") ||
+      !standaloneRangeTableReferenceAudit.steps.join(" ").includes("بما أن f متصل")) {
+    failures.push("The 2019 interval-image example must state continuity and monotonicity instead of referring to an absent variation table.");
+  }
+  const standaloneRootsAuditExample = examples.find(item => item.id === "exam22-roots-001");
+  if (!standaloneRootsAuditExample || standaloneRootsAuditExample.question.includes("جدول تغيرات") ||
+      !standaloneRootsAuditExample.question.includes("نقطتين مختلفتين فقط") ||
+      !standaloneRootsAuditExample.steps.join(" ").includes("ولا توجد نقاط تقاطع أخرى")) {
+    failures.push("The 2022 root-count example must state the complete intersection information instead of referring to an absent table.");
   }
 
   const ids = examples.map(item => item.id);

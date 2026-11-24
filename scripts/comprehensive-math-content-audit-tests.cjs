@@ -188,7 +188,7 @@ for (const question of visualQuestions) {
 
 const requiredSolvedDiagramIds = [
   "der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002",
-  "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001",
+  "exam19-func-003", "exam22-limits-001",
   "exam22-function-004", "exam21-function-001", "exam24-function-001",
   "exam21-graph-001", "ministerial17-tangent-001", "ministerial17-graph-001",
   "ministerial17-graph-002", "ministerial17-graph-003"
@@ -217,7 +217,7 @@ const jointTable = jointTableQuestion && getQuestionDiagram(jointTableQuestion);
 if (!jointTable || !["0.12", "0.20", "0.08", "0.06", "0.10", "0.04", "0.30", "0.50", "0.20", "1.00"].every(value => jointTable.includes(value))) {
   fail("The joint-probability diagram must retain all joint probabilities and marginal totals.");
 }
-const distributionQuestion = questions.find(question => question.q.includes("التوزيع السابق") && question.q.includes("P(X=3)"));
+const distributionQuestion = questions.find(question => question.q.includes("يعطى توزيع المتغير العشوائي X") && question.q.includes("P(X=3)"));
 const distributionTable = distributionQuestion && getQuestionDiagram(distributionQuestion);
 if (!distributionTable || !["2/20", "8/20", "6/20", "4/20"].every(value => distributionTable.includes(value))) {
   fail("The discrete distribution diagram must retain all four probability values.");
