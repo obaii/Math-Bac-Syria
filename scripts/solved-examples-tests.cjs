@@ -321,6 +321,16 @@ if (!library || !Array.isArray(library.examples)) {
       id: "exam24-cycle1-012",
       required: "P(R)=P(A)P(R|A)+P(B)P(R|B)",
       forbidden: ["السؤال السابق", "المسألة السابقة"]
+    },
+    {
+      id: "exam22-vector-002",
+      required: "AB·AC=(−2)(−2)+1×0+0×1=4",
+      forbidden: ["السؤال السابق", "المسألة السابقة"]
+    },
+    {
+      id: "exam18-cycle2-019",
+      required: "r=|1+0+4(−1)−4|/√(1²+1²+4²)",
+      forbidden: ["السؤال السابق", "المسألة السابقة"]
     }
   ];
   for (const testCase of standaloneConditionalExamples) {
