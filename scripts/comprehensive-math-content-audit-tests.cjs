@@ -330,7 +330,7 @@ for (const id of [
   "exam22-function-001", "exam22-function-002", "exam22-function-003",
   "exam22-function-004", "exam22-function-005", "exam22-function-006",
   "exam22-function-007", "exam22-function-008", "exam22-function-009",
-  "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019"
+  "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019", "exam22-cycle1-020", "exam22-cycle1-020"
 ]) {
   const example = manualReviewExamples.get(id);
   const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
