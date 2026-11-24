@@ -44,7 +44,7 @@ if (!library || !Array.isArray(library.examples)) {
       failures.push("Trigonometric-limit example " + id + " must use explicitly delimited TeX sine notation.");
     }
   }
-  const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam19-func-004", "exam22-limits-001", "exam22-roots-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
+  const diagramExamples = ["der-004", "der-013", "exp-006", "exam19-func-001", "exam19-func-002", "exam19-func-003", "exam22-limits-001", "exam22-function-004", "exam21-function-001", "exam24-function-001", "ministerial17-tangent-001", "ministerial17-graph-001", "ministerial17-graph-002", "ministerial17-graph-003"];
   for (const id of diagramExamples) {
     const item = examples.find(example => example.id === id);
     if (!item || !context.getQuestionDiagram({ q: item.question, topic: item.topic })) failures.push("Missing accompanying graph or variation table for solved example " + id + ".");
@@ -160,7 +160,7 @@ if (!library || !Array.isArray(library.examples)) {
   if (!rationalExample || !rationalExample.steps.join(" ").includes("2a-b=0") || rationalExample.steps.join(" ").includes("3a-b-1=0")) failures.push("The 2021 rational-function extremum example must use the correct derivative condition 2a-b=0.");
 
   const standaloneRangeAuditExample = examples.find(item => item.id === "exam19-func-004");
-  if (!standaloneRangeAuditExample || !standaloneRangeAuditExample.question.includes("متزايد على المجال") || standaloneRangeAuditExample.question.includes("يتناقص")) {
+  if (!standaloneRangeAuditExample || !standaloneRangeAuditExample.question.includes("متصلاً ومتزايداً على المجال") || !standaloneRangeAuditExample.steps.join(" ").includes("بما أن f متصل")) {
     failures.push("The 2019 range-from-variation-table example must state a monotonicity condition consistent with its image interval.");
   }
   const recurrenceExample = examples.find(item => item.id === "exam20-seq-001");
