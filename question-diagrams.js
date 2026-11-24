@@ -42,6 +42,18 @@ function getQuestionDiagram(question) {
   };
 
 
+  const jointTable = (caption, headers, rows) => `
+    <figure class="question-diagram joint-table-figure" aria-label="جدول احتمالات مطابق لمعطيات السؤال">
+      <figcaption>${caption}</figcaption>
+      <div class="joint-table-scroll">
+        <table class="joint-probability-table">
+          <thead><tr>${headers.map((cell, index) => index === 0 ? `<th scope="col">${cell}</th>` : `<th scope="col">${cell}</th>`).join("")}</tr></thead>
+          <tbody>${rows.map(row => `<tr>${row.map((cell, index) => index === 0 ? `<th scope="row">${cell}</th>` : `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>
+    </figure>`;
+
+
   // Schematic graph for the 2021 exam-inspired prompt: the unique zero and
   // the three stated asymptotes are shown without claiming this is the paper image.
   if (prompt.includes("من قراءة الرسم البياني لتابع معرف") &&
@@ -129,28 +141,45 @@ function getQuestionDiagram(question) {
     </figure>`;
   }
 
-  // Render this derived joint table only for the prompt that explicitly gives
-  // both marginals and states that each cell is their product (independence).
-  // Other joint-distribution questions either carry their own data or provide
-  // only partial probabilities; attaching this fixed table would be misleading.
+  // Each joint-distribution prompt receives only the probabilities stated
+  // or directly derivable from that prompt; never attach a generic full table.
+  if (prompt.includes("يعطى التوزيع المشترك للمتغيرين") &&
+      prompt.includes("صف") && prompt.includes("0.12") && prompt.includes("0.20") && prompt.includes("0.08")) {
+    return jointTable("الصف المعطى في السؤال، مع مجموع احتمالاته.", ["X \\ Y", "Y=0", "Y=1", "Y=2", "P(X)"],
+      [["X=0", "0.12", "0.20", "0.08", "0.40"]]);
+  }
+  if (prompt.includes("يعرض الجدول الآتي التوزيع المشترك") && prompt.includes("0.20") && prompt.includes("0.30") && prompt.includes("0.16")) {
+    return jointTable("جدول التوزيع المشترك كما ورد في السؤال، مع المجاميع المحسوبة.", ["X \\ Y", "Y=0", "Y=1", "Y=2", "P(X)"],
+      [["X=0", "0.20", "0.30", "0.16", "0.66"], ["X=1", "0.10", "0.20", "0.04", "0.34"],
+       ["P(Y)", "0.30", "0.50", "0.20", "1.00"]]);
+  }
+  if (prompt.includes("في جدول التوزيع المشترك الذي فيه") && prompt.includes("P(X=0)=0.4") &&
+      prompt.includes("P(X=1)=0.2") && prompt.includes("P(X=2)=0.4")) {
+    return jointTable("التوزيع الهامشي للمتغير X كما حدده السؤال.", ["قيمة X", "0", "1", "2"],
+      [["P(X)", "0.40", "0.20", "0.40"]]);
+  }
   if (prompt.includes("احتمالات الصفوف للمتغير X هي 0.4 و0.2 و0.4") &&
       prompt.includes("احتمالات الأعمدة للمتغير Y هي 0.3 و0.5 و0.2") &&
       prompt.includes("كل خانة تساوي حاصل ضرب احتمال صفها في احتمال عمودها")) {
-    return `<figure class="question-diagram joint-table-figure" aria-label="جدول التوزيع المشترك المستنتج من الاستقلال">
-      <figcaption>الجدول محسوب من الاحتمالات الهامشية المعطاة، لأن السؤال ينص على استقلال X وY.</figcaption>
-      <div class="joint-table-scroll">
-        <table class="joint-probability-table">
-          <caption>الاحتمال المشترك P(X=x, Y=y)</caption>
-          <thead><tr><th scope="col">X \\ Y</th><th scope="col">Y=0</th><th scope="col">Y=1</th><th scope="col">Y=2</th><th scope="col">P(X)</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">X=0</th><td>0.12</td><td>0.20</td><td>0.08</td><td>0.40</td></tr>
-            <tr><th scope="row">X=1</th><td>0.06</td><td>0.10</td><td>0.04</td><td>0.20</td></tr>
-            <tr><th scope="row">X=2</th><td>0.12</td><td>0.20</td><td>0.08</td><td>0.40</td></tr>
-            <tr class="joint-table-total"><th scope="row">P(Y)</th><td>0.30</td><td>0.50</td><td>0.20</td><td>1.00</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </figure>`;
+    return jointTable("الجدول محسوب من الاحتمالات الهامشية المعطاة، لأن السؤال ينص على استقلال X وY.",
+      ["X \\ Y", "Y=0", "Y=1", "Y=2", "P(X)"],
+      [["X=0", "0.12", "0.20", "0.08", "0.40"], ["X=1", "0.06", "0.10", "0.04", "0.20"],
+       ["X=2", "0.12", "0.20", "0.08", "0.40"], ["P(Y)", "0.30", "0.50", "0.20", "1.00"]]);
+  }
+  if (prompt.includes("وفق جدول التوزيع المشترك") && prompt.includes("P(X=0,Y=0)=0.12") &&
+      prompt.includes("P(X=1,Y=0)=0.06") && prompt.includes("P(X=2,Y=0)=0.12")) {
+    return jointTable("القيم المعطاة للعمود Y=0 ومجموعها.", ["X", "0", "1", "2", "P(Y=0)"],
+      [["P(X,Y=0)", "0.12", "0.06", "0.12", "0.30"]]);
+  }
+  if (prompt.includes("يعرض جدول التوزيع المشترك") && prompt.includes("P(X=0,Y=1)=0.20") &&
+      prompt.includes("P(X=1,Y=1)=0.10") && prompt.includes("P(X=2,Y=1)=0.20")) {
+    return jointTable("القيم المعطاة للعمود Y=1 ومجموعها.", ["X", "0", "1", "2", "P(Y=1)"],
+      [["P(X,Y=1)", "0.20", "0.10", "0.20", "0.50"]]);
+  }
+  if (prompt.includes("بالاعتماد على جدول التوزيع المشترك حيث") &&
+      prompt.includes("P(X=2,Y=1)=0.20") && prompt.includes("P(Y=1)=0.50")) {
+    return jointTable("المعطيات اللازمة لحساب الاحتمال الشرطي.", ["الكمية", "القيمة"],
+      [["P(X=2,Y=1)", "0.20"], ["P(Y=1)", "0.50"], ["P(X=2|Y=1)", "0.40"]]);
   }
 
 
