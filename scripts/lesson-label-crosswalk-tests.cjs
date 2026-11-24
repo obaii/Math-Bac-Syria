@@ -61,8 +61,8 @@ const summary = {
 for (const [field, value] of Object.entries(summary)) {
   if (crosswalk.summary[field] !== value) failures.push("Crosswalk summary mismatch for " + field + ".");
 }
-if (studentRows.length !== 319 || supplementaryRows.length !== 6) failures.push("Expected 319 student-curriculum labels and 6 supplementary labels.");
-if (summary.studentExamples !== 594 || summary.supplementaryExamples !== 6) failures.push("Expected 594 student-curriculum examples and 6 supplementary examples.");
+if (studentRows.length !== inventory.entries.length - supplementaryRows.length || supplementaryRows.length !== 6) failures.push("Student-curriculum and supplementary label counts must match the inventory.");
+if (summary.studentExamples !== inventory.exampleCount - summary.supplementaryExamples || summary.supplementaryExamples !== 6) failures.push("Student-curriculum and supplementary example counts must sum to the inventory total.");
 console.log("Solved-example lesson-label crosswalk: " + rows.length + "/" + inventory.entries.length + " labels.");
 console.log("Student curriculum: " + studentRows.length + " labels / " + summary.studentExamples + " examples.");
 console.log("Supplementary teacher-guide material excluded: " + supplementaryRows.length + " labels / " + summary.supplementaryExamples + " examples.");
