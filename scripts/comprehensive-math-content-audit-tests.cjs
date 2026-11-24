@@ -43,6 +43,7 @@ const failures = [];
 const fail = message => failures.push(message);
 const normalize = value => String(value ?? "").normalize("NFKC").replace(/\s+/g, " ").trim();
 const mathFields = [];
+const allowedLevels = new Set(["أساسي", "متوسط", "متقدم"]);
 const visualPatterns = [
   /الشكل في الصورة/,
   /أي رسم(?: من الرسوم المقترحة)?/,
@@ -137,6 +138,7 @@ for (const [index, example] of (examples || []).entries()) {
   const label = "Solved example " + (example.id || index + 1);
   if (!example.id || exampleIds.has(example.id)) fail(label + " has a missing or duplicate ID.");
   exampleIds.add(example.id);
+  if (!allowedLevels.has(example.level)) fail(label + " has an invalid difficulty level: " + String(example.level) + ".");
   for (const field of ["question", "keyIdea", "answer", "check"]) {
     if (!normalize(example[field])) fail(label + " has an empty " + field + " field.");
     mathFields.push({ id: example.id, field, value: String(example[field] ?? "") });
@@ -148,6 +150,15 @@ for (const [index, example] of (examples || []).entries()) {
     example.steps.forEach((step, stepIndex) =>
       mathFields.push({ id: example.id, field: "step " + (stepIndex + 1), value: String(step) })
     );
+  }
+}
+
+const visualExamples = (examples || []).filter(example => hasVisualDependency(example.question));
+for (const example of visualExamples) {
+  const diagram = getQuestionDiagram({ q: example.question, topic: example.topic });
+  const hasDiagram = typeof diagram === "string" && /<(?:svg|table)\b/.test(diagram);
+  if (!hasDiagram) {
+    fail("Visual-dependent solved example " + example.id + " has no generated SVG/table.");
   }
 }
 
