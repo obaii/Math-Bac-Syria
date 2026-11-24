@@ -545,6 +545,62 @@ if (!library || !Array.isArray(library.examples)) {
     failures.push("Audit regression: exam21-extra-001 must calculate the tenth term of the stated arithmetic sequence.");
   }
 
+
+  // Audit-report batch: every flagged solution must finish its calculation in the final step.
+  const auditedFinalSteps = {
+    "prob-016": "0.2",
+    "comb-012": "720",
+    "exam20-extra-001": "21",
+    "exam20-extra-008": "36",
+    "exam26-model-004": "32/243",
+    "exam26-model-008": "37",
+    "exam26-model-019": "56",
+    "exam26-model-020": "I=1",
+    "comb-001": "35",
+    "comb-013": "60",
+    "cx-008": "13",
+    "cx-016": "5+5i",
+    "vec-009": "7",
+    "dot-009": "5/2",
+    "prob-018": "0.55",
+    "ministerial17-binomial-002": "8/3",
+    "ministerial17-binomial-003": "8/9",
+    "ministerial17-combinatorics-001": "576",
+    "exam20-extra-002": "162",
+    "exam20-extra-007": "3/5",
+    "exam21-extra-001": "u₁₀=32",
+    "exam21-extra-003": "84",
+    "exam21-extra-006": "2",
+    "exam21-integral-001": "\\\\frac72",
+    "exam22-cycle2-013": "(t-2)(t-3)=0"
+  };
+  for (const [id, expected] of Object.entries(auditedFinalSteps)) {
+    const item = examples.find(example => example.id === id);
+    const lastStep = item?.steps?.at(-1) || "";
+    if (!item || !lastStep.includes(expected)) {
+      failures.push("Audit regression: " + id + " must state its final calculation in the last worked step.");
+    }
+  }
+
+  // The nine flagged graph/table examples must now contain the required data in their own question.
+  const visualDependencyRequirements = {
+    "ministerial17-graph-001": ["f(1)=1", "f(x)≤1"],
+    "ministerial17-graph-002": ["y=5", "x=4"],
+    "ministerial17-graph-003": ["f(4)=5", "x≥4"],
+    "ministerial17-tangent-001": ["f(1)=1", "f′(1)=0"],
+    "exam19-func-001": ["x→−∞", "x→+∞", "3"],
+    "exam19-func-002": ["x→+∞", "3"],
+    "exam19-func-003": ["متناقصاً", "متزايد", "−2"],
+    "exam22-limits-001": ["x→−∞", "x→1", "x→+∞"],
+    "exam21-graph-001": ["y=1", "x=0", "x=1", "−2"]
+  };
+  for (const [id, required] of Object.entries(visualDependencyRequirements)) {
+    const item = examples.find(example => example.id === id);
+    if (!item || required.some(fragment => !item.question.includes(fragment))) {
+      failures.push("Audit regression: " + id + " must include all graph/table-derived values in its own question.");
+    }
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
