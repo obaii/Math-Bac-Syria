@@ -52,6 +52,20 @@ try {
   if (questions.length !== expectedQuestionCount) {
     errors.push(`عدد الأسئلة بعد الدمج غير متوقع: المتوقع ${expectedQuestionCount} والموجود ${questions.length}.`);
   }
+  const dependentPhrases = [
+    "وفق التوزيع السابق",
+    "من السؤال السابق",
+    "من المسألة السابقة"
+  ];
+  for (const question of questions) {
+    const fullText = String(question.q || "") + " " + String(question.solution || "");
+    for (const phrase of dependentPhrases) {
+      if (fullText.includes(phrase)) {
+        errors.push("سؤال غير مكتفٍ بذاته ويعتمد على سياق سابق: " + phrase + ".");
+      }
+    }
+  }
+
   const warnings = [];
   const allowedLevels = new Set(["أساسي", "متوسط", "متقدم"]);
   const normalize = (value) => String(value ?? "")
