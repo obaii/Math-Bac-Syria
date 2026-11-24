@@ -32,7 +32,8 @@ const cases = [
   { contains: "إذا كان \\(z=3+2i\\)", expected: "3" },
   { contains: "كم طريقة لاختيار طالبين من مجموعة فيها 5 طلاب", expected: "10" },
   { contains: "عند رمي حجر نرد متوازن مرة واحدة", expected: "\\(\\frac16\\)" },
-  { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" }
+  { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" },
+  { contains: "متتاليتين معرفتين لكل \\(n\\ge2\\) ومتجاورتين", expected: "\\(\\frac1{1-n}\\)" }
   ,
   { contains: "فإن \\(\\lim_{x\\to2}f(x)\\) تساوي؟", expected: "4" },
   { contains: "\\lim_{x\\to0}\\frac{\\sin x}{x}", expected: "1" },
