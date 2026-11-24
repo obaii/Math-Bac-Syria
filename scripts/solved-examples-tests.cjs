@@ -533,7 +533,7 @@ if (!library || !Array.isArray(library.examples)) {
   // Regression checks: the final calculation must appear in the worked steps.
   const binomialZero = examples.find(item => item.id === "exam26-model-004");
   if (!binomialZero || !binomialZero.question.includes("خمس تجارب مستقلة") ||
-      !binomialZero.steps.join(" ").includes("(2/3)⁵=32/243") ||
+      !binomialZero.steps.join(" ").includes("2⁵/3⁵=32/243") ||
       !binomialZero.answer.includes("32/243")) {
     failures.push("Audit regression: exam26-model-004 must calculate the probability of zero successes in five independent trials.");
   }
