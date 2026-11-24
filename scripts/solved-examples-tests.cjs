@@ -511,6 +511,25 @@ if (!library || !Array.isArray(library.examples)) {
     failures.push("The 2022 root-count example must state the complete intersection information instead of referring to an absent table.");
   }
 
+  // Regression checks for issues explicitly listed in the 2026-11-24 audit report.
+  const complexMagnitude = examples.find(item => item.id === "cx-008");
+  const complexProduct = examples.find(item => item.id === "cx-016");
+  if (!complexMagnitude || !complexProduct ||
+      complexMagnitude.question.replace(/\\s+/g, " ").trim() === complexProduct.question.replace(/\\s+/g, " ").trim() ||
+      !complexProduct.question.includes("z_1=1+2i") ||
+      !complexProduct.steps.join(" ").includes("5+5i") ||
+      !complexProduct.answer.includes("5+5i")) {
+    failures.push("Audit regression: cx-016 must be a distinct, fully solved complex-number exercise, not a duplicate of cx-008.");
+  }
+  const logicTerminology = examples.find(item => item.id === "logic-001");
+  if (!logicTerminology ||
+      !logicTerminology.question.includes("الاقتضاء العكسي") ||
+      !logicTerminology.steps.join(" ").includes("الاقتضاء العكسي") ||
+      !logicTerminology.answer.includes("الاقتضاء العكسي") ||
+      logicTerminology.steps.join(" ").includes("الاقتضاء المعاكس")) {
+    failures.push("Audit regression: logic-001 must use the unambiguous term الاقتضاء العكسي consistently.");
+  }
+
   const ids = examples.map(item => item.id);
   if (new Set(ids).size !== ids.length) failures.push("Duplicate solved-example IDs were found.");
 
