@@ -239,7 +239,7 @@ const jointTableQuestion = questions.find(question =>
   question.q.includes("التوزيع المشترك") && question.q.includes("P(X=1,Y=2)")
 );
 const jointTable = jointTableQuestion && getQuestionDiagram(jointTableQuestion);
-if (!jointTable || !["0.12", "0.20", "0.08", "0.06", "0.10", "0.04", "0.30", "0.50", "0.20", "1.00"].every(value => jointTable.includes(value))) {
+if (!jointTable || !["0.20", "0.30", "0.16", "0.10", "0.04", "0.66", "0.34", "0.30", "0.50", "1.00"].every(value => jointTable.includes(value))) {
   fail("The joint-probability diagram must retain all joint probabilities and marginal totals.");
 }
 const distributionQuestion = questions.find(question => question.q.includes("يعطى توزيع المتغير العشوائي X") && question.q.includes("P(X=3)"));
