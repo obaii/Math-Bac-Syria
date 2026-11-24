@@ -43,7 +43,7 @@
 
     loadPromise = new Promise((resolve, reject) => {
       const script = document.createElement("script");
-      script.src = "solved-examples.js?v=20261112-1";
+      script.src = "solved-examples.js?v=20261124-2";
       script.async = true;
       script.onload = () => {
         loaded = Boolean(window.solvedExamplesLibrary);

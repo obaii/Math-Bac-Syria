@@ -393,10 +393,19 @@ const assert = require("node:assert/strict");
     await page.locator("#solved-examples-library").waitFor({ state: "visible" });
     await page.waitForFunction(() => window.solvedExamplesLibrary?.count === 600, null, { timeout: 20000 });
     assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.count), 600,
-      "the complete 600-example dataset should be available when the library opens");
+      "the complete 600-example dataset should remain available when the library opens");
+    assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.uniqueCount), 514,
+      "the default library view should exclude 86 questions already explained in the bank");
+    assert.equal(await page.evaluate(() => window.solvedExamplesLibrary.bankDuplicateCount), 86,
+      "the duplicate count should match the curated guided questions");
     const renderedExampleCards = page.locator("#solved-examples-list .solved-example-card");
     assert.equal(await renderedExampleCards.count(), 24,
-      "the library should render only the first 24 examples initially");
+      "the library should render only the first 24 distinct examples initially");
+    const duplicateToggle = page.locator("#solved-example-show-bank-duplicates");
+    assert.equal(await duplicateToggle.isChecked(), false,
+      "bank duplicates should be hidden by default in the library");
+    await duplicateToggle.check();
+    await page.waitForFunction(() => /24 من 600/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
     while (await renderedExampleCards.count() < 600) {
       const moreButton = page.locator(".solved-examples-load-more");
       assert.ok(await moreButton.count(), "the library should offer another batch until all 600 examples are rendered");
