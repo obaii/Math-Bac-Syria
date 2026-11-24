@@ -55,6 +55,50 @@ try {
     /مكعب.*منتصف.*HG.*FB/, /مركز ثقل المثلث BCD/,
     /في مكعب طول حرفه 3.*مسقط M العمودي/, /في رباعي وجوه ABCD.*منتصف \[CD\]/
   ];
+  // Manual difficulty review: straightforward one-step items are no longer marked advanced.
+  const reviewedDifficulty = {
+    "q-4op8eg": "أساسي",
+    "q-979lrc": "أساسي",
+    "q-xe531r": "أساسي",
+    "q-17vm0kg": "أساسي",
+    "q-1mgwfnk": "أساسي",
+    "q-pa70rj": "أساسي",
+    "q-1i2zric": "متوسط",
+    "q-1pf4lu3": "متوسط",
+    "q-s0ps7l": "متوسط",
+    "q-1mrew3w": "متوسط",
+    "q-xxm9z1": "متوسط",
+    "q-fwyckw": "متوسط",
+    "q-1xclznw": "متوسط",
+    "q-6sg0g9": "متوسط",
+    "q-1bwh99f": "متوسط",
+    "q-1age5o8": "متوسط",
+    "q-1y51jwn": "متوسط",
+    "q-1x3ijk5": "متوسط",
+    "q-176lroo": "متوسط",
+    "q-x2h9dy": "متوسط",
+    "q-148rrue": "متوسط",
+    "q-n2jaob": "متوسط",
+    "q-j4wwv1": "متوسط",
+    "q-1of7bis": "متوسط",
+    "q-513rd0": "متوسط",
+    "q-1uaxmee": "متوسط",
+    "q-1u42joh": "متوسط",
+    "q-reb5m9": "متوسط",
+    "q-fa7iqg": "متوسط",
+    "q-p9k80p": "متوسط",
+    "q-1bnkw97": "متوسط",
+    "q-1ypnloh": "متوسط",
+    "q-ma6a6k": "متوسط",
+    "q-1747b07": "متوسط",
+    "q-1hr8ven": "متوسط",
+    "q-1eoblfi": "متوسط"
+  };
+  for (const [id, expectedLevel] of Object.entries(reviewedDifficulty)) {
+    const question = questions.find(item => item.id === id);
+    if (!question) fail("Missing manually reviewed difficulty record " + id + ".");
+    else if (question.level !== expectedLevel) fail(id + " must remain classified as " + expectedLevel + ".");
+  }
   const visualQuestions = [];
   const texSegments = value => [...String(value ?? "").matchAll(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g)]
     .map(match => match[1] ?? match[2] ?? "");
