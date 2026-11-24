@@ -92,7 +92,12 @@ try {
     "q-ma6a6k": "متوسط",
     "q-1747b07": "متوسط",
     "q-1hr8ven": "متوسط",
-    "q-1eoblfi": "متوسط"
+    "q-1eoblfi": "متوسط",
+    "q-kekzva": "أساسي",
+    "q-hbu2nq": "متوسط",
+    "q-zmro3t": "متوسط",
+    "q-x3zcls": "متوسط",
+    "q-34zo63": "متوسط"
   };
   for (const [id, expectedLevel] of Object.entries(reviewedDifficulty)) {
     const question = questions.find(item => item.id === id);
