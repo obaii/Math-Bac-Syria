@@ -515,7 +515,7 @@ if (!library || !Array.isArray(library.examples)) {
   const complexMagnitude = examples.find(item => item.id === "cx-008");
   const complexProduct = examples.find(item => item.id === "cx-016");
   if (!complexMagnitude || !complexProduct ||
-      complexMagnitude.question.replace(/\\s+/g, " ").trim() === complexProduct.question.replace(/\\s+/g, " ").trim() ||
+      complexMagnitude.question.replace(/\s+/g, " ").trim() === complexProduct.question.replace(/\s+/g, " ").trim() ||
       !complexProduct.question.includes("z_1=1+2i") ||
       !complexProduct.steps.join(" ").includes("5+5i") ||
       !complexProduct.answer.includes("5+5i")) {
