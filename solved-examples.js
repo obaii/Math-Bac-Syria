@@ -620,7 +620,7 @@
   const normalizeQuestionForBankMatch = value => String(value ?? "")
     .normalize("NFKC")
     .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
-    .replace(/\\s+/g, " ")
+    .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
   const guidedBankQuestionKeys = new Set(
