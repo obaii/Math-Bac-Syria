@@ -267,6 +267,34 @@ try {
     if (visualPatterns.some(pattern => pattern.test(question.q))) visualQuestions.push(question);
   }
 
+  // A supplemental diagram must never replace a question's own probability data
+  // with a generic table. The only derived joint table is tied to the exact
+  // prompt that supplies both marginals and the independence condition.
+  const allQuestions = [...questions, ...(typed || []), ...(automated || [])];
+  const explicitJointTableQuestion = allQuestions.find(question =>
+    question.q.includes("يعرض الجدول الآتي التوزيع المشترك للمتغيرين العشوائيين")
+  );
+  if (!explicitJointTableQuestion) {
+    fail("Missing regression case for a joint-distribution table embedded in the question.");
+  } else if (getQuestionDiagram(explicitJointTableQuestion) !== "") {
+    fail("An explicit joint-distribution table must not receive an unrelated supplemental table.");
+  }
+
+  const derivedJointTableQuestion = allQuestions.find(question =>
+    question.q.includes("احتمالات الصفوف للمتغير X هي 0.4 و0.2 و0.4") &&
+    question.q.includes("كل خانة تساوي حاصل ضرب احتمال صفها في احتمال عمودها")
+  );
+  if (!derivedJointTableQuestion) {
+    fail("Missing regression case for the joint table derived from independent marginals.");
+  } else {
+    const diagram = getQuestionDiagram(derivedJointTableQuestion);
+    for (const value of ["0.12", "0.20", "0.08", "0.06", "0.04", "0.30", "0.50", "1.00"]) {
+      if (!diagram.includes(">" + value + "<")) {
+        fail("The derived joint table is missing expected cell or marginal " + value + ".");
+      }
+    }
+  }
+
   for (const [topic, counts] of topicCounts) {
     if (!counts.total) fail('Topic "' + topic + '" has no questions.');
     if (!(counts.types.mcq > 0)) fail('Topic "' + topic + '" has no multiple-choice questions.');
