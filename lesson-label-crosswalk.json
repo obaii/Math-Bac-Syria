@@ -3,15 +3,15 @@
   "title": "خريطة اقتراحية لربط عناوين مكتبة الأمثلة بدروس كتاب الرياضيات السوري",
   "status": "provisional-not-verified",
   "summary": {
-    "labelCount": 325,
-    "studentCurriculumLabels": 319,
+    "labelCount": 326,
+    "studentCurriculumLabels": 320,
     "supplementaryLabels": 6,
     "studentExamples": 594,
     "supplementaryExamples": 6,
     "high": 153,
     "medium": 158,
-    "low": 8,
-    "unmapped": 8
+    "low": 9,
+    "unmapped": 9
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -7070,6 +7070,25 @@
       "confidence": "medium",
       "rationale": "يطابق عنوان الدرس المقابل في خريطة المنهاج؛ يبقى الربط اقتراحياً حتى مراجعة نص السؤال والكتاب.",
       "reviewStatus": "suggested-review",
+      "verified": false
+    },
+    {
+      "inventoryIndex": 101,
+      "topic": "الأعداد العقدية",
+      "lessonLabel": "ضرب عددين عقديين",
+      "exampleCount": 1,
+      "exampleIds": [
+        "cx-016"
+      ],
+      "sourceTypes": {
+        "تدريبي مؤلف": 1
+      },
+      "years": [],
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "تصنيف فرعي جديد أُضيف بعد فصل مسألة ضرب العددين العقديين عن مسألة الطويلة؛ يُترك دون ربط بدروس الكتاب حتى مراجعة موضعه في المنهاج.",
+      "reviewStatus": "needs-manual-review",
       "verified": false
     }
   ]
