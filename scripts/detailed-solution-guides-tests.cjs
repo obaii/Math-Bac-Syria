@@ -203,6 +203,36 @@ for (const [id, expected] of Object.entries(FIRST_BATCH_MATH_CHECKS)) {
   }
 }
 
+const FIRST_BATCH_NEXT_20_CHECKS = {
+  "q-t1tzvz": { idea: "القيمتين 2 و3", final: "10}{20" },
+  "q-gjr3as": { idea: "الاحتمال المعطى", final: "1}{5" },
+  "q-fq8p8e": { idea: "الاحتمال الهامشي", final: "0.40" },
+  "q-1i8xujn": { idea: "الاحتمال الهامشي", final: "0.50" },
+  "q-1b4me7r": { idea: "الاحتمال المشترك", final: "0.04" },
+  "q-8i8vll": { idea: "الأمل الرياضي", final: "E(X)=1" },
+  "q-nsesya": { idea: "مستقلين", final: "مستقلان" },
+  "q-d0ng5v": { idea: "قانون الاحتمال الكلي", final: "0.059" },
+  "q-5sk7zd": { idea: "صيغة بايز", final: "35}{59" },
+  "q-cq1qvt": { idea: "معادلة تربيعية", final: "n=9" },
+  "q-g52bez": { idea: "صيغتي التوافيق", final: "n=10" },
+  "q-mwlhqg": { idea: "التوزيع الثنائي", final: "10}{32" },
+  "q-1n7esov": { idea: "بالمتمم", final: "13}{16" },
+  "q-fta9jp": { idea: "الحالات المتنافية", final: "0.68256" },
+  "q-1pf4lu3": { idea: "التوزيع الثنائي", final: "2500}{46656" },
+  "q-1c5ftp5": { idea: "الحد العام", final: "r=8" },
+  "q-g7mycc": { idea: "الفرق", final: "r=3" },
+  "q-6a8j9p": { idea: "ترقيم المتتالية الحسابية", final: "3n+1" },
+  "q-98x958": { idea: "نسبة أي حد", final: "1}{2" },
+  "q-146az1k": { idea: "ترقيمها من الصفر", final: "1}{16" }
+};
+for (const [id, expected] of Object.entries(FIRST_BATCH_NEXT_20_CHECKS)) {
+  const question = questions.find((item) => item.id === id);
+  const finalStep = question?.steps?.at(-1) || "";
+  if (!question || !question.keyIdea?.includes(expected.idea) || !finalStep.includes(expected.final)) {
+    failures.push(`First-batch mathematical guide regression for ${id}: expected a task-specific idea and final result ${expected.final}.`);
+  }
+}
+
 const SECOND_DETAILED_GUIDE_BATCH_IDS = [
   "q-4kcn93",
   "q-10o8ctq",
