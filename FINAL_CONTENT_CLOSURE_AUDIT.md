@@ -91,3 +91,12 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - No definite algebraic or answer-key defect was confirmed in the text-verifiable items in this batch.
 - **Pending visual verification:** question 176 depends on `assets/question-11-graphs.png` and asks which candidate graph is the derivative. Its answer cannot be certified from the text alone; the actual image and curve/derivative sign relationship must be inspected before this record is marked closed.
 - The audit is not complete for this batch until question 176's image is inspected. No conclusion is made here about bank questions 201–609 or the 600 solved examples.
+
+## Batch 3 — bank questions 201–300 (main snapshot, 25 November 2026)
+
+- Scope: original questions.js records 201–300.
+- Independently recomputed the reviewed combinatorics and probability counts, vector/plane/geometry calculations, complex-number transformations, sequence recurrences and sums, limits, derivatives, and logarithmic/exponential results.
+- Confirmed and corrected one mathematical condition omission: question q-1fl5f0a allowed the degenerate case a=0, in which all listed geometric and arithmetic terms can be zero and the ratio q is not determined. The prompt now explicitly states a≠0; the updated text produces stable ID q-9g9uyf.
+- Checked question 266's answer explanation against its options: the current text correctly identifies the third option, matching zero-based answer index 2.
+- No additional definite error was confirmed in the text-verifiable items during this pass. The review of question 176's graph image remains pending from batch 2.
+- This is a bounded review of records 201–300, not closure of the remaining bank or solved-example library.
