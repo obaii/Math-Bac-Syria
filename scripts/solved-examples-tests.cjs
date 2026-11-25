@@ -45,13 +45,65 @@ if (!library || !Array.isArray(library.examples)) {
   if (library.count !== 600 || examples.length !== 600) {
     failures.push("The full solved-example archive must retain all 600 source records.");
   }
-  if (library.bankDuplicateCount !== 83 || library.uniqueCount !== 517 ||
-      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 517) {
-    failures.push("Expected 83 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 517 distinct examples.");
+  if (library.bankDuplicateCount !== 80 || library.uniqueCount !== 520 ||
+      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 520) {
+    failures.push("Expected 80 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 520 distinct examples.");
   }
+  // Compare against every assembled bank question as well as the guided subset above.
+  // This separates the historical all-bank exact-match count from the guided-only UI count.
+  const normalizeBankMatch = value => String(value ?? "")
+    .normalize("NFKC")
+    .replaceAll("\\(", "")
+    .replaceAll("\\)", "")
+    .replaceAll("\\[", "")
+    .replaceAll("\\]", "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  const allBankQuestions = vm.runInContext("questions", context);
+  const strictBankKey = value => String(value ?? "").normalize("NFKC").trim().toLowerCase();
+  const strictBankKeys = new Set(allBankQuestions.map(question => strictBankKey(question.q)));
+  const allBankKeys = new Set(allBankQuestions.map(question => normalizeBankMatch(question.q)));
+  const guidedBankKeys = new Set(allBankQuestions
+    .filter(question => Array.isArray(question.steps) && question.steps.length > 0)
+    .map(question => normalizeBankMatch(question.q)));
+  const strictMatches = examples.filter(example => strictBankKeys.has(strictBankKey(example.question)));
+  const allBankDuplicateExamples = examples.filter(example =>
+    allBankKeys.has(normalizeBankMatch(example.question))
+  );
+  const additionalAllBankMatches = allBankDuplicateExamples
+    .filter(example => !guidedBankKeys.has(normalizeBankMatch(example.question)))
+    .map(example => example.id);
+  const unmatchedAgainstBank = examples
+    .filter(example => !allBankKeys.has(normalizeBankMatch(example.question)))
+    .map(example => example.id);
+  // Report IDs as well as counts so historical audit totals (95/100) can be reconciled
+  // against the current exact-match definition without deleting or hiding unmatched examples.
+  const bankQuestionByStrictKey = new Map(allBankQuestions.map(question =>
+    [strictBankKey(question.q), question.id || "(question ID unavailable)"]
+  ));
+  const strictMatchedIds = strictMatches.map(example => ({
+    exampleId: example.id,
+    bankQuestionId: bankQuestionByStrictKey.get(strictBankKey(example.question)) || null
+  }));
+  const normalizedMatchedIds = allBankDuplicateExamples.map(example => ({
+    exampleId: example.id,
+    bankQuestionIds: allBankQuestions
+      .filter(question => normalizeBankMatch(question.q) === normalizeBankMatch(example.question))
+      .map(question => question.id || "(question ID unavailable)")
+  }));
+  console.log("Bank/library duplicate diagnostics: strict text=" + strictMatches.length +
+    ", normalized text=" + allBankDuplicateExamples.length +
+    ", guided normalized=" + library.bankDuplicateCount +
+    ", non-guided normalized=" + additionalAllBankMatches.length + ".");
+  console.log("Strict matched example/bank IDs: " + JSON.stringify(strictMatchedIds));
+  console.log("Normalized matched example/bank IDs: " + JSON.stringify(normalizedMatchedIds));
+  console.log("Unmatched library example IDs (" + unmatchedAgainstBank.length + "): " +
+    unmatchedAgainstBank.join(", "));
+
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
-  if (uniqueExampleIds.size !== 517) {
-    failures.push("The default solved-library view must contain 517 distinct example records.");
+  if (uniqueExampleIds.size !== 520) {
+    failures.push("The default solved-library view must contain 520 distinct example records.");
   }
 
   const yearReferenceCases = [
@@ -66,13 +118,34 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // The source report flagged ten prompts that referred students back to a
+  // question in an earlier exam statement. Keep provenance in metadata while
+  // ensuring each exercise can be solved from its own prompt.
+  const selfContainedSourceCases = [
+    ["exam17-complex-002", 2017], ["exam17-complex-003", 2017],
+    ["exam17-limit-002", 2017], ["exam18-seq-003", 2018],
+    ["exam18-seq-004", 2018], ["exam19-comb-001", 2019],
+    ["exam19-func-005", 2019], ["exam19-3d-001", 2019],
+    ["exam19-seq-001", 2019], ["exam19-func-006", 2019]
+  ];
+  const externalPromptReference = /كما ورد في السؤال|كما في السؤال السابق|وفق السؤال السابق|في المسألة السابقة|في السؤال الثاني من دورة|حسب نص الامتحان/;
+  for (const [id, sourceYear] of selfContainedSourceCases) {
+    const item = examples.find(example => example.id === id);
+    if (!item || item.sourceYear !== sourceYear || externalPromptReference.test(item.question)) {
+      failures.push("Source-referenced solved example must retain its year in metadata and remain self-contained: " + id + ".");
+    }
+  }
+  if (examples.some(item => /كما ورد في السؤال الثاني من دورة|في دورة 2017 الأولى/.test(item.question))) {
+    failures.push("Solved-example prompts must not refer students to an external exam question or an earlier session statement.");
+  }
+
   const sequenceDuplicate = examples.find(item => item.id === "seq-002");
   const sequenceTerm = examples.find(item => item.id === "seq-010");
   const sequenceCount = examples.find(item => item.id === "seq-013");
   if (!sequenceDuplicate || !sequenceTerm || !sequenceCount ||
       sequenceDuplicate.question === sequenceTerm.question ||
       !sequenceTerm.question.includes("الحد السابع") || !String(sequenceTerm.answer).includes("192") ||
-      !sequenceCount.question.includes("أوجد n") || !String(sequenceCount.answer).includes("5")) {
+      !sequenceCount.question.includes("أوجد أساسها q وحدها الأول") || !String(sequenceCount.answer).includes("q=3") || !String(sequenceCount.answer).includes("u₁=2")) {
     failures.push("The three geometric-sequence examples must assess distinct tasks and retain independently checked answers.");
   }
 
@@ -115,11 +188,9 @@ if (!library || !Array.isArray(library.examples)) {
   // must describe the complete function e^(-2x)+2x-2, not the exponential
   // term e^(-2x) in isolation.
   const exponentialVariationIds = [
-    "exam22-function-001", "exam22-function-002", "exam22-function-003",
-    "exam22-function-004", "exam22-function-005", "exam22-function-006",
-    "exam22-function-007", "exam22-function-008", "exam22-function-009",
-    "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018",
-    "exam22-cycle1-019"
+    "exam22-function-003", "exam22-function-004",
+    "exam22-function-007", "exam22-function-008",
+    "exam22-cycle1-017", "exam22-cycle1-018"
   ];
   for (const id of exponentialVariationIds) {
     const item = examples.find(example => example.id === id);
@@ -128,6 +199,17 @@ if (!library || !Array.isArray(library.examples)) {
         !diagram.includes("−∞") || !diagram.includes("+∞") ||
         !diagram.includes("−1") || !diagram.includes("↗ +∞")) {
       failures.push("The complete e^(-2x)+2x-2 exercise must receive its matching variation table: " + id + ".");
+    }
+  }
+  const unrelatedExponentialIds = [
+    "exam22-function-001", "exam22-function-002", "exam22-function-005",
+    "exam22-function-006", "exam22-function-009", "exam22-function-010",
+    "exam22-cycle1-019"
+  ];
+  for (const id of unrelatedExponentialIds) {
+    const item = examples.find(example => example.id === id);
+    if (!item || context.getQuestionDiagram({ q: item.question, topic: item.topic })) {
+      failures.push("Unrelated exponential question must not inherit a variation table: " + id + ".");
     }
   }
   const shiftedPolynomial = examples.find(example => example.id === "exam20-extra-004");
@@ -301,9 +383,9 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "int-007", steps: ["u=x²+1", "∫₅¹⁷ u³ du", "17⁴−5⁴"], answer: "20724" },
     { id: "int-008", steps: ["x≥0", "F(x)=x²/2", "9/2"], answer: "9/2" },
     { id: "int-009", steps: ["x³", "−2x²", "2x"], answer: "x³−2x²+2x+C" },
-    { id: "int-010", steps: ["2x≥0", "A=∫₀³ 2x dx", "3²−0²=9"], answer: "9" },
+    { id: "int-010", steps: ["A=∫₀² x² dx", "F(x)=x³/3", "8/3"], answer: "8/3" },
     { id: "int-011", steps: ["u=x", "v=e^x", "xe^x−∫e^x dx"], answer: "e^x(x−1)+C" },
-    { id: "int-012", steps: ["A=∫₀³ 2x dx", "A=[x²]₀³=9"], answer: "9" },
+    { id: "int-012", steps: ["A=∫₀⁴(4−x) dx", "F(x)=4x−x²/2", "16−8=8"], answer: "8" },
     { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
     { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
     { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
@@ -669,6 +751,98 @@ if (!source.includes('id="solved-example-source"') || !source.includes('id="solv
 if (!source.includes('source.textContent = "المصدر: "') || source.includes("فتح مرجع المصدر")) failures.push("Sourced examples must retain attribution while omitting the source-opening link.");
   if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must attach available diagrams beside relevant questions.");
 
+
+if (library && Array.isArray(library.examples)) {
+  const byId = new Map(library.examples.map(example => [example.id, example]));
+  const cosineExample = byId.get("dot-003");
+  if (!cosineExample || !/cos\s*θ/.test(cosineExample.answer || "") ||
+      !/\\sqrt/.test(cosineExample.answer || "")) {
+    failures.push("dot-003 must give the requested cosine value, not only the angle.");
+  }
+  const reviewedArabicSolutions = [
+    "int-006", "exam21-integral-001", "exam23-cycle1-020",
+    "exam20-extra-010", "exam21-extra-006", "exam26-model-014"
+  ];
+  for (const id of reviewedArabicSolutions) {
+    const example = byId.get(id);
+    if (!example) {
+      failures.push("Missing reviewed integral example " + id + ".");
+      continue;
+    }
+    const content = [example.question, example.keyIdea, ...(example.steps || []), example.answer].join(" ");
+    if (/\bintegrand\b/i.test(content)) failures.push(id + " still contains the English word integrand.");
+  }
+  const duplicateCandidates = [["der-005", "der-008"], ["log-004", "log-007"], ["dot-002", "dot-005", "dot-010"]];
+  for (const group of duplicateCandidates) {
+    const records = group.map(id => byId.get(id));
+    if (records.some(record => !record) || new Set(records.map(record => record.question)).size !== records.length) {
+      failures.push("The reported duplicate group " + group.join(", ") + " needs a fresh source-level comparison before deduplication.");
+    }
+  }
+  const varianceExample = byId.get("prob-007");
+  const eventExample = byId.get("prob-010");
+  const quadraticArea = byId.get("int-010");
+  const linearArea = byId.get("int-012");
+  if (!varianceExample || !varianceExample.question.includes("تباينه V(X)") ||
+      !varianceExample.steps.join(" ").includes("E(X²)") || !varianceExample.answer.includes("0.49")) {
+    failures.push("prob-007 must be a distinct variance exercise with the verified result 0.49.");
+  }
+  if (!eventExample || !eventExample.question.includes("القيم −2 و1 و3") ||
+      !eventExample.steps.join(" ").includes("−0.5+0.5+0.75=0.75") || !eventExample.answer.includes("0.75")) {
+    failures.push("prob-010 must be a distinct expectation exercise with the verified result 0.75.");
+  }
+  if (!quadraticArea || !quadraticArea.question.includes("y=x²") ||
+      !quadraticArea.steps.join(" ").includes("8/3") || !quadraticArea.answer.includes("8/3")) {
+    failures.push("int-010 must be the distinct area-under-y=x² exercise with result 8/3.");
+  }
+  if (!linearArea || !linearArea.question.includes("y=4−x") ||
+      !linearArea.steps.join(" ").includes("16−8=8") || !linearArea.answer.includes("8")) {
+    failures.push("int-012 must be the distinct area-under-y=4−x exercise with result 8.");
+  }
+  const distinctExamVariants = [
+    ["exam19-3d-001", "exam19-cycle1-005"],
+    ["exam19-comb-001", "exam19-cycle1-003"],
+    ["exam18-complex-002", "exam18-cycle1-004"],
+    ["exam23-cycle1-015", "exam20-extra-012"],
+    ["seq-002", "seq-010"],
+    ["seq-002", "seq-013"],
+    ["seq-010", "seq-013"]
+  ];
+  const normalizeInternalQuestion = value => String(value ?? "").normalize("NFKC")
+    .replace(/\\[()[\]]/g, "")
+    .replace(/[=،,.؛:]/g, "")
+    .replace(/\s+/g, "").toLowerCase();
+  for (const [firstId, secondId] of distinctExamVariants) {
+    const first = byId.get(firstId), second = byId.get(secondId);
+    if (!first || !second || normalizeInternalQuestion(first.question) === normalizeInternalQuestion(second.question)) {
+      failures.push("Solved-library records " + firstId + " and " + secondId + " must remain distinct exercises, not duplicate prompts.");
+    }
+  }
+  const normalizedQuestionGroups = new Map();
+  for (const example of library.examples) {
+    const normalized = normalizeInternalQuestion(example.question)
+      .replace(/[=،,.؛:()[\\]{}$]/g, "")
+      .replace(/\s+/g, "")
+      .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digit => String("⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(digit)));
+    if (!normalizedQuestionGroups.has(normalized)) normalizedQuestionGroups.set(normalized, []);
+    normalizedQuestionGroups.get(normalized).push(example.id);
+  }
+  const exactInternalDuplicates = [...normalizedQuestionGroups.values()].filter(ids => ids.length > 1);
+  if (exactInternalDuplicates.length) failures.push("Normalized duplicate questions remain inside the solved library: " + JSON.stringify(exactInternalDuplicates));
+  const binomialVariant = byId.get("exam19-cycle1-003");
+  const lineVariant = byId.get("exam19-cycle1-005");
+  const complexVariant = byId.get("exam18-cycle1-004");
+  const planeVariant = byId.get("exam20-extra-012");
+  const distinctDotProduct = byId.get("dot-005");
+  if (!distinctDotProduct || !distinctDotProduct.question.includes("v=(2,2,1)") ||
+      !distinctDotProduct.steps.join(" ").includes("2−2+2=2") || !distinctDotProduct.answer.includes("=2")) {
+    failures.push("dot-005 must remain a nonzero dot-product calculation distinct from the orthogonality examples.");
+  }
+  if (!binomialVariant?.steps.join(" ").includes("15×16=240") || !binomialVariant.answer.includes("240")) failures.push("exam19-cycle1-003 must verify the constant term 240.");
+  if (!lineVariant?.answer.includes("y=1−2t") || !lineVariant.answer.includes("z=−1+2t")) failures.push("exam19-cycle1-005 must show the corrected parametric line.");
+  if (!complexVariant?.steps.join(" ").includes("(3+4i)/5") || !complexVariant.answer.includes("(3+4i)/5")) failures.push("exam18-cycle1-004 must verify the new complex quotient.");
+  if (!planeVariant?.answer.includes("6x+4y+3z−12=0")) failures.push("exam20-extra-012 must verify the intercept-form plane equation.");
+}
 if (failures.length) {
   console.error("Solved examples library checks failed:");
   for (const failure of failures) console.error("- " + failure);

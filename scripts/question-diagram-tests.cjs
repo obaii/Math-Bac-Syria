@@ -15,7 +15,7 @@ const cases = [
   { name: "logarithmic graph choices", match: q => q.q.includes("f(x)=(\\ln x)^2-1"), labels: ["A", "B", "C", "D"] },
   { name: "cube projection", match: q => q.q.includes("في مكعب طول حرفه 3") && q.q.includes("مسقط M العمودي"), labels: ["M(2,2,1)", "M′(0,2,1)", "ADHE"] },
   { name: "tetrahedron midpoints", match: q => q.q.includes("لتكن I منتصف [CD]"), labels: ["I منتصف [CD]", "J منتصف [AI]", "K منتصف [BJ]"] },
-  { name: "joint probability table", match: q => q.q.includes("يعرض الجدول الآتي التوزيع المشترك") && q.q.includes("P(X=1,Y=2)"), labels: ["0.12", "0.06", "0.04", "0.30", "0.50", "P(X)"] },
+  { name: "joint probability table", match: q => q.q.includes("يعرض الجدول الآتي التوزيع المشترك") && q.q.includes("P(X=1,Y=2)"), labels: ["0.20", "0.30", "0.16", "0.10", "0.04", "P(Y)"] },
   { name: "discrete distribution table", match: q => q.q.includes("يعطى توزيع المتغير العشوائي X") && q.q.includes("P(X=3)"), labels: ["2/20", "8/20", "6/20", "4/20"] }
 ,
 
@@ -121,5 +121,50 @@ if (variationRows.length !== 3 || new Set(variationCellCounts).size !== 1 ||
 } else {
   console.log("PASS: variation-table point/value/sign cells share a consistent grid");
 }
-console.log("\nQuestion diagram checks: " + (cases.length + 5 - failures) + "/" + (cases.length + 5) + " passed.");
+// The cubic f(x)=x^3−3x has derivative 3(x−1)(x+1):
+// positive at x=−2 and x=2, and zero at the two stationary points.
+const cubicVariation = getDiagram({ q: "ادرس تغيرات f(x)=x³−3x على المجال [−2,2]", topic: "الاشتقاق" });
+if (!cubicVariation || !cubicVariation.includes("<td>+</td>") ||
+    !cubicVariation.includes("<td>0</td>") ||
+    cubicVariation.includes("0 / −") || cubicVariation.includes("0 / +")) {
+  console.error("FAIL: cubic variation table must show derivative values +, 0, 0, + at −2, −1, 1, 2.");
+  failures++;
+} else {
+  console.log("PASS: cubic variation derivative row is mathematically consistent at critical points");
+}
+// The exponential example family has a correct variation table, but it belongs
+// only beside questions that ask about variation, extrema, critical points or uniqueness.
+const exponentialVariation = getDiagram({ q: "للتابع f(x)=e^(−2x)+2x−2، ادرس اتجاه تغيرها واستنتج قيمتها الصغرى.", topic: "الاشتقاق" });
+if (!exponentialVariation.includes("<table") || !exponentialVariation.includes("−1")) {
+  console.error("FAIL: the matching exponential variation question must show its correct table.");
+  failures++;
+} else {
+  console.log("PASS: exponential variation table is shown for a variation question");
+}
+const unrelatedExponentialPrompts = [
+  "ليكن f(x)=e^(−2x)+2x−2. أثبت أن المستقيم y=2x−2 مقارب مائل عند +∞.",
+  "احسب مساحة المنطقة المحصورة بين منحنى f(x)=e^(−2x)+2x−2 ومقاربه ومحوري x=0 وx=1.",
+  "احسب نهايتي f(x)=e^(−2x)+2x−2 عندما x→−∞ وعندما x→+∞.",
+  "للتابع f(x)=e^(−2x)+2x−2، احسب f(0) وf′(0)، واكتب معادلة المماس عند x=0.",
+  "للتابع f(x)=e^(−2x)+2x−2 والمستقيم Δ: y=2x−2، عين الوضع النسبي للمنحنى C والمستقيم Δ.",
+  "إذا كان f(x)=e^(−2x)+2x−2 وعرفنا g(x)=−e^(2x)+2x+2، عبر عن g بدلالة f، واستنتج التحويل الهندسي بين منحنييهما.",
+  "إذا كان f(x)=e^(−2x)+1، احسب نهايته عندما x→+∞."
+];
+if (unrelatedExponentialPrompts.some(q => getDiagram({ q, topic: "التابع الأسي" }))) {
+  console.error("FAIL: an unrelated exponential question must not inherit a variation table.");
+  failures++;
+} else {
+  console.log("PASS: unrelated exponential questions do not inherit the variation table");
+}
+const pureExponentialVariation = getDiagram({ q: "ادرس تغيرات f(x)=e^(−2x) على R.", topic: "التابع الأسي" });
+if (!pureExponentialVariation.includes("<table") || !pureExponentialVariation.includes("0")) {
+  console.error("FAIL: the exact e^(−2x) variation question must retain its own table.");
+  failures++;
+}
+const shiftedCubicDiagram = getDiagram({ q: "إذا كان f(x)=x³−3x+1، فأوجد f′(2).", topic: "الاشتقاق" });
+if (shiftedCubicDiagram) {
+  console.error("FAIL: the x³−3x variation table must not be attached to x³−3x+1.");
+  failures++;
+}
+console.log("\nQuestion diagram checks: " + (cases.length + 10 - failures) + "/" + (cases.length + 10) + " passed.");
 if (failures) process.exitCode = 1;

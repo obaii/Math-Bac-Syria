@@ -33,6 +33,7 @@ for (const file of [
 
 const { questions, topics } = vm.runInContext("({ questions, topics })", context);
 const guided = questions.filter((q) => Array.isArray(q.steps) && q.steps.length > 0);
+const unguided = questions.filter((q) => !Array.isArray(q.steps) || q.steps.length === 0);
 const failures = [];
 for (const topic of topics) {
   if (!guided.some((q) => q.topic === topic)) {
@@ -59,8 +60,251 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 179) {
-  failures.push(`Expected exactly 179 curated guides after adding 15 question-specific walkthroughs, found ${guided.length}.`);
+// Keep the reviewed coverage as a regression floor while allowing the
+// next verified batches to increase coverage without rewriting this guard.
+const MIN_GUIDED_QUESTIONS = 609;
+const FIRST_DETAILED_GUIDE_BATCH_IDS = [
+  "q-1wu787",
+  "q-18qdr18",
+  "q-1t1e4vo",
+  "q-1obbsy",
+  "q-2arkk4",
+  "q-n2ay86",
+  "q-zxk9d6",
+  "q-zzhaas",
+  "q-1ozq465",
+  "q-84rgcq",
+  "q-1f4d1kb",
+  "q-1rt6q2i",
+  "q-1hr8ven",
+  "q-p3xeru",
+  "q-96mf6q",
+  "q-kznbf3",
+  "q-1va3umk",
+  "q-pk6b6n",
+  "q-123wlab",
+  "q-ien27s",
+  "q-t1tzvz",
+  "q-gjr3as",
+  "q-fq8p8e",
+  "q-1i8xujn",
+  "q-1b4me7r",
+  "q-8i8vll",
+  "q-nsesya",
+  "q-d0ng5v",
+  "q-5sk7zd",
+  "q-cq1qvt",
+  "q-g52bez",
+  "q-mwlhqg",
+  "q-1n7esov",
+  "q-fta9jp",
+  "q-1pf4lu3",
+  "q-1c5ftp5",
+  "q-g7mycc",
+  "q-6a8j9p",
+  "q-98x958",
+  "q-146az1k",
+  "q-1age5o8",
+  "q-p89ml2",
+  "q-d4mafe",
+  "q-1xvkk50",
+  "q-1mnyra2",
+  "q-p863vd",
+  "q-1xnwh7a",
+  "q-ksv04n",
+  "q-1gkdzbo",
+  "q-tli1yo",
+  "q-miyt15",
+  "q-ma6a6k",
+  "q-kf50t4",
+  "q-rrywfx",
+  "q-5ji6ta",
+  "q-tfiote",
+  "q-4dzq3j",
+  "q-hp73bc",
+  "q-shb56b",
+  "q-7k58ye",
+  "q-9ix3w1",
+  "q-fyy5gx",
+  "q-12bw5hk",
+  "q-10axf3q",
+  "q-evvf3q",
+  "q-c9ayjx",
+  "q-vywnaz",
+  "q-4150dr",
+  "q-1ae3k7u",
+  "q-144au1n",
+  "q-1rrcntj",
+  "q-1ly7i41",
+  "q-ge1qpr",
+  "q-1j35abt",
+  "q-1meemrp",
+  "q-lcs53b",
+  "q-1i1joad",
+  "q-r9cnh5",
+  "q-xxm76l",
+  "q-1rjf8tq",
+  "q-18kzxby",
+  "q-k6sgle",
+  "q-1rx1926",
+  "q-1tazqr1",
+  "q-1i2zric",
+  "q-17l6ogv",
+  "q-13bzoo7",
+  "q-12oy037",
+  "q-196jog8",
+  "q-1uc9n1p",
+  "q-1jjrup0",
+  "q-xnkd7b",
+  "q-w8yr5k",
+  "q-j2xauw",
+  "q-za7pxh",
+  "q-1a8zdl4",
+  "q-zztxzr",
+  "q-1175eyn",
+  "q-1mpdwux",
+  "q-1ur2hay"
+];
+const guidedIds = new Set(guided.map((q) => q.id));
+const missingFirstBatchGuides = FIRST_DETAILED_GUIDE_BATCH_IDS.filter((id) => !guidedIds.has(id));
+if (missingFirstBatchGuides.length) {
+  failures.push(`First 100-question detailed-solution batch is missing guides for: ${missingFirstBatchGuides.join(", ")}.`);
+}
+
+// First 20 questions in batch one: verify that the guide is specific to the task,
+// not generic scaffolding, and that its final worked step contains the checked result.
+const FIRST_BATCH_MATH_CHECKS = {
+  "q-1wu787": { idea: "مبدأ الضرب", final: "30" },
+  "q-18qdr18": { idea: "المناصب الثلاثة مختلفة", final: "336" },
+  "q-1t1e4vo": { idea: "التوافيق", final: "56" },
+  "q-1obbsy": { idea: "كل مجموعة على حدة", final: "10" },
+  "q-2arkk4": { idea: "توزيعاً ثنائياً", final: "8" },
+  "q-n2ay86": { idea: "التوزيع الثنائي", final: "12" },
+  "q-zxk9d6": { idea: "التوزيع الثنائي", final: "2" },
+  "q-zzhaas": { idea: "الرميات الثلاث", final: "27" },
+  "q-1ozq465": { idea: "مفكوك نيوتن", final: "r=8" },
+  "q-84rgcq": { idea: "الحد المستقل", final: "126720" },
+  "q-1f4d1kb": { idea: "اللوغاريتم الطبيعي", final: "ln4" },
+  "q-1rt6q2i": { idea: "التعويض", final: "ln2" },
+  "q-1hr8ven": { idea: "المعادلة التفاضلية", final: "C=8" },
+  "q-p3xeru": { idea: "الثابت", final: "k=3" },
+  "q-96mf6q": { idea: "التكامل بالأجزاء", final: "2-\\ln3" },
+  "q-kznbf3": { idea: "التوزيع الثنائي", final: "2" },
+  "q-1va3umk": { idea: "احتمال الإخفاق", final: "8" },
+  "q-pk6b6n": { idea: "الأمل الرياضي", final: "E(X)" },
+  "q-123wlab": { idea: "تباين التوزيع الثنائي", final: "V(X)" },
+  "q-ien27s": { idea: "الأمل الرياضي", final: "frac85" }
+};
+for (const [id, expected] of Object.entries(FIRST_BATCH_MATH_CHECKS)) {
+  const question = questions.find((item) => item.id === id);
+  const finalStep = question?.steps?.at(-1) || "";
+  if (!question || !question.keyIdea?.includes(expected.idea) || !finalStep.includes(expected.final)) {
+    failures.push(`First-batch mathematical guide regression for ${id}: expected a task-specific idea and final result ${expected.final}.`);
+  }
+}
+
+const FIRST_BATCH_NEXT_20_CHECKS = {
+  "q-t1tzvz": { idea: "القيمتين 2 و3", final: "10}{20" },
+  "q-gjr3as": { idea: "الاحتمال المعطى", final: "frac15" },
+  "q-fq8p8e": { idea: "الاحتمال الهامشي", final: "0.40" },
+  "q-1i8xujn": { idea: "الاحتمال الهامشي", final: "0.50" },
+  "q-1b4me7r": { idea: "الاحتمال المشترك", final: "0.04" },
+  "q-8i8vll": { idea: "الأمل الرياضي", final: "E(X)=1" },
+  "q-nsesya": { idea: "مستقلين", final: "مستقلان" },
+  "q-d0ng5v": { idea: "قانون الاحتمال الكلي", final: "0.059" },
+  "q-5sk7zd": { idea: "صيغة بايز", final: "35}{59" },
+  "q-cq1qvt": { idea: "معادلة تربيعية", final: "n=9" },
+  "q-g52bez": { idea: "صيغتي التوافيق", final: "n=10" },
+  "q-mwlhqg": { idea: "التوزيع الثنائي", final: "10}{32" },
+  "q-1n7esov": { idea: "بالمتمم", final: "13}{16" },
+  "q-fta9jp": { idea: "الحالات المتنافية", final: "0.68256" },
+  "q-1pf4lu3": { idea: "التوزيع الثنائي", final: "2500}{46656" },
+  "q-1c5ftp5": { idea: "الحد العام", final: "r=8" },
+  "q-g7mycc": { idea: "الفرق", final: "r=3" },
+  "q-6a8j9p": { idea: "ترقيم المتتالية الحسابية", final: "3n+1" },
+  "q-98x958": { idea: "نسبة أي حد", final: "frac12" },
+  "q-146az1k": { idea: "ترقيمها من الصفر", final: "frac1{16}" }
+};
+for (const [id, expected] of Object.entries(FIRST_BATCH_NEXT_20_CHECKS)) {
+  const question = questions.find((item) => item.id === id);
+  const finalStep = question?.steps?.at(-1) || "";
+  if (!question || !question.keyIdea?.includes(expected.idea) || !finalStep.includes(expected.final)) {
+    failures.push(`First-batch mathematical guide regression for ${id}: expected a task-specific idea and final result ${expected.final}.`);
+  }
+}
+
+const SECOND_DETAILED_GUIDE_BATCH_IDS = [
+  "q-4kcn93",
+  "q-10o8ctq",
+  "q-7noxuc",
+  "q-j9yoju",
+  "q-d1z4tk",
+  "q-15yn7ot",
+  "q-eqg7fy",
+  "q-hpr6z7",
+  "q-12bn51n",
+  "q-dcby5o",
+  "q-tnj5zi",
+  "q-1vwefbm",
+  "q-16ebsj0",
+  "q-1twvj1m",
+  "q-1qhjgz2",
+  "q-5v4o16",
+  "q-18xqvyj",
+  "q-i0gysv",
+  "q-wlqkdo",
+  "q-1sygnez",
+  "q-b38de6",
+  "q-1s4elc1",
+  "q-qnv3ye",
+  "q-8kk6y9",
+  "q-pdeig9",
+  "q-spmlam",
+  "q-1elymwt",
+  "q-18sm8dg",
+  "q-1wmtldp",
+  "q-105exkl",
+  "q-16apqv5",
+  "q-1ped1mi",
+  "q-1h52wbd",
+  "q-1p53h31",
+  "q-1pqcqk8",
+  "q-s4daq9",
+  "q-1784ouk",
+  "q-xoag6x",
+  "q-j00u65",
+  "q-1yv0f3f",
+  "q-d8w482",
+  "q-g44ydw",
+  "q-1iptzgf",
+  "q-1jos3b",
+  "q-6hn6fw",
+  "q-i1vowz",
+  "q-g31ucr",
+  "q-orwjrn",
+  "q-1ijaxlm",
+  "q-1g274hs",
+  "q-13zqeis",
+  "q-b0xd1t",
+  "q-uzh3ea",
+  "q-ot921h",
+  "q-19prm9e",
+  "q-r5evi2",
+  "q-1puzh27",
+  "q-1gbrw9p",
+  "q-kgiqis",
+  "q-wse1i9"
+];
+const missingSecondBatchGuides = SECOND_DETAILED_GUIDE_BATCH_IDS.filter((id) => !guidedIds.has(id));
+if (missingSecondBatchGuides.length) {
+  failures.push(`Final 60-question detailed-solution batch is missing guides for: ${missingSecondBatchGuides.join(", ")}.`);
+}
+if (unguided.length > 0) {
+  failures.push(`Expected detailed solutions for all questions; ${unguided.length} questions remain without steps.`);
+}
+
+if (guided.length < MIN_GUIDED_QUESTIONS) {
+  failures.push(`Expected at least ${MIN_GUIDED_QUESTIONS} guided questions (the reviewed baseline), found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
@@ -78,7 +322,7 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261124-2/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261125-39/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 const appScriptMatch = indexHtml.match(/app\.js\?v=20[0-9]{6}-[0-9]+/);
@@ -88,7 +332,7 @@ if (!appScriptMatch) {
 if (!/enhancements\.js\?v=20[0-9]{6}-[0-9]+/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261124-2");
+const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261125-39");
 const appScriptPosition = appScriptMatch ? indexHtml.indexOf(appScriptMatch[0]) : -1;
 if (guideScriptPosition < 0 || appScriptPosition < 0 || guideScriptPosition > appScriptPosition) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
@@ -114,6 +358,10 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(`PASS: ${guided.length} questions have structured solution steps and a key idea.`);
+  console.log(`AUDIT: ${unguided.length} questions still need curated detailed solutions.`);
+  for (const q of unguided) {
+    console.log(`UNGUIDED: ${q.id || "missing-id"} | ${q.topic || "unknown-topic"} | ${String(q.q || "").replace(/\s+/g, " ").trim()}`);
+  }
   console.log(`PASS: all ${questions.length} existing questions have three progressive hints.`);
   console.log(`PASS: all ${topics.length} curriculum topics have at least one detailed guide.`);
   console.log("PASS: the guided-solution renderer includes the step list, key idea, and MathJax typesetting hook.");

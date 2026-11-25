@@ -133,6 +133,23 @@ for (const [index, question] of (questions || []).entries()) {
   }
 }
 
+const forbiddenQuestionReferences = [
+  /في الشروط نفسها/,
+  /في جدول التوزيع المشترك نفسه/,
+  /وفق جدول التوزيع المشترك الوارد في المسألة/,
+  /وفق المعطيات في المسألة/,
+  /كما ورد في السؤال الثاني من دورة/,
+  /في دورة 2017 الأولى/
+];
+for (const question of questions || []) {
+  const prompt = normalize(question.q);
+  for (const pattern of forbiddenQuestionReferences) {
+    if (pattern.test(prompt)) {
+      fail("Question prompt must be self-contained and must not refer to missing prior context: " + question.id + ".");
+    }
+  }
+}
+
 const exampleIds = new Set();
 for (const [index, example] of (examples || []).entries()) {
   const label = "Solved example " + (example.id || index + 1);
@@ -239,7 +256,7 @@ const jointTableQuestion = questions.find(question =>
   question.q.includes("التوزيع المشترك") && question.q.includes("P(X=1,Y=2)")
 );
 const jointTable = jointTableQuestion && getQuestionDiagram(jointTableQuestion);
-if (!jointTable || !["0.12", "0.20", "0.08", "0.06", "0.10", "0.04", "0.30", "0.50", "0.20", "1.00"].every(value => jointTable.includes(value))) {
+if (!jointTable || !["0.20", "0.30", "0.16", "0.10", "0.04", "0.66", "0.34", "0.30", "0.50", "1.00"].every(value => jointTable.includes(value))) {
   fail("The joint-probability diagram must retain all joint probabilities and marginal totals.");
 }
 const distributionQuestion = questions.find(question => question.q.includes("يعطى توزيع المتغير العشوائي X") && question.q.includes("P(X=3)"));
@@ -351,10 +368,9 @@ for (const id of standaloneExamples) {
   }
 }
 for (const id of [
-  "exam22-function-001", "exam22-function-002", "exam22-function-003",
-  "exam22-function-004", "exam22-function-005", "exam22-function-006",
-  "exam22-function-007", "exam22-function-008", "exam22-function-009",
-  "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019", "exam22-cycle1-020"
+  "exam22-function-003", "exam22-function-004",
+  "exam22-function-007", "exam22-function-008",
+  "exam22-cycle1-017", "exam22-cycle1-018"
 ]) {
   const example = manualReviewExamples.get(id);
   const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
@@ -397,14 +413,26 @@ if (!cosineQuestion ||
   fail("dot-003 must answer the requested cosine value, not the angle itself.");
 }
 const reportVariationIds = [
-  ...Array.from({ length: 10 }, (_, index) => "exam22-function-" + String(index + 1).padStart(3, "0")),
-  "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019", "exam22-cycle1-020"
+  "exam22-function-003", "exam22-function-004",
+  "exam22-function-007", "exam22-function-008",
+  "exam22-cycle1-017", "exam22-cycle1-018"
 ];
 for (const id of reportVariationIds) {
   const example = reportExampleById.get(id);
   const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
   if (!diagram || !diagram.includes("القيمة الصغرى −1 عند x=0")) {
-    fail(id + " must keep the complete-function variation table from the audit report.");
+    fail(id + " must display the complete-function variation table when variation is requested.");
+  }
+}
+const reportUnrelatedVariationIds = [
+  "exam22-function-001", "exam22-function-002", "exam22-function-005",
+  "exam22-function-006", "exam22-function-009", "exam22-function-010",
+  "exam22-cycle1-019"
+];
+for (const id of reportUnrelatedVariationIds) {
+  const example = reportExampleById.get(id);
+  if (!example || getQuestionDiagram({ q: example.question, topic: example.topic })) {
+    fail(id + " must not receive an unrelated variation table.");
   }
 }
 const shiftedCubicReportExample = reportExampleById.get("exam20-extra-004");
@@ -421,6 +449,17 @@ if (failures.length) {
   console.log("PASS: " + questions.length + " unique questions (" + mcq.length + " MCQ, " + typed.length + " typed).");
   console.log("PASS: " + examples.length + " solved examples; all required fields and steps are present.");
   console.log("PASS: " + mathFields.length + " question/solution fields and " + formulaCount + " explicit TeX formulas were audited.");
+  const formatterProbes = [
+    { input: "e^(−x)", expected: "\\(e^{−x}\\)" },
+    { input: "(e^(−x))", expected: "\\((e^{−x})\\)" },
+    { input: "S_n=(1−(1/3)^(n+1))/(1−1/3)", expected: "\\(S_n=\\frac{(1−(\\frac{1}{3})^{n+1})}{(1−\\frac{1}{3})}\\)" },
+    { input: "0.18/0.3", expected: "\\(\\frac{0.18}{0.3}\\)" }
+  ];
+  for (const probe of formatterProbes) {
+    if (formatMathContent(probe.input) !== probe.expected) {
+      fail("Math formatter regression: " + probe.input + " should render as " + probe.expected);
+    }
+  }
   console.log("PASS: unstacked slash fractions and reversed limit arrows are normalized across all records.");
   console.log("PASS: " + visualQuestions.length + " visual-dependent bank questions and " + requiredSolvedDiagramIds.length + " solved-example diagrams have matching visual assets.");
   console.log("PASS: cube projection, joint-probability table, and discrete-distribution table consistency checks.");

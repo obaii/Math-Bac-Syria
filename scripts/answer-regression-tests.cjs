@@ -32,7 +32,8 @@ const cases = [
   { contains: "إذا كان \\(z=3+2i\\)", expected: "3" },
   { contains: "كم طريقة لاختيار طالبين من مجموعة فيها 5 طلاب", expected: "10" },
   { contains: "عند رمي حجر نرد متوازن مرة واحدة", expected: "\\(\\frac16\\)" },
-  { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" }
+  { contains: "إذا كانت A(1,−2,3) وB(4,0,−1)", expected: "(3,2,−4)" },
+  { contains: "متتاليتين معرفتين لكل \\(n\\ge2\\) ومتجاورتين", expected: "\\(\\frac1{1-n}\\)" }
   ,
   { contains: "فإن \\(\\lim_{x\\to2}f(x)\\) تساوي؟", expected: "4" },
   { contains: "\\lim_{x\\to0}\\frac{\\sin x}{x}", expected: "1" },
@@ -245,7 +246,7 @@ const cases = [
   {"contains":"في صندوق 3 كرات حمراء وكرتان زرقاوان و5 بيضاء، نسحب كرتين دون إرجاع. ما احتمال أن تكونا من اللون نفسه؟","expected":"\\(\\frac{14}{45}\\)"},
   {"contains":"نسحب كرتين من صندوق فيه خمس كرات بيضاء وخمس غير بيضاء. إذا كان X عدد الكرات البيضاء، فما قيمة P(X=1)؟","expected":"\\(\\frac59\\)"},
   {"contains":"للتابع \\(f(x)=\\frac{x^2+1}{x-1}\\)، ما معادلة المقارب المائل؟","expected":"\\(y=x+1\\)"},
-  {"contains":"للتابع \\(f(x)=x^3-3x^2+1\\)، أي وصف للتغيرات صحيح؟","expected":"متزايد ثم متناقص على ]0,2[ ثم متزايد"},
+  {"contains":"للتابع \\(f(x)=x^3-3x^2+1\\)، أي وصف للتغيرات صحيح؟","expected":"متزايد على ]−∞,0[، ومتناقص على ]0,2[، ومتزايد على ]2,+∞["},
   {"contains":"معادلة مماس \\(f(x)=x^2-2x+3\\) عند \\(x=2\\) هي:","expected":"\\(y=2x-1\\)"},
   {"contains":"إذا كان \\(f(x)=ax^2+bx+1\\)، و\\(f(1)=3\\) و\\(f'(1)=4\\)، فما a وb؟","expected":"\\(a=2,b=0\\)"},
   {"contains":"القيمة العظمى للتابع \\(g(x)=xe^{-x}\\) على \\([0,+\\infty[\\) هي:","expected":"\\(\\frac1e\\) عند x=1"},
@@ -271,8 +272,12 @@ const archiveCases = [
   {"contains":"إذا كان التابع f متزايداً على المجال [−1,2] وكان f(−1)=−2 وf(2)=4","expected":"الصغرى −2 والعظمى 4، والصورة [−2,4]"},
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. إذا كانت البطاقة الأولى حمراء","expected":"\\(\\frac12\\)"},
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. ليكن X عدد البطاقات الحمراء المسحوبة","expected":"لا، لأن احتمال التقاطع لا يساوي حاصل ضرب الاحتمالين"},
-  {"contains":"في صندوق يحتوي على 3 كرات حمراء و2 زرقاء و5 بيضاء، نسحب كرتين دفعة واحدة. ما احتمال ظهور كرة بيضاء واحدة على الأقل","expected":"\\(\\frac79\\)"}
+  {"contains":"في صندوق يحتوي على 3 كرات حمراء و2 زرقاء و5 بيضاء، نسحب كرتين دفعة واحدة. ما احتمال ظهور كرة بيضاء واحدة على الأقل","expected":"\\(\\frac79\\)"},
+  { contains: "ما ميل نصف المماس الأيمن لمنحنى f عند x=0؟", expected: "2" },
+  { contains: "لتكن \\(u_n=\\frac1{\\sqrt{n+1}+\\sqrt{n}}\\)", expected: "\\(4\\)" }
 ];
+
+cases.push(...archiveCases);
 
 let failures = 0;
 for (const test of cases) {
@@ -291,5 +296,18 @@ for (const test of cases) {
     console.log(`PASS: ${test.contains}`);
   }
 }
+
+const halfTangentQuestion = questions.find(q => q.id === "q-1bwh99f");
+if (!halfTangentQuestion || !halfTangentQuestion.q.includes("نصف المماس الأيمن") ||
+    normalize(halfTangentQuestion.options[halfTangentQuestion.answer]) !== "2") {
+  console.error("FAIL: q-1bwh99f must ask for the right half-tangent slope and select 2, not the two-sided differentiability option.");
+  failures++;
+}
+const rationalizationQuestion = questions.find(q => q.id === "q-1fc9tmo");
+if (!rationalizationQuestion || /rationalize/i.test(rationalizationQuestion.solution || "")) {
+  console.error("FAIL: q-1fc9tmo must keep its solution in Arabic mathematical terminology.");
+  failures++;
+}
+
 console.log(`\nAnswer regression checks: ${cases.length - failures}/${cases.length} passed.`);
 if (failures) process.exitCode = 1;

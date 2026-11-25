@@ -27,7 +27,7 @@ const expected = {
   "exam18-cycle1-001": "|m|=√2.",
   "exam18-cycle1-002": "d=−2.",
   "exam18-cycle1-003": "النقاط O وB وM مستقيمية وO منتصف [BM].",
-  "exam18-cycle1-004": "(c−d)/m=−2i.",
+  "exam18-cycle1-004": "(c−d)/m=(3+4i)/5.",
   "exam18-cycle1-005": "ab=−2.",
   "exam18-cycle1-006": "المتتالية (uₙ) متزايدة تماماً.",
   "exam18-cycle1-007": "lim uₙ=5.",

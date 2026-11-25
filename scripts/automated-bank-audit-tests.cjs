@@ -55,6 +55,75 @@ try {
     /مكعب.*منتصف.*HG.*FB/, /مركز ثقل المثلث BCD/,
     /في مكعب طول حرفه 3.*مسقط M العمودي/, /في رباعي وجوه ABCD.*منتصف \[CD\]/
   ];
+  // Manual difficulty review: straightforward one-step items are no longer marked advanced.
+  const reviewedDifficulty = {
+    "q-4op8eg": "أساسي",
+    "q-979lrc": "أساسي",
+    "q-xe531r": "أساسي",
+    "q-17vm0kg": "أساسي",
+    "q-1mgwfnk": "أساسي",
+    "q-pa70rj": "أساسي",
+    "q-1i2zric": "متوسط",
+    "q-1pf4lu3": "متوسط",
+    "q-s0ps7l": "متوسط",
+    "q-1mrew3w": "متوسط",
+    "q-xxm9z1": "متوسط",
+    "q-fwyckw": "متوسط",
+    "q-1xclznw": "متوسط",
+    "q-6sg0g9": "متوسط",
+    "q-1bwh99f": "متوسط",
+    "q-1age5o8": "متوسط",
+    "q-1y51jwn": "متوسط",
+    "q-1x3ijk5": "متوسط",
+    "q-176lroo": "متوسط",
+    "q-x2h9dy": "متوسط",
+    "q-148rrue": "متوسط",
+    "q-n2jaob": "متوسط",
+    "q-j4wwv1": "متوسط",
+    "q-1of7bis": "متوسط",
+    "q-513rd0": "متوسط",
+    "q-1uaxmee": "متوسط",
+    "q-1u42joh": "متوسط",
+    "q-reb5m9": "متوسط",
+    "q-fa7iqg": "متوسط",
+    "q-p9k80p": "متوسط",
+    "q-1bnkw97": "متوسط",
+    "q-1ypnloh": "متوسط",
+    "q-ma6a6k": "متوسط",
+    "q-1747b07": "متوسط",
+    "q-1hr8ven": "متوسط",
+    "q-1eoblfi": "متوسط",
+    "q-kekzva": "أساسي",
+    "q-hbu2nq": "متوسط",
+    "q-zmro3t": "متوسط",
+    "q-x3zcls": "متوسط",
+    "q-34zo63": "متوسط",
+    "q-j2o5b9": "متقدم",
+    "q-84rgcq": "متقدم",
+    "q-apxjgd": "متقدم",
+    "q-17etknx": "متقدم",
+    "q-118pcjl": "متقدم",
+    "q-1ehwvui": "متقدم",
+    "q-167yegk": "متقدم",
+    "q-8dh2or": "متقدم",
+    "q-zbbxd0": "متقدم",
+    "q-115z4zf": "متقدم",
+    "q-miyt15": "متقدم",
+    "q-zcqhy6": "متقدم",
+    "q-hkbf66": "متقدم",
+    "q-pjspsv": "متقدم",
+    "q-1ciihoa": "متقدم",
+    "q-1iu0uen": "متقدم",
+    "q-1wve3pd": "متقدم",
+    "q-1hu5d9v": "متقدم",
+    "q-kcug19": "متقدم",
+    "q-1vu43ot": "متقدم"
+  };
+  for (const [id, expectedLevel] of Object.entries(reviewedDifficulty)) {
+    const question = questions.find(item => item.id === id);
+    if (!question) fail("Missing manually reviewed difficulty record " + id + ".");
+    else if (question.level !== expectedLevel) fail(id + " must remain classified as " + expectedLevel + ".");
+  }
   const visualQuestions = [];
   const texSegments = value => [...String(value ?? "").matchAll(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g)]
     .map(match => match[1] ?? match[2] ?? "");
@@ -196,6 +265,42 @@ try {
     }
 
     if (visualPatterns.some(pattern => pattern.test(question.q))) visualQuestions.push(question);
+  }
+
+  // A supplemental diagram must never replace a question's own probability data
+  // with a generic table. The only derived joint table is tied to the exact
+  // prompt that supplies both marginals and the independence condition.
+  const allQuestions = [...questions, ...(typed || []), ...(automated || [])];
+  const explicitJointTableQuestion = allQuestions.find(question =>
+    question.q.includes("يعرض الجدول الآتي التوزيع المشترك للمتغيرين العشوائيين")
+  );
+  if (!explicitJointTableQuestion) {
+    fail("Missing regression case for a joint-distribution table embedded in the question.");
+  } else {
+    const diagram = getQuestionDiagram(explicitJointTableQuestion);
+    for (const value of ["0.20", "0.30", "0.16", "0.10", "0.04"]) {
+      if (!diagram.includes(">" + value + "<")) {
+        fail("The supplemental joint table must preserve the explicit value " + value + ".");
+      }
+    }
+    if (diagram.includes(">0.12<")) {
+      fail("The explicit joint table must not be replaced with unrelated generic probabilities.");
+    }
+  }
+
+  const derivedJointTableQuestion = allQuestions.find(question =>
+    question.q.includes("احتمالات الصفوف للمتغير X هي 0.4 و0.2 و0.4") &&
+    question.q.includes("كل خانة تساوي حاصل ضرب احتمال صفها في احتمال عمودها")
+  );
+  if (!derivedJointTableQuestion) {
+    fail("Missing regression case for the joint table derived from independent marginals.");
+  } else {
+    const diagram = getQuestionDiagram(derivedJointTableQuestion);
+    for (const value of ["0.12", "0.20", "0.08", "0.06", "0.04", "0.30", "0.50", "1.00"]) {
+      if (!diagram.includes(">" + value + "<")) {
+        fail("The derived joint table is missing expected cell or marginal " + value + ".");
+      }
+    }
   }
 
   for (const [topic, counts] of topicCounts) {
