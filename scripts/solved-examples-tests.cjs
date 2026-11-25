@@ -810,7 +810,7 @@ if (library && Array.isArray(library.examples)) {
     .replace(/[=،,.؛:]/g, "")
     .replace(/\s+/g, "").toLowerCase();
   for (const [firstId, secondId] of distinctExamVariants) {
-    const first = byId(firstId), second = byId(secondId);
+    const first = byId.get(firstId), second = byId.get(secondId);
     if (!first || !second || normalizeInternalQuestion(first.question) === normalizeInternalQuestion(second.question)) {
       failures.push("Solved-library records " + firstId + " and " + secondId + " must remain distinct exercises, not duplicate prompts.");
     }
