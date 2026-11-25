@@ -67,3 +67,11 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Additional likely duplicate pairs requiring editorial disposition (no deletions made): 59/130 (same sequence-limit expression \\(\\frac{4n+3}{2n-1}\\)); 65/137 (same \\(\\ln(e^{-2})\\) evaluation); 69/140 (same equation \\(e^{2x}=e^6\\)); 48/160 (same count \\(4!\\)); 89/161 (same selection count \\(C_6^2\\)); 83/156 (same expansion \\((1+i)^2\\)). Question 125 also repeats the same limit task as 25/53. These are exact or near-exact task repeats, not merely shared-topic items.
 - Question 168's proposed sequence \\(y_n=1/(1-n)\\) is increasing to 0 while \\(x_n=\\ln(1+e^{-n})\\) is decreasing to 0; their difference tends to zero. It is consistent with the standard neighboring-sequences criterion based on opposite monotonicity and a vanishing difference.
 - This batch review is bounded to the original-bank records 101–200. It does not close the visual audit or the rest of the 609-question bank.
+
+## Batch 3 — original-bank questions 201–300
+
+- Recomputed representative counting/probability, sequence, vector/plane, complex-number, limit, and derivative items in this range. Confirmed the displayed numerical results for the inspected multi-step items, including 201–216, 218–241, 259–265, and 267–300.
+- **Confirmed answer-explanation mismatch:** question ID `q-158u3ih` (record 266) derived the correct expression for \\(u_{n+1}-u_n\\), and the answer index selected the third option, but the final sentence incorrectly named “الخيار الثاني”. Corrected the explanation on this PR branch to state the equivalent expression and identify “الخيار الثالث”.
+- This defect was a mismatch between the written explanation and the selected answer index; the mathematical expression and selected option were already correct.
+- No other definite calculation or answer-index defect was confirmed in the inspected records in this batch. This does not certify the source-dependent or diagram-dependent questions without their actual visual assets and rendered presentation.
+- The update is awaiting its post-change validation workflows. No question was removed in this batch.
