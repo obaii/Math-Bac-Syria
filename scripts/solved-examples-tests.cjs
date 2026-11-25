@@ -62,11 +62,14 @@ if (!library || !Array.isArray(library.examples)) {
     .toLowerCase();
   const allBankQuestions = vm.runInContext("questions", context);
   const allBankKeys = new Set(allBankQuestions.map(question => normalizeBankMatch(question.q)));
+  const guidedBankKeys = new Set(allBankQuestions
+    .filter(question => Array.isArray(question.steps) && question.steps.length > 0)
+    .map(question => normalizeBankMatch(question.q)));
   const allBankDuplicateExamples = examples.filter(example =>
     allBankKeys.has(normalizeBankMatch(example.question))
   );
   const additionalAllBankMatches = allBankDuplicateExamples
-    .filter(example => !library.uniqueExamples.some(unique => unique.id === example.id))
+    .filter(example => !guidedBankKeys.has(normalizeBankMatch(example.question)))
     .map(example => example.id);
   // Keep the measured count diagnostic until the historical 95/100 report criteria are reconciled.
   console.log("Exact bank/library matches: all assembled bank=" + allBankDuplicateExamples.length +
