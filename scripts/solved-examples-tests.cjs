@@ -803,7 +803,10 @@ if (library && Array.isArray(library.examples)) {
     ["exam19-3d-001", "exam19-cycle1-005"],
     ["exam19-comb-001", "exam19-cycle1-003"],
     ["exam18-complex-002", "exam18-cycle1-004"],
-    ["exam23-cycle1-015", "exam20-extra-012"]
+    ["exam23-cycle1-015", "exam20-extra-012"],
+    ["seq-002", "seq-010"],
+    ["seq-002", "seq-013"],
+    ["seq-010", "seq-013"]
   ];
   const normalizeInternalQuestion = value => String(value ?? "").normalize("NFKC")
     .replace(/\\[()[\]]/g, "")
@@ -830,6 +833,11 @@ if (library && Array.isArray(library.examples)) {
   const lineVariant = byId.get("exam19-cycle1-005");
   const complexVariant = byId.get("exam18-cycle1-004");
   const planeVariant = byId.get("exam20-extra-012");
+  const distinctDotProduct = byId.get("dot-005");
+  if (!distinctDotProduct || !distinctDotProduct.question.includes("v=(2,2,1)") ||
+      !distinctDotProduct.steps.join(" ").includes("2−2+2=2") || !distinctDotProduct.answer.includes("=2")) {
+    failures.push("dot-005 must remain a nonzero dot-product calculation distinct from the orthogonality examples.");
+  }
   if (!binomialVariant?.steps.join(" ").includes("15×16=240") || !binomialVariant.answer.includes("240")) failures.push("exam19-cycle1-003 must verify the constant term 240.");
   if (!lineVariant?.answer.includes("y=1−2t") || !lineVariant.answer.includes("z=−1+2t")) failures.push("exam19-cycle1-005 must show the corrected parametric line.");
   if (!complexVariant?.steps.join(" ").includes("(3+4i)/5") || !complexVariant.answer.includes("(3+4i)/5")) failures.push("exam18-cycle1-004 must verify the new complex quotient.");
