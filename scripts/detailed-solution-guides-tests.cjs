@@ -188,7 +188,7 @@ const FIRST_BATCH_MATH_CHECKS = {
   "q-1rt6q2i": { idea: "التعويض", final: "ln2" },
   "q-1hr8ven": { idea: "المعادلة التفاضلية", final: "C=8" },
   "q-p3xeru": { idea: "الثابت", final: "k=3" },
-  "q-96mf6q": { idea: "التكامل بالأجزاء", final: "2-\\\\ln3" },
+  "q-96mf6q": { idea: "التكامل بالأجزاء", final: "2-\\ln3" },
   "q-kznbf3": { idea: "التوزيع الثنائي", final: "2" },
   "q-1va3umk": { idea: "احتمال الإخفاق", final: "8" },
   "q-pk6b6n": { idea: "الأمل الرياضي", final: "E(X)" },
