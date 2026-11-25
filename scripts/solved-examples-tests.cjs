@@ -45,9 +45,9 @@ if (!library || !Array.isArray(library.examples)) {
   if (library.count !== 600 || examples.length !== 600) {
     failures.push("The full solved-example archive must retain all 600 source records.");
   }
-  if (library.bankDuplicateCount !== 83 || library.uniqueCount !== 517 ||
-      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 517) {
-    failures.push("Expected 83 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 517 distinct examples.");
+  if (library.bankDuplicateCount !== 80 || library.uniqueCount !== 520 ||
+      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 520) {
+    failures.push("Expected 80 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 520 distinct examples.");
   }
   // Compare against every assembled bank question as well as the guided subset above.
   // This separates the historical all-bank exact-match count from the guided-only UI count.
@@ -102,8 +102,8 @@ if (!library || !Array.isArray(library.examples)) {
     unmatchedAgainstBank.join(", "));
 
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
-  if (uniqueExampleIds.size !== 517) {
-    failures.push("The default solved-library view must contain 517 distinct example records.");
+  if (uniqueExampleIds.size !== 520) {
+    failures.push("The default solved-library view must contain 520 distinct example records.");
   }
 
   const yearReferenceCases = [
@@ -779,10 +779,10 @@ if (library && Array.isArray(library.examples)) {
       failures.push("The reported duplicate group " + group.join(", ") + " needs a fresh source-level comparison before deduplication.");
     }
   }
-  const varianceExample = byId("prob-007");
-  const eventExample = byId("prob-010");
-  const quadraticArea = byId("int-010");
-  const linearArea = byId("int-012");
+  const varianceExample = byId.get("prob-007");
+  const eventExample = byId.get("prob-010");
+  const quadraticArea = byId.get("int-010");
+  const linearArea = byId.get("int-012");
   if (!varianceExample || !varianceExample.question.includes("تباينه V(X)") ||
       !varianceExample.steps.join(" ").includes("E(X²)") || !varianceExample.answer.includes("0.49")) {
     failures.push("prob-007 must be a distinct variance exercise with the verified result 0.49.");
@@ -826,10 +826,10 @@ if (library && Array.isArray(library.examples)) {
   }
   const exactInternalDuplicates = [...normalizedQuestionGroups.values()].filter(ids => ids.length > 1);
   if (exactInternalDuplicates.length) failures.push("Normalized duplicate questions remain inside the solved library: " + JSON.stringify(exactInternalDuplicates));
-  const binomialVariant = byId("exam19-cycle1-003");
-  const lineVariant = byId("exam19-cycle1-005");
-  const complexVariant = byId("exam18-cycle1-004");
-  const planeVariant = byId("exam20-extra-012");
+  const binomialVariant = byId.get("exam19-cycle1-003");
+  const lineVariant = byId.get("exam19-cycle1-005");
+  const complexVariant = byId.get("exam18-cycle1-004");
+  const planeVariant = byId.get("exam20-extra-012");
   if (!binomialVariant?.steps.join(" ").includes("15×16=240") || !binomialVariant.answer.includes("240")) failures.push("exam19-cycle1-003 must verify the constant term 240.");
   if (!lineVariant?.answer.includes("y=1−2t") || !lineVariant.answer.includes("z=−1+2t")) failures.push("exam19-cycle1-005 must show the corrected parametric line.");
   if (!complexVariant?.steps.join(" ").includes("(3+4i)/5") || !complexVariant.answer.includes("(3+4i)/5")) failures.push("exam18-cycle1-004 must verify the new complex quotient.");
