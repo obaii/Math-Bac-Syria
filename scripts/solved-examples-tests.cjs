@@ -115,11 +115,9 @@ if (!library || !Array.isArray(library.examples)) {
   // must describe the complete function e^(-2x)+2x-2, not the exponential
   // term e^(-2x) in isolation.
   const exponentialVariationIds = [
-    "exam22-function-001", "exam22-function-002", "exam22-function-003",
-    "exam22-function-004", "exam22-function-005", "exam22-function-006",
-    "exam22-function-007", "exam22-function-008", "exam22-function-009",
-    "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018",
-    "exam22-cycle1-019"
+    "exam22-function-003", "exam22-function-004",
+    "exam22-function-007", "exam22-function-008",
+    "exam22-cycle1-017", "exam22-cycle1-018"
   ];
   for (const id of exponentialVariationIds) {
     const item = examples.find(example => example.id === id);
@@ -128,6 +126,17 @@ if (!library || !Array.isArray(library.examples)) {
         !diagram.includes("−∞") || !diagram.includes("+∞") ||
         !diagram.includes("−1") || !diagram.includes("↗ +∞")) {
       failures.push("The complete e^(-2x)+2x-2 exercise must receive its matching variation table: " + id + ".");
+    }
+  }
+  const unrelatedExponentialIds = [
+    "exam22-function-001", "exam22-function-002", "exam22-function-005",
+    "exam22-function-006", "exam22-function-009", "exam22-function-010",
+    "exam22-cycle1-019"
+  ];
+  for (const id of unrelatedExponentialIds) {
+    const item = examples.find(example => example.id === id);
+    if (!item || context.getQuestionDiagram({ q: item.question, topic: item.topic })) {
+      failures.push("Unrelated exponential question must not inherit a variation table: " + id + ".");
     }
   }
   const shiftedPolynomial = examples.find(example => example.id === "exam20-extra-004");
