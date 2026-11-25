@@ -49,6 +49,30 @@ if (!library || !Array.isArray(library.examples)) {
       !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 517) {
     failures.push("Expected 83 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 517 distinct examples.");
   }
+  // Compare against every assembled bank question as well as the guided subset above.
+  // This separates the historical all-bank exact-match count from the guided-only UI count.
+  const normalizeBankMatch = value => String(value ?? "")
+    .normalize("NFKC")
+    .replace(/\\\\\\(|\\\\\\)|\\\\\\[|\\\\\\]/g, "")
+    .replace(/\\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  const allBankQuestions = Array.isArray(context.questions) ? context.questions : [];
+  const allBankKeys = new Set(allBankQuestions.map(question => normalizeBankMatch(question.q)));
+  const allBankDuplicateExamples = examples.filter(example =>
+    allBankKeys.has(normalizeBankMatch(example.question))
+  );
+  const additionalAllBankMatches = allBankDuplicateExamples
+    .filter(example => !library.uniqueExamples.some(unique => unique.id === example.id))
+    .map(example => example.id);
+  if (allBankDuplicateExamples.length !== 95) {
+    failures.push("Expected 95 exact matches against all assembled bank questions; found " + allBankDuplicateExamples.length + " (guided-only matches: " + library.bankDuplicateCount + ").");
+  }
+  console.log("Exact bank/library matches: all assembled bank=" + allBankDuplicateExamples.length +
+    ", guided bank=" + library.bankDuplicateCount +
+    ", additional non-guided matches=" + additionalAllBankMatches.length +
+    (additionalAllBankMatches.length ? " [" + additionalAllBankMatches.join(", ") + "]" : "") + ".");
+
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
   if (uniqueExampleIds.size !== 517) {
     failures.push("The default solved-library view must contain 517 distinct example records.");
