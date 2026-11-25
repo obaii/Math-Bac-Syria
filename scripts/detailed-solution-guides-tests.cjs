@@ -59,7 +59,7 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 324) {
+if (guided.length !== 329) {
   failures.push(`Expected exactly 309 curated guides after the first 100 walkthroughs and the next 30 verified guides, found ${guided.length}.`);
 }
 
@@ -78,7 +78,7 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261124-12/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261124-13/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 const appScriptMatch = indexHtml.match(/app\.js\?v=20[0-9]{6}-[0-9]+/);
