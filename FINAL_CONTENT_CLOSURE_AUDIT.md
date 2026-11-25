@@ -6,8 +6,8 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 ## Confirmed current state
 
 - The solved-problem library contains 600 records.
-- The current exact-text comparison identifies 83 library examples matching question-bank prompts and leaves 517 visible by default.
-- The 23 November report recorded 100 shared questions; the 24 November report recorded 95 literal matches. Those figures have not yet been reconciled against a single frozen dataset and a documented matching rule. Do not silently replace one count with another or delete records to force agreement.
+- The current exact-text comparison identifies 80 library examples matching guided question-bank prompts and leaves 520 visible by default.
+- The 23 November report recorded 100 shared questions; the 24 November report recorded 95 literal matches. Those figures have not yet been reconciled against a single frozen dataset and a documented matching rule; the current CI run on the frozen main snapshot reports 80 matches, so 80/520 is the only currently verified UI count. Do not silently replace one count with another or delete records to force agreement.
 - The 61-question difficulty review is recorded in PR #417: 7 moved to Basic, 34 to Intermediate, and 20 retained as Advanced.
 - The 25 final-step examples named in the 24 November report must be reconciled by stable ID against the current library. Several old IDs are absent now; the records that still exist must be checked on their current content, not assumed to retain the old defect.
 - The nine library diagram/table examples from the report must be rechecked against their current question text and presentation. A question rewritten to contain all needed data is acceptable without a redundant diagram.
