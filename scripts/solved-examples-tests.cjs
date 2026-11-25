@@ -816,7 +816,7 @@ if (library && Array.isArray(library.examples)) {
     }
   }
   const normalizedQuestionGroups = new Map();
-  for (const example of examples) {
+  for (const example of library.examples) {
     const normalized = normalizeInternalQuestion(example.question)
       .replace(/[=،,.؛:()[\\]{}$]/g, "")
       .replace(/\s+/g, "")
