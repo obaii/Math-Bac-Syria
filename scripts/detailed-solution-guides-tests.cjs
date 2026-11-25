@@ -171,6 +171,38 @@ if (missingFirstBatchGuides.length) {
   failures.push(`First 100-question detailed-solution batch is missing guides for: ${missingFirstBatchGuides.join(", ")}.`);
 }
 
+// First 20 questions in batch one: verify that the guide is specific to the task,
+// not generic scaffolding, and that its final worked step contains the checked result.
+const FIRST_BATCH_MATH_CHECKS = {
+  "q-1wu787": { idea: "مبدأ الضرب", final: "30" },
+  "q-18qdr18": { idea: "المناصب الثلاثة مختلفة", final: "336" },
+  "q-1t1e4vo": { idea: "التوافيق", final: "56" },
+  "q-1obbsy": { idea: "كل مجموعة على حدة", final: "10" },
+  "q-2arkk4": { idea: "توزيعاً ثنائياً", final: "8" },
+  "q-n2ay86": { idea: "التوزيع الثنائي", final: "12" },
+  "q-zxk9d6": { idea: "التوزيع الثنائي", final: "2" },
+  "q-zzhaas": { idea: "الرميات الثلاث", final: "27" },
+  "q-1ozq465": { idea: "مفكوك نيوتن", final: "r=8" },
+  "q-84rgcq": { idea: "الحد المستقل", final: "126720" },
+  "q-1f4d1kb": { idea: "اللوغاريتم الطبيعي", final: "ln4" },
+  "q-1rt6q2i": { idea: "التعويض", final: "ln2" },
+  "q-1hr8ven": { idea: "المعادلة التفاضلية", final: "C=8" },
+  "q-p3xeru": { idea: "الثابت", final: "k=3" },
+  "q-96mf6q": { idea: "التكامل بالأجزاء", final: "2-\\\\ln3" },
+  "q-kznbf3": { idea: "التوزيع الثنائي", final: "2" },
+  "q-1va3umk": { idea: "احتمال الإخفاق", final: "8" },
+  "q-pk6b6n": { idea: "الأمل الرياضي", final: "E(X)" },
+  "q-123wlab": { idea: "تباين التوزيع الثنائي", final: "V(X)" },
+  "q-ien27s": { idea: "الأمل الرياضي", final: "8" }
+};
+for (const [id, expected] of Object.entries(FIRST_BATCH_MATH_CHECKS)) {
+  const question = questions.find((item) => item.id === id);
+  const finalStep = question?.steps?.at(-1) || "";
+  if (!question || !question.keyIdea?.includes(expected.idea) || !finalStep.includes(expected.final)) {
+    failures.push(`First-batch mathematical guide regression for ${id}: expected a task-specific idea and final result ${expected.final}.`);
+  }
+}
+
 const SECOND_DETAILED_GUIDE_BATCH_IDS = [
   "q-4kcn93",
   "q-10o8ctq",
