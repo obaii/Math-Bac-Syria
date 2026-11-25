@@ -131,7 +131,7 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
     assert.equal(requestCount, 1, "reopening the library must reuse the already loaded dataset");
     assert.deepEqual(pageErrors, [], "lazy-loading the solved examples must not create uncaught browser errors");
     assert.deepEqual(mathJaxErrors, [], "the solved-example library must not emit MathJax parse errors");
-    console.log("PASS: solved examples load on demand, hide 86 bank duplicates by default, reveal all 600 on request, render in 24-item batches, and search the full archive.");
+    console.log("PASS: solved examples load on demand, hide 83 bank duplicates by default, reveal all 600 on request, render in 24-item batches, and search the full archive.");
   } finally {
     releaseRequest();
     await context.close();
