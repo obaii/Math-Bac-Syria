@@ -787,9 +787,9 @@ if (library && Array.isArray(library.examples)) {
       !varianceExample.steps.join(" ").includes("E(X²)") || !varianceExample.answer.includes("0.49")) {
     failures.push("prob-007 must be a distinct variance exercise with the verified result 0.49.");
   }
-  if (!eventExample || !eventExample.question.includes("القيم −1 و0 و2") ||
-      !eventExample.steps.join(" ").includes("−0.2+0+0.6=0.4") || !eventExample.answer.includes("0.4")) {
-    failures.push("prob-010 must be a distinct expectation exercise with the verified result 0.4.");
+  if (!eventExample || !eventExample.question.includes("القيم −2 و1 و3") ||
+      !eventExample.steps.join(" ").includes("−0.5+0.5+0.75=0.75") || !eventExample.answer.includes("0.75")) {
+    failures.push("prob-010 must be a distinct expectation exercise with the verified result 0.75.");
   }
   if (!quadraticArea || !quadraticArea.question.includes("y=x²") ||
       !quadraticArea.steps.join(" ").includes("8/3") || !quadraticArea.answer.includes("8/3")) {
