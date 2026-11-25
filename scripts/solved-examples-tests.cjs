@@ -799,6 +799,30 @@ if (library && Array.isArray(library.examples)) {
       !linearArea.steps.join(" ").includes("16−8=8") || !linearArea.answer.includes("8")) {
     failures.push("int-012 must be the distinct area-under-y=4−x exercise with result 8.");
   }
+  const distinctExamVariants = [
+    ["exam19-3d-001", "exam19-cycle1-005"],
+    ["exam19-comb-001", "exam19-cycle1-003"],
+    ["exam18-complex-002", "exam18-cycle1-004"],
+    ["exam23-cycle1-015", "exam20-extra-012"]
+  ];
+  const normalizeInternalQuestion = value => String(value ?? "").normalize("NFKC")
+    .replace(/\\\\[()\\[\\]]/g, "")
+    .replace(/[=،,.؛:]/g, "")
+    .replace(/\\s+/g, "").toLowerCase();
+  for (const [firstId, secondId] of distinctExamVariants) {
+    const first = byId(firstId), second = byId(secondId);
+    if (!first || !second || normalizeInternalQuestion(first.question) === normalizeInternalQuestion(second.question)) {
+      failures.push("Solved-library records " + firstId + " and " + secondId + " must remain distinct exercises, not duplicate prompts.");
+    }
+  }
+  const binomialVariant = byId("exam19-cycle1-003");
+  const lineVariant = byId("exam19-cycle1-005");
+  const complexVariant = byId("exam18-cycle1-004");
+  const planeVariant = byId("exam20-extra-012");
+  if (!binomialVariant?.steps.join(" ").includes("15×16=240") || !binomialVariant.answer.includes("240")) failures.push("exam19-cycle1-003 must verify the constant term 240.");
+  if (!lineVariant?.answer.includes("y=1−2t") || !lineVariant.answer.includes("z=−1+2t")) failures.push("exam19-cycle1-005 must show the corrected parametric line.");
+  if (!complexVariant?.steps.join(" ").includes("(3+4i)/5") || !complexVariant.answer.includes("(3+4i)/5")) failures.push("exam18-cycle1-004 must verify the new complex quotient.");
+  if (!planeVariant?.answer.includes("6x+4y+3z−12=0")) failures.push("exam20-extra-012 must verify the intercept-form plane equation.");
 }
 if (failures.length) {
   console.error("Solved examples library checks failed:");
