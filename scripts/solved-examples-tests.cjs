@@ -806,9 +806,9 @@ if (library && Array.isArray(library.examples)) {
     ["exam23-cycle1-015", "exam20-extra-012"]
   ];
   const normalizeInternalQuestion = value => String(value ?? "").normalize("NFKC")
-    .replace(/\\[()[\\]]/g, "")
+    .replace(/\\[()[\]]/g, "")
     .replace(/[=،,.؛:]/g, "")
-    .replace(/\\s+/g, "").toLowerCase();
+    .replace(/\s+/g, "").toLowerCase();
   for (const [firstId, secondId] of distinctExamVariants) {
     const first = byId(firstId), second = byId(secondId);
     if (!first || !second || normalizeInternalQuestion(first.question) === normalizeInternalQuestion(second.question)) {
@@ -819,7 +819,7 @@ if (library && Array.isArray(library.examples)) {
   for (const example of examples) {
     const normalized = normalizeInternalQuestion(example.question)
       .replace(/[=،,.؛:()[\\]{}$]/g, "")
-      .replace(/\\s+/g, "")
+      .replace(/\s+/g, "")
       .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digit => String("⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(digit)));
     if (!normalizedQuestionGroups.has(normalized)) normalizedQuestionGroups.set(normalized, []);
     normalizedQuestionGroups.get(normalized).push(example.id);
