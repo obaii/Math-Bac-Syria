@@ -421,6 +421,17 @@ if (failures.length) {
   console.log("PASS: " + questions.length + " unique questions (" + mcq.length + " MCQ, " + typed.length + " typed).");
   console.log("PASS: " + examples.length + " solved examples; all required fields and steps are present.");
   console.log("PASS: " + mathFields.length + " question/solution fields and " + formulaCount + " explicit TeX formulas were audited.");
+  const formatterProbes = [
+    { input: "e^(−x)", expected: "\\(e^{−x}\\)" },
+    { input: "(e^(−x))", expected: "\\((e^{−x})\\)" },
+    { input: "S_n=(1−(1/3)^(n+1))/(1−1/3)", expected: "\\(S_n=\\frac{(1−(\\frac{1}{3})^{n+1})}{(1−\\frac{1}{3})}\\)" },
+    { input: "0.18/0.3", expected: "\\(\\frac{0.18}{0.3}\\)" }
+  ];
+  for (const probe of formatterProbes) {
+    if (formatMathContent(probe.input) !== probe.expected) {
+      fail("Math formatter regression: " + probe.input + " should render as " + probe.expected);
+    }
+  }
   console.log("PASS: unstacked slash fractions and reversed limit arrows are normalized across all records.");
   console.log("PASS: " + visualQuestions.length + " visual-dependent bank questions and " + requiredSolvedDiagramIds.length + " solved-example diagrams have matching visual assets.");
   console.log("PASS: cube projection, joint-probability table, and discrete-distribution table consistency checks.");
