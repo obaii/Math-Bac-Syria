@@ -88,7 +88,7 @@ if (!appScriptMatch) {
 if (!/enhancements\.js\?v=20[0-9]{6}-[0-9]+/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261124-15");
+const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261124-26");
 const appScriptPosition = appScriptMatch ? indexHtml.indexOf(appScriptMatch[0]) : -1;
 if (guideScriptPosition < 0 || appScriptPosition < 0 || guideScriptPosition > appScriptPosition) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
