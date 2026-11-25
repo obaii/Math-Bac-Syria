@@ -66,6 +66,27 @@ if (!library || !Array.isArray(library.examples)) {
     }
   }
 
+  // The source report flagged ten prompts that referred students back to a
+  // question in an earlier exam statement. Keep provenance in metadata while
+  // ensuring each exercise can be solved from its own prompt.
+  const selfContainedSourceCases = [
+    ["exam17-complex-002", 2017], ["exam17-complex-003", 2017],
+    ["exam17-limit-002", 2017], ["exam18-seq-003", 2018],
+    ["exam18-seq-004", 2018], ["exam19-comb-001", 2019],
+    ["exam19-func-005", 2019], ["exam19-3d-001", 2019],
+    ["exam19-seq-001", 2019], ["exam19-func-006", 2019]
+  ];
+  const externalPromptReference = /كما ورد في السؤال|كما في السؤال السابق|وفق السؤال السابق|في المسألة السابقة|في السؤال الثاني من دورة|حسب نص الامتحان/;
+  for (const [id, sourceYear] of selfContainedSourceCases) {
+    const item = examples.find(example => example.id === id);
+    if (!item || item.sourceYear !== sourceYear || externalPromptReference.test(item.question)) {
+      failures.push("Source-referenced solved example must retain its year in metadata and remain self-contained: " + id + ".");
+    }
+  }
+  if (examples.some(item => /كما ورد في السؤال الثاني من دورة|في دورة 2017 الأولى/.test(item.question))) {
+    failures.push("Solved-example prompts must not refer students to an external exam question or an earlier session statement.");
+  }
+
   const sequenceDuplicate = examples.find(item => item.id === "seq-002");
   const sequenceTerm = examples.find(item => item.id === "seq-010");
   const sequenceCount = examples.find(item => item.id === "seq-013");
