@@ -42,3 +42,12 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Correction committed on this PR branch: the explanation now identifies “الخيار الرابع” and explicitly states its value `-1`.
 - No other answer-index/option-reference contradiction was identified in this 100-record batch during this pass. This is a bounded batch result, not a claim that the remaining 509 bank questions or the library have been audited.
 - Re-run the bank and browser workflows on the correction commit before treating the change as validated.
+
+## Batch 2 — bank questions 101–200 (main snapshot, 25 November 2026)
+
+- Scope: original-bank records 101–200 in `questions.js`.
+- Reviewed the 100 prompts, options, answer indices, and written derivations, including vector geometry, scalar products, planes, sequences, derivatives, logarithms, exponentials, integrals, complex numbers, combinatorics, and probability.
+- No definite numerical/algebraic answer-key mismatch was established in this batch during this pass.
+- Open content-verification item: `q-1cp7mbm` is explicitly dependent on the supplied graph image `assets/question-11-graphs.png`; the text-only record does not independently establish that option “الرسم C” is the correct derivative graph. Keep this item open until the asset is inspected against the derivative sign/monotonicity of the displayed function.
+- Open curriculum-classification item: `q-zcqhy6` is a complex-number/trigonometric-form simplification currently filed under “التحليل التوافقي”. The calculation is consistent with \(e^{5ix}\), but the topic label should be checked against the Syrian textbook unit before changing it.
+- Batch status: mathematical text/answer pass completed; image-grounded answer and curriculum label remain pending evidence. Do not count those two checks as closed.
