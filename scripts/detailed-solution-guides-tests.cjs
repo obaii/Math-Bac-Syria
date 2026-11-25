@@ -205,7 +205,7 @@ for (const [id, expected] of Object.entries(FIRST_BATCH_MATH_CHECKS)) {
 
 const FIRST_BATCH_NEXT_20_CHECKS = {
   "q-t1tzvz": { idea: "القيمتين 2 و3", final: "10}{20" },
-  "q-gjr3as": { idea: "الاحتمال المعطى", final: "1}{5" },
+  "q-gjr3as": { idea: "الاحتمال المعطى", final: "frac15" },
   "q-fq8p8e": { idea: "الاحتمال الهامشي", final: "0.40" },
   "q-1i8xujn": { idea: "الاحتمال الهامشي", final: "0.50" },
   "q-1b4me7r": { idea: "الاحتمال المشترك", final: "0.04" },
@@ -222,8 +222,8 @@ const FIRST_BATCH_NEXT_20_CHECKS = {
   "q-1c5ftp5": { idea: "الحد العام", final: "r=8" },
   "q-g7mycc": { idea: "الفرق", final: "r=3" },
   "q-6a8j9p": { idea: "ترقيم المتتالية الحسابية", final: "3n+1" },
-  "q-98x958": { idea: "نسبة أي حد", final: "1}{2" },
-  "q-146az1k": { idea: "ترقيمها من الصفر", final: "1}{16" }
+  "q-98x958": { idea: "نسبة أي حد", final: "frac12" },
+  "q-146az1k": { idea: "ترقيمها من الصفر", final: "frac1{16}" }
 };
 for (const [id, expected] of Object.entries(FIRST_BATCH_NEXT_20_CHECKS)) {
   const question = questions.find((item) => item.id === id);
