@@ -100,3 +100,12 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Question 266 has a real option-reference mismatch on main: answer index 2 selects the third option, while the main-branch explanation says second. The PR branch already corrects the explanation to say third; retain this correction and verify it after merge.
 - No additional definite error was confirmed in the text-verifiable items during this pass. The review of question 176's graph image remains pending from batch 2.
 - This is a bounded review of records 201–300, not closure of the remaining bank or solved-example library.
+
+## Batch 4 — bank questions 301–400 (main snapshot, 25 November 2026)
+
+- Scope: original questions.js records 301–400.
+- Recomputed the reviewed derivative/variation, integration and area, analytic geometry, complex-number, combinatorics, and probability results. The explicit ordinal references to answer options in this batch did not show a mismatch with the stored answer indices.
+- No definite mathematical or answer-key defect was confirmed in the text-verifiable records in this batch.
+- A validation run after adding the nonzero condition to question 267 exposed a synchronization issue: the matching detailed guide still contained the old prompt text, leaving one question without attached steps. The guide prompt was updated to match the corrected question. This is a guide-attachment correction, not a mathematical reversal of the derivation.
+- The run that exposed the mismatch failed at detailed-solution-guide coverage (608/609); the corrected branch now contains the matching prompt in both questions.js and solution-guides.js. A fresh validation run is still required to confirm closure.
+- Question 176's image-based derivative selection from batch 2 remains pending visual verification.
