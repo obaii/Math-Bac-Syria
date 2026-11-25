@@ -97,6 +97,6 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Scope: original questions.js records 201–300.
 - Independently recomputed the reviewed combinatorics and probability counts, vector/plane/geometry calculations, complex-number transformations, sequence recurrences and sums, limits, derivatives, and logarithmic/exponential results.
 - Confirmed and corrected one mathematical condition omission: question q-1fl5f0a allowed the degenerate case a=0, in which all listed geometric and arithmetic terms can be zero and the ratio q is not determined. The prompt now explicitly states a≠0; the updated text produces stable ID q-9g9uyf.
-- Checked question 266's answer explanation against its options: the current text correctly identifies the third option, matching zero-based answer index 2.
+- Question 266 has a real option-reference mismatch on main: answer index 2 selects the third option, while the main-branch explanation says second. The PR branch already corrects the explanation to say third; retain this correction and verify it after merge.
 - No additional definite error was confirmed in the text-verifiable items during this pass. The review of question 176's graph image remains pending from batch 2.
 - This is a bounded review of records 201–300, not closure of the remaining bank or solved-example library.
