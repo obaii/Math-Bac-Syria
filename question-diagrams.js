@@ -336,7 +336,9 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع f(x)=e^(−2x)+2x−2: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
       ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
   }
-  if (/f\\(x\\)\\s*=\\s*e\\^\\(−2x\\)(?!\\s*[+−])/.test(prompt) && asksForVariation) {
+  if (prompt.includes("f(x)=e^(−2x)") &&
+      !prompt.includes("f(x)=e^(−2x)+") &&
+      !prompt.includes("f(x)=e^(−2x)−") && asksForVariation) {
     return variationTable("جدول تغيرات التابع الأسي f(x)=e^(−2x)؛ مشتقته سالبة على R.",
       ["−∞", "+∞"], ["−"], ["+∞ ↘", "0"]);
   }
