@@ -33,3 +33,12 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - No automatic lesson assignment presented as verified.
 - No claim that 609 solutions are mathematically audited merely because all 609 have structured steps.
 - No merge until the per-ID audit and required CI/browser checks are complete.
+
+## Batch 1 — bank questions 1–100 (main snapshot, 25 November 2026)
+
+- Scope: the first 100 records in the original `questions.js` collection (the merged bank starts with these 454 original records before supplements are appended).
+- Review method: each prompt, option list, zero-based answer index, and written solution was checked together; arithmetic and algebra were independently recomputed for the inspected items.
+- Confirmed defect: question ID `q-1is84v0` (dot product of `(1,2,3)` and `(2,0,-1)`) correctly computes `-1` and has answer index 3 (the fourth option), but its explanation incorrectly said “الخيار الأول”.
+- Correction committed on this PR branch: the explanation now identifies “الخيار الرابع” and explicitly states its value `-1`.
+- No other answer-index/option-reference contradiction was identified in this 100-record batch during this pass. This is a bounded batch result, not a claim that the remaining 509 bank questions or the library have been audited.
+- Re-run the bank and browser workflows on the correction commit before treating the change as validated.
