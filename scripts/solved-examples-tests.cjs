@@ -77,11 +77,27 @@ if (!library || !Array.isArray(library.examples)) {
   const unmatchedAgainstBank = examples
     .filter(example => !allBankKeys.has(normalizeBankMatch(example.question)))
     .map(example => example.id);
-  // Report strict and normalized counts separately; historical audits may have used different criteria.
+  // Report IDs as well as counts so historical audit totals (95/100) can be reconciled
+  // against the current exact-match definition without deleting or hiding unmatched examples.
+  const bankQuestionByStrictKey = new Map(allBankQuestions.map(question =>
+    [strictBankKey(question.q), question.id || "(question ID unavailable)"]
+  ));
+  const strictMatchedIds = strictMatches.map(example => ({
+    exampleId: example.id,
+    bankQuestionId: bankQuestionByStrictKey.get(strictBankKey(example.question)) || null
+  }));
+  const normalizedMatchedIds = allBankDuplicateExamples.map(example => ({
+    exampleId: example.id,
+    bankQuestionIds: allBankQuestions
+      .filter(question => normalizeBankMatch(question.q) === normalizeBankMatch(example.question))
+      .map(question => question.id || "(question ID unavailable)")
+  }));
   console.log("Bank/library duplicate diagnostics: strict text=" + strictMatches.length +
     ", normalized text=" + allBankDuplicateExamples.length +
     ", guided normalized=" + library.bankDuplicateCount +
     ", non-guided normalized=" + additionalAllBankMatches.length + ".");
+  console.log("Strict matched example/bank IDs: " + JSON.stringify(strictMatchedIds));
+  console.log("Normalized matched example/bank IDs: " + JSON.stringify(normalizedMatchedIds));
   console.log("Unmatched library example IDs (" + unmatchedAgainstBank.length + "): " +
     unmatchedAgainstBank.join(", "));
 
