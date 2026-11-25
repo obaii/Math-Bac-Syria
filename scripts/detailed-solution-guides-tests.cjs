@@ -33,6 +33,7 @@ for (const file of [
 
 const { questions, topics } = vm.runInContext("({ questions, topics })", context);
 const guided = questions.filter((q) => Array.isArray(q.steps) && q.steps.length > 0);
+const unguided = questions.filter((q) => !Array.isArray(q.steps) || q.steps.length === 0);
 const failures = [];
 for (const topic of topics) {
   if (!guided.some((q) => q.topic === topic)) {
@@ -117,6 +118,10 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(`PASS: ${guided.length} questions have structured solution steps and a key idea.`);
+  console.log(`AUDIT: ${unguided.length} questions still need curated detailed solutions.`);
+  for (const q of unguided) {
+    console.log(`UNGUIDED: ${q.id || "missing-id"} | ${q.topic || "unknown-topic"} | ${String(q.q || "").replace(/\\s+/g, " ").trim()}`);
+  }
   console.log(`PASS: all ${questions.length} existing questions have three progressive hints.`);
   console.log(`PASS: all ${topics.length} curriculum topics have at least one detailed guide.`);
   console.log("PASS: the guided-solution renderer includes the step list, key idea, and MathJax typesetting hook.");
