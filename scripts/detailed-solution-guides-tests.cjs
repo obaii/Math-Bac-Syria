@@ -193,7 +193,7 @@ const FIRST_BATCH_MATH_CHECKS = {
   "q-1va3umk": { idea: "احتمال الإخفاق", final: "8" },
   "q-pk6b6n": { idea: "الأمل الرياضي", final: "E(X)" },
   "q-123wlab": { idea: "تباين التوزيع الثنائي", final: "V(X)" },
-  "q-ien27s": { idea: "الأمل الرياضي", final: "8" }
+  "q-ien27s": { idea: "الأمل الرياضي", final: "frac85" }
 };
 for (const [id, expected] of Object.entries(FIRST_BATCH_MATH_CHECKS)) {
   const question = questions.find((item) => item.id === id);
