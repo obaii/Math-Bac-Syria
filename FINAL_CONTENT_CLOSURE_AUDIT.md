@@ -75,3 +75,11 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - This defect was a mismatch between the written explanation and the selected answer index; the mathematical expression and selected option were already correct.
 - No other definite calculation or answer-index defect was confirmed in the inspected records in this batch. This does not certify the source-dependent or diagram-dependent questions without their actual visual assets and rendered presentation.
 - The update is awaiting its post-change validation workflows. No question was removed in this batch.
+
+## Batch 4 — original-bank questions 301–400
+
+- Recomputed a broad sample of the calculus, integration, analytic geometry, complex-number, combinatorics, and probability items in this range, including questions 301–321, 323–340, and 353–400. The recomputed results and answer indices agreed in the inspected items.
+- No new definite mathematical calculation error was confirmed in the inspected items 301–400.
+- Further likely repeated tasks requiring editorial disposition (not deleted): 328/398 (committee of one engineer and two workers from 3 engineers and 5 workers); 329/399 (assign three distinct offices among 8 people); 330/400 (choose 5 questions from 8 without order). These are functionally the same tasks with changed wording/order of choices.
+- Diagram-dependent items in this range still require rendered-asset verification; text-only checking cannot establish that their referenced diagram is present, legible, and consistent with the solution.
+- The answer-explanation correction for question 266 was committed separately; validation was restarted after the previous run was cancelled by subsequent branch updates. No merge is authorized until the restarted validation and browser workflows finish successfully.
