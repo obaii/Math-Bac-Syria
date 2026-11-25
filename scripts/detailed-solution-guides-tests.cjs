@@ -59,8 +59,11 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 449) {
-  failures.push(`Expected exactly 449 guided questions after the reviewed solution-guide additions, found ${guided.length}.`);
+// Keep the reviewed coverage as a regression floor while allowing the
+// next verified batches to increase coverage without rewriting this guard.
+const MIN_GUIDED_QUESTIONS = 449;
+if (guided.length < MIN_GUIDED_QUESTIONS) {
+  failures.push(`Expected at least ${MIN_GUIDED_QUESTIONS} guided questions (the reviewed baseline), found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
