@@ -145,7 +145,7 @@ if (!library || !Array.isArray(library.examples)) {
   if (!sequenceDuplicate || !sequenceTerm || !sequenceCount ||
       sequenceDuplicate.question === sequenceTerm.question ||
       !sequenceTerm.question.includes("الحد السابع") || !String(sequenceTerm.answer).includes("192") ||
-      !sequenceCount.question.includes("أوجد n") || !String(sequenceCount.answer).includes("5")) {
+      !sequenceCount.question.includes("أوجد أساسها q وحدها الأول") || !String(sequenceCount.answer).includes("q=3") || !String(sequenceCount.answer).includes("u₁=2")) {
     failures.push("The three geometric-sequence examples must assess distinct tasks and retain independently checked answers.");
   }
 
