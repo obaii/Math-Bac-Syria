@@ -133,6 +133,23 @@ for (const [index, question] of (questions || []).entries()) {
   }
 }
 
+const forbiddenQuestionReferences = [
+  /في الشروط نفسها/,
+  /في جدول التوزيع المشترك نفسه/,
+  /وفق جدول التوزيع المشترك الوارد في المسألة/,
+  /وفق المعطيات في المسألة/,
+  /كما ورد في السؤال الثاني من دورة/,
+  /في دورة 2017 الأولى/
+];
+for (const question of questions || []) {
+  const prompt = normalize(question.q);
+  for (const pattern of forbiddenQuestionReferences) {
+    if (pattern.test(prompt)) {
+      fail("Question prompt must be self-contained and must not refer to missing prior context: " + question.id + ".");
+    }
+  }
+}
+
 const exampleIds = new Set();
 for (const [index, example] of (examples || []).entries()) {
   const label = "Solved example " + (example.id || index + 1);
