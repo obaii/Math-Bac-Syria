@@ -673,7 +673,7 @@ if (!source.includes('source.textContent = "المصدر: "') || source.includes
 if (library && Array.isArray(library.examples)) {
   const byId = new Map(library.examples.map(example => [example.id, example]));
   const cosineExample = byId.get("dot-003");
-  if (!cosineExample || !/cos\\s*θ/.test(cosineExample.answer || "") ||
+  if (!cosineExample || !/cos\s*θ/.test(cosineExample.answer || "") ||
       !/\\sqrt/.test(cosineExample.answer || "")) {
     failures.push("dot-003 must give the requested cosine value, not only the angle.");
   }
@@ -688,7 +688,7 @@ if (library && Array.isArray(library.examples)) {
       continue;
     }
     const content = [example.question, example.keyIdea, ...(example.steps || []), example.answer].join(" ");
-    if (/\\bintegrand\\b/i.test(content)) failures.push(id + " still contains the English word integrand.");
+    if (/\bintegrand\b/i.test(content)) failures.push(id + " still contains the English word integrand.");
   }
   const duplicateCandidates = [["der-005", "der-008"], ["log-004", "log-007"], ["dot-002", "dot-005", "dot-010"]];
   for (const group of duplicateCandidates) {
