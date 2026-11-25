@@ -273,6 +273,8 @@ const archiveCases = [
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. إذا كانت البطاقة الأولى حمراء","expected":"\\(\\frac12\\)"},
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. ليكن X عدد البطاقات الحمراء المسحوبة","expected":"لا، لأن احتمال التقاطع لا يساوي حاصل ضرب الاحتمالين"},
   {"contains":"في صندوق يحتوي على 3 كرات حمراء و2 زرقاء و5 بيضاء، نسحب كرتين دفعة واحدة. ما احتمال ظهور كرة بيضاء واحدة على الأقل","expected":"\\(\\frac79\\)"}
+  { contains: "ما ميل نصف المماس الأيمن لمنحنى f عند x=0؟", expected: "2" },
+  { contains: "إذا كان \(u_n=\frac1{\sqrt{n+1}+\sqrt{n}}\)", expected: "\\(4\\)" }
 ];
 
 let failures = 0;
@@ -292,5 +294,18 @@ for (const test of cases) {
     console.log(`PASS: ${test.contains}`);
   }
 }
+
+const halfTangentQuestion = questions.find(q => q.id === "q-1bwh99f");
+if (!halfTangentQuestion || !halfTangentQuestion.q.includes("نصف المماس الأيمن") ||
+    normalize(halfTangentQuestion.options[halfTangentQuestion.answer]) !== "2") {
+  console.error("FAIL: q-1bwh99f must ask for the right half-tangent slope and select 2, not the two-sided differentiability option.");
+  failures++;
+}
+const rationalizationQuestion = questions.find(q => q.id === "q-1fc9tmo");
+if (!rationalizationQuestion || /rationalize/i.test(rationalizationQuestion.solution || "")) {
+  console.error("FAIL: q-1fc9tmo must keep its solution in Arabic mathematical terminology.");
+  failures++;
+}
+
 console.log(`\nAnswer regression checks: ${cases.length - failures}/${cases.length} passed.`);
 if (failures) process.exitCode = 1;
