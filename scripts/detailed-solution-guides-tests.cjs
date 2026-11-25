@@ -62,7 +62,7 @@ if (new Set(guideKeys).size !== guideKeys.length) {
 }
 // Keep the reviewed coverage as a regression floor while allowing the
 // next verified batches to increase coverage without rewriting this guard.
-const MIN_GUIDED_QUESTIONS = 549;
+const MIN_GUIDED_QUESTIONS = 609;
 const FIRST_DETAILED_GUIDE_BATCH_IDS = [
   "q-1wu787",
   "q-18qdr18",
@@ -169,6 +169,76 @@ const guidedIds = new Set(guided.map((q) => q.id));
 const missingFirstBatchGuides = FIRST_DETAILED_GUIDE_BATCH_IDS.filter((id) => !guidedIds.has(id));
 if (missingFirstBatchGuides.length) {
   failures.push(`First 100-question detailed-solution batch is missing guides for: ${missingFirstBatchGuides.join(", ")}.`);
+}
+
+const SECOND_DETAILED_GUIDE_BATCH_IDS = [
+  "q-4kcn93",
+  "q-10o8ctq",
+  "q-7noxuc",
+  "q-j9yoju",
+  "q-d1z4tk",
+  "q-15yn7ot",
+  "q-eqg7fy",
+  "q-hpr6z7",
+  "q-12bn51n",
+  "q-dcby5o",
+  "q-tnj5zi",
+  "q-1vwefbm",
+  "q-16ebsj0",
+  "q-1twvj1m",
+  "q-1qhjgz2",
+  "q-5v4o16",
+  "q-18xqvyj",
+  "q-i0gysv",
+  "q-wlqkdo",
+  "q-1sygnez",
+  "q-b38de6",
+  "q-1s4elc1",
+  "q-qnv3ye",
+  "q-8kk6y9",
+  "q-pdeig9",
+  "q-spmlam",
+  "q-1elymwt",
+  "q-18sm8dg",
+  "q-1wmtldp",
+  "q-105exkl",
+  "q-16apqv5",
+  "q-1ped1mi",
+  "q-1h52wbd",
+  "q-1p53h31",
+  "q-1pqcqk8",
+  "q-s4daq9",
+  "q-1784ouk",
+  "q-xoag6x",
+  "q-j00u65",
+  "q-1yv0f3f",
+  "q-d8w482",
+  "q-g44ydw",
+  "q-1iptzgf",
+  "q-1jos3b",
+  "q-6hn6fw",
+  "q-i1vowz",
+  "q-g31ucr",
+  "q-orwjrn",
+  "q-1ijaxlm",
+  "q-1g274hs",
+  "q-13zqeis",
+  "q-b0xd1t",
+  "q-uzh3ea",
+  "q-ot921h",
+  "q-19prm9e",
+  "q-r5evi2",
+  "q-1puzh27",
+  "q-1gbrw9p",
+  "q-kgiqis",
+  "q-wse1i9"
+];
+const missingSecondBatchGuides = SECOND_DETAILED_GUIDE_BATCH_IDS.filter((id) => !guidedIds.has(id));
+if (missingSecondBatchGuides.length) {
+  failures.push(`Final 60-question detailed-solution batch is missing guides for: ${missingSecondBatchGuides.join(", ")}.`);
+}
+if (unguided.length > 0) {
+  failures.push(`Expected detailed solutions for all questions; ${unguided.length} questions remain without steps.`);
 }
 
 if (guided.length < MIN_GUIDED_QUESTIONS) {
