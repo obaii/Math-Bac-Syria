@@ -669,6 +669,35 @@ if (!source.includes('id="solved-example-source"') || !source.includes('id="solv
 if (!source.includes('source.textContent = "المصدر: "') || source.includes("فتح مرجع المصدر")) failures.push("Sourced examples must retain attribution while omitting the source-opening link.");
   if (!source.includes("getQuestionDiagram") || !source.includes("has-question-diagram")) failures.push("Solved example cards must attach available diagrams beside relevant questions.");
 
+
+if (library && Array.isArray(library.examples)) {
+  const byId = new Map(library.examples.map(example => [example.id, example]));
+  const cosineExample = byId.get("dot-003");
+  if (!cosineExample || !/cos\\s*θ/.test(cosineExample.answer || "") ||
+      !/\\sqrt/.test(cosineExample.answer || "")) {
+    failures.push("dot-003 must give the requested cosine value, not only the angle.");
+  }
+  const reviewedArabicSolutions = [
+    "int-006", "exam21-integral-001", "exam23-cycle1-020",
+    "exam20-extra-010", "exam21-extra-006", "exam26-model-014"
+  ];
+  for (const id of reviewedArabicSolutions) {
+    const example = byId.get(id);
+    if (!example) {
+      failures.push("Missing reviewed integral example " + id + ".");
+      continue;
+    }
+    const content = [example.question, example.keyIdea, ...(example.steps || []), example.answer].join(" ");
+    if (/\\bintegrand\\b/i.test(content)) failures.push(id + " still contains the English word integrand.");
+  }
+  const duplicateCandidates = [["der-005", "der-008"], ["log-004", "log-007"], ["dot-002", "dot-005", "dot-010"]];
+  for (const group of duplicateCandidates) {
+    const records = group.map(id => byId.get(id));
+    if (records.some(record => !record) || new Set(records.map(record => record.question)).size !== records.length) {
+      failures.push("The reported duplicate group " + group.join(", ") + " needs a fresh source-level comparison before deduplication.");
+    }
+  }
+}
 if (failures.length) {
   console.error("Solved examples library checks failed:");
   for (const failure of failures) console.error("- " + failure);
