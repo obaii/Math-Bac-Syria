@@ -58,3 +58,12 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Candidate pair: original-bank records 22 and 90 both ask for the number of arrangements of three distinct elements taken all together and both resolve to \\(3!=6\\). The second changes “elements” to “letters” without changing the task; classify as a likely duplicate.
 - These pairs are recorded for a later editorial disposition. Neither record was deleted or hidden in this pass. A final decision should consider whether one item has a distinct intended pedagogical role or source provenance.
 - Contrast: records 1 and 54 use the same removable-discontinuity expression but ask different questions (limit versus the value needed for continuity), so they are not duplicates.
+
+## Batch 2 — original-bank questions 101–200
+
+- Re-derived representative multi-step items from this range, including vector relations (101–103), dot products and angles (104–113), plane equations and incidence (114–123), sequence limits and sums (166–170), coordinate changes (173), derivative-at-zero (174), tangent constraints (175), and complex arguments (200). Their displayed results and answer indices agree with the recomputation in this pass.
+- No new definite numerical or answer-index error was confirmed in the inspected items 101–200.
+- Graphic-dependent question 176 still needs a separate visual check of the actual rendered graph and its derivative correspondence; its text solution alone cites the source's designation of graph C and is not sufficient evidence for mathematical closure.
+- Additional likely duplicate pairs requiring editorial disposition (no deletions made): 59/130 (same sequence-limit expression \\(\\frac{4n+3}{2n-1}\\)); 65/137 (same \\(\\ln(e^{-2})\\) evaluation); 69/140 (same equation \\(e^{2x}=e^6\\)); 48/160 (same count \\(4!\\)); 89/161 (same selection count \\(C_6^2\\)); 83/156 (same expansion \\((1+i)^2\\)). Question 125 also repeats the same limit task as 25/53. These are exact or near-exact task repeats, not merely shared-topic items.
+- Question 168's proposed sequence \\(y_n=1/(1-n)\\) is increasing to 0 while \\(x_n=\\ln(1+e^{-n})\\) is decreasing to 0; their difference tends to zero. It is consistent with the standard neighboring-sequences criterion based on opposite monotonicity and a vanishing difference.
+- This batch review is bounded to the original-bank records 101–200. It does not close the visual audit or the rest of the 609-question bank.
