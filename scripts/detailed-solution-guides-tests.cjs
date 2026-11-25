@@ -298,7 +298,7 @@ if (failures.length) {
   console.log(`PASS: ${guided.length} questions have structured solution steps and a key idea.`);
   console.log(`AUDIT: ${unguided.length} questions still need curated detailed solutions.`);
   for (const q of unguided) {
-    console.log(`UNGUIDED: ${q.id || "missing-id"} | ${q.topic || "unknown-topic"} | ${String(q.q || "").replace(/\\s+/g, " ").trim()}`);
+    console.log(`UNGUIDED: ${q.id || "missing-id"} | ${q.topic || "unknown-topic"} | ${String(q.q || "").replace(/\s+/g, " ").trim()}`);
   }
   console.log(`PASS: all ${questions.length} existing questions have three progressive hints.`);
   console.log(`PASS: all ${topics.length} curriculum topics have at least one detailed guide.`);
