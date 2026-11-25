@@ -132,5 +132,37 @@ if (!cubicVariation || !cubicVariation.includes("<td>+</td>") ||
 } else {
   console.log("PASS: cubic variation derivative row is mathematically consistent at critical points");
 }
-console.log("\nQuestion diagram checks: " + (cases.length + 6 - failures) + "/" + (cases.length + 6) + " passed.");
+// The exponential example family has a correct variation table, but it belongs
+// only beside questions that ask about variation, extrema, critical points or uniqueness.
+const exponentialVariation = getDiagram({ q: "للتابع f(x)=e^(−2x)+2x−2، ادرس اتجاه تغيرها واستنتج قيمتها الصغرى.", topic: "الاشتقاق" });
+if (!exponentialVariation.includes("<table") || !exponentialVariation.includes("−1")) {
+  console.error("FAIL: the matching exponential variation question must show its correct table.");
+  failures++;
+} else {
+  console.log("PASS: exponential variation table is shown for a variation question");
+}
+const unrelatedExponentialPrompts = [
+  "ليكن f(x)=e^(−2x)+2x−2. أثبت أن المستقيم y=2x−2 مقارب مائل عند +∞.",
+  "احسب مساحة المنطقة المحصورة بين منحنى f(x)=e^(−2x)+2x−2 ومقاربه ومحوري x=0 وx=1.",
+  "احسب نهايتي f(x)=e^(−2x)+2x−2 عندما x→−∞ وعندما x→+∞.",
+  "للتابع f(x)=e^(−2x)+2x−2، احسب f(0) وf′(0)، واكتب معادلة المماس عند x=0.",
+  "إذا كان f(x)=e^(−2x)+1، احسب نهايته عندما x→+∞."
+];
+if (unrelatedExponentialPrompts.some(q => getDiagram({ q, topic: "التابع الأسي" }))) {
+  console.error("FAIL: an unrelated exponential question must not inherit a variation table.");
+  failures++;
+} else {
+  console.log("PASS: unrelated exponential questions do not inherit the variation table");
+}
+const pureExponentialVariation = getDiagram({ q: "ادرس تغيرات f(x)=e^(−2x) على R.", topic: "التابع الأسي" });
+if (!pureExponentialVariation.includes("<table") || !pureExponentialVariation.includes("0")) {
+  console.error("FAIL: the exact e^(−2x) variation question must retain its own table.");
+  failures++;
+}
+const shiftedCubicDiagram = getDiagram({ q: "إذا كان f(x)=x³−3x+1، فأوجد f′(2).", topic: "الاشتقاق" });
+if (shiftedCubicDiagram) {
+  console.error("FAIL: the x³−3x variation table must not be attached to x³−3x+1.");
+  failures++;
+}
+console.log("\nQuestion diagram checks: " + (cases.length + 10 - failures) + "/" + (cases.length + 6) + " passed.");
 if (failures) process.exitCode = 1;
