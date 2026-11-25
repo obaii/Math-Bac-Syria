@@ -331,12 +331,13 @@ function getQuestionDiagram(question) {
     return variationTable("جدول تغيرات التابع على المجال [−2,2] بعد حساب المشتقة.",
       ["−2", "−1", "1", "2"], ["+", "0", "0", "+"], ["−2 ↗", "2 ↘", "−2 ↗", "2"]);
   }
-  if (prompt.includes("f(x)=e^(−2x)+2x−2")) {
+  const asksForVariation = /اتجاه التغير|اتجاه تغير|التغيرات|التناقص|التزايد|قيمة صغرى|قيمته الصغرى|النقطة الحرجة|حلاً وحيداً|حلاً وحيدًا|جدول تغيرات/.test(prompt);
+  if (prompt.includes("f(x)=e^(−2x)+2x−2") && asksForVariation) {
     return variationTable("جدول تغيرات التابع f(x)=e^(−2x)+2x−2: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
       ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
   }
-  if (prompt.includes("f(x)=e^(−2x)") && !prompt.includes("+2x−2")) {
-    return variationTable("جدول تغيرات التابع الأسي؛ مشتقته سالبة على R.",
+  if (/f\\(x\\)\\s*=\\s*e\\^\\(−2x\\)(?!\\s*[+−])/.test(prompt) && asksForVariation) {
+    return variationTable("جدول تغيرات التابع الأسي f(x)=e^(−2x)؛ مشتقته سالبة على R.",
       ["−∞", "+∞"], ["−"], ["+∞ ↘", "0"]);
   }
   if (prompt.includes("f(x)=(x+1)^2e^{-x}")) {
@@ -350,10 +351,6 @@ function getQuestionDiagram(question) {
   if (prompt.includes("جدول تغيرات") && (prompt.includes("R\\\\{1}") || prompt.includes("R\\{1}") || prompt.includes("معرف على R"))) {
     return variationTable("ملخص النهايات المذكورة في نص السؤال؛ لم تُضف قيمة غير واردة عند 1 من اليمين.",
       ["x→−∞", "x→1⁻", "x→+∞"], null, ["f(x)→+∞", "f(x)→−∞", "f(x)→2"]);
-  }
-  if (prompt.includes("جدول تغيرات") && prompt.includes("f(x)=e^(−2x)+2x−2")) {
-    return variationTable("جدول تغيرات التابع: المشتقة سالبة قبل الصفر وموجبة بعده، والقيمة الصغرى −1 عند x=0.",
-      ["−∞", "0", "+∞"], ["−", "+"], ["+∞ ↘", "−1", "↗ +∞"]);
   }
   if (prompt.includes("جدول تغيرات التابع") && prompt.includes("يقطع محور الفواصل في نقطتين")) {
     return `<figure class="question-diagram" aria-label="مخطط يوضح تقاطع منحنى التابع مع محور الفواصل في نقطتين">
