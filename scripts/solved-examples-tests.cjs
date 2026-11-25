@@ -53,11 +53,14 @@ if (!library || !Array.isArray(library.examples)) {
   // This separates the historical all-bank exact-match count from the guided-only UI count.
   const normalizeBankMatch = value => String(value ?? "")
     .normalize("NFKC")
-    .replace(/\\\\\\(|\\\\\\)|\\\\\\[|\\\\\\]/g, "")
-    .replace(/\\s+/g, " ")
+    .replaceAll("\\(", "")
+    .replaceAll("\\)", "")
+    .replaceAll("\\[", "")
+    .replaceAll("\\]", "")
+    .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
-  const allBankQuestions = Array.isArray(context.questions) ? context.questions : [];
+  const allBankQuestions = vm.runInContext("questions", context);
   const allBankKeys = new Set(allBankQuestions.map(question => normalizeBankMatch(question.q)));
   const allBankDuplicateExamples = examples.filter(example =>
     allBankKeys.has(normalizeBankMatch(example.question))
