@@ -351,10 +351,9 @@ for (const id of standaloneExamples) {
   }
 }
 for (const id of [
-  "exam22-function-001", "exam22-function-002", "exam22-function-003",
-  "exam22-function-004", "exam22-function-005", "exam22-function-006",
-  "exam22-function-007", "exam22-function-008", "exam22-function-009",
-  "exam22-function-010", "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019", "exam22-cycle1-020"
+  "exam22-function-003", "exam22-function-004",
+  "exam22-function-007", "exam22-function-008",
+  "exam22-cycle1-017", "exam22-cycle1-018"
 ]) {
   const example = manualReviewExamples.get(id);
   const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
@@ -397,14 +396,26 @@ if (!cosineQuestion ||
   fail("dot-003 must answer the requested cosine value, not the angle itself.");
 }
 const reportVariationIds = [
-  ...Array.from({ length: 10 }, (_, index) => "exam22-function-" + String(index + 1).padStart(3, "0")),
-  "exam22-cycle1-017", "exam22-cycle1-018", "exam22-cycle1-019", "exam22-cycle1-020"
+  "exam22-function-003", "exam22-function-004",
+  "exam22-function-007", "exam22-function-008",
+  "exam22-cycle1-017", "exam22-cycle1-018"
 ];
 for (const id of reportVariationIds) {
   const example = reportExampleById.get(id);
   const diagram = example && getQuestionDiagram({ q: example.question, topic: example.topic });
   if (!diagram || !diagram.includes("القيمة الصغرى −1 عند x=0")) {
-    fail(id + " must keep the complete-function variation table from the audit report.");
+    fail(id + " must display the complete-function variation table when variation is requested.");
+  }
+}
+const reportUnrelatedVariationIds = [
+  "exam22-function-001", "exam22-function-002", "exam22-function-005",
+  "exam22-function-006", "exam22-function-009", "exam22-function-010",
+  "exam22-cycle1-019"
+];
+for (const id of reportUnrelatedVariationIds) {
+  const example = reportExampleById.get(id);
+  if (!example || getQuestionDiagram({ q: example.question, topic: example.topic })) {
+    fail(id + " must not receive an unrelated variation table.");
   }
 }
 const shiftedCubicReportExample = reportExampleById.get("exam20-extra-004");
