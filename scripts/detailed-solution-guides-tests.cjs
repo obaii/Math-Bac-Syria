@@ -59,8 +59,8 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 299) {
-  failures.push(`Expected exactly 299 curated guides after adding the first 100 walkthroughs and the next 20 verified guides, found ${guided.length}.`);
+if (guided.length !== 309) {
+  failures.push(`Expected exactly 309 curated guides after the first 100 walkthroughs and the next 30 verified guides, found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
