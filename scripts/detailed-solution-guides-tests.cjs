@@ -59,8 +59,8 @@ const guideKeys = guided.map(q => `${q.topic}::${q.q}`);
 if (new Set(guideKeys).size !== guideKeys.length) {
   failures.push("Duplicate detailed solution guides were found for the same question.");
 }
-if (guided.length !== 279) {
-  failures.push(`Expected exactly 279 curated guides after adding the first 100 question-specific walkthroughs, found ${guided.length}.`);
+if (guided.length !== 299) {
+  failures.push(`Expected exactly 299 curated guides after adding the first 100 walkthroughs and the next 20 verified guides, found ${guided.length}.`);
 }
 
 for (const [index, q] of guided.entries()) {
@@ -88,7 +88,7 @@ if (!appScriptMatch) {
 if (!/enhancements\.js\?v=20[0-9]{6}-[0-9]+/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for the updated solution and exam presentation.");
 }
-const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261124-7");
+const guideScriptPosition = indexHtml.indexOf("solution-guides.js?v=20261124-9");
 const appScriptPosition = appScriptMatch ? indexHtml.indexOf(appScriptMatch[0]) : -1;
 if (guideScriptPosition < 0 || appScriptPosition < 0 || guideScriptPosition > appScriptPosition) {
   failures.push("solution-guides.js must load before app.js so guide metadata is available when questions render.");
