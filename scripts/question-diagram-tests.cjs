@@ -164,5 +164,5 @@ if (shiftedCubicDiagram) {
   console.error("FAIL: the x³−3x variation table must not be attached to x³−3x+1.");
   failures++;
 }
-console.log("\nQuestion diagram checks: " + (cases.length + 10 - failures) + "/" + (cases.length + 6) + " passed.");
+console.log("\nQuestion diagram checks: " + (cases.length + 10 - failures) + "/" + (cases.length + 10) + " passed.");
 if (failures) process.exitCode = 1;
