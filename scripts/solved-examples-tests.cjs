@@ -806,7 +806,7 @@ if (library && Array.isArray(library.examples)) {
     ["exam23-cycle1-015", "exam20-extra-012"]
   ];
   const normalizeInternalQuestion = value => String(value ?? "").normalize("NFKC")
-    .replace(/\\\\[()\\[\\]]/g, "")
+    .replace(/\\[()[\\]]/g, "")
     .replace(/[=،,.؛:]/g, "")
     .replace(/\\s+/g, "").toLowerCase();
   for (const [firstId, secondId] of distinctExamVariants) {
@@ -815,6 +815,17 @@ if (library && Array.isArray(library.examples)) {
       failures.push("Solved-library records " + firstId + " and " + secondId + " must remain distinct exercises, not duplicate prompts.");
     }
   }
+  const normalizedQuestionGroups = new Map();
+  for (const example of examples) {
+    const normalized = normalizeInternalQuestion(example.question)
+      .replace(/[=،,.؛:()[\\]{}$]/g, "")
+      .replace(/\\s+/g, "")
+      .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, digit => String("⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(digit)));
+    if (!normalizedQuestionGroups.has(normalized)) normalizedQuestionGroups.set(normalized, []);
+    normalizedQuestionGroups.get(normalized).push(example.id);
+  }
+  const exactInternalDuplicates = [...normalizedQuestionGroups.values()].filter(ids => ids.length > 1);
+  if (exactInternalDuplicates.length) failures.push("Normalized duplicate questions remain inside the solved library: " + JSON.stringify(exactInternalDuplicates));
   const binomialVariant = byId("exam19-cycle1-003");
   const lineVariant = byId("exam19-cycle1-005");
   const complexVariant = byId("exam18-cycle1-004");
