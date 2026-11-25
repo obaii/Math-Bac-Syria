@@ -383,9 +383,9 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "int-007", steps: ["u=x²+1", "∫₅¹⁷ u³ du", "17⁴−5⁴"], answer: "20724" },
     { id: "int-008", steps: ["x≥0", "F(x)=x²/2", "9/2"], answer: "9/2" },
     { id: "int-009", steps: ["x³", "−2x²", "2x"], answer: "x³−2x²+2x+C" },
-    { id: "int-010", steps: ["2x≥0", "A=∫₀³ 2x dx", "3²−0²=9"], answer: "9" },
+    { id: "int-010", steps: ["A=∫₀² x² dx", "F(x)=x³/3", "8/3"], answer: "8/3" },
     { id: "int-011", steps: ["u=x", "v=e^x", "xe^x−∫e^x dx"], answer: "e^x(x−1)+C" },
-    { id: "int-012", steps: ["A=∫₀³ 2x dx", "A=[x²]₀³=9"], answer: "9" },
+    { id: "int-012", steps: ["A=∫₀⁴(4−x) dx", "F(x)=4x−x²/2", "16−8=8"], answer: "8" },
     { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
     { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
     { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
@@ -778,6 +778,26 @@ if (library && Array.isArray(library.examples)) {
     if (records.some(record => !record) || new Set(records.map(record => record.question)).size !== records.length) {
       failures.push("The reported duplicate group " + group.join(", ") + " needs a fresh source-level comparison before deduplication.");
     }
+  }
+  const varianceExample = byId("prob-007");
+  const eventExample = byId("prob-010");
+  const quadraticArea = byId("int-010");
+  const linearArea = byId("int-012");
+  if (!varianceExample || !varianceExample.question.includes("تباينه V(X)") ||
+      !varianceExample.steps.join(" ").includes("E(X²)") || !varianceExample.answer.includes("0.49")) {
+    failures.push("prob-007 must be a distinct variance exercise with the verified result 0.49.");
+  }
+  if (!eventExample || !eventExample.question.includes("X≥1") ||
+      !eventExample.steps.join(" ").includes("0.5+0.3") || !eventExample.answer.includes("0.8")) {
+    failures.push("prob-010 must be a distinct event-probability exercise with the verified result 0.8.");
+  }
+  if (!quadraticArea || !quadraticArea.question.includes("y=x²") ||
+      !quadraticArea.steps.join(" ").includes("8/3") || !quadraticArea.answer.includes("8/3")) {
+    failures.push("int-010 must be the distinct area-under-y=x² exercise with result 8/3.");
+  }
+  if (!linearArea || !linearArea.question.includes("y=4−x") ||
+      !linearArea.steps.join(" ").includes("16−8=8") || !linearArea.answer.includes("8")) {
+    failures.push("int-012 must be the distinct area-under-y=4−x exercise with result 8.");
   }
 }
 if (failures.length) {
