@@ -83,3 +83,11 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Further likely repeated tasks requiring editorial disposition (not deleted): 328/398 (committee of one engineer and two workers from 3 engineers and 5 workers); 329/399 (assign three distinct offices among 8 people); 330/400 (choose 5 questions from 8 without order). These are functionally the same tasks with changed wording/order of choices.
 - Diagram-dependent items in this range still require rendered-asset verification; text-only checking cannot establish that their referenced diagram is present, legible, and consistent with the solution.
 - The answer-explanation correction for question 266 was committed separately; validation was restarted after the previous run was cancelled by subsequent branch updates. No merge is authorized until the restarted validation and browser workflows finish successfully.
+
+## Batch 2 — bank questions 101–200 (main snapshot, 25 November 2026)
+
+- Scope: original `questions.js` records 101–200.
+- Independently rechecked vector operations, dot products, plane equations and incidence, complex-number operations, combinatorics, probability, sequence limits and sums, derivatives, logarithms/exponentials, and definite integrals. The displayed answer indices and written derivations were cross-checked against the options for the reviewed records.
+- No definite algebraic or answer-key defect was confirmed in the text-verifiable items in this batch.
+- **Pending visual verification:** question 176 depends on `assets/question-11-graphs.png` and asks which candidate graph is the derivative. Its answer cannot be certified from the text alone; the actual image and curve/derivative sign relationship must be inspected before this record is marked closed.
+- The audit is not complete for this batch until question 176's image is inspected. No conclusion is made here about bank questions 201–609 or the 600 solved examples.
