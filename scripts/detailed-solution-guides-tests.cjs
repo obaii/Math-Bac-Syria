@@ -78,7 +78,7 @@ if (attachmentWarnings.length) {
 }
 
 const indexHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
-if (!/solution-guides\.js\?v=20261124-7/.test(indexHtml)) {
+if (!/solution-guides\.js\?v=20261124-9/.test(indexHtml)) {
   failures.push("index.html must use the refreshed cache version for solution-guides.js.");
 }
 const appScriptMatch = indexHtml.match(/app\.js\?v=20[0-9]{6}-[0-9]+/);
