@@ -61,21 +61,29 @@ if (!library || !Array.isArray(library.examples)) {
     .trim()
     .toLowerCase();
   const allBankQuestions = vm.runInContext("questions", context);
+  const strictBankKey = value => String(value ?? "").normalize("NFKC").trim().toLowerCase();
+  const strictBankKeys = new Set(allBankQuestions.map(question => strictBankKey(question.q)));
   const allBankKeys = new Set(allBankQuestions.map(question => normalizeBankMatch(question.q)));
   const guidedBankKeys = new Set(allBankQuestions
     .filter(question => Array.isArray(question.steps) && question.steps.length > 0)
     .map(question => normalizeBankMatch(question.q)));
+  const strictMatches = examples.filter(example => strictBankKeys.has(strictBankKey(example.question)));
   const allBankDuplicateExamples = examples.filter(example =>
     allBankKeys.has(normalizeBankMatch(example.question))
   );
   const additionalAllBankMatches = allBankDuplicateExamples
     .filter(example => !guidedBankKeys.has(normalizeBankMatch(example.question)))
     .map(example => example.id);
-  // Keep the measured count diagnostic until the historical 95/100 report criteria are reconciled.
-  console.log("Exact bank/library matches: all assembled bank=" + allBankDuplicateExamples.length +
-    ", guided bank=" + library.bankDuplicateCount +
-    ", additional non-guided matches=" + additionalAllBankMatches.length +
-    (additionalAllBankMatches.length ? " [" + additionalAllBankMatches.join(", ") + "]" : "") + ".");
+  const unmatchedAgainstBank = examples
+    .filter(example => !allBankKeys.has(normalizeBankMatch(example.question)))
+    .map(example => example.id);
+  // Report strict and normalized counts separately; historical audits may have used different criteria.
+  console.log("Bank/library duplicate diagnostics: strict text=" + strictMatches.length +
+    ", normalized text=" + allBankDuplicateExamples.length +
+    ", guided normalized=" + library.bankDuplicateCount +
+    ", non-guided normalized=" + additionalAllBankMatches.length + ".");
+  console.log("Unmatched library example IDs (" + unmatchedAgainstBank.length + "): " +
+    unmatchedAgainstBank.join(", "));
 
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
   if (uniqueExampleIds.size !== 517) {
