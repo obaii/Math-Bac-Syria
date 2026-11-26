@@ -8,10 +8,10 @@
     "supplementaryLabels": 6,
     "studentExamples": 594,
     "supplementaryExamples": 6,
-    "high": 156,
+    "high": 152,
     "medium": 153,
-    "low": 11,
-    "unmapped": 11
+    "low": 15,
+    "unmapped": 15
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -77,11 +77,11 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": "probability-03",
-      "suggestedLessonTitle": "الاستقلال الاحتمالي لمتحوّلين عشوائيّين",
-      "confidence": "high",
-      "rationale": "الاستقلال الاحتمالي",
-      "reviewStatus": "suggested-high-confidence",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "هذا التصنيف يتناول استقلال حادثتين (أحداث)، بينما عنوان الدرس المقترح في الخريطة هو «الاستقلال الاحتمالي لمتحوّلين عشوائيّين». المفهومان ليسا متطابقين؛ أزيل الإسناد غير الدقيق، وتُترك المسألة بلا lesson ID حتى يثبت موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -115,11 +115,11 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": "probability-03",
-      "suggestedLessonTitle": "الاستقلال الاحتمالي لمتحوّلين عشوائيّين",
-      "confidence": "high",
-      "rationale": "الاستقلال الاحتمالي",
-      "reviewStatus": "suggested-high-confidence",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "هذا التصنيف يتناول استقلال حادثتين (أحداث)، بينما عنوان الدرس المقترح في الخريطة هو «الاستقلال الاحتمالي لمتحوّلين عشوائيّين». المفهومان ليسا متطابقين؛ أزيل الإسناد غير الدقيق، وتُترك المسألة بلا lesson ID حتى يثبت موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -134,11 +134,11 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": "probability-03",
-      "suggestedLessonTitle": "الاستقلال الاحتمالي لمتحوّلين عشوائيّين",
-      "confidence": "high",
-      "rationale": "الاستقلال الاحتمالي",
-      "reviewStatus": "suggested-high-confidence",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "هذا التصنيف يتناول استقلال حادثتين (أحداث)، بينما عنوان الدرس المقترح في الخريطة هو «الاستقلال الاحتمالي لمتحوّلين عشوائيّين». المفهومان ليسا متطابقين؛ أزيل الإسناد غير الدقيق، وتُترك المسألة بلا lesson ID حتى يثبت موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -247,11 +247,11 @@
       "years": [
         2022
       ],
-      "suggestedLessonId": "probability-03",
-      "suggestedLessonTitle": "الاستقلال الاحتمالي لمتحوّلين عشوائيّين",
-      "confidence": "high",
-      "rationale": "الاستقلال الاحتمالي",
-      "reviewStatus": "suggested-high-confidence",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "هذا التصنيف يتناول استقلال حادثتين (أحداث)، بينما عنوان الدرس المقترح في الخريطة هو «الاستقلال الاحتمالي لمتحوّلين عشوائيّين». المفهومان ليسا متطابقين؛ أزيل الإسناد غير الدقيق، وتُترك المسألة بلا lesson ID حتى يثبت موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
