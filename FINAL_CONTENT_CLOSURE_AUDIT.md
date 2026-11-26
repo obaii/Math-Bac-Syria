@@ -287,3 +287,47 @@ Reviewed every prompt, condition, transformation, intermediate result, final ans
 - `vec-002`: midpoint is `M(1,2,1)`; coordinate averages verified.
 
 Outcome: no mathematical, assumption, or solution-step defect was found in these 20 records. Cumulative manual solved-example review: 40/600. The other 560 examples and all 609 bank solutions remain outside these two completed manual batches.
+
+
+## Batch 19 — manual mathematical re-derivation of solved examples 41–240 (26 November 2026)
+
+Reviewed 200 consecutive records (stable IDs from `dot-002` through `exam19-prob-001`) including the full prompt, assumptions, key idea, intermediate steps, final answer, and verification check. This per-record review does not certify the official-source provenance of exam-labelled records.
+
+### Confirmed corrections applied
+
+- `seq-limit-007` (record 81): corrected the lesson label. The question gives an explicit formula `uₙ=2+1/n`; it is not defined by a recurrence relation.
+- `seq-010` (record 104): corrected the lesson label from a geometric-series sum to the seventh term of a geometric sequence.
+- `exam18-seq-005` (record 228): corrected the verification text. The question asks only that the difference tends to zero; the old check incorrectly claimed monotonicity was stated in the question.
+- `lim-016` (record 154): clarified the piecewise definition by explicitly stating `f(x)=ax+1` for `x≠2` and `f(2)=7`. This makes the continuity condition unambiguous and yields `a=3`.
+- `exam19-3d-002` (record 237): clarified that line `d` passes through A. Orthogonal direction vectors alone do not establish that two lines in space are perpendicular unless they intersect; the corrected prompt ensures intersection at A.
+
+### Mathematical review outcome
+
+- No arithmetic or algebraic error was found in the remaining reviewed solutions in this range after re-derivation.
+- The reviewed computations include geometric and arithmetic sequences, limits and continuity, derivatives and monotonicity, logarithmic/exponential equations and inequalities, definite and indefinite integrals, vectors and scalar products, line/plane relations, complex numbers and transformations, combinatorics, and probability.
+- Geometric checks included verifying intersection where perpendicular lines are claimed, checking plane distances and tangency, and substituting all given points into plane equations.
+
+### Exact repeated solved-example tasks discovered
+
+The wider comparison across the first 240 records revealed exact or materially identical repeated tasks that were missed by the earlier internal-duplicate scan. They are retained for now; no record was deleted and no stable ID was renumbered. Pairs/groups requiring a controlled disposition:
+
+- `seq-006` / `seq-014` (records 51/151): same arithmetic-sequence data `u₃=11, u₇=27`, asking for first term and common difference.
+- `cx-006` / `cx-010` (records 69/118): same complex quotient `(1+i)/(1−i)`, result `i`.
+- `comb-004` / `comb-009` (records 71/121): same choice of a 3-person committee from 7 people, result 35.
+- `cx-007` / `cx-013` (records 93/168): same conjugate/product task for `z=−3+4i`, result 25.
+- `prob-013` / `prob-020` (records 124/175): same two-point distribution `X∈{0,2}` with equal probabilities, asking for expectation and variance.
+- `lim-011` / `lim-015` (records 102/153): same limit `(x²−9)/(x−3)` as `x→3`, result 6.
+- `int-010` / `int-016` (records 112/187): same area under `y=x²` from 0 to 2, result 8/3.
+- `int-003` / `int-011` (records 38/136): same integration-by-parts task `∫xeˣ dx`, result `eˣ(x−1)+C`.
+- `vec-001` / `vec-007` (records 35/138): same coordinates A(1,−2,3), B(4,0,−1), vector AB=(3,2,−4).
+- `dot-001` / `dot-008` (records 36/140): same scalar-product data and result `−8`.
+- `prob-003` / `prob-016` (records 49/150): same independent-event probabilities 0.4 and 0.5, intersection probability 0.2.
+- `seq-013` / `seq-015` (records 127/152): same geometric-sequence data `u₂=6, u₅=162`, asking for positive q and `u₁`.
+
+Related-but-not-identical items (such as asking for a cosine versus the angle for the same pair of vectors, or using different numerical data for the same method) were not classified as exact duplicates. No duplicate records were deleted or hidden in this batch; stable IDs and order are preserved pending a safe editorial decision.
+
+### Cumulative status
+
+- Manual solved-example review completed: **240/600**.
+- Remaining solved examples for individual manual review: **360**.
+- All 609 question-bank solutions, official textbook crosswalk, source authenticity, and production GitHub Pages parity remain separate outstanding audits. CI success does not substitute for these content checks.
