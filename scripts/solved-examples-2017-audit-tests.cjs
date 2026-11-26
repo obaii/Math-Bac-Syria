@@ -85,7 +85,7 @@ if (actual2017.length !== 34) failures.push("Expected exactly 34 sourceYear=2017
 for (const [id, required] of [
   ["ministerial17-graph-001", ["f(1)=1", "(0,2)", "f(x)≤1"]],
   ["ministerial17-graph-002", ["y=5", "x=4", "نقطة واحدة"]],
-  ["ministerial17-graph-003", ["f(4)=5", "x≥4", "f(x)≥5"]]
+  ["ministerial17-graph-003", ["f(4)=5", "f(x)<5", "x≥4", "f(x)≥5"]]
 ]) {
   const item = examples.find(example => example.id === id);
   if (!item || required.some(fragment => !item.question.includes(fragment))) {
