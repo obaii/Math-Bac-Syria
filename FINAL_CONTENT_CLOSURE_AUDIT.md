@@ -171,3 +171,10 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - A high-similarity scan produced 12 candidate pairs for human review. Most were legitimate variants with changed mathematical data (for example, different direction vectors, probability values, or integrands), not duplicate exercises.
 - **Confirmed near-duplicate:** lim-012 and lim-014 originally asked the same removable-discontinuity question with the same function and point, differing mainly in wording and lesson label. Updated lim-014 to the distinct variant (f(x)=(x^2-9)/(x-3)) for (x\ne3), with (f(3)=a); the correct continuity value is (a=6). The example remains in the library with its own steps and check.
 - The remaining high-similarity candidates were retained because they change the actual mathematical data or task, and should not be hidden as duplicates merely because they share a solution method.
+
+
+## Batch 12 — corrected an under-specified inequality example (26 November 2026)
+
+- In ministerial17-graph-003, the original condition (f(x)\ge5) for (x\ge4) was insufficient to conclude that the full solution set was exactly ([4,+\infty)), because values for (x<4) were unspecified.
+- Added the missing condition (f(x)<5) for every (x<4), and clarified the worked solution by separating the two cases. The result ([4,+\infty)) is now logically justified.
+- Updated the 2017 audit regression test to require both sides of the domain condition.
