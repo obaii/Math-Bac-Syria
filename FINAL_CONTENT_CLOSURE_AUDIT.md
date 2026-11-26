@@ -331,3 +331,30 @@ Related-but-not-identical items (such as asking for a cosine versus the angle fo
 - Manual solved-example review completed: **240/600**.
 - Remaining solved examples for individual manual review: **360**.
 - All 609 question-bank solutions, official textbook crosswalk, source authenticity, and production GitHub Pages parity remain separate outstanding audits. CI success does not substitute for these content checks.
+
+
+## Batch 20 — manual mathematical re-derivation of solved examples 241–440 (26 November 2026)
+
+Reviewed 200 consecutive records (stable IDs `exam19-prob-002` through `exam18-cycle2-016`). Each prompt, stated assumptions, mathematical method, intermediate computations, final result, and verification was checked. This review does not authenticate the official provenance of exam-labelled material.
+
+### Content corrections applied
+
+- `ministerial17-rational-001` (record 260): aligned the key idea and answer with the requested decomposition, replacing unexplained coefficients by `f(x)=x−6+7/(x+1)`. The polynomial division and remainder were already correct.
+- `exam25-seq-001` (record 334): clarified the expression as `uₙ=−(3ⁿ)`. Without parentheses, `−3ⁿ` can be read ambiguously in informal text or typesetting, while the claimed strict decrease specifically refers to the negative of the positive powers.
+- `exam22-rational-001` (record 282): made the fraction explicit as `f(x)=ax+b/(x+1)` in displayed mathematical notation, preserving the intended interpretation `ax + b/(x+1)`.
+- `exam22-limits-001` (record 270): repaired the domain notation to `R\\{1}` and made all three limit expressions explicit, including the left-hand approach at 1.
+
+### Mathematical review outcome
+
+- The 200 records were re-derived across probability and conditional probability, complex roots and rotations, spatial geometry, planes and spheres, derivatives and curve analysis, sequences and induction, logarithms and exponentials, integration, combinatorics, differential equations, and propositional logic.
+- Probability models were checked against their sample spaces or binomial parameters; conditional probabilities were recalculated from the joint and marginal events.
+- Spatial calculations were checked by substitution into plane equations, dot products with normal vectors, cross products, and distance formulas.
+- Calculus results were checked by differentiation, endpoint evaluation, sign analysis, and limit definitions.
+- No further arithmetic or algebraic error was identified in the other reviewed records in this range. The four changes above address answer alignment and unambiguous notation rather than changing the computed results.
+
+### Cumulative status
+
+- Manual solved-example review completed: **440/600**.
+- Remaining solved examples for individual manual review: **160**.
+- The separate audit of all 609 question-bank solutions, official textbook mapping, source authenticity, duplicate disposition, and production GitHub Pages parity remains open.
+- This batch is not considered CI-verified until the current code/data head completes both validation and browser workflows successfully.
