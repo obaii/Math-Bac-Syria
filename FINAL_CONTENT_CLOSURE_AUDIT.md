@@ -575,3 +575,16 @@ The current core bank was parsed again after this correction:
 This pass does not claim that a normalized-text scan detects every semantic near-duplicate; the identified candidate groups were also reviewed individually. The current head is `241a14d2d236784c591fa3294286ebfb95a7fd07`. A fresh bank-validation workflow (`45855430265`) is running and the browser smoke workflow (`45855430358`) is pending for this head. The immediately preceding validation run on `78f579b3` passed 48/48, but it is not substituted for the latest-head run.
 
 No records were removed or reordered. PR #418 remains draft/open while latest-head tests and the independent curriculum, official-source, lesson-linking, homepage, and production-parity blockers remain open.
+
+
+## Latest-head workflow confirmation (27 November 2026)
+
+The two required GitHub Actions workflows have now completed successfully on the current PR head `00dc25b63dd6d001d5994f5223a215d8058484e0`:
+
+- Question-bank validation run `45855515250`: **success**, workflow completed.
+- Browser user-flow smoke run `45855515273`: **success**, workflow completed; the browser job reports 30 successful steps and no failed steps.
+- Both runs target PR #418 and the same head commit. This supersedes the earlier pending-run notes for `241a14d2`, `fae7ab44`, and `78f579b3`.
+- PR #418 remains **open / draft**. The latest tests do not close curriculum approval, official textbook page-by-page verification, source authenticity, question-to-lesson ID linking, or production GitHub Pages parity.
+- The current lesson-label crosswalk remains explicitly `provisional-not-verified`: 320 student-curriculum labels (594 examples), 6 supplementary labels (6 examples), 156 high-confidence suggestions, 158 medium, 6 low, and 6 unmapped labels. All rows remain `verified: false`; confidence is a suggestion classification, not evidence of textbook confirmation.
+- The curriculum map contains 63 lesson titles in 14 units. Existing tests establish inventory consistency and topic-level presence; they do not establish that every question or solved example is linked to its exact lesson or that every lesson is covered.
+- No merge is authorized by this test result alone. Keep the PR draft until independent evidence closes the remaining blockers.
