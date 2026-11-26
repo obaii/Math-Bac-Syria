@@ -389,7 +389,7 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
     { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
     { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
-    { id: "int-016", steps: ["A=\\\\int_0^3(x+2)", "F(x)=x²/2+2x", "21/2"], answer: "21/2" }
+    { id: "int-016", steps: ["A=\\int_0^3(x+2)", "F(x)=x²/2+2x", "21/2"], answer: "21/2" }
   ];
   for (const testCase of integralCases) {
     const example = examples.find(item => item.id === testCase.id);
