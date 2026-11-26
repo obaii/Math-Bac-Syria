@@ -8,10 +8,10 @@
     "supplementaryLabels": 6,
     "studentExamples": 594,
     "supplementaryExamples": 6,
-    "high": 153,
+    "high": 156,
     "medium": 158,
-    "low": 9,
-    "unmapped": 9
+    "low": 6,
+    "unmapped": 6
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
@@ -6013,12 +6013,13 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": null,
-      "suggestedLessonTitle": null,
-      "confidence": "low",
-      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
-      "reviewStatus": "needs-manual-review",
-      "verified": false
+      "suggestedLessonId": "limits-08",
+      "suggestedLessonTitle": "التوابع المستمرّة وحلّ المعادلات",
+      "confidence": "high",
+      "rationale": "مطابقة مباشرة: يخصص الدرس فقرة «صورة مجال وعدد الحلول» ويشرح صورة المجال من قيم الطرفين مع الاستمرار والاطراد، وهو نفس الإجراء المطلوب في المثال. مرجع الدرس: كتاب الرياضيات، الجزء الأول، ص48؛ https://www.basita123.com/learn/sy/math-bac-sci/tahlil/hall-muaadalat",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false,
+      "evidenceUrl": "https://www.basita123.com/learn/sy/math-bac-sci/tahlil/hall-muaadalat"
     },
     {
       "inventoryIndex": 275,
@@ -6121,12 +6122,13 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": null,
-      "suggestedLessonTitle": null,
-      "confidence": "low",
-      "rationale": "لا يمكن إسناد هذا العنوان إلى درس محدد اعتماداً على الاسم وحده؛ يلزم فحص نص السؤال والكتاب قبل الربط.",
-      "reviewStatus": "needs-manual-review",
-      "verified": false
+      "suggestedLessonId": "limits-01",
+      "suggestedLessonTitle": "نهاية تابع عند اللانهاية",
+      "confidence": "high",
+      "rationale": "السؤال يطلب نهايتي التابع عند −∞ و+∞؛ ويغطي هذا الدرس النهايات عند طرفي اللانهاية والمقارب الأفقي. مرجع الدرس: كتاب الرياضيات، الجزء الأول، ص21–24؛ https://www.basita123.com/learn/sy/math-bac-sci/tahlil/nihaya-lanihaya",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false,
+      "evidenceUrl": "https://www.basita123.com/learn/sy/math-bac-sci/tahlil/nihaya-lanihaya"
     },
     {
       "inventoryIndex": 280,
@@ -7083,12 +7085,13 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": null,
-      "suggestedLessonTitle": null,
-      "confidence": "low",
-      "rationale": "تصنيف فرعي جديد أُضيف بعد فصل مسألة ضرب العددين العقديين عن مسألة الطويلة؛ يُترك دون ربط بدروس الكتاب حتى مراجعة موضعه في المنهاج.",
-      "reviewStatus": "needs-manual-review",
-      "verified": false
+      "suggestedLessonId": "complex-01",
+      "suggestedLessonTitle": "مجموعة الأعداد العقديّة",
+      "confidence": "high",
+      "rationale": "الدرس يشرح الضرب بالشكل الجبري صراحةً، بما في ذلك توزيع الحدود واستبدال i² بـ−1. مرجع الدرس: كتاب الرياضيات، الجزء الثاني، ص90–92؛ https://www.basita123.com/learn/sy/math-bac-sci/aqdiya/shakl-jabri",
+      "reviewStatus": "suggested-high-confidence",
+      "verified": false,
+      "evidenceUrl": "https://www.basita123.com/learn/sy/math-bac-sci/aqdiya/shakl-jabri"
     }
   ]
 }
