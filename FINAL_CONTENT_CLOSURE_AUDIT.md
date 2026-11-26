@@ -596,3 +596,25 @@ The two required GitHub Actions workflows have now completed successfully on the
 - The independently maintained Basita textbook index reports that its links point directly to NCCD-hosted files, lists the two scientific-stream mathematics volumes as **97 MB** and **80 MB**, and says its links were checked on 22 September 2026. It also states that the 2025–2026 edition is no longer available from the rebuilt Ministry site, and that the accessible NCCD edition has the same mathematics lesson sequence/order but different pagination after editorial removals. This is a third-party report, not a substitute for direct comparison of the actual editions.
 - Reference: https://www.basita123.com/textbooks (sections “أيّ طبعةٍ هذه؟” and “الفرع العلميّ”).
 - Consequence: the 63-lesson map remains provisional. Do not mark any lesson, page reference, or question-to-lesson mapping as officially verified until the actual PDFs are inspected page by page and the edition/pagination used by the project is reconciled. The 2025–2026 Ministry-edition source-authenticity blocker therefore remains open.
+
+
+## مراجعة نصية للتسميات الست غير المسندة — 27 نوفمبر 2026
+
+راجعت نصوص السجلات الست الموجودة في مكتبة الأمثلة، وقارنت مهاراتها بعناوين الدروس الـ63 المسجلة في `curriculum-map.json`. هذه مراجعة للمحتوى المتاح في المستودع، وليست اعتماداً من الكتاب الرسمي أو تحققاً من أصل الورقة الامتحانية.
+
+| المعرّف | ما يثبته نص المسألة الحالي | نتيجة الربط |
+|---|---|---|
+| `exam18-func-001` | إثبات دور صحيح مقداره \\(2\\pi\\) للتابع \\(1/(3+\\cos x)\\). | لا يوجد عنوان صريح للدوال الدورية/المثلثية ضمن قائمة الدروس الحالية؛ بقي غير مسند. |
+| `exam22-function-009` | \\(g(x)=-f(-x)\\)، أي تناظر مركزي حول مبدأ المعلم. | لا يوجد عنوان صريح لتحويل منحنى تابع؛ بقي غير مسند. |
+| `ministerial17-graph-003` | الشروط المعطاة تؤدي منطقياً إلى مجموعة الحل \\([4,+\\infty)\\). | مهارة متراجحة مرتبطة بتابع، لكن لا يوجد درس مستقل بهذا العنوان؛ بقي غير مسند. |
+| `exam22-limits-001` | ثلاث نهايات معطاة عند \\(-\\infty\\)، و\\(1^-\\)، و\\(+\\infty\\). | تجمع أكثر من نوع نهاية، ولا يظهر جدول تغيرات مرفق في نص السجل؛ بقي غير مسند. |
+| `exam21-graph-001` | المقاربات والجذر تتبع من المعطيات اللفظية الحالية. | لا يحتوي السجل الرسم الأصلي، فلا يمكن تدقيق القراءة البصرية أو مصدرها؛ بقي غير مسند. |
+| `exam19-func-008` | \\(f(x)+f(-x)=4\\)، ومنه مركز التناظر \\((0,2)\\). | لا يوجد عنوان صريح لمركز تناظر منحنى تابع؛ بقي غير مسند. |
+
+تم تحديث مبررات الصفوف الست في `lesson-label-crosswalk.json` لتوثيق هذه المراجعة، مع الإبقاء على `suggestedLessonId: null` و`verified: false` ودرجة الثقة المنخفضة. لم يُخترع أي ربط درسي. كما أن أسماء المصدر وسنواته في السجلات لا تثبت وحدها أصالة الورقة الوزارية؛ يلزم الرجوع إلى النسخ الأصلية.
+
+## حالة التحقق بعد تحديث المراجعة النصية — 27 نوفمبر 2026
+
+- على رأس PR `bb07aad5eff80fdca5a5f1995e15458c7c99d941`: تحقق بنك الأسئلة رقم `45895769356` ناجح، واختبار المتصفح رقم `45895769452` ناجح **30/30**.
+- لا يغلق نجاح الاختبارات البنود المنهجية أو التوثيقية أو مقارنة GitHub Pages بالإصدار المختبر.
+- PR #418 يبقى مفتوحاً ومسودة وغير مدمج.
