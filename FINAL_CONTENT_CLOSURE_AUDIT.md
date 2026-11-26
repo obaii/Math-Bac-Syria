@@ -136,7 +136,7 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 
 - Scope: 50 questions spanning planes and spheres, exponential functions, combinatorics, conditional probability and Bayes' theorem, sequences, complex numbers, integration, logarithmic differentiation, and variation.
 - Recomputed each answer and solution in the batch. The stored answer indices match the displayed options for the checked items.
-- **Curriculum mapping correction:** questions 561 and 562 concern the Cartesian equation of a plane and point-to-plane distance, respectively. Their topic was incorrectly labeled "الجداء السلمي في الفراغ"; both are now labeled "المستقيمات والمستويات في الفراغ". Question 563 remains under scalar product.
+- **Curriculum mapping correction (aligned to the actual curriculum map):** question 561 asks for the Cartesian equation of a plane and belongs to the textbook lesson "المعادلة الديكارتيّة لمستوٍ" under "الجداء السلمي في الفراغ"; question 562 asks for point-to-plane distance and remains under "المستقيمات والمستويات في الفراغ". Question 563 remains under scalar product.
 - Rechecked question 574: (f'(x)=(e^x(1-x)-1)/(1-x)le0) for (x<1), with equality only at (x=0); the function is still strictly decreasing despite the isolated zero derivative.
 - Rechecked the probability distributions in questions 575–577 using combinations from the stated urn populations; the selected answers agree with the calculated probabilities.
 - No further mathematical answer-key correction was needed in this 50-question batch.
@@ -147,7 +147,7 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 
 - Scope: all final 15 records in the supplementary automated-question collection, covering tangent equations, parameter identification, exponential maxima, limits and unique roots, complex equations and roots of unity, scalar products, planes, distances, line-plane intersections, sequence convergence, and definite integration.
 - Recomputed the selected answers and checked each worked solution. The stored answer indices agree with the corresponding options in this batch.
-- **Curriculum mapping correction:** question 589 asks for the Cartesian equation of a plane through three points, not a scalar product. Its topic is now corrected to "المستقيمات والمستويات في الفراغ".
+- **Curriculum mapping correction (aligned to the actual curriculum map):** question 589 asks for the Cartesian equation of a plane through three points and belongs to "الجداء السلمي في الفراغ", where the student textbook places the lesson "المعادلة الديكارتيّة لمستوٍ".
 - Question 584's uniqueness argument is valid because (h(x)=e^{-x}-x) is continuous on ([0,1]), has opposite endpoint signs, and is strictly decreasing there.
 - The 140-record supplementary collection (questions 455–594) has now received a question-by-question mathematical answer/solution pass in batches 455–479, 480–529, 530–579, and 580–594. This does not constitute source-document verification or prove exact reproduction of any ministry paper; source provenance still requires separate checking.
 - Open work remains: the 600-example solved library, all textbook lesson mappings, visual assets/tables, similarity review across the full bank and library, source-document verification for 2017 onward, and final CI/browser validation after the latest content commits.
