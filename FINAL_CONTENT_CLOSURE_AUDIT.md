@@ -588,3 +588,11 @@ The two required GitHub Actions workflows have now completed successfully on the
 - The current lesson-label crosswalk remains explicitly `provisional-not-verified`: 320 student-curriculum labels (594 examples), 6 supplementary labels (6 examples), 156 high-confidence suggestions, 158 medium, 6 low, and 6 unmapped labels. All rows remain `verified: false`; confidence is a suggestion classification, not evidence of textbook confirmation.
 - The curriculum map contains 63 lesson titles in 14 units. Existing tests establish inventory consistency and topic-level presence; they do not establish that every question or solved example is linked to its exact lesson or that every lesson is covered.
 - No merge is authorized by this test result alone. Keep the PR draft until independent evidence closes the remaining blockers.
+
+
+## Official textbook source-access check (27 November 2026)
+
+- The National Center for Curriculum Development (NCCD) book links already listed in `curriculum-map.json` resolve to the student mathematics PDFs for parts 1 and 2. The web reader could not extract either PDF because the files are approximately **96.9 MB** and **79.5 MB**, respectively; this is a tooling-size limitation, not evidence that the PDFs are invalid.
+- The independently maintained Basita textbook index reports that its links point directly to NCCD-hosted files, lists the two scientific-stream mathematics volumes as **97 MB** and **80 MB**, and says its links were checked on 22 September 2026. It also states that the 2025–2026 edition is no longer available from the rebuilt Ministry site, and that the accessible NCCD edition has the same mathematics lesson sequence/order but different pagination after editorial removals. This is a third-party report, not a substitute for direct comparison of the actual editions.
+- Reference: https://www.basita123.com/textbooks (sections “أيّ طبعةٍ هذه؟” and “الفرع العلميّ”).
+- Consequence: the 63-lesson map remains provisional. Do not mark any lesson, page reference, or question-to-lesson mapping as officially verified until the actual PDFs are inspected page by page and the edition/pagination used by the project is reconciled. The 2025–2026 Ministry-edition source-authenticity blocker therefore remains open.
