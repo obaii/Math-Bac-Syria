@@ -358,3 +358,31 @@ Reviewed 200 consecutive records (stable IDs `exam19-prob-002` through `exam18-c
 - Remaining solved examples for individual manual review: **160**.
 - The separate audit of all 609 question-bank solutions, official textbook mapping, source authenticity, duplicate disposition, and production GitHub Pages parity remains open.
 - This batch is not considered CI-verified until the current code/data head completes both validation and browser workflows successfully.
+
+
+## Batch 21 — final solved-example review, records 441–600 (26 November 2026)
+
+Completed the final 160-record manual mathematical review, covering stable IDs `exam18-cycle2-017` through `exam26-model-020`. The review re-derived the numerical and algebraic results, checked assumptions and domains, checked intermediate steps against the requested result, and verified the reasoning in probability, complex numbers, sequences, calculus, combinatorics, and three-dimensional geometry.
+
+### Corrections applied
+
+- `exam19-cycle1-002` (record 446): added continuity to the prompt. Monotonicity and endpoint values establish the minimum and maximum, but continuity is needed to conclude that the image is the entire interval `[−2,4]`.
+- `exam19-cycle1-006` (record 450): specified that line `d` passes through `A`. In three dimensions, perpendicular direction vectors alone do not establish that two lines intersect; the shared point makes the perpendicular-lines conclusion valid.
+- `exam22-cycle1-005` (record 489): removed an erroneous extra factor `1/2` from the displayed factorization. The correct decomposition is `((e^{3x}−1)/(3x))·(3x/sin(2x))), whose limit is `1·3/2=3/2`.
+- `exam26-model-014` (record 594): expanded the substitution solution to state `u=x³+1`, `du=3x² dx), both transformed bounds, and the evaluated logarithmic integral.
+
+### Review checks and findings
+
+- All 160 records were individually checked. No additional confirmed arithmetic or algebraic result errors were identified beyond the four corrections above.
+- The full library contains **600 records with 600 unique stable IDs**.
+- A normalized exact-prompt scan across all 600 records found no exact duplicate prompt groups. This is a mechanical exact-match check and does not replace the separately recorded manual review of 12 semantically/materially repeated groups found in records 1–240.
+- The 600-record solved-example manual review is now complete. Source authenticity for exam-inspired records has not been independently authenticated against official ministry originals; the source labels in the records distinguish inspired/training content where applicable.
+
+### Cumulative status and remaining closure blockers
+
+- Manual solved-example review: **600/600 complete**.
+- The separate mathematical audit of all **609 question-bank solutions** remains open; automated structure and regression checks do not constitute individual mathematical verification.
+- All 609 bank questions currently have no specific lesson ID; lesson-level mapping needs an educational audit before automatic links are assigned.
+- Official textbook page-by-page curriculum verification, source authenticity, and final duplicate disposition remain open.
+- Production GitHub Pages parity with the tested PR head must still be confirmed.
+- PR #418 remains a draft and must not be merged until the remaining audits and live-site verification are complete.
