@@ -119,3 +119,14 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - **Likely duplicate requiring editorial disposition:** records 419 and 442 ask for the solution set of the same equation (z(z^2+4z+29)=0), with the same result (z=0) or (z=-2\pm5i). Their wording and option order differ, but the mathematical task and data are equivalent. Neither record was deleted or hidden. Record 420 asks only for the roots of the quadratic factor, so it is a narrower subtask and is not automatically classified as a duplicate of 419/442.
 - Similar probability records 405–408 and 412–416 use related binomial distributions but ask for different probabilities or moments; they are not duplicates solely because they share a model.
 - This is a completed text-and-answer audit of original-bank records 401–454 only. It does not close questions 455–609, visual assets, the 600-example library, curriculum mappings, or source coverage.
+
+
+## Batch 6 — original-bank questions 480–529 and assumption corrections (26 November 2026)
+
+- Scope: 50 consecutive supplementary questions, covering sequence differences and limits, distances and tangent spheres, trigonometric bounds, logarithmic-function analysis, variation-table reasoning, scalar products, geometric sequences, probability distributions, and complex numbers.
+- Recomputed the answer and worked solution for all 50 records. The numerical/algebraic answer indices agree with their corresponding options in this batch.
+- **Question 498:** the original wording inferred roots from monotonic variation ranges but did not explicitly state continuity. Added the explicit assumption that (f) is continuous, which makes the intermediate-value argument valid and supports the claimed count of two roots.
+- **Question 520:** the original wording supplied only a direction vector for line (d), then concluded that it is perpendicular to line (AB). Orthogonal direction vectors alone do not establish that two lines intersect in 3D. Added that (d) passes through (A); since (AB) also passes through (A), the perpendicularity conclusion is now justified.
+- **Question 525:** checked the distribution by unordered pairs from the multiset ({0,0,1,1,2}); the probabilities are (1/10,2/5,3/10,1/5), agreeing with the stored answer.
+- These are wording/assumption corrections, not changes to the intended answer keys. No questions were deleted or hidden.
+- This pass covers only records 480–529. The remaining supplementary records 530–594, the 600-example library, full lesson mapping, image/table assets, and source verification remain open.
