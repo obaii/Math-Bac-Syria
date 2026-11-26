@@ -47,7 +47,7 @@ const expected = {
   "ministerial17-sequence-001": "(yₙ) هندسية أساسها q=3/4 وحدها الأول y₀=−4.",
   "ministerial17-sequence-002": "yₙ=−4(3/4)ⁿ و xₙ=8−4(3/4)ⁿ.",
   "ministerial17-sequence-003": "lim(n→+∞)xₙ=8.",
-  "ministerial17-rational-001": "a=1 وb=−6 وc=7.",
+  "ministerial17-rational-001": "f(x)=x−6+7/(x+1).",
   "ministerial17-integral-001": "التكامل يساوي 7ln3−10.",
   "ministerial17-logseq-001": "Sₙ=ln(((n+1)(n+2))/2).",
   "ministerial17-logeq-001": "الحل الوحيد هو x=(1+\\(\\sqrt{5}\\))/2.",
