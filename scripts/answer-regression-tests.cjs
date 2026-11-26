@@ -274,7 +274,8 @@ const archiveCases = [
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. ليكن X عدد البطاقات الحمراء المسحوبة","expected":"لا، لأن احتمال التقاطع لا يساوي حاصل ضرب الاحتمالين"},
   {"contains":"في صندوق يحتوي على 3 كرات حمراء و2 زرقاء و5 بيضاء، نسحب كرتين دفعة واحدة. ما احتمال ظهور كرة بيضاء واحدة على الأقل","expected":"\\(\\frac79\\)"},
   { contains: "ما ميل نصف المماس الأيمن لمنحنى f عند x=0؟", expected: "2" },
-  { contains: "لتكن \\(u_n=\\frac1{\\sqrt{n+1}+\\sqrt{n}}\\)", expected: "\\(4\\)" }
+  { contains: "لتكن \\(u_n=\\frac1{\\sqrt{n+1}+\\sqrt{n}}\\)", expected: "\\(4\\)" },
+  { contains: "يمثل الشكل في الصورة تابعًا \\(f\\) ومعه أربعة رسوم مرشحة للتابع المشتق", expected: "الرسم C" }
 ];
 
 cases.push(...archiveCases);
@@ -303,6 +304,15 @@ if (!halfTangentQuestion || !halfTangentQuestion.q.includes("نصف المماس
   console.error("FAIL: q-1bwh99f must ask for the right half-tangent slope and select 2, not the two-sided differentiability option.");
   failures++;
 }
+const derivativeGraphQuestion = questions.find(q => normalize(q.q).includes("assets/question-11-graphs.png"));
+if (!derivativeGraphQuestion ||
+    !derivativeGraphQuestion.solution.includes("سالب ثم موجبة ثم سالبة ثم موجبة") ||
+    !derivativeGraphQuestion.solution.includes("x=-1") ||
+    !derivativeGraphQuestion.solution.includes("x=1")) {
+  console.error("FAIL: the derivative-graph solution must justify candidate C using the interval sign pattern and both non-differentiable points.");
+  failures++;
+}
+
 const rationalizationQuestion = questions.find(q => q.id === "q-1fc9tmo");
 if (!rationalizationQuestion || /rationalize/i.test(rationalizationQuestion.solution || "")) {
   console.error("FAIL: q-1fc9tmo must keep its solution in Arabic mathematical terminology.");
