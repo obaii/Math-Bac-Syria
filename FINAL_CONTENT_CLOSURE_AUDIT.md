@@ -259,3 +259,31 @@ Reviewed the complete prompt, assumptions, key idea, every solution step, final 
 - `comb-001`: number of 3-person committees from 7 students equals `35`; combination formula correctly used because order is irrelevant.
 
 Outcome: no mathematical, assumption, or solution-step defect was found in these 20 records. This is a manual review of these IDs, not a claim that the remaining 580 examples or all 609 bank solutions have been individually reviewed.
+
+
+## Batch 18 — manual mathematical re-derivation of solved examples 21–40 (26 November 2026)
+
+Reviewed every prompt, condition, transformation, intermediate result, final answer, and check for:
+
+- `prob-001`: conditional probability `0.4`; condition `P(B)>0` is stated and satisfied.
+- `prob-002`: expectation `1.1`; probability weights sum to 1 and the weighted sum is correct.
+- `seq-limit-001`: rational sequence limit `2); leading-coefficient method is valid.
+- `complex-geometry-001`: rotation by `π/2` maps `2−i` to `1+2i`; modulus preservation is correctly noted.
+- `seq-004`: sum of first 10 arithmetic terms `175`; tenth term and arithmetic-series formula verified.
+- `seq-005`: sequence `uₙ=2n+5` is strictly increasing; successive difference is 2.
+- `lim-004`: piecewise function is discontinuous at 1 because the one-sided limits differ.
+- `lim-005`: trigonometric limit is `3`; the radians condition is explicitly present.
+- `seq-limit-002`: geometric sequence limit is `0); ratio satisfies `|q|<1`.
+- `seq-limit-003`: conjugate rationalization gives limit `2); division by n and limiting denominator are valid.
+- `der-003`: tangent at x=2 is `y=4x−4); slope and contact point verified.
+- `der-004`: function decreases to x=2 and increases thereafter; minimum value is `−3).
+- `der-005`: product derivative is `eˣ(x+1)²); product rule and factorization verified.
+- `log-003`: derivative of `ln(x²+1)` is `2x/(x²+1)`; inner expression is positive for all real x.
+- `log-004`: logarithmic equation has solution set `{2}`; domain condition is checked.
+- `exp-003`: derivative is `3e^(3x−2)`; chain-rule factor is correct.
+- `exp-004`: equation `eˣ=5` has solution `ln(5)); inverse relationship verified.
+- `int-003`: integration by parts gives `eˣ(x−1)+C); differentiating confirms the integrand.
+- `int-004`: area is 9 square units; integrand is nonnegative on the stated interval.
+- `vec-002`: midpoint is `M(1,2,1)`; coordinate averages verified.
+
+Outcome: no mathematical, assumption, or solution-step defect was found in these 20 records. Cumulative manual solved-example review: 40/600. The other 560 examples and all 609 bank solutions remain outside these two completed manual batches.
