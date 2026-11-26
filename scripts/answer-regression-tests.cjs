@@ -66,7 +66,7 @@ const cases = [
   { contains: "إذا كان \\(f(x)=\\frac{x^2-4}{x-2}\\) عندما \\(x\\ne2\\)، فما قيمة", expected: "4" },
   { contains: "متتالية حسابية حدها الأول \\(u_1=7\\)", expected: "21" },
   { contains: "متتالية هندسية حدها الأول \\(u_1=3\\)", expected: "48" },
-  { contains: "احسب نهاية المتتالية \\(u_n=\\frac{5n-2}{n+3}\\)", expected: "5" },
+  { contains: "احسب نهاية المتتالية \\(u_n=\\frac{5n-2}{n+3}\\)", expected: "\\(5\\)" },
   { contains: "ما نهاية المتتالية \\(u_n=\\frac{7}{n^2+1}\\)", expected: "0" },
   { contains: "مشتقة التابع \\(f(x)=\\frac{1}{x}\\)", expected: "\\(-\\frac{1}{x^2}\\)" },
   { contains: "\\(\\ln(e^{-2})\\) يساوي", expected: "-2" },
