@@ -386,3 +386,21 @@ Completed the final 160-record manual mathematical review, covering stable IDs `
 - Official textbook page-by-page curriculum verification, source authenticity, and final duplicate disposition remain open.
 - Production GitHub Pages parity with the tested PR head must still be confirmed.
 - PR #418 remains a draft and must not be merged until the remaining audits and live-site verification are complete.
+
+
+## Question-bank audit — Batch 1 (records 1–200 of `questions.js`, 26 November 2026)
+
+Individually reviewed the first 200 of the 454 core question records, checking the question wording, all answer choices, zero-based answer index, mathematical derivation, domain/assumptions, and whether the selected option matches the computed result.
+
+### Corrections applied
+
+- Question 197: replaced an undefined vector-basis expression in the translation option with the explicit translation-vector affix `2−2i`; aligned the explanation with the given affix difference `b−a).
+- Question 188: expanded the cube-coordinate derivation for the dot product, explicitly deriving the midpoint coordinates before calculating the result.
+- Question 192: expanded the intersection-of-lines derivation using vector coefficients to show why `AO⃗=(2/5)AK⃗).
+
+### Review outcome
+
+- Reviewed: **200/454** core records in `questions.js`.
+- Confirmed arithmetic, algebra, calculus, complex-number, vector, plane, and probability calculations across this batch; no other confirmed incorrect answer key was found in the reviewed range.
+- The total question-bank count is 609 across the core question set, archived ministerial-model questions, and typed/additional questions. This batch does not claim review of the remaining 254 core records or the separate archived/typed/additional records.
+- Remaining manual bank review: **409/609** records, including 254 core records and 155 archived/typed/additional records. Automated validation is not a substitute for that individual mathematical review.
