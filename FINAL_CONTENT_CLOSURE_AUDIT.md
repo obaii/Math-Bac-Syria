@@ -295,7 +295,7 @@ Reviewed 200 consecutive records (stable IDs from `dot-002` through `exam19-prob
 
 ### Confirmed corrections applied
 
-- `seq-limit-007` (record 81): corrected the lesson label. The question gives an explicit formula `uₙ=2+1/n`; it is not defined by a recurrence relation.
+- `seq-limit-007` (record 81): corrected the lesson label to `نهاية متتالية كسرية`. The item gives the explicit rational formula `uₙ=2+1/n`; it is not defined by a recurrence relation.
 - `seq-010` (record 104): corrected the lesson label from a geometric-series sum to the seventh term of a geometric sequence.
 - `exam18-seq-005` (record 228): corrected the verification text. The question asks only that the difference tends to zero; the old check incorrectly claimed monotonicity was stated in the question.
 - `lim-016` (record 154): clarified the piecewise definition by explicitly stating `f(x)=ax+1` for `x≠2` and `f(2)=7`. This makes the continuity condition unambiguous and yields `a=3`.
