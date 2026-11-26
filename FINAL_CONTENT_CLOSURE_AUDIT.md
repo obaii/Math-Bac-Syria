@@ -109,3 +109,13 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - A validation run after adding the nonzero condition to question 267 exposed a synchronization issue: the matching detailed guide still contained the old prompt text, leaving one question without attached steps. The guide prompt was updated to match the corrected question. This is a guide-attachment correction, not a mathematical reversal of the derivation.
 - The run that exposed the mismatch failed at detailed-solution-guide coverage (608/609); the corrected branch now contains the matching prompt in both questions.js and solution-guides.js. A fresh validation run is still required to confirm closure.
 - Question 176's image-based derivative selection from batch 2 remains pending visual verification.
+
+
+## Batch 5 — original-bank questions 401–454 (main snapshot, 26 November 2026)
+
+- Scope: the remaining 54 records in the original 454-question bank, covering combinatorics, probability, complex numbers and their geometric applications, vectors, sequences, differentiation, logarithms, exponentials, and definite integration.
+- Checked every prompt, stored zero-based answer index, option ordering, and written solution in this range. Recomputed the combinatorial counts, binomial probabilities and moments, conditional probability/independence calculations, binomial coefficients and powers, complex roots and transformations, vector products and distances, tangent/derivative results, exponential equation, recurrence/sequence sum, and definite integral.
+- No definite numerical, algebraic, or answer-index mismatch was found in these 54 records during this pass.
+- **Likely duplicate requiring editorial disposition:** records 419 and 442 ask for the solution set of the same equation (z(z^2+4z+29)=0), with the same result (z=0) or (z=-2\pm5i). Their wording and option order differ, but the mathematical task and data are equivalent. Neither record was deleted or hidden. Record 420 asks only for the roots of the quadratic factor, so it is a narrower subtask and is not automatically classified as a duplicate of 419/442.
+- Similar probability records 405–408 and 412–416 use related binomial distributions but ask for different probabilities or moments; they are not duplicates solely because they share a model.
+- This is a completed text-and-answer audit of original-bank records 401–454 only. It does not close questions 455–609, visual assets, the 600-example library, curriculum mappings, or source coverage.
