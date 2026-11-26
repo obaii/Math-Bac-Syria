@@ -356,7 +356,7 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "cx-007", steps: ["z̄=−3−4i", "9+16=25"], answer: "25" },
     { id: "cx-008", steps: ["25+144", "169"], answer: "|z|=13" },
     { id: "cx-009", steps: ["i²=−1", "i³=−i", "i⁴=1"], answer: "−i" },
-    { id: "cx-010", steps: ["(3+2i)(1+i)", "1+5i", "المقام \"2\""], answer: "(1+5i)/2" },
+    { id: "cx-010", steps: ["(3+2i)(1+i)", "1+5i", "(1-i)(1+i)=2"], answer: "(1+5i)/2" },
     { id: "cx-011", steps: ["=2", "cosθ=1/2", "θ=π/3"], answer: "π/3" },
     { id: "cx-012", steps: ["(3i)²=9i²=−9", "(−3i)²=−9"], answer: "3i أو z=−3i" },
     { id: "cx-013", steps: ["z̄=5+12i", "25+144=169"], answer: "169" },
