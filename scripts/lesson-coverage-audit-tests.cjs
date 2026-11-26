@@ -13,7 +13,7 @@ expect(summary.supplementaryLabels === 6 && summary.supplementaryExamples === 6,
   "The six teacher-guide references must remain separately excluded.");
 expect(summary.highConfidenceLabels === 152, "High-confidence suggestion count must match the crosswalk.");
 expect(summary.mediumConfidenceLabels === 153, "Medium-confidence suggestion count must match the crosswalk.");
-expect(summary.lowConfidenceLabels === 11, "Low-confidence suggestion count must match the crosswalk.");
+expect(summary.lowConfidenceLabels === 15, "Low-confidence suggestion count must match the crosswalk.");
 expect(summary.manualReviewLabels === 15 && summary.manualReviewExamples === 25,
   "All fifteen manually flagged or evidence-pending labels must remain visible as unresolved.");
 expect(summary.unmappedLabels === 15 && summary.unmappedExamples === 25,
