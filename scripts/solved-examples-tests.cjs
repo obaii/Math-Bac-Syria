@@ -384,12 +384,12 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "int-008", steps: ["x≥0", "F(x)=x²/2", "9/2"], answer: "9/2" },
     { id: "int-009", steps: ["x³", "−2x²", "2x"], answer: "x³−2x²+2x+C" },
     { id: "int-010", steps: ["A=∫₀² x² dx", "F(x)=x³/3", "8/3"], answer: "8/3" },
-    { id: "int-011", steps: ["u=x²", "x²e^x−2∫xe^x dx", "e^x(x²−2x+2)"], answer: "e^x(x²−2x+2)+C" },
+    { id: "int-011", steps: ["u=x²", "x²e^x−2∫xe^x dx", "e^x(x^2-2x+2)"], answer: "e^x(x^2-2x+2)+C" },
     { id: "int-012", steps: ["A=∫₀⁴(4−x) dx", "F(x)=4x−x²/2", "16−8=8"], answer: "8" },
     { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
     { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
     { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
-    { id: "int-016", steps: ["A=∫₀³(x+2) dx", "F(x)=x²/2+2x", "21/2"], answer: "21/2" }
+    { id: "int-016", steps: ["A=\\\\int_0^3(x+2)", "F(x)=x²/2+2x", "21/2"], answer: "21/2" }
   ];
   for (const testCase of integralCases) {
     const example = examples.find(item => item.id === testCase.id);
