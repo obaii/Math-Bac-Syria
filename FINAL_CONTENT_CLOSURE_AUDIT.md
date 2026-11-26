@@ -404,3 +404,36 @@ Individually reviewed the first 200 of the 454 core question records, checking t
 - Confirmed arithmetic, algebra, calculus, complex-number, vector, plane, and probability calculations across this batch; no other confirmed incorrect answer key was found in the reviewed range.
 - The total question-bank count is 609 across the core question set, archived ministerial-model questions, and typed/additional questions. This batch does not claim review of the remaining 254 core records or the separate archived/typed/additional records.
 - Remaining manual bank review: **409/609** records, including 254 core records and 155 archived/typed/additional records. Automated validation is not a substitute for that individual mathematical review.
+
+
+## Question-bank audit — Batch 2 (records 201–400 of `questions.js`, 26 November 2026)
+
+Individually reviewed the next 200 core questions, checking mathematical setup, answer choices, answer indices, derivations, domains, probability assumptions, and consistency between each prompt and its solution.
+
+### Corrections applied
+
+- Question 209: clarified that the dot-product locus is the complete sphere with diameter [AB], including A and B, because the original vector equation is satisfied at both endpoints.
+- Question 221: corrected the geometric object wording to a regular hexagon `ABCDEF), consistent with the specified vertex C at angle `2π/3` and the intended affix.
+
+### Materially repeated question candidates identified
+
+These records ask the same mathematical task or an equivalent calculation. No records were deleted or renumbered; they are retained pending a safe editorial decision after the full-bank comparison:
+
+- `328 / 345 / 398`: choose one engineer and two workers from 3 engineers and 5 workers.
+- `329 / 346 / 399`: assign three distinct offices among 8 people.
+- `330 / 347 / 400`: choose 5 questions from 8.
+- `340 / 377`: at least two successes in five fair coin tosses / `B(5,1/2)).
+- `341 / 378`: at least three successes in `B(5,0.6)).
+- `344 / 379`: exactly three sixes in six die rolls / `B(6,1/6)).
+- `351 / 360`: exactly two successes in three independent trials with success probability `1/3).
+- `352 / 361`: zero successes in three independent trials with success probability `1/3).
+- `355 / 394`: solve `4^x=5^{x+1}`.
+- `357 / 396`: solve `2y'+3y=0) with `y(ln4)=1).
+- `385 / 386`: equivalent limits `n√(n/(n³+n))) and `n/√(n²+1)).
+
+### Review outcome
+
+- Reviewed: **400/454** core records in `questions.js`.
+- The reviewed probability, combinatorics, calculus, sequences, complex-number, vector, and spatial-geometry results were re-derived. No additional confirmed answer-key error was identified in records 201–400 beyond the two clarity corrections above.
+- The 11 duplicate/equivalent-task groups above are provisional until checked against all remaining 209 bank records. They must not be removed automatically.
+- Remaining manual bank review: **209/609** records, comprising 54 core records in `questions.js`, 140 archived ministerial-model questions, and 15 typed/additional questions.
