@@ -178,3 +178,11 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - In ministerial17-graph-003, the original condition (f(x)\ge5) for (x\ge4) was insufficient to conclude that the full solution set was exactly ([4,+\infty)), because values for (x<4) were unspecified.
 - Added the missing condition (f(x)<5) for every (x<4), and clarified the worked solution by separating the two cases. The result ([4,+\infty)) is now logically justified.
 - Updated the 2017 audit regression test to require both sides of the domain condition.
+
+
+## Batch 13 — visual verification of derivative-graph question (26 November 2026)
+
+- Inspected the actual rendered source asset `assets/question-11-graphs.png` against the graph of the function and all four candidate derivative graphs.
+- The source function decreases on \\(( -\\infty,-1)\\), increases on \\((-1,0)\\), decreases on \\((0,1)\\), and increases on \\((1,+\\infty)\\). Its derivative therefore has signs \\(-,+,-,+\\) on those intervals, with vertical blow-up behavior at \\(x=-1\\) and \\(x=1\\), and a zero at \\(x=0\\).
+- Candidate C is the only graph matching that interval sign pattern and the two singular points. The stored answer index 0 selects “الرسم C”, so the image-based answer is now independently supported rather than merely copied from the source caption.
+- The solution text was updated to explain the derivative sign pattern and why candidate C is selected; the old wording that relied on the source's designation alone has been removed.
