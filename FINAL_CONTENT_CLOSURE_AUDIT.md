@@ -186,3 +186,13 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - The source function decreases on \\(( -\\infty,-1)\\), increases on \\((-1,0)\\), decreases on \\((0,1)\\), and increases on \\((1,+\\infty)\\). Its derivative therefore has signs \\(-,+,-,+\\) on those intervals, with vertical blow-up behavior at \\(x=-1\\) and \\(x=1\\), and a zero at \\(x=0\\).
 - Candidate C is the only graph matching that interval sign pattern and the two singular points. The stored answer index 0 selects “الرسم C”, so the image-based answer is now independently supported rather than merely copied from the source caption.
 - The solution text was updated to explain the derivative sign pattern and why candidate C is selected; the old wording that relied on the source's designation alone has been removed.
+
+
+## Batch 14 — final CI confirmation for the latest candidate (26 November 2026)
+
+- Candidate commit: `1b44d354360c9302006737347994bc7957a2475e`.
+- `Validate question bank` run `45804517604`: completed successfully. All 48 substantive validation steps passed, including the 63-lesson inventory, provisional crosswalk, 600-example ID integrity, mathematical notation, diagram dependencies, all 14 bank topics, answer regressions, detailed-solution coverage, and student tools.
+- `Browser user-flow smoke tests` run `45804517692`: completed successfully. All 26 substantive browser checks passed, including solved-example loading, all 14 automated topics, accessibility/keyboard navigation, mobile layout and text wrapping, assistant/tools interactions, and the comprehensive release audit.
+- The six curriculum labels still intentionally unassigned are: الدوال الدورية، تحويل منحنى بدلالة f(−x)، حل متراجحة بيانياً، قراءة النهايات من جدول التغيرات، قراءة النهايات والمقاربات من الرسم، مركز تناظر منحنى تابع. The six supplementary logic labels are separately excluded from the 63 student-textbook lessons.
+- The 156 high-confidence and 158 medium-confidence entries remain suggestions, not verified textbook mappings. The crosswalk status remains `provisional-not-verified`; the official textbook PDFs have not yet been checked page-by-page.
+- These CI results validate the tested candidate's structural and browser behavior. They do not replace the still-open per-ID mathematical audit of all 600 solved examples, the full 609-question solution audit, source-document verification, and live GitHub Pages comparison.
