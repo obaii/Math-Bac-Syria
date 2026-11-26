@@ -33,11 +33,11 @@
       "years": [
         2019
       ],
-      "suggestedLessonId": "probability-01",
-      "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "medium",
-      "rationale": "قاعدة اتحاد الأحداث المتنافية من القواعد الأساسية في باب الاحتمالات؛ يلزم تثبيت موضعها في نص الدرس قبل الاعتماد.",
-      "reviewStatus": "suggested-review",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "لا يطابق هذا التصنيف بحد ذاته درس الاحتمالات المشروطة. قد تتعلق المسألة بقواعد الاحتمال الأساسية أو العد بالتوافيق، لكن قائمة دروس الكتاب الحالية لا تقدم عنواناً مستقلاً مطابقاً يثبت الإسناد؛ تُترك بلا lesson ID إلى حين مراجعة موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -58,11 +58,11 @@
       "years": [
         2023
       ],
-      "suggestedLessonId": "probability-01",
-      "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "medium",
-      "rationale": "قاعدة متممة الحدث من أساسيات الاحتمال المرتبطة بدرس الاحتمالات؛ الربط مؤقت حتى مراجعة موضعها في الكتاب.",
-      "reviewStatus": "suggested-review",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "لا يطابق هذا التصنيف بحد ذاته درس الاحتمالات المشروطة. قد تتعلق المسألة بقواعد الاحتمال الأساسية أو العد بالتوافيق، لكن قائمة دروس الكتاب الحالية لا تقدم عنواناً مستقلاً مطابقاً يثبت الإسناد؛ تُترك بلا lesson ID إلى حين مراجعة موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -96,11 +96,11 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": "probability-01",
-      "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "medium",
-      "rationale": "عنوان عام لمسألة أحداث، وأقرب درس مدرج هو الاحتمالات المشروطة؛ يحتاج نص المثال لتأكيده.",
-      "reviewStatus": "suggested-review",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "لا يطابق هذا التصنيف بحد ذاته درس الاحتمالات المشروطة. قد تتعلق المسألة بقواعد الاحتمال الأساسية أو العد بالتوافيق، لكن قائمة دروس الكتاب الحالية لا تقدم عنواناً مستقلاً مطابقاً يثبت الإسناد؛ تُترك بلا lesson ID إلى حين مراجعة موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -165,11 +165,11 @@
         2023,
         2026
       ],
-      "suggestedLessonId": "probability-01",
-      "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "medium",
-      "rationale": "المطلوب احتمال حدث مع استخدام التوافيق كأداة عد؛ الربط مؤقت ويحتاج فحص نص المسألة.",
-      "reviewStatus": "suggested-review",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "لا يطابق هذا التصنيف بحد ذاته درس الاحتمالات المشروطة. قد تتعلق المسألة بقواعد الاحتمال الأساسية أو العد بالتوافيق، لكن قائمة دروس الكتاب الحالية لا تقدم عنواناً مستقلاً مطابقاً يثبت الإسناد؛ تُترك بلا lesson ID إلى حين مراجعة موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
@@ -670,11 +670,11 @@
         "تدريبي مؤلف": 1
       },
       "years": [],
-      "suggestedLessonId": "probability-01",
-      "suggestedLessonTitle": "الاحتمالات المشروطة",
-      "confidence": "medium",
-      "rationale": "قانون جمع احتمالات الأحداث يقع ضمن قواعد الاحتمال الأساسية؛ يلزم مطابقة عنوان الفقرة في الكتاب.",
-      "reviewStatus": "suggested-review",
+      "suggestedLessonId": null,
+      "suggestedLessonTitle": null,
+      "confidence": "low",
+      "rationale": "لا يطابق هذا التصنيف بحد ذاته درس الاحتمالات المشروطة. قد تتعلق المسألة بقواعد الاحتمال الأساسية أو العد بالتوافيق، لكن قائمة دروس الكتاب الحالية لا تقدم عنواناً مستقلاً مطابقاً يثبت الإسناد؛ تُترك بلا lesson ID إلى حين مراجعة موضعها في الكتاب.",
+      "reviewStatus": "unmapped-needs-textbook-evidence",
       "verified": false
     },
     {
