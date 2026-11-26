@@ -200,12 +200,34 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 
 ## Batch 15 — final candidate CI rerun and release boundary (26 November 2026)
 
-- Final PR head: `16a09f9c035f914ad5ca96c3ed843194531605a2`.
-- Latest `Validate question bank` run `45809308742`: completed successfully; all 48 substantive steps passed.
-- Latest `Browser user-flow smoke tests` run `45809308803`: completed successfully; all 26 substantive browser steps passed. No failed steps were reported.
-- These are the latest CI runs on the exact current PR head, including the audit-document-only commit. The earlier successful candidate runs are superseded by these latest successful runs.
+- PR head at the start of this follow-up: `e2ca26b3ae931cd0e8a68def07df44cc8b699abf`.
+- `Validate question bank` run `45810990278`: completed successfully; all 48 substantive steps passed.
+- `Browser user-flow smoke tests` run `45810990297`: completed successfully; all 26 substantive browser steps passed, including every homepage shortcut/destination, all 14 automated topics, keyboard/accessibility, mobile text wrapping, assistant/tools, and the comprehensive release audit.
+- These runs were checked against the exact PR head `e2ca26b3...`; the next commit in this follow-up changes only this audit document.
 - PR #418 remains open and in draft. No merge has been performed.
 - The live GitHub Pages URL could not be retrieved by the available page reader in this audit session. Consequently, production deployment parity is **not verified**; repository-side tests and source files are not a substitute for observing the published site.
 - The 600-example library and 609-question bank do not yet have a complete, evidence-backed, per-ID mathematical audit report. Existing manual batches cover bounded ranges and sampled/reviewed items, but must not be represented as a full audit of every record. In particular, original-bank candidate duplicate pairs (25/53/125, 22/90, 59/130, 65/137, 69/140, 48/160, 89/161, 83/156, 328/398, 329/399, 330/400, and 419/442) remain editorial-review candidates; none has been deleted.
 - Source-year metadata and external URLs exist for the library records, but URL presence alone does not verify that each item accurately represents the named exam/session or ministry model. The 2017–2026 coverage figures are metadata counts, not proof of complete official-source coverage.
 - Release decision: CI/browser checks are green, but content closure, official textbook mapping, source provenance, duplicate disposition, and live deployment parity remain open. Do not merge or describe the work as fully completed until those evidence-based checks are closed.
+
+
+## Batch 16 — direct review of the outstanding original-bank duplicate candidates (26 November 2026)
+
+- Re-opened the original 454-question source records on the current PR branch and compared the full prompt, mathematical data, requested operation, and expected result for every candidate pair previously listed.
+- Confirmed the following are genuine repeated tasks, not merely similar methods or shared topics:
+  - Limit at x=2 for (x²−4)/(x−2): records 25, 53, and 125 are one task with equivalent wording and the same result 4.
+  - Permutations of three distinct items: 22 and 90.
+  - Limit of (4n+3)/(2n−1): 59 and 130.
+  - Evaluation of ln(e^(−2)): 65 and 137.
+  - Solve e^(2x)=e^6: 69 and 140.
+  - Permutations of four distinct items: 48 and 160.
+  - Choose two from six without order: 89 and 161.
+  - Evaluate (1+i)²: 83 and 156.
+  - Committee of one engineer and two workers from 3 engineers and 5 workers: 328 and 398.
+  - Assign president, vice-president, and secretary among 8 people: 329 and 399.
+  - Choose 5 questions from 8 without order: 330 and 400.
+  - Solve z(z²+4z+29)=0 over the complex numbers: 419 and 442.
+- No records were deleted or silently altered. These source-bank entries have no explicit provenance fields in their original records, so the safe disposition is to retain the records while preparing a controlled deduplication that preserves the canonical stable question IDs, source order, answer balance, guide attachments, and any external references. A raw deletion from questions.js would change index-based records and is not approved without those dependency checks.
+- Contrast retained: 420 asks only for the roots of the quadratic factor, so it is a narrower task and is not treated as a duplicate of 419/442. Related binomial-distribution questions were also retained where the requested probability or statistic differs.
+- The 600 solved-example library still has no exact normalized duplicates internally; its 12 high-similarity candidates were reviewed previously, with only lim-012/lim-014 confirmed and corrected. This does not substitute for the pending full per-ID mathematical audit of all 600 examples.
+- Remaining release blockers are unchanged: all 609 bank solutions still need a complete per-ID mathematical review (the manual batches are bounded), all 600 solved examples need a complete per-ID mathematical review, official textbook mappings and source provenance need documentary verification, and live GitHub Pages parity remains unverified.
