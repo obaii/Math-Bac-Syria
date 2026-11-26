@@ -560,3 +560,18 @@ The previously flagged pair `lim-012 / lim-014` was already made distinct in an 
 - The mathematical and regression checks must be rerun on the latest branch head before these edits are marked test-passed.
 
 This closes the previously listed internal exact/near-duplicate candidates from the first library review. It does not claim that all 600 examples have official textbook provenance or independently verified official-paper authenticity.
+
+
+## Final verification after cross-bank variants (26 November 2026)
+
+A final mathematical consistency pass caught and corrected one editorial issue before accepting the batch: records 417 and 418 had both been framed as \(\binom n3=20\). Record 418 was changed to the distinct equation \(\binom n2=28\), giving \(n=8\). This reinforces the rule that topic-level variety is not enough; the requested mathematical task itself must differ.
+
+The current core bank was parsed again after this correction:
+- **454** records present.
+- **0** structural errors (missing required fields, invalid answer indices, or wrong option counts).
+- **0** normalized exact-prompt duplicate groups.
+- Answer-index distribution is now **113 / 114 / 113 / 114**.
+
+This pass does not claim that a normalized-text scan detects every semantic near-duplicate; the identified candidate groups were also reviewed individually. The current head is `241a14d2d236784c591fa3294286ebfb95a7fd07`. A fresh bank-validation workflow (`45855430265`) is running and the browser smoke workflow (`45855430358`) is pending for this head. The immediately preceding validation run on `78f579b3` passed 48/48, but it is not substituted for the latest-head run.
+
+No records were removed or reordered. PR #418 remains draft/open while latest-head tests and the independent curriculum, official-source, lesson-linking, homepage, and production-parity blockers remain open.
