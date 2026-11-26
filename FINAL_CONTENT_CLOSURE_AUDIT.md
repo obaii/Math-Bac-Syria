@@ -231,3 +231,31 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Contrast retained: 420 asks only for the roots of the quadratic factor, so it is a narrower task and is not treated as a duplicate of 419/442. Related binomial-distribution questions were also retained where the requested probability or statistic differs.
 - The 600 solved-example library still has no exact normalized duplicates internally; its 12 high-similarity candidates were reviewed previously, with only lim-012/lim-014 confirmed and corrected. This does not substitute for the pending full per-ID mathematical audit of all 600 examples.
 - Remaining release blockers are unchanged: all 609 bank solutions still need a complete per-ID mathematical review (the manual batches are bounded), all 600 solved examples need a complete per-ID mathematical review, official textbook mappings and source provenance need documentary verification, and live GitHub Pages parity remains unverified.
+
+
+## Batch 17 — manual mathematical re-derivation of solved examples 1–20 (26 November 2026)
+
+Reviewed the complete prompt, assumptions, key idea, every solution step, final answer, and verification check for these stable IDs:
+
+- `seq-001`: arithmetic-sequence sixth term, `-3`; verified.
+- `seq-002`: first five terms of geometric sequence, sum `93`; verified.
+- `seq-003`: induction proof for the sum of the first n positive integers; base case and induction step are valid.
+- `lim-001`: polynomial limit at 2, `11`; direct substitution is valid.
+- `lim-002`: removable limit at 3, `6`; cancellation is used only for x≠3.
+- `lim-003`: oblique asymptote `y=x+1`; polynomial division and remainder limit verified for both infinities.
+- `der-001`: derivative `12x²−10x+2`; verified term by term.
+- `der-002`: chain-rule derivative `10(2x+1)^4`; verified.
+- `log-001`: logarithm domain `x>3`; strict positivity condition is correctly applied.
+- `log-002`: logarithm simplification `ln(10)`; positivity conditions hold.
+- `exp-001`: product of exponentials simplifies to `e^(2x+2)`; verified.
+- `exp-002`: exponential equation solution `x=4); verified by equality of exponents and substitution.
+- `int-001`: antiderivative satisfying both derivative and initial value, `3x²−4x+3); verified.
+- `int-002`: definite integral from 1 to 3 equals `8`; verified by an antiderivative.
+- `vec-001`: vector AB equals `(3,2,−4)`; coordinate subtraction verified.
+- `dot-001`: scalar product equals `−8`; component products and sum verified.
+- `line-001`: plane equation `2x−y+3z−8=0); normal vector and point substitution verified.
+- `cx-001`: complex product equals `8−i); distribution and `i²=−1` verified.
+- `cx-002`: modulus of `−3+4i` equals `5`; verified.
+- `comb-001`: number of 3-person committees from 7 students equals `35`; combination formula correctly used because order is irrelevant.
+
+Outcome: no mathematical, assumption, or solution-step defect was found in these 20 records. This is a manual review of these IDs, not a claim that the remaining 580 examples or all 609 bank solutions have been individually reviewed.
