@@ -499,3 +499,34 @@ A fresh run of the current normalized text comparison on the consolidated 609-qu
 - Added browser regression assertions for the full recent-use badge text, RTL direction, horizontal writing mode, no wrapping, and saved-question number dimensions/alignment.
 - Final validation on commit `592b733c8451932ff504d1e1ee396ff260cb38ea`: **question-bank validation passed (48/48 steps)** and **comprehensive browser user-flow/release audit passed (31/31 steps)**. Both workflows ran on the same commit.
 - Pull request #418 remains open and draft. Successful CI is necessary but does not close the outstanding source-authenticity, curriculum approval, duplicate/editorial reconciliation, lesson mapping, and deployed-site parity checks listed above.
+
+
+## Cross-bank duplicate reconciliation and question diversification (26 November 2026)
+
+A full recheck of the previously documented cross-bank candidate groups was completed against the current 454-record core bank. The review distinguished genuinely equivalent mathematical tasks from pairs that merely share a topic or distribution.
+
+### Editorial corrections applied
+
+- Rewrote **37 question records** across the previously identified equivalent-task groups. The edits change the mathematical data, requested quantity, or task structure while preserving the bank's 454-record count and the existing record order.
+- Diversified repeated counting questions (committee selection, distinct offices, medal assignments, and combinations), binomial-probability questions (different event thresholds, trial counts, and success probabilities), exponential equations, differential-equation initial conditions, binomial expectation/variance, combination equations, limits, tangent equations, definite integrals, binomial-expansion coefficients, and complex-number equations.
+- Corrected the topic classification of the revised engineer/worker selection question to **التحليل التوافقي**.
+- Resolved the exact duplicate exponential equation at records 69 and 140 by changing record 140 to the distinct equation \(e^{2x-1}=e^5\), whose solution remains \(x=3\).
+- Resolved the earlier equivalent pairs at records 25/53, 22/90, 59/130, 65/137, 48/160, 89/161, and 83/156 by replacing the later task with a mathematically distinct variant.
+- The prior candidate group 352/361/406 was explicitly rejected as a false positive: record 352 asks for success in all three trials, whereas records 361 and 406 ask for zero successes. All three were retained unchanged.
+- No question was deleted, no record was reordered, and the total core-bank count remains **454**.
+
+### Post-edit structural diagnostics
+
+- Parsed question records: **454**.
+- Records with missing topic, prompt, solution, invalid answer index, or non-four-option structure: **0**.
+- Exact duplicate prompt groups under the current normalized-text comparison: **0**.
+- Answer-index distribution across four options: **113 / 116 / 113 / 112**.
+- These diagnostics are structural and exact-text checks; they do not replace the fresh full mathematical validation or editorial review of semantic similarity.
+
+### Test status after edits
+
+The preceding head `fae7ab44` passed question-bank validation (**48/48**) and the browser audit (**30 successful steps**). The question-diversification commits were pushed after those runs, so both workflows must run again on the new head before this PR can be considered test-clean.
+
+### Remaining closure blockers
+
+Official textbook page-by-page verification, ministry/exam source authentication, approval of the provisional curriculum map, lesson-ID linking for the 609 bank questions, final solved-library near-duplicate reconciliation, and deployed GitHub Pages parity remain separate open items. None is claimed complete by the question-bank edits above.
