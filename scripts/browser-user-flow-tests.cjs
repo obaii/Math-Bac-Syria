@@ -177,6 +177,16 @@ const assert = require("node:assert/strict");
       "the section menu should not contain a search field, clear button, or search empty state");
     assert.equal(await page.locator("#section-menu a.quick-start-card:visible").count(), 18,
       "all eighteen menu shortcuts should remain visible without filtering");
+    const recentBadge = await page.locator("#section-menu a.quick-start-card").first().evaluate(el => {
+      el.classList.add("is-recently-used");
+      el.setAttribute("data-recent-label", "استُخدم مؤخراً");
+      const style = getComputedStyle(el, "::after");
+      return { content: style.content, whiteSpace: style.whiteSpace, writingMode: style.writingMode, direction: style.direction };
+    });
+    assert.equal(recentBadge.content, '"استُخدم مؤخراً"', "the recent-use marker should display its full Arabic label");
+    assert.equal(recentBadge.whiteSpace, "nowrap", "the recent-use label must not split across lines");
+    assert.equal(recentBadge.writingMode, "horizontal-tb", "the recent-use label must remain horizontal");
+    assert.equal(recentBadge.direction, "rtl", "the recent-use label should preserve Arabic reading direction");
     const menuCards = page.locator("#section-menu a.quick-start-card:visible");
     await menuCards.first().focus();
     await menuCards.first().press("ArrowDown");
@@ -1947,6 +1957,32 @@ const assert = require("node:assert/strict");
     await page.getByRole("button", { name: /المسائل المحفوظة/ }).click();
     await page.waitForFunction(() => !document.querySelector("#bookmark-list").hidden);
     assert.ok(await page.locator("#bookmark-list li").count() > 0, "saved-question list should render a bookmarked question");
+    const savedNumberLayout = await page.locator("#bookmark-list li").first().evaluate(item => {
+      const row = item.querySelector("button");
+      const number = item.querySelector(".bookmark-number");
+      const text = item.querySelector(".bookmark-item-text");
+      const rowStyle = getComputedStyle(row);
+      const numberStyle = getComputedStyle(number);
+      const numberRect = number.getBoundingClientRect();
+      const textRect = text.getBoundingClientRect();
+      return {
+        display: rowStyle.display,
+        columns: rowStyle.gridTemplateColumns,
+        writingMode: numberStyle.writingMode,
+        whiteSpace: numberStyle.whiteSpace,
+        numberWidth: numberRect.width,
+        numberHeight: numberRect.height,
+        numberTop: numberRect.top,
+        textTop: textRect.top
+      };
+    });
+    assert.equal(savedNumberLayout.display, "grid", "saved questions should use a stable two-column row");
+    assert.equal(savedNumberLayout.writingMode, "horizontal-tb", "saved question numbers must remain horizontal");
+    assert.equal(savedNumberLayout.whiteSpace, "nowrap", "saved question numbers must never split into vertical digits");
+    assert.ok(savedNumberLayout.numberWidth >= 28 && savedNumberLayout.numberHeight >= 28,
+      "saved question numbers should keep a readable circular counter");
+    assert.ok(Math.abs(savedNumberLayout.numberTop - savedNumberLayout.textTop) < 12,
+      "the saved question number and text should begin on the same row");
     // Selecting a saved item opens its focused quiz; only then is the current-question
     // bookmark control visible and available for removing the saved state.
     await page.locator("#bookmark-list [data-bookmark-key]").first().click();
