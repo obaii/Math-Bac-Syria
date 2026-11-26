@@ -306,7 +306,7 @@ if (!halfTangentQuestion || !halfTangentQuestion.q.includes("نصف المماس
 }
 const derivativeGraphQuestion = questions.find(q => normalize(q.q).includes("assets/question-11-graphs.png"));
 if (!derivativeGraphQuestion ||
-    !derivativeGraphQuestion.solution.includes("سالب ثم موجبة ثم سالبة ثم موجبة") ||
+    !derivativeGraphQuestion.solution.includes("سالبة ثم موجبة ثم سالبة ثم موجبة") ||
     !derivativeGraphQuestion.solution.includes("x=-1") ||
     !derivativeGraphQuestion.solution.includes("x=1")) {
   console.error("FAIL: the derivative-graph solution must justify candidate C using the interval sign pattern and both non-differentiable points.");
