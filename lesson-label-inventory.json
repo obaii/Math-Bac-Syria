@@ -3623,9 +3623,10 @@
       "topic": "المتتاليات",
       "unit": "المتتاليات",
       "lessonLabel": "الحد العام لمتتالية هندسية",
-      "exampleCount": 1,
+      "exampleCount": 2,
       "exampleIds": [
-        "ministerial17-sequence-002"
+        "ministerial17-sequence-002",
+        "seq-010"
       ],
       "sourceTypes": {
         "نموذج وزاري": 1
@@ -3956,12 +3957,11 @@
       "topic": "المتتاليات",
       "unit": "المتتاليات",
       "lessonLabel": "مجموع حدود متتالية هندسية",
-      "exampleCount": 8,
+      "exampleCount": 7,
       "exampleIds": [
         "exam18-cycle2-009",
         "exam19-cycle1-007",
         "exam19-cycle1-008",
-        "seq-010",
         "exam23-cycle1-019",
         "exam26-geometric-001",
         "exam21-extra-002",
@@ -5699,11 +5699,12 @@
       "topic": "نهاية متتالية",
       "unit": "نهاية المتتالية",
       "lessonLabel": "نهاية متتالية كسرية",
-      "exampleCount": 3,
+      "exampleCount": 4,
       "exampleIds": [
         "exam18-seq-003",
         "exam18-seq-004",
-        "seq-limit-004"
+        "seq-limit-004",
+        "seq-limit-007"
       ],
       "sourceTypes": {
         "تدريبي مؤلف": 1,
@@ -5719,9 +5720,8 @@
       "topic": "نهاية متتالية",
       "unit": "نهاية المتتالية",
       "lessonLabel": "نهاية متتالية معرفة بعلاقة رجعية",
-      "exampleCount": 4,
+      "exampleCount": 3,
       "exampleIds": [
-        "seq-limit-007",
         "seq-rec-001",
         "exam20-extra-013",
         "exam26-model-006"
