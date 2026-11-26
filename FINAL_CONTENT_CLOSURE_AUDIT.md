@@ -489,3 +489,13 @@ The following candidates were found while comparing the remaining records with e
 ## Solved-library exact bank-match reconciliation (26 November 2026)
 
 A fresh run of the current normalized text comparison on the consolidated 609-question bank reports **79** exact normalized matches between solved-example prompts and guided bank prompts, leaving **521** solved examples in the default distinct-example view (all 600 source records remain retained). The previous regression expectation of 80/520 was stale for the current snapshot and was updated to 79/521 after inspecting the diagnostic IDs/counts. This is a snapshot-specific exact-text rule, not a count of semantically similar examples; the separate manually identified internal and cross-bank near-duplicate candidates remain documented and must not be conflated with these 79 exact matches.
+
+
+## Homepage regression fixes and final automated checks (26 November 2026)
+
+- Corrected the recently-used badge layout in `style-overrides.css`: the Arabic label is isolated RTL text, constrained to one horizontal line, and no longer breaks into vertically stacked fragments.
+- Stabilized saved-question rows with a fixed number column and a separate RTL text column; digit glyphs remain horizontal, tabular, and consistent at narrow widths.
+- Updated the stylesheet cache token in `index.html` so browsers fetch the corrected CSS.
+- Added browser regression assertions for the full recent-use badge text, RTL direction, horizontal writing mode, no wrapping, and saved-question number dimensions/alignment.
+- Final validation on commit `592b733c8451932ff504d1e1ee396ff260cb38ea`: **question-bank validation passed (48/48 steps)** and **comprehensive browser user-flow/release audit passed (31/31 steps)**. Both workflows ran on the same commit.
+- Pull request #418 remains open and draft. Successful CI is necessary but does not close the outstanding source-authenticity, curriculum approval, duplicate/editorial reconciliation, lesson mapping, and deployed-site parity checks listed above.
