@@ -437,3 +437,50 @@ These records ask the same mathematical task or an equivalent calculation. No re
 - The reviewed probability, combinatorics, calculus, sequences, complex-number, vector, and spatial-geometry results were re-derived. No additional confirmed answer-key error was identified in records 201–400 beyond the two clarity corrections above.
 - The 11 duplicate/equivalent-task groups above are provisional until checked against all remaining 209 bank records. They must not be removed automatically.
 - Remaining manual bank review: **209/609** records, comprising 54 core records in `questions.js`, 140 archived ministerial-model questions, and 15 typed/additional questions.
+
+
+## Question-bank audit — Batch 3 (remaining 209 records; 26 November 2026)
+
+Completed the remaining bank review across the final 54 core records in `questions.js`, all 140 archived automated/model-inspired records in `questions_automated_additional.js`, and all 15 typed-answer records in `questions_typed_additional.js`. The typed records were checked against their response type, answer, accepted alternatives, domain conditions, and worked explanation.
+
+### Corrections applied
+
+- Core question 221: corrected “half a regular hexagon ABCD” to “regular hexagon ABCDEF”, consistent with the stated vertex angle and the intended affix.
+- Archived question 62: added continuity to the assumptions before inferring that a monotone function maps the closed interval onto the full interval between its endpoint values.
+- Archived question 89: clarified the sequence as `uₙ=−(2ⁿ)`, matching the intended strictly decreasing sequence and removing exponent-sign ambiguity.
+- The dot-product locus correction for core question 209 and translation-vector wording for question 197 are recorded in the preceding batches; regression expectations were kept aligned with the corrected wording.
+
+### Additional repeated/equivalent question candidates
+
+The following candidates were found while comparing the remaining records with earlier batches. They are retained without deletion or renumbering pending final cross-bank reconciliation:
+
+- `328 / 345 / 398): choose one engineer and two workers.
+- `329 / 346 / 399): assign three distinct offices among eight people.
+- `330 / 347 / 400): choose five questions from eight.
+- `340 / 377 / 416): at least two successes in five fair coin tosses.
+- `341 / 378 / 428): at least three successes in `B(5,0.6)`.
+- `344 / 379 / 429): exactly three successes in `B(6,1/6)`.
+- `348 / 401): choose two from a group of five and all three from a group of three.
+- `351 / 360 / 405): exactly two successes in three independent trials with `p=1/3`.
+- `352 / 361 / 406): zero successes in three independent trials with `p=1/3`.
+- `354 / 403): constant term of `(x²−2/x)¹²`.
+- `355 / 394 / 436): solve `4ˣ=5ˣ⁺¹`.
+- `357 / 396): solve `2y′+3y=0) with `y(ln4)=1).
+- `362 / 407): expectation of `B(3,1/3)`.
+- `363 / 408): variance of `B(3,1/3)`.
+- `374 / 417): solve `C(n,2)=36`.
+- `375 / 418): solve `3C(n,4)=14C(n,2)`.
+- `376 / 415): probability of exactly two successes in `B(5,1/2)`.
+- `385 / 386): equivalent limit expressions for `n/√(n²+1)`.
+- `392 / 430): tangent to `x²(1−ln x)) at `x=1).
+- `393 / 431): limit of `(2ln x−1)/ln x) at infinity.
+- `395 / 435): the same definite rational integral from 2 to 3.
+- `419 / 442): solve `z(z²+4z+29)=0); question 420 remains a distinct quadratic-only task.
+
+### Final bank-review outcome
+
+- Manual review completed: **609/609** records across the core bank, archived model-inspired questions, and typed/additional questions.
+- No additional confirmed incorrect answer key was identified in the final 209 records beyond the clarity/assumption fixes listed above.
+- Duplicate candidates are not deletions; their final editorial treatment remains open and must preserve stable IDs, answer balance, and any references.
+- Official authenticity of records labelled “inspired by” ministry or exam questions has not been independently authenticated against original ministry papers.
+- Automated validation and the manual review are distinct: neither establishes official curriculum alignment or official source authenticity.
