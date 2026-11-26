@@ -530,3 +530,33 @@ The preceding head `fae7ab44` passed question-bank validation (**48/48**) and th
 ### Remaining closure blockers
 
 Official textbook page-by-page verification, ministry/exam source authentication, approval of the provisional curriculum map, lesson-ID linking for the 609 bank questions, final solved-library near-duplicate reconciliation, and deployed GitHub Pages parity remain separate open items. None is claimed complete by the question-bank edits above.
+
+
+## Solved-library internal near-duplicate reconciliation (26 November 2026)
+
+Revisited the previously identified internal near-duplicate pairs in the 600-example library. Twelve later records were diversified while preserving their stable IDs and the full library count:
+
+- `seq-014`: new arithmetic-sequence data (fourth and ninth terms).
+- `cx-010`: a different complex-number quotient.
+- `comb-009`: choosing a pair from eight people.
+- `cx-013`: conjugate and modulus product for \(5-12i\).
+- `prob-020`: expectation and variance for a two-value random variable taking 1 and 4.
+- `lim-015`: a difference-of-squares limit with a different point and result.
+- `int-016`: area under \(y=x+2\) on \([0,3]\).
+- `int-011`: integration by parts for \(\int x^2e^x\,dx\).
+- `vec-007`: vector components from new endpoints.
+- `dot-008`: a new scalar-product calculation.
+- `prob-003`: independence with new event probabilities.
+- `seq-015`: a new geometric-sequence term calculation.
+
+The previously flagged pair `lim-012 / lim-014` was already made distinct in an earlier correction and was left intact. No examples were deleted or renumbered.
+
+### Regression updates and diagnostics
+
+- Updated the targeted solved-example regression expectations for the revised `cx-010`, `cx-013`, `int-011`, and `int-016` solutions.
+- Re-parsed all **600** library records from the current source snapshot.
+- Stable IDs are retained, and the normalized exact-prompt scan now reports **zero internal duplicate groups**.
+- The three other regression candidate groups (`der-005 / der-008`, `log-004 / log-007`, and `dot-002 / dot-005 / dot-010`) were rechecked and are already distinct mathematical tasks; no changes were needed.
+- The mathematical and regression checks must be rerun on the latest branch head before these edits are marked test-passed.
+
+This closes the previously listed internal exact/near-duplicate candidates from the first library review. It does not claim that all 600 examples have official textbook provenance or independently verified official-paper authenticity.
