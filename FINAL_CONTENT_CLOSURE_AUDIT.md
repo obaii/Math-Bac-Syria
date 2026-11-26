@@ -484,3 +484,8 @@ The following candidates were found while comparing the remaining records with e
 - Duplicate candidates are not deletions; their final editorial treatment remains open and must preserve stable IDs, answer balance, and any references.
 - Official authenticity of records labelled “inspired by” ministry or exam questions has not been independently authenticated against original ministry papers.
 - Automated validation and the manual review are distinct: neither establishes official curriculum alignment or official source authenticity.
+
+
+## Solved-library exact bank-match reconciliation (26 November 2026)
+
+A fresh run of the current normalized text comparison on the consolidated 609-question bank reports **79** exact normalized matches between solved-example prompts and guided bank prompts, leaving **521** solved examples in the default distinct-example view (all 600 source records remain retained). The previous regression expectation of 80/520 was stale for the current snapshot and was updated to 79/521 after inspecting the diagnostic IDs/counts. This is a snapshot-specific exact-text rule, not a count of semantically similar examples; the separate manually identified internal and cross-bank near-duplicate candidates remain documented and must not be conflated with these 79 exact matches.
