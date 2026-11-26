@@ -163,3 +163,11 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Source-year distribution: 2017: 34; 2018: 50; 2019: 41; 2020: 20; 2021: 20; 2022: 75; 2023: 42; 2024: 29; 2025: 30; 2026: 32.
 - Curriculum crosswalk remains provisional, not verified: 326 lesson labels cover 594 student-curriculum examples plus 6 supplementary references. Of the 320 student-curriculum labels, 9 single-example labels remain explicitly unassigned for manual review; 153 suggestions are high-confidence, 158 medium-confidence, and 9 low-confidence. One of the 63 lessons still has no safe suggested label. These are not to be silently converted into verified coverage.
 - The official PDF links recorded in the repository were not fetchable by the web reader because the files are very large (approximately 97 MB and 80 MB). The repository's curriculum map therefore remains a provisional title-level map; exact page-by-page verification against the intended 2025–2026 edition remains open.
+
+
+## Batch 10 — internal near-duplicate review in the solved-example library (26 November 2026)
+
+- Checked all 600 library prompts for exact normalized duplicates within the library: none were found.
+- A high-similarity scan produced 12 candidate pairs for human review. Most were legitimate variants with changed mathematical data (for example, different direction vectors, probability values, or integrands), not duplicate exercises.
+- **Confirmed near-duplicate:** lim-012 and lim-014 originally asked the same removable-discontinuity question with the same function and point, differing mainly in wording and lesson label. Updated lim-014 to the distinct variant (f(x)=(x^2-9)/(x-3)) for (x\ne3), with (f(3)=a); the correct continuity value is (a=6). The example remains in the library with its own steps and check.
+- The remaining high-similarity candidates were retained because they change the actual mathematical data or task, and should not be hidden as duplicates merely because they share a solution method.
