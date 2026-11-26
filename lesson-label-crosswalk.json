@@ -9,9 +9,9 @@
     "studentExamples": 594,
     "supplementaryExamples": 6,
     "high": 156,
-    "medium": 158,
-    "low": 6,
-    "unmapped": 6
+    "medium": 153,
+    "low": 11,
+    "unmapped": 11
   },
   "method": "اقتراح آلي أولي بالاعتماد على عنوان الدرس الفرعي والموضوع؛ لا يعد ربطاً نهائياً ولا يثبت مطابقة المثال لمحتوى الكتاب أو صحة حله. يجب مراجعة كل عنوان ونص المثال ومصدره قبل اعتماد أي ربط.",
   "curriculumMapSource": "curriculum-map.json",
