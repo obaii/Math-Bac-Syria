@@ -130,3 +130,14 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - **Question 525:** checked the distribution by unordered pairs from the multiset ({0,0,1,1,2}); the probabilities are (1/10,2/5,3/10,1/5), agreeing with the stored answer.
 - These are wording/assumption corrections, not changes to the intended answer keys. No questions were deleted or hidden.
 - This pass covers only records 480–529. The remaining supplementary records 530–594, the 600-example library, full lesson mapping, image/table assets, and source verification remain open.
+
+
+## Batch 7 — supplementary questions 530–579 and curriculum-label corrections (26 November 2026)
+
+- Scope: 50 questions spanning planes and spheres, exponential functions, combinatorics, conditional probability and Bayes' theorem, sequences, complex numbers, integration, logarithmic differentiation, and variation.
+- Recomputed each answer and solution in the batch. The stored answer indices match the displayed options for the checked items.
+- **Curriculum mapping correction:** questions 561 and 562 concern the Cartesian equation of a plane and point-to-plane distance, respectively. Their topic was incorrectly labeled "الجداء السلمي في الفراغ"; both are now labeled "المستقيمات والمستويات في الفراغ". Question 563 remains under scalar product.
+- Rechecked question 574: (f'(x)=(e^x(1-x)-1)/(1-x)le0) for (x<1), with equality only at (x=0); the function is still strictly decreasing despite the isolated zero derivative.
+- Rechecked the probability distributions in questions 575–577 using combinations from the stated urn populations; the selected answers agree with the calculated probabilities.
+- No further mathematical answer-key correction was needed in this 50-question batch.
+- This pass covers only records 530–579. Remaining supplementary records 580–594, the 600-example library, complete textbook/lesson mapping, diagrams/tables, and source provenance verification remain open.
