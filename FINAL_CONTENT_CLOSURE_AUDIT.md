@@ -141,3 +141,13 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - Rechecked the probability distributions in questions 575–577 using combinations from the stated urn populations; the selected answers agree with the calculated probabilities.
 - No further mathematical answer-key correction was needed in this 50-question batch.
 - This pass covers only records 530–579. Remaining supplementary records 580–594, the 600-example library, complete textbook/lesson mapping, diagrams/tables, and source provenance verification remain open.
+
+
+## Batch 8 — final supplementary records 580–594 (26 November 2026)
+
+- Scope: all final 15 records in the supplementary automated-question collection, covering tangent equations, parameter identification, exponential maxima, limits and unique roots, complex equations and roots of unity, scalar products, planes, distances, line-plane intersections, sequence convergence, and definite integration.
+- Recomputed the selected answers and checked each worked solution. The stored answer indices agree with the corresponding options in this batch.
+- **Curriculum mapping correction:** question 589 asks for the Cartesian equation of a plane through three points, not a scalar product. Its topic is now corrected to "المستقيمات والمستويات في الفراغ".
+- Question 584's uniqueness argument is valid because (h(x)=e^{-x}-x) is continuous on ([0,1]), has opposite endpoint signs, and is strictly decreasing there.
+- The 140-record supplementary collection (questions 455–594) has now received a question-by-question mathematical answer/solution pass in batches 455–479, 480–529, 530–579, and 580–594. This does not constitute source-document verification or prove exact reproduction of any ministry paper; source provenance still requires separate checking.
+- Open work remains: the 600-example solved library, all textbook lesson mappings, visual assets/tables, similarity review across the full bank and library, source-document verification for 2017 onward, and final CI/browser validation after the latest content commits.
