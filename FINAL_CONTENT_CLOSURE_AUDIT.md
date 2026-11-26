@@ -196,3 +196,16 @@ It is deliberately conservative: structural tests are not treated as proof of ma
 - The six curriculum labels still intentionally unassigned are: الدوال الدورية، تحويل منحنى بدلالة f(−x)، حل متراجحة بيانياً، قراءة النهايات من جدول التغيرات، قراءة النهايات والمقاربات من الرسم، مركز تناظر منحنى تابع. The six supplementary logic labels are separately excluded from the 63 student-textbook lessons.
 - The 156 high-confidence and 158 medium-confidence entries remain suggestions, not verified textbook mappings. The crosswalk status remains `provisional-not-verified`; the official textbook PDFs have not yet been checked page-by-page.
 - These CI results validate the tested candidate's structural and browser behavior. They do not replace the still-open per-ID mathematical audit of all 600 solved examples, the full 609-question solution audit, source-document verification, and live GitHub Pages comparison.
+
+
+## Batch 15 — final candidate CI rerun and release boundary (26 November 2026)
+
+- Final PR head: `16a09f9c035f914ad5ca96c3ed843194531605a2`.
+- Latest `Validate question bank` run `45809308742`: completed successfully; all 48 substantive steps passed.
+- Latest `Browser user-flow smoke tests` run `45809308803`: completed successfully; all 26 substantive browser steps passed. No failed steps were reported.
+- These are the latest CI runs on the exact current PR head, including the audit-document-only commit. The earlier successful candidate runs are superseded by these latest successful runs.
+- PR #418 remains open and in draft. No merge has been performed.
+- The live GitHub Pages URL could not be retrieved by the available page reader in this audit session. Consequently, production deployment parity is **not verified**; repository-side tests and source files are not a substitute for observing the published site.
+- The 600-example library and 609-question bank do not yet have a complete, evidence-backed, per-ID mathematical audit report. Existing manual batches cover bounded ranges and sampled/reviewed items, but must not be represented as a full audit of every record. In particular, original-bank candidate duplicate pairs (25/53/125, 22/90, 59/130, 65/137, 69/140, 48/160, 89/161, 83/156, 328/398, 329/399, 330/400, and 419/442) remain editorial-review candidates; none has been deleted.
+- Source-year metadata and external URLs exist for the library records, but URL presence alone does not verify that each item accurately represents the named exam/session or ministry model. The 2017–2026 coverage figures are metadata counts, not proof of complete official-source coverage.
+- Release decision: CI/browser checks are green, but content closure, official textbook mapping, source provenance, duplicate disposition, and live deployment parity remain open. Do not merge or describe the work as fully completed until those evidence-based checks are closed.
