@@ -791,3 +791,8 @@ SANA's report dated 2025-09-27 confirms that the Ministry designated `https://cu
 - Exact normalized question duplicates in the assembled bank: **0**.
 - Remaining release blockers are official textbook page verification, provenance and missing-cycle completeness, exact lesson crosswalk evidence, and live GitHub Pages parity.
 - The code changes in this batch require fresh CI on the new branch head. Do not transfer earlier CI results to this commit.
+
+
+### CI regression follow-up — preserve the guided-bank match
+
+The first validation run after the duplicate-example edits caught a regression in the library's guided-bank de-duplication count: the 2018 inspired MCQ still used the old \\(5-1/n\\) wording while its paired solved-example prompt had been varied to \\(5-2/n\\). The bank item is itself labelled as original inspired practice (not a verbatim ministerial question), so its prompt and worked explanation were updated to the same \\(5-2/n\\) variant. This preserves the exact bank/library linkage and stable source metadata while keeping the separate direct exam adaptation `exam18-seq-003` unchanged. The follow-up validation must confirm the expected guided-bank count and 521 default unique examples; the earlier failed run is not considered a pass.
