@@ -738,3 +738,20 @@ Reviewed the final 160 stable-ID records in the 600-example library. For each re
 - Manual solved-example review completed: **600/600** records, across batches 17–21.
 - This closes the per-ID mathematical review of the current 600-record solved-example library snapshot. It does not close the separate 609-question bank review, editorial duplicate disposition, official textbook mapping, source-document provenance, full curriculum coverage, or live GitHub Pages parity.
 - The final code/content edits in this batch require fresh validation and browser workflows on the new branch head before they can be treated as CI-verified.
+
+
+## Batch 22 — typed-bank final 15 records and exact bank inventory — 27 November 2026
+
+Reviewed all 15 records in `questions_typed_additional.js` individually, including the prompt, answer type/value, written explanation, and accepted-answer variants where present. The set contains true/false, numeric, and short-text questions covering exponentials, sequences, antiderivatives, limits, derivatives, probability complements, complex modulus/conjugation, scalar-product orthogonality, and combinations.
+
+- Recomputed each numerical result and checked each mathematical statement. All 15 answer values and explanations are consistent with their prompts; no answer-key correction was required.
+- Checked the typed records for required content fields (`q`, `solution`, and `answer`); all 15 are populated.
+- Recounted the complete assembled bank inputs: 454 legacy MCQs in `questions.js`, 0 records in the compatibility vector collection, 15 typed supplementary questions, and 140 supplementary automated MCQs. The total before deduplication is **609**.
+- Reapplied the merge pipeline's normalized exact-text rule (NFKC normalization, whitespace collapse, trim): all **609** prompts are unique; no exact-text duplicate is removed by the assembly step.
+
+### Final content-audit inventory
+
+- Solved-example library: **600/600** records manually re-derived in batches 17–21.
+- Question bank: **609/609** assembled records covered by the documented review batches, including the final 15 typed questions in this batch.
+- This closes the per-record mathematical content review for the current snapshots. It does **not** close source authenticity, official textbook page mapping, exact curriculum coverage, editorial disposition of materially repeated but differently worded MCQs, or live production parity. Those remain separate release blockers.
+- The final audit-document update itself must be followed by successful validation and browser workflows on the resulting PR head.
