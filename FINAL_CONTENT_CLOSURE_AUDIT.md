@@ -646,3 +646,14 @@ The two required GitHub Actions workflows have now completed successfully on the
 ## فصل استقلال الأحداث عن استقلال المتحوّلات العشوائية — 27 نوفمبر 2026
 
 أظهر تدقيق أسماء دروس الاحتمالات أن أربع تسميات كانت مقترحة لدرس «الاستقلال الاحتمالي لمتحوّلين عشوائيّين»، بينما نصوصها تتناول استقلال حادثتين (أحداث) لا استقلال متحوّلين عشوائيين. المفهومان متمايزان، لذلك أزيلت الاقتراحات الأربعة وأصبحت الصفوف بانتظار دليل كتابي، دون تعيين درس بديل بالتخمين. الصفوف المتأثرة: `احتمال تقاطع حادثتين مستقلتين` (1 مثال)، `احتمال حادثتين مستقلتين` (1 مثال)، `احتمال حادثتين مستقلتين ومتممتيهما` (1 مثال)، `استقلال حادثتين` (2 مثال). أصبح الملخص 152 عالي، 153 متوسط، 15 منخفض، و15 تسمية غير مسندة؛ مجموع أمثلة التسميات غير المسندة 25. يجب تحديث اختبارات crosswalk وتوزيع الدروس وفق هذه الأعداد، ثم إعادة تشغيل CI على الرأس الجديد.
+
+## Final-head CI confirmation — 27 November 2026
+
+The latest PR head reviewed in this pass is `8766ab80bf72c9c3131978d721c3271089a87a16`.
+
+- Question-bank validation workflow `45897513572`: completed successfully, **48/48 steps**, no failures.
+- Browser user-flow workflow `45897513558`: completed successfully, **26/26 steps**, no failures. This includes the 14-topic automated-bank browser audit, accessibility and keyboard navigation, responsive mobile layout, math tools, and comprehensive release-audit steps.
+- The crosswalk currently contains **326 labels**: 320 student-curriculum labels (594 examples) and 6 supplementary labels (6 examples). Its provisional suggestion counts are **152 high, 153 medium, 15 low**, with **15 labels / 25 examples** left unmapped pending textbook evidence. **Zero mappings are verified**; the map remains `provisional-not-verified`.
+- The successful CI runs establish that the current validation and browser suites pass on this head. They do not establish official textbook alignment, authentic provenance of ministry-paper labels, exact question-to-lesson assignments, or parity between this unmerged branch and the live GitHub Pages deployment.
+- PR #418 therefore remains **Draft / Open / Unmerged**. Do not merge until the remaining evidence and production-parity checks are completed.
+
