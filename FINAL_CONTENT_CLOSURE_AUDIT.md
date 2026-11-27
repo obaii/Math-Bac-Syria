@@ -807,3 +807,12 @@ The CI diagnostics distinguish exact bank matches from matches that actually hav
 - All-bank exact normalized matches (including the non-guided MCQ): **79**.
 
 The solved-library test assertions were corrected from the stale 79/521 guided-only expectation to 78/522. The bank item and its paired inspired solved example both use the same revised \\(5-\\frac2n\\) prompt, so the exact bank/library link is retained. The earlier validation run correctly exposed the stale assertion; a fresh run on the latest PR head is required to verify this adjustment.
+
+
+### Regression-test alignment after the two task variations
+
+The first full validation after the 78/522 guided-visibility correction confirmed the solved-example structure, the 600-record inventory, and the 2020–2026 independent mathematics checks except for the intentionally changed answer of `exam26-model-007`: its expected sum is now **363**, not 93. The corresponding regression assertion was updated to 363.
+
+The archived bank question #27 was also varied from \\(5-\\frac1n\\) to \\(5-\\frac2n\\) to stay aligned with its paired inspired solved example and avoid duplicating the direct exam adaptation. Its separate answer-regression lookup was updated to the revised prompt; the answer remains 5. These are regression-fixture updates for the deliberately revised data, not relaxed mathematical checks.
+
+Fresh validation and browser workflows are required on the final commit after these fixture changes.
