@@ -837,3 +837,53 @@ The full validation also confirmed that the varied 2018 inspired sequence questi
 - The 14-topic bank, 609-record inventory, 600-example library, math formatting, diagram references, and browser interactions are covered by repository tests. The final candidate's successful workflow runs are validation run `45959071772` (**48/48**) and browser run `45959071717` (**30/30 steps**), both on head `a9a2059377d50077de1d1c47dcbcfb737fedd2f8`. Any subsequent commit requires fresh runs.
 - The live GitHub Pages URL could not be fetched by the external browser check during this audit. Production parity is therefore **not independently verified** before merge; it must be checked after deployment.
 - PR #418 remains the single consolidated closure request. Do not state that all official exam sessions are represented; report the known gaps explicitly.
+
+
+## Non-excluded audit closure and final source inventory — 27 November 2026
+
+### Visual and standalone-example checks
+
+- Rechecked all nine examples listed in the original report as referring to absent graphs or variation tables:
+  ministerial17-graph-001, ministerial17-graph-002, ministerial17-graph-003, ministerial17-tangent-001, exam19-func-001, exam19-func-002, exam19-func-003, exam22-limits-001, and exam21-graph-001.
+- All nine current prompts now state the mathematical data needed to solve them without referring to an unseen graph or table. The regression suite explicitly checks all nine prompts; exam21-graph-001 also has explicit vertical asymptotes x=0, x=1 and horizontal asymptote y=1.
+- Rechecked all 25 historical final-step records against the expected result in the final worked step. All 25 IDs are present and the last step contains the explicit final value/result. scripts/solved-examples-tests.cjs contains an ID-by-ID assertion for every one of them.
+- The derivative-graph item in questions.js was visually checked against assets/question-11-graphs.png. The graph of f decreases/increases/decreases/increases across the four intervals, has non-differentiable points at x=-1 and x=1, and has derivative zero at x=0. The outer branches of f have limiting slopes -1 and +1; this distinguishes candidate C (the derivative's outer horizontal levels are -1 and +1) from candidate D (which tends to zero at both ends). The solution now explains this distinction, and scripts/answer-regression-tests.cjs asserts it.
+
+### Other report-flagged bank defects
+
+- q-1rtnpbs now compares u=(a,2,-1) with v=(3,2,-1), so equality of the second and third components is already satisfied and the first component correctly gives a=3.
+- q-13vkgcm has a valid cases-array row separator in the piecewise definition; the missing-line-break rendering defect is no longer present.
+- The four cross-reference phrases from the report are absent from the current bank snapshot: “في الشروط نفسها”، “في جدول التوزيع المشترك نفسه”، “وفق جدول التوزيع المشترك الوارد في المسألة”، and “وفق المعطيات في المسألة”.
+- The nine old IDs listed as proof-only multiple-choice questions are absent from the current bank snapshot; current bank prompts contain no “أثبت”/“برهن” proof-only prompt. Occurrences of “مبرهنة” in explanatory wording are mathematical theorem names, not instructions to prove a statement.
+- The English word rationalize and the malformed sqrt{3i form are absent from the current bank text. The logic-001 solution uses the explicit term “الاقتضاء العكسي”.
+- The README reports 594 multiple-choice questions plus 15 typed-answer questions, 609 in total. The detailed-solution regression baseline is 609/609 questions with structured steps; this is distinct from the mathematical review, which is separately complete at 609/609.
+- The current solved-library guided duplicate count is 79, leaving 521 examples visible by default. Historical totals 83/95/100 came from older snapshots and should not be mixed with the current normalized matching rule. The test prints matched IDs as well as counts so a future snapshot can be compared without deleting records.
+
+### Reconciled 2020–2026 source metadata
+
+The 248 year-labelled records in the current 600-example library were re-counted from their source metadata. Every one of these 248 records has sourceYear, sourceSession, and sourceReference populated; no metadata gaps were found.
+
+| Source classification | Records |
+|---|---:|
+| Exam-cycle-labelled educational adaptations | 72 |
+| Original practice inspired by an exam cycle | 156 |
+| Original practice inspired by a ministry model | 20 |
+| **Total** | **248** |
+
+The year/session inventory remains deliberately qualified:
+- 2020: 7 cycle-labelled records and 13 inspired practice records, all associated with cycle 1; no cycle-2 record.
+- 2021: 9 cycle-labelled records and 11 inspired practice records, all associated with cycle 1; no cycle-2 record.
+- 2022: 35 cycle-labelled records from cycle 1; 20 cycle-1-inspired and 20 cycle-2-inspired practice records; no cycle-2 record classified as an exam-cycle adaptation.
+- 2023: 2 cycle-labelled records from cycle 2; 20 cycle-1-inspired practice records and 20 model-inspired records.
+- 2024: 9 cycle-labelled records from cycle 2 and 20 cycle-1-inspired practice records.
+- 2025: 10 cycle-labelled records and 20 cycle-1-inspired practice records.
+- 2026: 12 cycle-1-inspired practice records and 20 additional model/cycle-inspired practice records; no record is classified as a direct exam-cycle adaptation.
+
+This completes the metadata inventory and the explicit gap reconciliation; it does not fill the missing sessions or authenticate the secondary-hosted files as official originals. The project must not claim that every 2020–2026 exam session is represented, or that every source is independently authenticated by the Ministry. Existing sourceType and sourceLabel values continue to distinguish adapted practice from literal source papers.
+
+### Explicit exclusions and remaining release checks
+
+- As directed by the user, page-by-page auditing of the two official mathematics textbooks and assignment/verification of examples against individual textbook lesson IDs are excluded from PR #418's release criteria. The provisional crosswalk remains provisional; no mapping is promoted to verified.
+- The code change that clarifies the derivative-graph explanation and its regression assertion creates a new PR head. Previous successful CI on a9a2059377d50077de1d1c47dcbcfb737fedd2f8 does not validate the new head; both validation and browser workflows must complete again.
+- The live GitHub Pages URL could not be loaded by the available web check. Production parity is therefore unverified, not passed. Since PR #418 is not merged, the live site cannot yet be assumed to contain this candidate.
+- No merge is authorized until the latest-head validation and browser workflows pass and the post-deployment Pages check can be completed. Source-session gaps remain documented limitations, not grounds for inventing records or changing source labels.
