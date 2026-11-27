@@ -308,8 +308,11 @@ const derivativeGraphQuestion = questions.find(q => normalize(q.q).includes("ass
 if (!derivativeGraphQuestion ||
     !derivativeGraphQuestion.solution.includes("سالبة ثم موجبة ثم سالبة ثم موجبة") ||
     !derivativeGraphQuestion.solution.includes("x=-1") ||
-    !derivativeGraphQuestion.solution.includes("x=1")) {
-  console.error("FAIL: the derivative-graph solution must justify candidate C using the interval sign pattern and both non-differentiable points.");
+    !derivativeGraphQuestion.solution.includes("x=1") ||
+    !derivativeGraphQuestion.solution.includes("ميل الفرع الأيسر") ||
+    !derivativeGraphQuestion.solution.includes("ميل الفرع الأيمن") ||
+    !derivativeGraphQuestion.solution.includes("الرسم D")) {
+  console.error("FAIL: the derivative-graph solution must justify candidate C using interval signs, both non-differentiable points, and the end-slope distinction from candidate D.");
   failures++;
 }
 
