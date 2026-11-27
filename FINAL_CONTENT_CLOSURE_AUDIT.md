@@ -896,3 +896,23 @@ This completes the metadata inventory and the explicit gap reconciliation; it do
 - The validation log's exact bank/library comparison is now reconciled on this snapshot: **strict text = 79, normalized text = 79, guided normalized = 79, non-guided normalized = 0**. The run printed the exact matched example/question IDs; all 79 normalized matches have a guide, so the UI count is 79 hidden / 521 visible.
 - Browser run 45963482416 was still running at the time of this note: 7 steps succeeded, no failures, active step “Run first-visit guide browser tests”. It is not yet a browser pass.
 - The successful validation run applies only to the exact head above. The browser result must also finish on this same head before the PR can be marked ready.
+
+
+## Post-merge release verification — 27 November 2026
+
+This section supersedes earlier in-progress notes above that state PR #418 is unmerged, that post-merge workflows are pending, or that the final candidate has not yet passed browser checks. Those notes are retained as historical audit chronology.
+
+- PR [#418](https://github.com/obaii/Math-Bac-Syria/pull/418) was merged into `main` at 2026-11-27 08:30:49 UTC.
+- Merge commit: `e82c1e02ccfcbcb3b65312a0650ad3c0820afeeb`.
+- Post-merge question-bank validation run [45966255321](https://github.com/obaii/Math-Bac-Syria/actions/runs/45966255321): completed successfully on the merge commit.
+- Post-merge browser smoke-test run [45966255430](https://github.com/obaii/Math-Bac-Syria/actions/runs/45966255430): completed successfully on the merge commit. All reported browser test steps, including the 14-topic bank audit, responsive checks, accessibility checks, solved-library checks, and final release audit, succeeded.
+- Post-merge GitHub Pages run [45966255031](https://github.com/obaii/Math-Bac-Syria/actions/runs/45966255031): completed successfully on the merge commit. Build, build-status reporting, and deployment jobs all succeeded.
+
+### Final scope and limitations
+
+- The mathematical content review recorded for this release covers 600/600 solved examples and 609/609 bank questions. The 79 guided bank matches are hidden by default, leaving 521 distinct solved examples visible by default.
+- The source inventory contains 248 year-labelled records for 2020–2026. Known missing or unverified exam-session coverage remains as documented above; this is not a complete official archive and no complete-coverage claim is made.
+- At the user's direction, page-by-page auditing of the two official mathematics textbooks and verification/linking of examples to individual textbook lesson IDs remain excluded. The lesson crosswalk remains provisional.
+- The Pages deployment workflow succeeded. However, the external page-fetch check did not independently retrieve the live site's content, so byte-for-byte or visual parity between the deployed page and the tested commit is not independently certified by this audit. A successful deployment job is evidence of publication success, not a substitute for a direct visual content comparison.
+
+**Release status:** PR #418 is merged; post-merge validation, browser tests, and Pages deployment all succeeded. The exclusions and source-coverage limitations above remain explicit and are not considered completed work.
