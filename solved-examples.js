@@ -623,6 +623,7 @@
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
+  // Hide only examples with a matching multi-step bank solution. A matching MCQ that has only a concise `solution` field remains visible here so learners can still access the fuller worked example.
   const guidedBankQuestionKeys = new Set(
     (typeof questions !== "undefined" && Array.isArray(questions) ? questions : [])
       .filter(question => Array.isArray(question.steps) && question.steps.length > 0)
