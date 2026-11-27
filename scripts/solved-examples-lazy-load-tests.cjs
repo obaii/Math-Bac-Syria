@@ -66,14 +66,14 @@ const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:4173/";
       null,
       { timeout: 20000 }
     );
-    assert.match(await page.locator("#solved-examples-count").textContent(), /24 من 520/,
+    assert.match(await page.locator("#solved-examples-count").textContent(), /24 من 521/,
       "the first render should show the first 24 distinct examples, excluding exact duplicates from the bank");
     const duplicateToggle = page.locator("#solved-example-show-bank-duplicates");
     assert.equal(await duplicateToggle.isChecked(), false, "bank duplicates should be hidden by default");
     await duplicateToggle.check();
     await page.waitForFunction(() => /24 من 600/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
     await duplicateToggle.uncheck();
-    await page.waitForFunction(() => /24 من 520/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
+    await page.waitForFunction(() => /24 من 521/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
     await duplicateToggle.check();
     await page.waitForFunction(() => /24 من 600/.test(document.querySelector("#solved-examples-count")?.textContent || ""));
     await page.waitForFunction(() =>

@@ -31,8 +31,9 @@ for (const row of rows) {
     }
     continue;
   }
-  if (row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null) {
+  if (["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus) && row.suggestedLessonId === null) {
     if (row.suggestedLessonTitle !== null) failures.push("Unresolved label must not retain a suggested lesson title: " + row.lessonLabel);
+    if (row.reviewStatus === "unmapped-needs-textbook-evidence" && (row.confidence !== "low" || !row.rationale)) failures.push("Evidence-pending unmapped labels must have low confidence and an explanatory rationale: " + row.lessonLabel);
     continue;
   }
   const lesson = lessons.get(row.suggestedLessonId);
@@ -56,7 +57,7 @@ const summary = {
   high: rows.filter(row => row.confidence === "high").length,
   medium: rows.filter(row => row.confidence === "medium").length,
   low: rows.filter(row => row.confidence === "low").length,
-  unmapped: studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null).length
+  unmapped: studentRows.filter(row => ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus) && row.suggestedLessonId === null).length
 };
 for (const [field, value] of Object.entries(summary)) {
   if (crosswalk.summary[field] !== value) failures.push("Crosswalk summary mismatch for " + field + ".");
@@ -68,7 +69,7 @@ console.log("Student curriculum: " + studentRows.length + " labels / " + summary
 console.log("Supplementary teacher-guide material excluded: " + supplementaryRows.length + " labels / " + summary.supplementaryExamples + " examples.");
 console.log("Provisional suggestions: " + summary.high + " high, " + summary.medium + " medium, " + summary.low + " low confidence.");
 console.log("No suggested mapping is marked verified.");
-console.log("Unresolved manual-review labels: " + summary.unmapped + " (kept out of lesson assignments).");
+console.log("Unresolved / evidence-pending labels: " + summary.unmapped + " (kept out of lesson assignments).");
 if (failures.length) {
   console.error("Lesson-label crosswalk checks failed:");
   for (const failure of failures) console.error("- " + failure);

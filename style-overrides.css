@@ -2312,3 +2312,75 @@ mjx-container::-webkit-scrollbar,
 
 
 .footer-privacy { margin: 6px 0 10px; color: var(--muted, #64748b); font-size: 13px; }
+
+
+/* 2026-11-26: Final RTL/mobile safeguards for the recently-used badge and saved-question rows. */
+#section-menu .quick-start-card.is-recently-used::after {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  writing-mode: horizontal-tb;
+  direction: rtl;
+  unicode-bidi: isolate;
+  line-height: 1.4;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#student-tools #bookmark-list > li > button {
+  display: grid !important;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: start;
+  justify-content: stretch;
+  gap: .65rem;
+  width: 100%;
+  direction: rtl;
+  text-align: right;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+#student-tools #bookmark-list .bookmark-number {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 2rem;
+  width: 2rem;
+  min-width: 2rem;
+  max-width: 2rem;
+  height: 2rem;
+  padding: 0;
+  white-space: nowrap;
+  word-break: keep-all;
+  writing-mode: horizontal-tb;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+#student-tools #bookmark-list .bookmark-item-text {
+  display: block;
+  min-width: 0;
+  direction: rtl;
+  unicode-bidi: plaintext;
+  text-align: right;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 540px) {
+  #student-tools #bookmark-list > li > button {
+    grid-template-columns: 1.8rem minmax(0, 1fr);
+    gap: .5rem;
+    padding-inline: 9px;
+  }
+  #student-tools #bookmark-list .bookmark-number {
+    flex-basis: 1.8rem;
+    width: 1.8rem;
+    min-width: 1.8rem;
+    max-width: 1.8rem;
+    height: 1.8rem;
+  }
+}

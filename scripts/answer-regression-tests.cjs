@@ -57,7 +57,7 @@ const cases = [
   { contains: "إذا كان \\(z=3+4i\\)، فإن طويلة العدد", expected: "5" },
   { contains: "\\(z=2-3i\\)", expected: "\\(13\\)" },
   { contains: "\\binom{5}{1}", expected: "5" },
-  { contains: "من 4 عناصر مختلفة جميعها", expected: "24" },
+  { contains: "خمسة عناصر مختلفة جميعها", expected: "120" },
   { contains: "احتمال حدث مستحيل", expected: "0" },
   { contains: "قطعة نقد متوازنة", expected: "\\(\\frac12\\)" },
   { contains: "\\vec u=(2,1,0)\\) و\\(\\vec v=(1,-2,0)", expected: "0" },
@@ -66,10 +66,10 @@ const cases = [
   { contains: "إذا كان \\(f(x)=\\frac{x^2-4}{x-2}\\) عندما \\(x\\ne2\\)، فما قيمة", expected: "4" },
   { contains: "متتالية حسابية حدها الأول \\(u_1=7\\)", expected: "21" },
   { contains: "متتالية هندسية حدها الأول \\(u_1=3\\)", expected: "48" },
-  { contains: "ما نهاية المتتالية \\(u_n=\\frac{4n+3}{2n-1}\\)", expected: "2" },
+  { contains: "احسب نهاية المتتالية \\(u_n=\\frac{5n-2}{n+3}\\)", expected: "\\(5\\)" },
   { contains: "ما نهاية المتتالية \\(u_n=\\frac{7}{n^2+1}\\)", expected: "0" },
   { contains: "مشتقة التابع \\(f(x)=\\frac{1}{x}\\)", expected: "\\(-\\frac{1}{x^2}\\)" },
-  { contains: "قيمة \\(\\ln(e^{-2})\\)", expected: "-2" },
+  { contains: "\\(\\ln(e^{-2})\\) يساوي", expected: "-2" },
   { contains: "قيمة \\(e^2\\cdot e^4\\)", expected: "\\(e^6\\)" },
   { contains: "تابع أصلي للتابع \\(f(x)=4x^3\\)", expected: "\\(x^4\\)" },
   { contains: "قيمة \\((1+i)^2\\)", expected: "\\(2i\\)" },
@@ -156,7 +156,7 @@ const cases = [
   {"contains":"إذا كان c=2i وd=−2 وm=−1+i، احسب (c−d)/m.","expected":"−2i"},
   {"contains":"إذا كان a=−1−i وb=1−i، احسب الجداء ab.","expected":"−2"},
   {"contains":"لتكن المتتالية \\(u_n=5-\\frac1n\\) حيث \\(n\\ge1\\). احسب الفرق \\(u_{n+1}-u_n\\).","expected":"\\(\\frac{1}{n(n+1)}\\)"},
-  {"contains":"احسب نهاية المتتالية uₙ=5−1/n عندما n يؤول إلى +∞.","expected":"5"},
+  {"contains":"احسب نهاية المتتالية uₙ=5−2/n عندما n يؤول إلى +∞.","expected":"5"},
   {"contains":"لتكن المتتالية \\(v_n=5+\\frac{1}{n^2}\\) حيث \\(n\\ge1\\). احسب الفرق \\(v_{n+1}-v_n\\).","expected":"\\(-\\frac{2n+1}{n^2(n+1)^2}\\)"},
   {"contains":"لتكن \\(u_n=5-\\frac1n\\) و\\(v_n=5+\\frac1{n^2}\\). ما قيمة \\(\\lim_{n\\to\\infty}(v_n-u_n)\\)؟","expected":"\\(0\\)"},
   {"contains":"في معلم متعامد، A(1,−2,0) والمستوي P: x+2y+z−1=0. احسب بعد A عن P.","expected":"2√6/3"},
@@ -170,7 +170,7 @@ const cases = [
   {"contains":"احسب نهايتي f(x)=ln(1+e^(−x)) عند +∞ و−∞.","expected":"0 عند +∞ و+∞ عند −∞"},
   {"contains":"ما معادلة المقارب المائل للتابع \\(f(x)=\\ln(1+e^{-x})\\) عندما \\(x\\to-\\infty\\)؟","expected":"y=−x"},
   {"contains":"ما وصف تقعر التابع \\(f(x)=\\ln(1+e^{-x})\\) على R؟","expected":"محدبة تماماً"},
-  {"contains":"إذا كان f متزايداً من النهاية 2 إلى 4 على (−∞,−2)، ثم متناقصاً من 4 إلى −1 على (−2,2)، ثم متزايداً من −1 إلى +∞ على (2,+∞)، فكم حلاً للمعادلة f(x)=0؟","expected":"حلّان"},
+  {"contains":"إذا كان f تابعاً مستمراً، ومتزايداً من النهاية 2 إلى 4 على (−∞,−2)، ثم متناقصاً من 4 إلى −1 على (−2,2)، ثم متزايداً من −1 إلى +∞ على (2,+∞)، فكم حلاً للمعادلة f(x)=0؟","expected":"حلّان"},
   {"contains":"إذا كان lim(x→−∞)f(x)=2، فما معادلة المقارب الأفقي لمنحنى f عند −∞؟","expected":"y=2"},
   {"contains":"في متوازي السطوح ABCDEFGH، إذا كان AB=2 وAD=BC=1 وقياس الزاوية DAB يساوي 45°، احسب الجداء السلمي AB⃗·AD⃗.","expected":"√2"},
   {"contains":"في متوازي السطوح ABCDEFGH، إذا كانت I منتصف [EF] وكان \\(\\overrightarrow{AM}=\\overrightarrow{AB}-\\overrightarrow{FB}+\\frac12\\overrightarrow{GH}\\)، فما العلاقة الصحيحة بين M وI؟","expected":"M=I"},
@@ -190,7 +190,7 @@ const cases = [
   {"contains":"عين الحد المستقل عن x في مفكوك (x+1/x²)⁶.","expected":"15"},
   {"contains":"للتابع \\(f(x)=x+3-\\frac1{x^2}\\)، ما المقارب المائل عند +∞ وما وضع المنحنى بالنسبة إليه؟","expected":"المقارب y=x+3 والمنحنى أسفله"},
   {"contains":"اكتب تمثيلاً وسيطياً للمستقيم المار بالنقطة A(1,0,1) وشعاع توجيهه u=(2,2,1).","expected":"x=1+2t، y=2t، z=1+t"},
-  {"contains":"إذا كان A(1,0,1) وB(0,1,1)، وكان شعاع توجيه المستقيم d هو \\(u=(2,2,1)\\)، فما العلاقة الهندسية بين d والمستقيم AB؟","expected":"متعامدان"},
+  {"contains":"إذا كان A(1,0,1) وB(0,1,1)، وكان المستقيم d يمر بالنقطة A وشعاع توجيهه \\(u=(2,2,1)\\)، فما العلاقة الهندسية بين d والمستقيم AB؟","expected":"متعامدان"},
   {"contains":"لتكن Sₙ=1+1/3+1/3²+⋯+1/3ⁿ. أوجد صيغة Sₙ بدلالة n.","expected":"(3/2)(1−1/3^(n+1))"},
   {"contains":"استنتج نهاية Sₙ=1+1/3+⋯+1/3ⁿ عندما n→+∞، ثم حدد تقاربها.","expected":"3/2"},
   {"contains":"صندوق يحوي ثلاث كرات حمراء وكرَتين بيضاوين. سُحبت كرتان متتاليتان دون إرجاع. احسب احتمال أن تكونا من اللون نفسه.","expected":"2/5"},
@@ -213,7 +213,7 @@ const cases = [
   {"contains":"إذا كان P(A)=2/5 وP(B|A)=3/4 وP(B|Ā)=1/4، فأوجد P(A|B).","expected":"2/3"},
   {"contains":"قُذفت قطعة نقدية متوازنة 8 مرات، وكان X عدد مرات ظهور الصورة. ما الأمل الرياضي E(X)؟","expected":"4"},
   {"contains":"في 10 تجارب مستقلة، احتمال النجاح في كل تجربة 0.3. إذا كان X عدد النجاحات، فأوجد E(X).","expected":"3"},
-  {"contains":"لتكن uₙ=−2ⁿ حيث n≥0. ما طبيعة المتتالية؟","expected":"متناقصة تماماً"},
+  {"contains":"لتكن uₙ=−(2ⁿ) حيث n≥0. ما طبيعة المتتالية؟","expected":"متناقصة تماماً"},
   {"contains":"لتكن vₙ=1/5ⁿ حيث n≥0. أي وصف صحيح؟","expected":"متناقصة تماماً"},
   {"contains":"احسب مجموع المتتالية الحسابية 1+1.5+2+⋯+10.5.","expected":"115"},
   {"contains":"متتالية حسابية حدها الأول 2 وأساسها 3. أوجد مجموع حدودها العشرة الأولى.","expected":"155"},
@@ -269,12 +269,13 @@ const archiveCases = [
   {"contains":"إذا تغيرت إشارة f′ من سالبة إلى موجبة عند x=2، وكانت f(2)=−1","expected":"−1"},
   {"contains":"إذا كانت f′ موجبة على (−∞,−2)، وسالبة على (−2,2)، وموجبة على (2,+∞)","expected":"متزايدة على (−∞,−2) و(2,+∞)، ومتناقصة على (−2,2)"},
   {"contains":"إذا كانت نهايتا تابع f هما f(x)→+∞ عندما x→−∞ وf(x)→3 عندما x→+∞","expected":"lim(−∞)=+∞، lim(+∞)=3، والمقارب y=3"},
-  {"contains":"إذا كان التابع f متزايداً على المجال [−1,2] وكان f(−1)=−2 وf(2)=4","expected":"الصغرى −2 والعظمى 4، والصورة [−2,4]"},
+  {"contains":"إذا كان التابع f متصلاً ومتزايداً على المجال [−1,2] وكان f(−1)=−2 وf(2)=4","expected":"الصغرى −2 والعظمى 4، والصورة [−2,4]"},
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. إذا كانت البطاقة الأولى حمراء","expected":"\\(\\frac12\\)"},
   {"contains":"في صندوق يحتوي على 3 بطاقات حمراء وبطاقتين زرقاوين، نسحب بطاقتين متتاليتين دون إرجاع. ليكن X عدد البطاقات الحمراء المسحوبة","expected":"لا، لأن احتمال التقاطع لا يساوي حاصل ضرب الاحتمالين"},
   {"contains":"في صندوق يحتوي على 3 كرات حمراء و2 زرقاء و5 بيضاء، نسحب كرتين دفعة واحدة. ما احتمال ظهور كرة بيضاء واحدة على الأقل","expected":"\\(\\frac79\\)"},
   { contains: "ما ميل نصف المماس الأيمن لمنحنى f عند x=0؟", expected: "2" },
-  { contains: "لتكن \\(u_n=\\frac1{\\sqrt{n+1}+\\sqrt{n}}\\)", expected: "\\(4\\)" }
+  { contains: "لتكن \\(u_n=\\frac1{\\sqrt{n+1}+\\sqrt{n}}\\)", expected: "\\(4\\)" },
+  { contains: "يمثل الشكل في الصورة تابعًا \\(f\\) ومعه أربعة رسوم مرشحة للتابع المشتق", expected: "الرسم C" },
 ];
 
 cases.push(...archiveCases);
@@ -303,6 +304,18 @@ if (!halfTangentQuestion || !halfTangentQuestion.q.includes("نصف المماس
   console.error("FAIL: q-1bwh99f must ask for the right half-tangent slope and select 2, not the two-sided differentiability option.");
   failures++;
 }
+const derivativeGraphQuestion = questions.find(q => normalize(q.q).includes("assets/question-11-graphs.png"));
+if (!derivativeGraphQuestion ||
+    !derivativeGraphQuestion.solution.includes("سالبة ثم موجبة ثم سالبة ثم موجبة") ||
+    !derivativeGraphQuestion.solution.includes("x=-1") ||
+    !derivativeGraphQuestion.solution.includes("x=1") ||
+    !derivativeGraphQuestion.solution.includes("ميل الفرع الأيسر") ||
+    !derivativeGraphQuestion.solution.includes("ميل الفرع الأيمن") ||
+    !derivativeGraphQuestion.solution.includes("الرسم D")) {
+  console.error("FAIL: the derivative-graph solution must justify candidate C using interval signs, both non-differentiable points, and the end-slope distinction from candidate D.");
+  failures++;
+}
+
 const rationalizationQuestion = questions.find(q => q.id === "q-1fc9tmo");
 if (!rationalizationQuestion || /rationalize/i.test(rationalizationQuestion.solution || "")) {
   console.error("FAIL: q-1fc9tmo must keep its solution in Arabic mathematical terminology.");

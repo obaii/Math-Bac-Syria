@@ -32,7 +32,7 @@ function buildAudit() {
   const byId = new Map(lessons.map(lesson => [lesson.id, lesson]));
   const studentRows = (crosswalk.entries || []).filter(row => row.reviewStatus !== "supplementary-excluded");
   for (const row of studentRows) {
-    if (row.suggestedLessonId === null && row.reviewStatus === "needs-manual-review") continue;
+    if (row.suggestedLessonId === null && ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus)) continue;
     const lesson = byId.get(row.suggestedLessonId);
     if (!lesson) {
       throw new Error("Invalid or absent suggested lesson for label: " + row.lessonLabel);
@@ -42,7 +42,7 @@ function buildAudit() {
     if (row.confidence === "high") lesson.high += 1;
     else if (row.confidence === "medium") lesson.medium += 1;
     else if (row.confidence === "low") lesson.low += 1;
-    if (row.reviewStatus === "needs-manual-review") {
+    if (["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus)) {
       lesson.manualReviewLabels += 1;
       lesson.manualReviewExamples += row.exampleCount;
     }
@@ -58,16 +58,16 @@ function buildAudit() {
     highConfidenceLabels: studentRows.filter(row => row.confidence === "high").length,
     mediumConfidenceLabels: studentRows.filter(row => row.confidence === "medium").length,
     lowConfidenceLabels: studentRows.filter(row => row.confidence === "low").length,
-    manualReviewLabels: studentRows.filter(row => row.reviewStatus === "needs-manual-review").length,
-    manualReviewExamples: studentRows.filter(row => row.reviewStatus === "needs-manual-review").reduce((sum, row) => sum + row.exampleCount, 0),
-    unmappedLabels: studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null).length,
-    unmappedExamples: studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null).reduce((sum, row) => sum + row.exampleCount, 0),
+    manualReviewLabels: studentRows.filter(row => ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus)).length,
+    manualReviewExamples: studentRows.filter(row => ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus)).reduce((sum, row) => sum + row.exampleCount, 0),
+    unmappedLabels: studentRows.filter(row => ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus) && row.suggestedLessonId === null).length,
+    unmappedExamples: studentRows.filter(row => ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus) && row.suggestedLessonId === null).reduce((sum, row) => sum + row.exampleCount, 0),
     lessonsWithSuggestions: lessons.filter(lesson => lesson.labels > 0).length,
     lessonsWithoutSuggestions: lessons.filter(lesson => lesson.labels === 0).length,
     verifiedLabels: (crosswalk.entries || []).filter(row => row.verified === true).length
   };
 
-  const unresolvedRows = studentRows.filter(row => row.reviewStatus === "needs-manual-review" && row.suggestedLessonId === null);
+  const unresolvedRows = studentRows.filter(row => ["needs-manual-review", "unmapped-needs-textbook-evidence"].includes(row.reviewStatus) && row.suggestedLessonId === null);
   return { lessons, summary, unresolvedRows };
 }
 

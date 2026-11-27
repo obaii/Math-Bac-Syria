@@ -45,9 +45,9 @@ if (!library || !Array.isArray(library.examples)) {
   if (library.count !== 600 || examples.length !== 600) {
     failures.push("The full solved-example archive must retain all 600 source records.");
   }
-  if (library.bankDuplicateCount !== 80 || library.uniqueCount !== 520 ||
-      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 520) {
-    failures.push("Expected 80 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 520 distinct examples.");
+  if (library.bankDuplicateCount !== 79 || library.uniqueCount !== 521 ||
+      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 521) {
+    failures.push("Expected 79 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 521 distinct examples.");
   }
   // Compare against every assembled bank question as well as the guided subset above.
   // This separates the historical all-bank exact-match count from the guided-only UI count.
@@ -102,8 +102,8 @@ if (!library || !Array.isArray(library.examples)) {
     unmatchedAgainstBank.join(", "));
 
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
-  if (uniqueExampleIds.size !== 520) {
-    failures.push("The default solved-library view must contain 520 distinct example records.");
+  if (uniqueExampleIds.size !== 521) {
+    failures.push("The default solved-library view must contain 521 distinct example records.");
   }
 
   const yearReferenceCases = [
@@ -356,10 +356,10 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "cx-007", steps: ["z̄=−3−4i", "9+16=25"], answer: "25" },
     { id: "cx-008", steps: ["25+144", "169"], answer: "|z|=13" },
     { id: "cx-009", steps: ["i²=−1", "i³=−i", "i⁴=1"], answer: "−i" },
-    { id: "cx-010", steps: ["(1+i)²", "1−i²", "الناتج i"], answer: "=i" },
+    { id: "cx-010", steps: ["(3+2i)(1+i)", "1+5i", "(1-i)(1+i)=2"], answer: "\\frac12+\\frac52i" },
     { id: "cx-011", steps: ["=2", "cosθ=1/2", "θ=π/3"], answer: "π/3" },
     { id: "cx-012", steps: ["(3i)²=9i²=−9", "(−3i)²=−9"], answer: "3i أو z=−3i" },
-    { id: "cx-013", steps: ["z̄=−3−4i", "9+16"], answer: "25" },
+    { id: "cx-013", steps: ["\\bar z=5+12i", "25+144=169"], answer: "169" },
     { id: "cx-014", steps: ["z=3+4i+2−i"], answer: "5+3i" }
   ];
   for (const testCase of complexCases) {
@@ -384,12 +384,12 @@ if (!library || !Array.isArray(library.examples)) {
     { id: "int-008", steps: ["x≥0", "F(x)=x²/2", "9/2"], answer: "9/2" },
     { id: "int-009", steps: ["x³", "−2x²", "2x"], answer: "x³−2x²+2x+C" },
     { id: "int-010", steps: ["A=∫₀² x² dx", "F(x)=x³/3", "8/3"], answer: "8/3" },
-    { id: "int-011", steps: ["u=x", "v=e^x", "xe^x−∫e^x dx"], answer: "e^x(x−1)+C" },
+    { id: "int-011", steps: ["u=x^2", "x^2e^x-2\\int xe^x dx", "e^x(x^2-2x+2)"], answer: "e^x(x^2-2x+2)+C" },
     { id: "int-012", steps: ["A=∫₀⁴(4−x) dx", "F(x)=4x−x²/2", "16−8=8"], answer: "8" },
     { id: "int-013", steps: ["∫t⁴ dt", "t⁵/5+C"], answer: "(x²+1)^5/5+C" },
     { id: "int-014", steps: ["F(x)=x³−2x", "F(2)−F(0)", "=4"], answer: "4" },
     { id: "int-015", steps: ["2x³", "−2x²", "3x"], answer: "2x³−2x²+3x+C" },
-    { id: "int-016", steps: ["A=∫₀²x² dx", "x³/3", "8/3"], answer: "8/3" }
+    { id: "int-016", steps: ["A=\\int_0^3(x+2)", "F(x)=x^2/2+2x", "21/2"], answer: "21/2" }
   ];
   for (const testCase of integralCases) {
     const example = examples.find(item => item.id === testCase.id);
