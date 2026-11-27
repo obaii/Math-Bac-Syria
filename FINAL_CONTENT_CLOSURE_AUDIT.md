@@ -887,3 +887,12 @@ This completes the metadata inventory and the explicit gap reconciliation; it do
 - The code change that clarifies the derivative-graph explanation and its regression assertion creates a new PR head. Previous successful CI on a9a2059377d50077de1d1c47dcbcfb737fedd2f8 does not validate the new head; both validation and browser workflows must complete again.
 - The live GitHub Pages URL could not be loaded by the available web check. Production parity is therefore unverified, not passed. Since PR #418 is not merged, the live site cannot yet be assumed to contain this candidate.
 - No merge is authorized until the latest-head validation and browser workflows pass and the post-deployment Pages check can be completed. Source-session gaps remain documented limitations, not grounds for inventing records or changing source labels.
+
+
+### Latest-head verification — 27 November 2026
+
+- Tested PR head: 32b9f8749fc00e0cb73713a0e1ab1fe5a09e61b0.
+- Validation run 45963482422 completed successfully: **48/48** substantive validation steps passed.
+- The validation log's exact bank/library comparison is now reconciled on this snapshot: **strict text = 79, normalized text = 79, guided normalized = 79, non-guided normalized = 0**. The run printed the exact matched example/question IDs; all 79 normalized matches have a guide, so the UI count is 79 hidden / 521 visible.
+- Browser run 45963482416 was still running at the time of this note: 7 steps succeeded, no failures, active step “Run first-visit guide browser tests”. It is not yet a browser pass.
+- The successful validation run applies only to the exact head above. The browser result must also finish on this same head before the PR can be marked ready.
