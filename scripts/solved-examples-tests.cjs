@@ -45,9 +45,9 @@ if (!library || !Array.isArray(library.examples)) {
   if (library.count !== 600 || examples.length !== 600) {
     failures.push("The full solved-example archive must retain all 600 source records.");
   }
-  if (library.bankDuplicateCount !== 79 || library.uniqueCount !== 521 ||
-      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 521) {
-    failures.push("Expected 80 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 521 distinct examples.");
+  if (library.bankDuplicateCount !== 78 || library.uniqueCount !== 522 ||
+      !Array.isArray(library.uniqueExamples) || library.uniqueExamples.length !== 522) {
+    failures.push("Expected 78 exact solved-library duplicates with guided bank questions to be hidden by default, leaving 522 distinct examples.");
   }
   // Compare against every assembled bank question as well as the guided subset above.
   // This separates the historical all-bank exact-match count from the guided-only UI count.
@@ -102,8 +102,8 @@ if (!library || !Array.isArray(library.examples)) {
     unmatchedAgainstBank.join(", "));
 
   const uniqueExampleIds = new Set((library.uniqueExamples || []).map(item => item.id));
-  if (uniqueExampleIds.size !== 521) {
-    failures.push("The default solved-library view must contain 521 distinct example records.");
+  if (uniqueExampleIds.size !== 522) {
+    failures.push("The default solved-library view must contain 522 distinct example records.");
   }
 
   const yearReferenceCases = [
