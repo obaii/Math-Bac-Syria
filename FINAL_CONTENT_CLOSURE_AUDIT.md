@@ -821,3 +821,8 @@ Fresh validation and browser workflows are required on the final commit after th
 ### Lazy-load UI regression alignment
 
 The browser lazy-load test still expected the former count of 521 visible examples. It now expects **522**, matching the corrected guided-only duplicate rule. Both the initial render assertion and the post-load wait condition were updated; the first page still renders 24 cards at a time. This is a test-fixture update only and must be confirmed by the next browser run.
+
+
+### Detailed-guide attachment alignment
+
+The full validation also confirmed that the varied 2018 inspired sequence question had an exact-match detailed-guide entry keyed to its former \\(5-\\frac1n\\) wording. The guide's prompt and worked step were updated to \\(5-\\frac2n\\), preserving the complete worked explanation and allowing the attachment to resolve again. This restores the intended one-guide-per-bank-question coverage; the next validation run must confirm **609/609** guided questions.
