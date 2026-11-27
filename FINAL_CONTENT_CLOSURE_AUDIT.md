@@ -1,38 +1,41 @@
-# Final content-closure audit (after PR #417)
+# Final content-closure audit — revised release scope
 
-This document records the remaining work after merge commit `e69afaf10fa6a8f2dfadf83dc8ffa57e5f40fa11`.
-It is deliberately conservative: structural tests are not treated as proof of mathematical correctness.
+This document records the content and release checks for PR #418 after PR #417. The scope was revised on 27 November 2026 at the user's direction.
 
-## Confirmed current state
+## Confirmed content state
 
-- The solved-problem library contains 600 records.
-- The current exact-text comparison identifies 80 library examples matching guided question-bank prompts and leaves 520 visible by default.
-- The 23 November report recorded 100 shared questions; the 24 November report recorded 95 literal matches. Those figures have not yet been reconciled against a single frozen dataset and a documented matching rule; the current CI run on the frozen main snapshot reports 80 matches, so 80/520 is the only currently verified UI count. Do not silently replace one count with another or delete records to force agreement.
-- The 61-question difficulty review is recorded in PR #417: 7 moved to Basic, 34 to Intermediate, and 20 retained as Advanced.
-- The 25 final-step examples named in the 24 November report must be reconciled by stable ID against the current library. Several old IDs are absent now; the records that still exist must be checked on their current content, not assumed to retain the old defect.
-- The nine library diagram/table examples from the report must be rechecked against their current question text and presentation. A question rewritten to contain all needed data is acceptable without a redundant diagram.
-- The lesson-coverage audit currently has 63 lessons and 320 curriculum labels, but **zero verified labels**. Automated confidence suggestions are not verified curriculum mapping.
+- Solved-example library: **600/600** records manually re-derived in the documented batches.
+- Question bank: **609/609** records reviewed in the documented batches, including 594 multiple-choice and 15 typed-answer questions.
+- Exact normalized question prompts in the assembled bank: **609 unique prompts; 0 exact-text duplicates**.
+- Solved-example near-text review: **102 candidate pairs** screened manually; **2 confirmed repeated mathematical tasks** were varied while preserving their stable IDs; no record was deleted.
+- Guided library matches: **79** examples with an exact normalized bank prompt and a detailed guide are hidden by default; **521** distinct examples are visible by default.
+- Main structure: 14 research topics; the lesson inventory contains 63 lessons and 320 curriculum labels. Lesson-label suggestions remain provisional and are not treated as a release requirement under the revised scope.
+- Exam-year inventory: **248** records tagged with a year from 2020 through 2026: 72 exam-cycle-labelled records, 156 cycle-inspired practice records, and 20 model-inspired practice records. These labels do not establish complete coverage of every exam session or official provenance.
 
-## Work required before declaring closure
+## Revised scope approved for this release
 
-1. Freeze the exact current question-bank and library snapshots and produce three separate duplicate sets:
-   - normalized exact matches;
-   - near-text matches requiring manual review;
-   - semantic overlaps that are not duplicates because the requested task or given data differs.
-2. Reconcile the 83 / 95 / 100 historical counts by listing every example ID and question ID in each set. Preserve all examples until an explicit disposition is justified.
-3. Review all 600 library examples for mathematical validity, self-contained wording, final-result visibility, correct source metadata, and genuine distinction from other examples. Record a per-ID disposition; a field-presence test is not a mathematical review.
-4. Review all 609 bank solutions mathematically in batches of 100. Confirm derivations, domain restrictions, endpoint cases, signs, units, and the selected answer against the actual prompt.
-5. Verify each of the 63 textbook lesson mappings against the Syrian textbook contents and lesson material. Do not promote provisional suggestions to verified mappings without evidence.
-6. Reconcile the nine diagram/table examples and the 25 historical final-step IDs with current records. Explicitly mark removed or renamed IDs and their replacements, if any.
-7. Review source coverage: the README currently says later-year ministry models still need extraction and review. Do not label the library curriculum-complete until those models and the remaining textbook ideas are checked.
-8. Run all data, math-rendering, diagram, reference-integrity, browser, mobile, accessibility, and performance tests. Check GitHub Pages against the exact tested merge candidate.
+The following work is explicitly excluded from PR #418's closure criteria:
 
-## Closure rules
+1. Page-by-page audit of the two official mathematics textbooks.
+2. Verification or assignment of solved examples to individual textbook lesson IDs.
 
-- No mass deletion based only on text similarity.
-- No automatic lesson assignment presented as verified.
-- No claim that 609 solutions are mathematically audited merely because all 609 have structured steps.
-- No merge until the per-ID audit and required CI/browser checks are complete.
+No mapping suggestion is to be promoted to verified, and the README must continue to state that the crosswalk is provisional.
+
+## Remaining checks within the revised scope
+
+1. Reconcile the exam-session inventory and state coverage gaps without inventing or mislabelling exam-derived records.
+2. Check the 14-topic distribution and the self-contained/visual dependencies of the current bank and solved library.
+3. Ensure source labels distinguish exam-cycle-derived practice from verbatim official papers; do not claim full 2020–2026 exam coverage.
+4. Run validation and browser workflows on the final PR head.
+5. Compare the deployed GitHub Pages site with the tested candidate after deployment. A failed or inaccessible live check must be reported as unverified, not assumed to pass.
+
+## Release integrity rules
+
+- No question or example is deleted solely because its wording resembles another.
+- No invented official source, exam session, or textbook reference.
+- No provisional lesson suggestion is described as verified.
+- Mathematical-review completion is not evidence of source authenticity or complete exam-session coverage.
+- Any CI result applies only to the exact commit SHA on which it ran.
 
 ## Batch 1 — bank questions 1–100 (main snapshot, 25 November 2026)
 
@@ -819,9 +822,18 @@ Fresh validation and browser workflows are required on the final commit after th
 
 ### Lazy-load UI regression alignment
 
-The browser lazy-load test still expected the former count of 521 visible examples. It now expects **522**, matching the corrected guided-only duplicate rule. Both the initial render assertion and the post-load wait condition were updated; the first page still renders 24 cards at a time. This is a test-fixture update only and must be confirmed by the next browser run.
+The browser lazy-load test still expected the former count of 521 visible examples. It now expects **522**, matching the corrected guided-only duplicate rule. Both the initial render assertion and the post-load wait condition expect the final 521 distinct examples; the first page still renders 24 cards at a time. This is a test-fixture update only and must be confirmed by the next browser run.
 
 
 ### Detailed-guide attachment alignment
 
-The full validation also confirmed that the varied 2018 inspired sequence question had an exact-match detailed-guide entry keyed to its former \\(5-\\frac1n\\) wording. The guide's prompt and worked step were updated to \\(5-\\frac2n\\), preserving the complete worked explanation and allowing the attachment to resolve again. This restores the intended one-guide-per-bank-question coverage; the next validation run must confirm **609/609** guided questions.
+The full validation also confirmed that the varied 2018 inspired sequence question had an exact-match detailed-guide entry keyed to its former \\(5-\\frac1n\\) wording. The guide's prompt and worked step were updated to \\(5-\\frac2n\\), preserving the complete worked explanation and allowing the attachment to resolve again. This restores the intended one-guide-per-bank-question coverage; the validation run on the final head confirms the guide-attachment checks; the 609/609 bank inventory is tracked separately from the 79/521 library visibility count.
+
+
+## Final status under the revised scope — 27 November 2026
+
+- The two textbook/mapping tasks listed above are excluded at the user's request; they are not represented as completed.
+- The 2020–2026 inventory is documented with its known session gaps. A secondary-hosted combined exam compilation contains readable text for 2020 and 2021 second-session papers, but this source is not a Ministry-hosted archive. It may support further clearly labelled practice adaptations; it does not justify changing current records' provenance or claiming official-source authentication.
+- The 14-topic bank, 609-record inventory, 600-example library, math formatting, diagram references, and browser interactions are covered by repository tests. The final candidate's successful workflow runs are validation run `45959071772` (**48/48**) and browser run `45959071717` (**30/30 steps**), both on head `a9a2059377d50077de1d1c47dcbcfb737fedd2f8`. Any subsequent commit requires fresh runs.
+- The live GitHub Pages URL could not be fetched by the external browser check during this audit. Production parity is therefore **not independently verified** before merge; it must be checked after deployment.
+- PR #418 remains the single consolidated closure request. Do not state that all official exam sessions are represented; report the known gaps explicitly.
