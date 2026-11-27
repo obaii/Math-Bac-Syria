@@ -816,3 +816,8 @@ The first full validation after the 78/522 guided-visibility correction confirme
 The archived bank question #27 was also varied from \\(5-\\frac1n\\) to \\(5-\\frac2n\\) to stay aligned with its paired inspired solved example and avoid duplicating the direct exam adaptation. Its separate answer-regression lookup was updated to the revised prompt; the answer remains 5. These are regression-fixture updates for the deliberately revised data, not relaxed mathematical checks.
 
 Fresh validation and browser workflows are required on the final commit after these fixture changes.
+
+
+### Lazy-load UI regression alignment
+
+The browser lazy-load test still expected the former count of 521 visible examples. It now expects **522**, matching the corrected guided-only duplicate rule. Both the initial render assertion and the post-load wait condition were updated; the first page still renders 24 cards at a time. This is a test-fixture update only and must be confirmed by the next browser run.
