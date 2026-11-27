@@ -798,16 +798,15 @@ SANA's report dated 2025-09-27 confirms that the Ministry designated `https://cu
 The first validation run after the duplicate-example edits caught a regression in the library's guided-bank de-duplication count: the 2018 inspired MCQ still used the old \\(5-1/n\\) wording while its paired solved-example prompt had been varied to \\(5-2/n\\). The bank item is itself labelled as original inspired practice (not a verbatim ministerial question), so its prompt and worked explanation were updated to the same \\(5-2/n\\) variant. This preserves the exact bank/library linkage and stable source metadata while keeping the separate direct exam adaptation `exam18-seq-003` unchanged. The follow-up validation must confirm the expected guided-bank count and 521 default unique examples; the earlier failed run is not considered a pass.
 
 
-### Guided duplicate visibility count — corrected expected behaviour
+### Guided duplicate visibility count — final state
 
-The CI diagnostics distinguish exact bank matches from matches that actually have a detailed guided solution. The assembled bank has **79** exact normalized prompt matches to solved-example records, but only **78** matching bank records have a non-empty `steps` array. The remaining match is an automated MCQ with only its concise `solution` field, not a guided multi-step solution. It should not cause the corresponding worked example to be hidden by default. The correct library UI counts are therefore:
+The CI diagnostics distinguish exact bank matches from matches that have a detailed guided solution. After updating the 2018 inspired question's guide to the revised \\(5-\\frac2n\\) wording, all 79 exact normalized bank/library matches have a non-empty `steps` array. The final library UI counts are therefore:
 
-- Guided bank duplicates hidden by default: **78**.
-- Distinct examples visible by default: **522**.
-- All-bank exact normalized matches (including the non-guided MCQ): **79**.
+- Guided bank duplicates hidden by default: **79**.
+- Distinct examples visible by default: **521**.
+- Exact normalized bank/library matches: **79**.
 
-The solved-library test assertions were corrected from the stale 79/521 guided-only expectation to 78/522. The bank item and its paired inspired solved example both use the same revised \\(5-\\frac2n\\) prompt, so the exact bank/library link is retained. The earlier validation run correctly exposed the stale assertion; a fresh run on the latest PR head is required to verify this adjustment.
-
+The intermediate 78/522 expectation was temporary: it reflected the missing guide before the guide key was aligned. The final test expectations were restored to 79/521, and the lazy-load test again expects the first 24 cards to display as 24 of 521. Do not use the intermediate count as the final result.
 
 ### Regression-test alignment after the two task variations
 
