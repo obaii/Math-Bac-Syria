@@ -755,3 +755,39 @@ Reviewed all 15 records in `questions_typed_additional.js` individually, includi
 - Question bank: **609/609** assembled records covered by the documented review batches, including the final 15 typed questions in this batch.
 - This closes the per-record mathematical content review for the current snapshots. It does **not** close source authenticity, official textbook page mapping, exact curriculum coverage, editorial disposition of materially repeated but differently worded MCQs, or live production parity. Those remain separate release blockers.
 - The final audit-document update itself must be followed by successful validation and browser workflows on the resulting PR head.
+
+
+## Batch 23 — near-duplicate review of all solved examples and resolution — 27 November 2026
+
+A two-stage comparison was performed across the full 600-record solved-example library: exact normalized prompt matching, followed by within-topic near-text screening. The near-text pass generated 102 candidate pairs for manual review. Similar wording alone was not treated as duplication: changed functions, parameters, intervals, points, vectors, requested quantities, or proof tasks remain distinct practice.
+
+### Confirmed duplicate tasks corrected
+
+1. `exam18-seq-003` (record 226) and `exam18-cycle1-007` (record 411) both asked for the limit of the exact same sequence \\(u_n=5-\\frac1n\\). The latter is an original inspired-practice item, so its sequence was changed to \\(u_n=5-\\frac2n\\). The limit remains 5; the solution and check were updated. Both stable IDs and source labels were retained.
+2. `seq-002` (record 2) and `exam26-model-007` (record 587) asked for the sum of the first five terms of the same geometric sequence with first term 3 and ratio 2. The latter was changed to ratio 3. Its full solution was expanded and recomputed: \\(S_5=3(3^5-1)/(3-1)=363\\), checked against \\(3+9+27+81+243=363\\). Both stable IDs and provenance labels were retained.
+
+### Similar-but-distinct examples retained
+
+The reviewed candidates included probability-distribution questions asking for different outcomes or statistics; arithmetic/geometric sequences with different parameters or requested terms; line/plane and sphere tasks with different geometric data; different tangent points; and different integrals, binomial coefficients, and complex-number arguments. These are valid variants, not duplicates, and were not deleted or collapsed.
+
+- Exact normalized duplicate prompt groups in the 600 records: **0**.
+- Near-text candidate pairs screened: **102**.
+- Confirmed same-mathematical-task duplicates corrected: **2**.
+- Stable record IDs removed or renamed: **0**.
+
+### Question-bank similarity check
+
+The assembled bank still contains 609 unique normalized question prompts after the merge pipeline's exact-text rule. A within-topic similarity scan surfaced many template neighbours, but the checked examples differ in their mathematical data or requested result (for example, the separate \\(X=0,1,2,3\\) outcomes for one random variable, distinct plane equations, and different complex moduli). No question was removed based solely on shared wording. This pass is a duplicate/variation audit, not a substitute for the already documented per-record mathematical review.
+
+### Official textbook source check
+
+SANA's report dated 2025-09-27 confirms that the Ministry designated `https://curricula.moed.gov.sy/` as the official digital-books portal for the revised 2025–2026 curriculum, and notes the continued use of the 2024–2025 curriculum after removal of specified symbols. The official portal timed out during this check, so the two mathematics textbooks could not be inspected page-by-page and no lesson-to-page mapping is marked verified. Source: https://sana.sy/education/2294620/ (opened 2026-11-27).
+
+### Updated release status
+
+- Solved-example mathematical review: **600/600**.
+- Solved-example near-duplicate screening: **102 candidate pairs reviewed; 2 confirmed duplicate tasks revised without changing IDs**.
+- Question-bank mathematical review: **609/609**.
+- Exact normalized question duplicates in the assembled bank: **0**.
+- Remaining release blockers are official textbook page verification, provenance and missing-cycle completeness, exact lesson crosswalk evidence, and live GitHub Pages parity.
+- The code changes in this batch require fresh CI on the new branch head. Do not transfer earlier CI results to this commit.
