@@ -162,7 +162,7 @@ No mapping suggestion is to be promoted to verified, and the README must continu
 - Question 520 now explicitly states that line d passes through A, so the scalar-product test of direction vectors is sufficient to establish perpendicular intersecting lines. Its detailed guide and independent answer-regression prompt were updated to match.
 - Question 562's point-to-plane distance guide now uses the same curriculum topic as the question. Questions 561 and 589 remain in "الجداء السلمي في الفراغ" because the 63-lesson curriculum map places "المعادلة الديكارتيّة لمستوٍ" in that unit; question 562 remains in "المستقيمات والمستويات في الفراغ" under point-to-plane distance.
 - Added/realigned the two affected detailed-guide matches. The detailed-solution coverage check passed on the run associated with commit 4821d4d; the later asset-version assertion was then updated consistently to 20261125-40 in both index.html and its test.
-- Library reconciliation: 600 unique IDs; 594 student-curriculum examples and 6 supplementary logic references; 80 exact matches with guided bank questions and 520 default-visible examples. All 600 non-author-written source records have source-reference URLs.
+- Library reconciliation (superseded by the final 27 November snapshot): 600 unique IDs; 594 student-curriculum examples and 6 supplementary logic references. The final exact guided-bank match count is 79, leaving 521 default-visible examples. All 600 non-author-written source records have source-reference URLs.
 - Source-year distribution: 2017: 34; 2018: 50; 2019: 41; 2020: 20; 2021: 20; 2022: 75; 2023: 42; 2024: 29; 2025: 30; 2026: 32.
 - Curriculum crosswalk remains provisional, not verified: 326 lesson labels cover 594 student-curriculum examples plus 6 supplementary references. Of the 320 student-curriculum labels, 6 labels remain explicitly unassigned for manual review; 156 suggestions are high-confidence, 158 medium-confidence, and 6 low-confidence. One of the 63 lessons still has no safe suggested label. These are not to be silently converted into verified coverage.
 - The official PDF links recorded in the repository were not fetchable by the web reader because the files are very large (approximately 97 MB and 80 MB). The repository's curriculum map therefore remains a provisional title-level map; exact page-by-page verification against the intended 2025–2026 edition remains open.
@@ -822,7 +822,7 @@ Fresh validation and browser workflows are required on the final commit after th
 
 ### Lazy-load UI regression alignment
 
-The browser lazy-load test still expected the former count of 521 visible examples. It now expects **522**, matching the corrected guided-only duplicate rule. Both the initial render assertion and the post-load wait condition expect the final 521 distinct examples; the first page still renders 24 cards at a time. This is a test-fixture update only and must be confirmed by the next browser run.
+The browser lazy-load test's final expectation is **521** distinct visible examples, consistent with the 79 guided duplicates hidden by default. Both the initial render assertion and the post-load wait condition use 521; the first page still renders 24 cards at a time. The earlier 522 value was an intermediate, incorrect expectation and is not the final state.
 
 
 ### Detailed-guide attachment alignment
