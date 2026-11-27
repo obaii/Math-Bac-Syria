@@ -713,3 +713,28 @@ The latest PR head reviewed in this pass is `8766ab80bf72c9c3131978d721c3271089a
 
 أُجريت مطابقة موضوعية مباشرة على عينة 2025: السجلات العشرة المصنفة «دورة امتحانية» تطابق بنية الأسئلة ذات الأرقام المذكورة في ورقة الاختيار من متعدد، كما راجعت حسابياً نتائجها (التوافيق والتوزيعات، التباين، المتتاليات، الأعداد العقدية، المشتقة المركبة، والزاوية بين شعاعين). أما السجلات العشرون الأخرى فهي تدريبات إضافية موسومة بوضوح بأنها مستوحاة وليست نقلاً حرفياً. تبقى مطابقة كل سجل من السنوات الأخرى ومصادره الأصلية عملاً مفتوحاً.
 
+
+
+## Batch 21 — manual mathematical re-derivation of solved examples 441–600 (27 November 2026)
+
+Reviewed the final 160 stable-ID records in the 600-example library. For each record, checked the prompt and assumptions, the stated method, intermediate calculations, final result, and verification against the mathematical task. The review covered 3D planes, distances, spheres and line intersections; logarithmic and exponential functions; sequences and limits; combinatorics; probability distributions and conditional probability; complex numbers; derivatives and integrals; and the 2020–2026 inspired-practice records. This checks mathematical consistency of the current text; it does not authenticate the stated exam/model provenance.
+
+### Content refinements applied
+
+- `exam23-cycle1-018` (record 542): expanded the recurrence proof. The solution now shows the base case \\(u_0=0\\), the induction hypothesis \\(0\\le u_n<2\\), and the implication \\(1\\le u_{n+1}<2\\), before proving strict increase from the positive successive difference.
+- `exam20-extra-013` (record 569): replaced the vague instruction “solve the equation” with the explicit rearrangement \\(2L=L+3\\), hence \\(L=3\\).
+- `exam26-model-006` (record 586): replaced the vague instruction “solve the equation” with the explicit rearrangement \\(2L=L+5\\), hence \\(L=5\\).
+
+### Mathematical review outcome
+
+- Re-derived the vector/plane and sphere calculations by checking direction/normal vectors, point substitutions, scalar products, and point-to-plane distances.
+- Recomputed the counting and probability results from their sample spaces or combinations, including the repeated-card multiset distribution in records 454–456 and 551–553.
+- Checked the sequence arguments for the stated monotonicity/bounds and the limiting equations, including records 495–496, 522–524, and 542.
+- Rechecked complex-number roots, rotations, powers, and polar forms, and verified derivative, tangent, asymptote, and integral calculations.
+- No additional definite numerical or algebraic answer error was identified in the remaining records in this batch after the three solution-detail refinements above.
+
+### Cumulative status
+
+- Manual solved-example review completed: **600/600** records, across batches 17–21.
+- This closes the per-ID mathematical review of the current 600-record solved-example library snapshot. It does not close the separate 609-question bank review, editorial duplicate disposition, official textbook mapping, source-document provenance, full curriculum coverage, or live GitHub Pages parity.
+- The final code/content edits in this batch require fresh validation and browser workflows on the new branch head before they can be treated as CI-verified.
